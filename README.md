@@ -128,6 +128,10 @@ async ionViewDidEnter() {
       })
     })
 }
+
+ionViewDidLeave() {
+    CapacitorGoogleMaps.close();
+}
 ```
 
 
