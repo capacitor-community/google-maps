@@ -1,0 +1,30 @@
+# compiled output
+/dist
+android/build
+ios/Pods
+.gradle
+
+# dependencies
+/node_modules
+
+# IDEs and editors
+.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# cache and logs
+/.sass-cache
+npm-debug.log
+
+# System Files
+.DS_Store
+Thumbs.db
