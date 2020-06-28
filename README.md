@@ -46,7 +46,7 @@ You'll have two API keys by the end of this step. Lets proceed:
 
 ### Add API key to your App
 
-- [Android](https://developers.google.com/maps/documentation/android-sdk/get-api-key) in manifest.xml:
+- [Android](https://developers.google.com/maps/documentation/android-sdk/get-api-key) in AndroidManifest.xml:
 ```
 <application>
 ...
@@ -59,6 +59,31 @@ You'll have two API keys by the end of this step. Lets proceed:
 ```
 - On iOS, this step is little different and mentioned below.
 
+### Regsiter Plugin on Android
+
+`your-plugin/android/src/main/java/MainActivity.java`
+```java
+...
+/* Import */
+import com.hemangkumar.capacitorgooglemaps.CapacitorGoogleMaps;
+...
+
+public class MainActivity extends BridgeActivity {
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+
+      this.init(savedInstanceState, new ArrayList<Class<? extends Plugin>>() {{
+      
+      /* Add Plugin Class */
+      add(CapacitorGoogleMaps.class);
+      
+      
+     }});
+  }
+}
+
+```
 ### Importing & Initializing the plugin
 
 ```javascript
@@ -79,7 +104,7 @@ await CapacitorGoogleMaps.initialize({
 `component.html`
 
 ```
-<div id="map" #mapView></div>
+<div id="map" #map></div>
 ```
 
 `component.css`
