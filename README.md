@@ -1,5 +1,5 @@
 <h1 align="center">Capacitor Google Maps Plugin</h1>
-<p align="center">Plugin using native Maps API for Android and iOS.</p>
+<p align="center">Plugin using native Maps SDK for Android and iOS.</p>
 
 
 ## Why ?
