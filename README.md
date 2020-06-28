@@ -14,7 +14,7 @@ Maps SDK for Android & iOS bring better performance and offline caching compared
 | Markers  | <h5 align="center">WIP</h5> | <h5 align="center">WIP</h5> | <li>``addMarker()`` is implemented which allows you to show a marker with default tooltip design. <li>Marker icons can be set using URL. <li>Event: ``didTap`` | Info windows |
 | Business & POIs  | <h3 align="center">&#10003;</h3>  | <h3 align="center">&#10003;</h3>  | <li>Tap on any places of interest <li>Event: ``didTapPOIWithPlaceID`` |
 | Lite Mode  | <h3 align="center">&#10003;</h3>  | <h3 align="center">&#10005;</h3>  | <li>``create(liteMode?: boolean)`` | Not available for iOS
-| Street View  | <h3 align="center">&#10005;</h3>  | <h5 align="center">WIP</h5>  | <li>``createStreetView()``  | 
+| Street View  | <h3 align="center">&#10005;</h3>  | <h5 align="center">WIP</h5>  | <li>``createStreetView()``  |
 | Launch URL  | <h3 align="center">&#10005;</h3>  | <h3 align="center">&#10005;</h3> | |
 | Controls & Gestures  | <h5 align="center">WIP</h5>  | <h5 align="center">WIP</h5>  | <li>``settings()`` allow to set all the map UI settings. | Allow users to get current state of map settings.
 | Events  | <h5 align="center">WIP</h5> | <h5 align="center">WIP</h5>  | |
@@ -39,8 +39,8 @@ npx cap sync
 
 ### Set up Google API Keys
 
-- [Android](https://developers.google.com/maps/documentation/android-sdk/get-api-key) 
-- [iOS](https://developers.google.com/maps/documentation/ios-sdk/get-api-key) 
+- [Android](https://developers.google.com/maps/documentation/android-sdk/get-api-key)
+- [iOS](https://developers.google.com/maps/documentation/ios-sdk/get-api-key)
 
 You'll have two API keys by the end of this step. Lets proceed:
 
@@ -74,11 +74,11 @@ public class MainActivity extends BridgeActivity {
     super.onCreate(savedInstanceState);
 
       this.init(savedInstanceState, new ArrayList<Class<? extends Plugin>>() {{
-      
+
       /* Add Plugin Class */
       add(CapacitorGoogleMaps.class);
-      
-      
+
+
      }});
   }
 }
@@ -134,13 +134,13 @@ async ionViewDidEnter() {
       longitude: 151.20,
       zoom: 12
     });
-    
+
     CapacitorGoogleMaps.addListener("onMapReady", async function() {
-      
+
       /*
         We can do all the magic here when map is ready
       */
-    
+
       CapacitorGoogleMaps.addMarker({
         latitude: -33.86,
         longitude: 151.20,
@@ -162,6 +162,3 @@ ionViewDidLeave() {
 ## Known Issues
 
 <li> Right now, its not possible to allow Map view in the template to scroll along with the Page, it remains at its fixed position.
-        
-
-        
