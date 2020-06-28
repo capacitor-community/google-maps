@@ -22,3 +22,112 @@ Maps SDK for Android & iOS bring better performance and offline caching compared
 | Location  | <h5 align="center">WIP</h5>  | <h5 align="center">WIP</h5>  | <li>android: ``enableCurrentLocation()`` ``onMyLocationButtonClick``, ``onMyLocationClick`` <li>iOS: ``enableCurrentLocation()``, ``myLocation()``| API wrapping needs improvement so that it becomes consistent for both platforms |
 | Drawing on Map  | <h5 align="center">WIP</h5>  | <h5 align="center">WIP</h5>  | | Shapes, Ground Overlays, Tile Overlays
 | Utility Library  | <h3 align="center">&#10005;</h3>  | <h3 align="center">&#10005;</h3>  | |
+
+## Getting Started
+
+### Installation
+
+#### Install package from npm
+```
+npm i --save capacitor-google-maps
+```
+
+#### Install plugin dependencies in native platforms
+```
+npx cap sync
+```
+
+### Set up Google API Keys
+
+- [Android](https://developers.google.com/maps/documentation/android-sdk/get-api-key) 
+- [iOS](https://developers.google.com/maps/documentation/ios-sdk/get-api-key) 
+
+You'll have two API keys by the end of this step. Lets proceed:
+
+### Add API key to your App
+
+- [Android](https://developers.google.com/maps/documentation/android-sdk/get-api-key) in manifest.xml:
+```
+<application>
+...
+
+<meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="YOUR_ANDROID_MAPS_API_KEY"/>
+...
+</application>
+```
+- On iOS, this step is little different and mentioned below.
+
+### Importing & Initializing the plugin
+
+```javascript
+const { CapacitorGoogleMaps } = Plugins;
+
+/* initialize() is important for iOS,
+  Android doesn't need any initialization.
+*/
+await CapacitorGoogleMaps.initialize({
+ key: "YOUR_IOS_API_KEY"
+});
+```
+
+### Usage
+
+#### An example with Angular
+
+`component.html`
+
+```
+<div id="map" #mapView></div>
+```
+
+`component.css`
+
+```
+#map {
+    margin: 2em 1em;
+    height: 250px;
+    border: 1px solid black;
+  }
+```
+
+`component.ts`
+
+```typescript
+@ViewChild('map') mapView: ElementRef;
+
+async ionViewDidEnter() {
+    const boundingRect = this.mapView.nativeElement.getBoundingClientRect() as DOMRect;
+
+    CapacitorGoogleMaps.create({
+      width: Math.round(boundingRect.width),
+      height: Math.round(boundingRect.height),
+      x: Math.round(boundingRect.x),
+      y: Math.round(boundingRect.y),
+      latitude: -33.86,
+      longitude: 151.20,
+      zoom: 12
+    });
+    
+    CapacitorGoogleMaps.addListener("onMapReady", async function() {
+      
+      /*
+        We can do all the magic here when map is ready
+      */
+    
+      CapacitorGoogleMaps.addMarker({
+        latitude: -33.86,
+        longitude: 151.20,
+        title: "Custom Title",
+        snippet: "Custom Snippet",
+      });
+
+      CapacitorGoogleMaps.setMapType({
+        "type": "normal"
+      })
+    })
+}
+```
+
+
