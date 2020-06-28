@@ -25,7 +25,7 @@
     "dist/",
     "ios/",
     "android/",
-    "CapacitorGoogleMaps.podspec"
+    "CapacitorGooglemapsNative.podspec"
   ],
   "keywords": [
     "capacitor",
@@ -42,9 +42,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/hemangsk/capacitor-google-maps"
+    "url": "https://github.com/hemangsk/capacitor-googlemaps-native"
   },
   "bugs": {
-    "url": "https://github.com/hemangsk/capacitor-google-maps/issues"
+    "url": "https://github.com/hemangsk/capacitor-googlemaps-native/issues"
   }
 }

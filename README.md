@@ -29,7 +29,7 @@ Maps SDK for Android & iOS bring better performance and offline caching compared
 
 #### Install package from npm
 ```
-npm i --save capacitor-google-maps
+npm i --save capacitor-googlemaps-native
 ```
 
 #### Install plugin dependencies in native platforms
