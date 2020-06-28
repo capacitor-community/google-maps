@@ -1,6 +1,6 @@
 {
   "name": "capacitor-googlemaps-native",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Plugin using native Maps API for Android and iOS.",
   "main": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
