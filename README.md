@@ -136,7 +136,7 @@ ionViewDidLeave() {
 
 ## Known Issues
 
-<li> Right now, its not possible to allow ``mapView`` in the template to scroll along with the Page, it remains at its fixed position.
+<li> Right now, its not possible to allow Map view in the template to scroll along with the Page, it remains at its fixed position.
         
 
         
