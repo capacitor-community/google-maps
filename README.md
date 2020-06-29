@@ -1,6 +1,8 @@
 <h1 align="center">Capacitor Google Maps Plugin</h1>
 <p align="center">Plugin using native Maps SDK for Android and iOS.</p>
-
+<p align="center">
+<img align="center" height="300" src="https://user-images.githubusercontent.com/13018570/86005089-cd5fe880-ba31-11ea-9e35-11a9f0e782c7.png">
+</p>
 
 ## Why ?
 
