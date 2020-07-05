@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.NativePlugin;
 import com.getcapacitor.Plugin;
@@ -27,11 +28,17 @@ import com.google.android.libraries.maps.MapView;
 import com.google.android.libraries.maps.OnMapReadyCallback;
 import com.google.android.libraries.maps.UiSettings;
 import com.google.android.libraries.maps.model.CameraPosition;
+import com.google.android.libraries.maps.model.CircleOptions;
 import com.google.android.libraries.maps.model.LatLng;
 import com.google.android.libraries.maps.model.MapStyleOptions;
 import com.google.android.libraries.maps.model.Marker;
 import com.google.android.libraries.maps.model.MarkerOptions;
 import com.google.android.libraries.maps.model.PointOfInterest;
+import com.google.android.libraries.maps.model.PolygonOptions;
+import com.google.android.libraries.maps.model.PolylineOptions;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
@@ -184,6 +191,80 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback {
         });
 
         call.resolve();
+    }
+
+    @PluginMethod()
+    public void addPolyline(final PluginCall call) {
+        final JSArray points = call.getArray("points", new JSArray());
+
+        getBridge().executeOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                PolylineOptions polylineOptions = new PolylineOptions();
+
+                for (int i = 0; i < points.length(); i++) {
+                    try {
+                        JSONObject point = points.getJSONObject(i);
+                        LatLng latLng = new LatLng(point.getDouble("latitude"), point.getDouble("longitude"));
+                        polylineOptions.add(latLng);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                googleMap.addPolyline(polylineOptions);
+
+                call.resolve();
+            }
+        });
+    }
+
+    @PluginMethod()
+    public void addPolygon(final PluginCall call) {
+        final JSArray points = call.getArray("points", new JSArray());
+
+        getBridge().executeOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                PolygonOptions polygonOptions = new PolygonOptions();
+
+                for (int i = 0; i < points.length(); i++) {
+                    try {
+                        JSONObject point = points.getJSONObject(i);
+                        LatLng latLng = new LatLng(point.getDouble("latitude"), point.getDouble("longitude"));
+                        polygonOptions.add(latLng);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                googleMap.addPolygon(polygonOptions);
+                call.resolve();
+            }
+        });
+    }
+
+    @PluginMethod()
+    public void addCircle(final PluginCall call) {
+        final int radius = call.getInt("radius", 0);
+        final JSONObject center = call.getObject("center", new JSObject());
+
+        getBridge().executeOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                CircleOptions circleOptions = new CircleOptions();
+                circleOptions.radius(radius);
+                try {
+                    circleOptions.center(new LatLng(center.getDouble("latitude"), center.getDouble("longitude")));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                googleMap.addCircle(circleOptions);
+
+                call.resolve();
+            }
+        });
     }
 
     @PluginMethod()
