@@ -15,6 +15,8 @@ CAP_PLUGIN(CapacitorGoogleMaps, "CapacitorGoogleMaps",
            CAP_PLUGIN_METHOD(clear, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(isTrafficEnabled, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(close, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(hide, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(show, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(reverseGeocodeCoordinate, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(settings, CAPPluginReturnPromise);
 )

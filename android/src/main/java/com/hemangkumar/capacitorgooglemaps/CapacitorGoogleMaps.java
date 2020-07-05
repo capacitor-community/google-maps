@@ -288,6 +288,28 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback {
     }
 
     @PluginMethod()
+    public void hide(PluginCall call) {
+        getBridge().executeOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                View viewToHide = ((ViewGroup) getBridge().getWebView().getParent()).findViewById(mapViewParentId);
+                viewToHide.setVisibility(View.INVISIBLE);
+            }
+        });
+    }
+
+    @PluginMethod()
+    public void show(PluginCall call) {
+        getBridge().executeOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                View viewToShow = ((ViewGroup) getBridge().getWebView().getParent()).findViewById(mapViewParentId);
+                viewToShow.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    @PluginMethod()
     public void reverseGeocodeCoordinate(final PluginCall call) {
         final Double latitude = call.getDouble("latitude", 0.0);
         final Double longitude = call.getDouble("longitude", 0.0);

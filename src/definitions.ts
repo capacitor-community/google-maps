@@ -70,6 +70,12 @@ export interface CapacitorGoogleMapsPlugin {
   /** Destroy the mapView, use in ionViewDidLeave and similar */
   close(): Promise<any>;
 
+  /** Hide the mapView, use when preventing any overlapping on other views */
+  hide(): Promise<any>;
+
+  /** Show the hidden mapView */
+  show(): Promise<any>;
+
   /** Map UI Settings */
   settings(options: {
     allowScrollGesturesDuringRotateOrZoom?: boolean,
