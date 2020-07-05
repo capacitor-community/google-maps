@@ -1,5 +1,9 @@
 import { PluginListenerHandle } from "@capacitor/core";
 
+import { PolylineOptions } from './types/shapes/polyline.interface';
+import { PolygonOptions } from './types/shapes/polygon.interface';
+import { CircleOptions } from './types/shapes/circle.interface';
+
 declare module "@capacitor/core" {
   interface PluginRegistry {
     CapacitorGoogleMaps: CapacitorGoogleMapsPlugin;
@@ -98,6 +102,11 @@ export interface CapacitorGoogleMapsPlugin {
   setMapStyle(options: {
     jsonString: string,
   }): Promise<any>;
+
+  /** Shapes */
+  addPolyline(options: PolylineOptions): Promise<any>;
+  addCircle(options: CircleOptions): Promise<any>;
+  addPolygon(options: PolygonOptions): Promise<any>;
 
   /** Map click listeners */
   setOnMarkerClickListener(): Promise<any>;
