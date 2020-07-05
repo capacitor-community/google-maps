@@ -193,6 +193,30 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
         ])
     }
     
+    @objc func show(_ call: CAPPluginCall) {
+        DispatchQueue.main.async {
+           if self.mapViewController != nil {
+                self.mapViewController.view.isHidden = false
+            
+                call.resolve([
+                    "mapViewHidden" : false
+                ])
+           }
+        }
+    }
+    
+    @objc func hide(_ call: CAPPluginCall) {
+        DispatchQueue.main.async {
+           if self.mapViewController != nil {
+                self.mapViewController.view.isHidden = true
+            
+                call.resolve([
+                    "mapViewHidden" : true
+                ])
+           }
+        }
+    }
+    
     @objc func reverseGeocodeCoordinate(_ call: CAPPluginCall) {
         
         let latitude = call.getDouble("latitude") ?? 0
