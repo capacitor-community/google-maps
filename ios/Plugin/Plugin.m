@@ -17,4 +17,7 @@ CAP_PLUGIN(CapacitorGoogleMaps, "CapacitorGoogleMaps",
            CAP_PLUGIN_METHOD(close, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(reverseGeocodeCoordinate, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(settings, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(addPolyline, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(addPolygon, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(addCircle, CAPPluginReturnPromise);
 )
