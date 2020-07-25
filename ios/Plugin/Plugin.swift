@@ -320,7 +320,72 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             
         }
     }
+
+    @objc func addPolyline(_ call: CAPPluginCall) {
+        
+        let points = call.getArray("points", AnyObject.self)
+        
+        DispatchQueue.main.async {
+            
+            let path = GMSMutablePath()
+            
+            for point in points ?? [] {
+                let coords = CLLocationCoordinate2D(latitude: point["latitude"] as! CLLocationDegrees, longitude: point["longitude"] as! CLLocationDegrees)
+                path.add(coords)
+            }
+            
+            let polyline = GMSPolyline(path: path)
+            
+            polyline.map = self.mapViewController.GMapView
+            call.resolve([
+                "created": true
+            ])
+        }
+    }
     
+    @objc func addPolygon(_ call: CAPPluginCall) {
+        
+        let points = call.getArray("points", AnyObject.self)
+        
+        DispatchQueue.main.async {
+            
+            let path = GMSMutablePath()
+            
+            for point in points ?? [] {
+                let coords = CLLocationCoordinate2D(latitude: point["latitude"] as! CLLocationDegrees, longitude: point["longitude"] as! CLLocationDegrees)
+                path.add(coords)
+            }
+            
+            let polygon = GMSPolygon(path: path)
+            polygon.map = self.mapViewController.GMapView
+
+            call.resolve([
+                "created": true
+            ])
+        }
+    }
+    
+    @objc func addCircle(_ call: CAPPluginCall) {
+        
+        let radius = call.getDouble("radius") ?? 0.0
+        
+        let center = call.getObject("center")
+        
+        let coordinates = CLLocationCoordinate2D(latitude: center?["latitude"] as! CLLocationDegrees, longitude: center?["longitude"] as! CLLocationDegrees)
+        
+        DispatchQueue.main.async {
+
+            let circleCenter = coordinates
+            let circle = GMSCircle(position: circleCenter, radius: radius)
+            circle.map = self.mapViewController.GMapView
+            
+            call.resolve([
+                "created": true
+            ])
+        }
+    }
+    
+
     public func mapView(_ mapView: GMSMapView, didTapPOIWithPlaceID placeID: String, name: String, location: CLLocationCoordinate2D) {
         self.notifyListeners("didTapPOIWithPlaceID", data: [
             "results": [
