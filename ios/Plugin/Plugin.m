@@ -22,4 +22,5 @@ CAP_PLUGIN(CapacitorGoogleMaps, "CapacitorGoogleMaps",
            CAP_PLUGIN_METHOD(addPolyline, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(addPolygon, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(addCircle, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(scrollTo, CAPPluginReturnPromise);
 )

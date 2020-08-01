@@ -114,6 +114,12 @@ export interface CapacitorGoogleMapsPlugin {
   addCircle(options: CircleOptions): Promise<any>;
   addPolygon(options: PolygonOptions): Promise<any>;
 
+  /** Scroll map view to a position */
+  scrollTo(options: {
+    x: number,
+    y: number
+  }): Promise<any>;
+
   /** Map click listeners */
   setOnMarkerClickListener(): Promise<any>;
   setOnMapClickListener(): Promise<any>;
