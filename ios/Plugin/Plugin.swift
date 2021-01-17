@@ -123,39 +123,44 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             "mapTypeSet": specifiedMapType
         ])
     }
-    
+
     @objc func setIndoorEnabled(_ call: CAPPluginCall) {
         DispatchQueue.main.async {
             self.mapViewController.GMapView.isIndoorEnabled = call.getBool("enabled", false)!
         }
     }
-    
+
     @objc func accessibilityElementsHidden(_ call: CAPPluginCall) {
         DispatchQueue.main.async {
             self.mapViewController.GMapView.accessibilityElementsHidden = call.getBool("hidden", false)!
         }
     }
-    
+
     @objc func enableCurrentLocation(_ call: CAPPluginCall) {
         DispatchQueue.main.async {
             self.mapViewController.GMapView.isMyLocationEnabled = call.getBool("enabled", false)!
+            call.resolve()
         }
     }
-    
+
     @objc func setTrafficEnabled(_ call: CAPPluginCall) {
         DispatchQueue.main.async {
             self.mapViewController.GMapView.isTrafficEnabled = call.getBool("enabled", false)!
         }
     }
-    
+
     @objc func myLocation(_ call: CAPPluginCall) {
-        let location = self.mapViewController.GMapView.myLocation;
-        call.success([
-            "latitude": (location?.coordinate.latitude)! as Double,
-            "longitude": (location?.coordinate.longitude)! as Double
-        ])
+        DispatchQueue.main.async {
+            let location = self.mapViewController.GMapView.myLocation;
+
+            call.success([
+                "latitude": location?.coordinate.latitude as Any,
+                "longitude": location?.coordinate.longitude as Any
+            ])
+        }
+
     }
-    
+
     @objc func padding(_ call: CAPPluginCall) {
         let top = CGFloat(call.getFloat("top") ?? 0.0)
         let left = CGFloat(call.getFloat("left") ?? 0.0)
