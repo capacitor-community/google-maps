@@ -104,6 +104,9 @@ export interface CapacitorGoogleMapsPlugin {
     enabled: boolean,
   }): Promise<any>;
 
+  /** Get user location */
+  myLocation(options: any): Promise<any>;
+
   /** Add styles to map with a style JSON string format specific by Google */
   setMapStyle(options: {
     jsonString: string,
