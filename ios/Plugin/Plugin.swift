@@ -43,14 +43,15 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             ]
             self.bridge.viewController.view.addSubview(self.mapViewController.view)
             self.mapViewController.GMapView.delegate = self
+            self.notifyListeners("onMapReady", data: nil)
         }
         call.success([
             "created": true
         ])
     }
-    
+
     @objc func addMarker(_ call: CAPPluginCall) {
-        
+
         let latitude = call.getDouble("latitude") ?? 0
         let longitude = call.getDouble("longitude") ?? 0
         let opacity = call.getFloat("opacity") ?? 1
@@ -501,14 +502,10 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
                 "zoom": position.zoom,
             ]])
     }
-    
-    public func mapViewSnapshotReady(_ mapView: GMSMapView) {
-        self.notifyListeners("onMapReady", data: nil)
-    }
-    
+
     // Street View
     @objc func createStreetView(_ call: CAPPluginCall) {
-        
+
         DispatchQueue.main.async {
             self.streetViewController = GMStreetViewController();
             self.streetViewController.mapViewBounds = [
