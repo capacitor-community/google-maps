@@ -2,11 +2,13 @@ package com.hemangkumar.capacitorgooglemaps;
 
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -45,7 +47,7 @@ import java.util.List;
 
 
 @NativePlugin()
-public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback {
+public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener {
 
     private MapView mapView;
     GoogleMap googleMap;
@@ -621,14 +623,17 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback {
     public void enableCurrentLocation(final PluginCall call) {
 
         final boolean enableLocation = call.getBoolean("enabled", false);
-
+        final CapacitorGoogleMaps context = this;
         getBridge().executeOnMainThread(new Runnable() {
+            @SuppressLint("MissingPermission")
             @Override
             public void run() {
                 if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     call.error("Permission for location not granted");
                 } else {
                     googleMap.setMyLocationEnabled(enableLocation);
+                    googleMap.setOnMyLocationClickListener(context);
+                    googleMap.setOnMyLocationButtonClickListener(context);
                     call.resolve();
                 }
             }
@@ -672,10 +677,11 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback {
         notifyListeners("didTap", result);
     }
 
-    public void onMyLocationButtonClick() {
+    public boolean onMyLocationButtonClick() {
         /*
          *  TODO: Add handler
          */
+        return false;
     }
 
     public void onMyLocationClick(Location location) {
