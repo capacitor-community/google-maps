@@ -643,22 +643,31 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
     public void onPoiClick(PointOfInterest pointOfInterest) {
         JSObject result = new JSObject();
         JSObject location = new JSObject();
+        JSObject coordinates = new JSObject();
 
-        location.put("latitude", pointOfInterest.latLng.latitude);
-        location.put("longitude", pointOfInterest.latLng.longitude);
+        coordinates.put("latitude", pointOfInterest.latLng.latitude);
+        coordinates.put("longitude", pointOfInterest.latLng.longitude);
+
+        location.put("coordinates", coordinates);
 
         result.put("name", pointOfInterest.name);
         result.put("placeID", pointOfInterest.placeId);
-        result.put("location", location);
+        result.put("result", location);
 
         notifyListeners("didTapPOIWithPlaceID", result);
     }
 
     public void onMapClick(LatLng latLng) {
+        JSObject result = new JSObject();
         JSObject location = new JSObject();
+        JSObject coordinates = new JSObject();
 
-        location.put("latitude", latLng.latitude);
-        location.put("longitude", latLng.longitude);
+        coordinates.put("latitude", latLng.latitude);
+        coordinates.put("longitude", latLng.longitude);
+
+        location.put("coordinates", coordinates);
+
+        result.put("result", location);
 
         notifyListeners("didTapAt", location);
     }
@@ -666,13 +675,16 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
     public void onMarkerClick(Marker marker) {
         JSObject result = new JSObject();
         JSObject location = new JSObject();
+        JSObject coordinates = new JSObject();
 
-        location.put("latitude", marker.getPosition().latitude);
-        location.put("longitude", marker.getPosition().longitude);
+        coordinates.put("latitude", marker.getPosition().latitude);
+        coordinates.put("longitude", marker.getPosition().longitude);
 
-        result.put("name", marker.getTitle());
+        location.put("coordinates", coordinates);
+
+        result.put("title", marker.getTitle());
         result.put("snippet", marker.getSnippet());
-        result.put("location", location);
+        result.put("result", location);
 
         notifyListeners("didTap", result);
     }

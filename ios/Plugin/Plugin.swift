@@ -447,7 +447,9 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             "coordinates": [
                 "latitude": marker.position.latitude,
                 "longitude": marker.position.longitude
-            ]
+            ],
+            "title": marker.title ?? "",
+            "snippet": marker.snippet ?? ""
         ]])
         return false
     }
