@@ -40,6 +40,17 @@ export interface CapacitorGoogleMapsPlugin {
     url?: string,
   }): Promise<any>;
 
+  /** Repositions the camera */
+  setCamera(options: {
+    viewingAngle?: number,
+    bearing?: number,
+    zoom?: number,
+    latitude?: number,
+    longitude?: number,
+    animate?: boolean,
+    animationDuration?: number,
+  }): Promise<any>;
+
   /** Sets the map type  */
   setMapType(options: {
     type: string,

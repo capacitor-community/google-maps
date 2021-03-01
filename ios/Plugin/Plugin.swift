@@ -5,29 +5,30 @@ import GoogleMaps
 
 @objc(CapacitorGoogleMaps)
 public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaViewDelegate {
-    
+
     var GOOGLE_MAPS_KEY: String = "";
     var mapViewController: GMViewController!;
     var streetViewController: GMStreetViewController!;
     var DEFAULT_ZOOM: Double = 12.0;
-    
+
     @objc func initialize(_ call: CAPPluginCall) {
-        
+
         self.GOOGLE_MAPS_KEY = call.getString("key", "")!
-        
+
         if self.GOOGLE_MAPS_KEY.isEmpty {
             call.error("GOOGLE MAPS API key missing!")
             return
         }
-        
+
         GMSServices.provideAPIKey(self.GOOGLE_MAPS_KEY)
         call.success([
             "initialized": true
         ])
     }
-    
+
     @objc func create(_ call: CAPPluginCall) {
-        
+
+        print("Local copy being used.")
         DispatchQueue.main.async {
             self.mapViewController = GMViewController();
             self.mapViewController.mapViewBounds = [
@@ -60,14 +61,14 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
         let isFlat = call.getBool("isFlat") ?? false
         let url = URL(string: call.getString("iconUrl", "")!)
         var imageData: Data?
-        
+
         DispatchQueue.global().async {
-            
+
             if url != nil {
                 /* https://stackoverflow.com/a/27517280/5056792 */
                 imageData = try? Data(contentsOf: url!)
             }
-            
+
             DispatchQueue.main.async {
                 let marker = GMSMarker()
                 marker.position = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
@@ -75,13 +76,13 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
                 marker.snippet = snippet
                 marker.isFlat = isFlat
                 marker.opacity = opacity
-            
+
                 if imageData != nil {
                     marker.icon = UIImage(data: imageData!)
                 }
 
                 marker.map = self.mapViewController.GMapView
-                
+
             }
         }
 
@@ -89,32 +90,32 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             "markerAdded": true
         ])
     }
-    
+
     @objc func setMapType(_ call: CAPPluginCall) {
-        
+
         let specifiedMapType = call.getString("type") ?? "normal"
         var mapType: GMSMapViewType;
-        
+
         switch specifiedMapType {
             case "normal" :
                 mapType = GMSMapViewType.normal
 
             case "hybrid" :
                 mapType = GMSMapViewType.hybrid
-                
+
             case "satellite" :
                 mapType = GMSMapViewType.satellite
-                
+
             case "terrain" :
                 mapType = GMSMapViewType.terrain
-            
+
             case "none" :
                 mapType = GMSMapViewType.none
-        
+
             default:
                 mapType = GMSMapViewType.normal
         }
-        
+
         DispatchQueue.main.async {
             self.mapViewController.GMapView.mapType = mapType
         }
@@ -176,7 +177,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             "padding" : true
         ])
     }
-    
+
     @objc func clear(_ call: CAPPluginCall) {
         DispatchQueue.main.async {
             self.mapViewController.GMapView.clear()
@@ -186,7 +187,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             "mapViewCleared" : true
         ])
     }
-    
+
     @objc func close(_ call: CAPPluginCall) {
         DispatchQueue.main.async {
             if self.mapViewController != nil {
@@ -198,38 +199,38 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             "mapViewClosed" : true
         ])
     }
-    
+
     @objc func show(_ call: CAPPluginCall) {
         DispatchQueue.main.async {
            if self.mapViewController != nil {
                 self.mapViewController.view.isHidden = false
-            
+
                 call.resolve([
                     "mapViewHidden" : false
                 ])
            }
         }
     }
-    
+
     @objc func hide(_ call: CAPPluginCall) {
         DispatchQueue.main.async {
            if self.mapViewController != nil {
                 self.mapViewController.view.isHidden = true
-            
+
                 call.resolve([
                     "mapViewHidden" : true
                 ])
            }
         }
     }
-    
+
     @objc func reverseGeocodeCoordinate(_ call: CAPPluginCall) {
-        
+
         let latitude = call.getDouble("latitude") ?? 0
         let longitude = call.getDouble("longitude") ?? 0
-        
+
         let coordinates = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-        
+
         DispatchQueue.main.async {
 
             GMSGeocoder().reverseGeocodeCoordinate(coordinates) { (response, error) in
@@ -246,16 +247,16 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
                     ] as [String : Any]
                     addressList.append(addr)
                 }
-                
+
                 call.resolve([
                     "addresses": addressList
                 ])
             }
         }
     }
-    
+
     @objc func settings(_ call: CAPPluginCall) {
-        
+
         let allowScrollGesturesDuringRotateOrZoom = call.getBool("allowScrollGesturesDuringRotateOrZoom") ?? true
         let compassButton = call.getBool("compassButton") ?? false
         let consumesGesturesInView = call.getBool("consumesGesturesInView") ?? true
@@ -265,8 +266,8 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
         let scrollGestures = call.getBool("scrollGestures") ?? true
         let tiltGestures = call.getBool("tiltGestures") ?? true
         let zoomGestures = call.getBool("zoomGestures") ?? true
-        
-        
+
+
         DispatchQueue.main.async {
             self.mapViewController.GMapView.settings.allowScrollGesturesDuringRotateOrZoom = allowScrollGesturesDuringRotateOrZoom
             self.mapViewController.GMapView.settings.compassButton = compassButton
@@ -283,18 +284,18 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             ])
         }
     }
-    
+
     @objc func setCamera(_ call: CAPPluginCall) {
-        
+
         let viewingAngle = call.getDouble("viewingAngle") ?? 45
         let bearing = call.getDouble("bearing") ?? 270
         let zoom = call.getFloat("zoom") ?? 1
         let latitude = call.getDouble("latitude") ?? 0
         let longitude = call.getDouble("longitude") ?? 0
-                
+
         let animate = call.getBool("animate") ?? false
         let animationDuration = call.getDouble("animationDuration") ?? 1000
-        
+
         DispatchQueue.main.async {
             let camera = GMSCameraPosition(latitude: latitude, longitude: longitude, zoom: zoom, bearing: bearing, viewingAngle: viewingAngle)
 
@@ -305,15 +306,15 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
                 self.mapViewController.GMapView.camera = camera
             }
         }
-        
+
         call.success([
             "cameraSet": true
         ])
     }
-    
+
     @objc func setMapStyle(_ call: CAPPluginCall) {
         let styleJsonString = call.getString("jsonString") ?? ""
-        
+
         DispatchQueue.main.async {
             do {
                 self.mapViewController.GMapView.mapStyle = try GMSMapStyle(jsonString: styleJsonString)
@@ -323,45 +324,45 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             } catch {
                 call.error("One or more of the map styles failed to load. \(error)")
             }
-            
+
         }
     }
 
     @objc func addPolyline(_ call: CAPPluginCall) {
-        
+
         let points = call.getArray("points", AnyObject.self)
-        
+
         DispatchQueue.main.async {
-            
+
             let path = GMSMutablePath()
-            
+
             for point in points ?? [] {
                 let coords = CLLocationCoordinate2D(latitude: point["latitude"] as! CLLocationDegrees, longitude: point["longitude"] as! CLLocationDegrees)
                 path.add(coords)
             }
-            
+
             let polyline = GMSPolyline(path: path)
-            
+
             polyline.map = self.mapViewController.GMapView
             call.resolve([
                 "created": true
             ])
         }
     }
-    
+
     @objc func addPolygon(_ call: CAPPluginCall) {
-        
+
         let points = call.getArray("points", AnyObject.self)
-        
+
         DispatchQueue.main.async {
-            
+
             let path = GMSMutablePath()
-            
+
             for point in points ?? [] {
                 let coords = CLLocationCoordinate2D(latitude: point["latitude"] as! CLLocationDegrees, longitude: point["longitude"] as! CLLocationDegrees)
                 path.add(coords)
             }
-            
+
             let polygon = GMSPolygon(path: path)
             polygon.map = self.mapViewController.GMapView
 
@@ -370,27 +371,27 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             ])
         }
     }
-    
+
     @objc func addCircle(_ call: CAPPluginCall) {
-        
+
         let radius = call.getDouble("radius") ?? 0.0
-        
+
         let center = call.getObject("center")
-        
+
         let coordinates = CLLocationCoordinate2D(latitude: center?["latitude"] as! CLLocationDegrees, longitude: center?["longitude"] as! CLLocationDegrees)
-        
+
         DispatchQueue.main.async {
 
             let circleCenter = coordinates
             let circle = GMSCircle(position: circleCenter, radius: radius)
             circle.map = self.mapViewController.GMapView
-            
+
             call.resolve([
                 "created": true
             ])
         }
     }
-    
+
 
     public func mapView(_ mapView: GMSMapView, didTapPOIWithPlaceID placeID: String, name: String, location: CLLocationCoordinate2D) {
         self.notifyListeners("didTapPOIWithPlaceID", data: [
@@ -404,8 +405,8 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             ]
         ])
     }
-        
-    
+
+
     public func mapView(_ mapView: GMSMapView, didLongPressAt coordinate: CLLocationCoordinate2D) {
         self.notifyListeners("didLongPressAt", data: ["result": [
             "coordinates": [
@@ -414,7 +415,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             ]
         ]])
     }
-    
+
     public func mapView(_ mapView: GMSMapView, didTapInfoWindowOf marker: GMSMarker) {
         self.notifyListeners("didTapInfoWindowOf", data: ["result": [
             "coordinates": [
@@ -423,7 +424,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             ]
         ]])
     }
-    
+
     public func mapView(_ mapView: GMSMapView, didLongPressInfoWindowOf marker: GMSMarker) {
         self.notifyListeners("didLongPressInfoWindowOf", data: ["result": [
             "coordinates": [
@@ -432,7 +433,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             ]
         ]])
     }
-    
+
     public func mapView(_ mapView: GMSMapView, didCloseInfoWindowOf marker: GMSMarker) {
         self.notifyListeners("didCloseInfoWindowOf", data: ["result": [
             "coordinates": [
@@ -441,7 +442,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             ]
         ]])
     }
-    
+
     public func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
         self.notifyListeners("didTap", data: ["result": [
             "coordinates": [
@@ -453,7 +454,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
         ]])
         return false
     }
-    
+
     public func mapView(_ mapView: GMSMapView, didBeginDragging marker: GMSMarker) {
         self.notifyListeners("didBeginDragging", data: ["result": [
             "coordinates": [
@@ -462,7 +463,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             ]
         ]])
     }
-    
+
     public func mapView(_ mapView: GMSMapView, didEndDragging marker: GMSMarker) {
         self.notifyListeners("didEndDragging", data: ["result": [
             "coordinates": [
@@ -471,7 +472,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             ]
         ]])
     }
-    
+
     public func mapView(_ mapView: GMSMapView, idleAt position: GMSCameraPosition) {
         self.notifyListeners("idleAt", data: ["result": [
             "position": [
@@ -481,8 +482,8 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             "zoom": position.zoom,
         ]])
     }
-    
-    
+
+
     public func didTapMyLocationButton(for mapView: GMSMapView) -> Bool {
         self.notifyListeners("didTapMyLocationButton", data: ["value": true])
         /*
@@ -490,7 +491,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
         */
         return false
     }
-    
+
     public func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
         self.notifyListeners("didTapAt", data: ["result": [
                 "coordinates": [
@@ -499,7 +500,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
                 ]
             ]])
     }
-    
+
     public func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
         self.notifyListeners("didChange", data: ["result": [
                 "position": [
@@ -533,33 +534,33 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             "created": true
         ])
     }
-    
+
     @objc func moveNearCoordinate(_ call: CAPPluginCall) {
         let latitude = call.getDouble("latitude") ?? 0
         let longitude = call.getDouble("longitude") ?? 0
-    
+
         let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-        
+
         let radius = UInt(call.getInt("radius") ?? 0)
-        
+
         DispatchQueue.main.async {
             self.streetViewController.GMapStreetView.moveNearCoordinate(coordinate, radius: (radius))
         }
-        
+
         call.success([
             "movedNearCoordinates": true
         ])
     }
-    
+
     @objc func setStreetViewCamera(_ call: CAPPluginCall) {
         let heading = call.getDouble("heading") ?? 180
         let pitch = call.getDouble("pitch") ?? -10
         let zoom = call.getFloat("zoom") ?? 1
-        
+
         let animationDuration = call.getDouble("animationDuration") ?? 0
-        
+
         let camera = GMSPanoramaCamera(heading: heading, pitch: pitch, zoom: zoom)
-        
+
         DispatchQueue.main.async {
             if animationDuration != 0 {
                 self.streetViewController.GMapStreetView.animate(to: camera, animationDuration: animationDuration)
@@ -567,16 +568,16 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
                 self.streetViewController.GMapStreetView.camera = camera
             }
         }
-        
+
         call.success([
             "cameraSet": true
         ])
     }
-    
+
     @objc func addStreetViewMarker(_ call: CAPPluginCall) {
         let latitude = call.getDouble("latitude") ?? 0
         let longitude = call.getDouble("longitude") ?? 0
-        
+
         DispatchQueue.main.async {
             let marker = GMSMarker()
             marker.position = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
@@ -584,12 +585,12 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             marker.snippet = call.getString("markerSnippet") ?? ""
             marker.panoramaView = self.streetViewController.GMapStreetView
         }
-        
+
         call.success([
             "markerAdded": true
         ])
     }
-    
+
 }
 
 class GMViewController: UIViewController {
@@ -599,7 +600,7 @@ class GMViewController: UIViewController {
     var cameraPosition: [String: Double]!
 
     var DEFAULT_ZOOM: Float = 12
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         let camera = GMSCameraPosition.camera(withLatitude: cameraPosition["latitude"] ?? 0, longitude: cameraPosition["longitude"] ?? 0, zoom: Float(cameraPosition["zoom"] ?? Double(DEFAULT_ZOOM)))
@@ -614,7 +615,7 @@ class GMStreetViewController: UIViewController {
     var mapViewBounds: [String : Double]!
     var GMapStreetView: GMSPanoramaView!
     var cameraPosition: [String: Double]!
-    
+
     var DEFAULT_HEADING: Double = 180
     var DEFAULT_PITCH: Double = -10
     var DEFAULT_ZOOM: Double = 12
