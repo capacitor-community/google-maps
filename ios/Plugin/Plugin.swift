@@ -294,14 +294,32 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
         let longitude = call.getDouble("longitude") ?? 0
 
         let animate = call.getBool("animate") ?? false
-        let animationDuration = call.getDouble("animationDuration") ?? 1000
+        let animationDuration = call.getDouble("animationDuration") ?? 1
+
+        let coordinates = call.getArray("coordinates", AnyObject.self)
 
         DispatchQueue.main.async {
             let camera = GMSCameraPosition(latitude: latitude, longitude: longitude, zoom: zoom, bearing: bearing, viewingAngle: viewingAngle)
 
             if animationDuration != 0 && animate {
                 /* FIXME: Use animation duration */
-                self.mapViewController.GMapView.animate(to: camera)
+                if coordinates == nil {
+                  self.mapViewController.GMapView.animate(to: camera)
+                } else {
+                  var gmsBounds = GMSCoordinateBounds()
+                  for coordinate in coordinates ?? [] {
+                      let coord = CLLocationCoordinate2D(latitude: coordinate["latitude"] as! CLLocationDegrees, longitude: coordinate["longitude"] as! CLLocationDegrees)
+                      let marker = GMSMarker(position: coord)
+                      gmsBounds = gmsBounds.includingCoordinate(marker.position)
+                  }
+                  CATransaction.begin()
+                  CATransaction.setValue(animationDuration, forKey: kCATransactionAnimationDuration)
+                  CATransaction.setCompletionBlock({
+                      print("animation complete, do whatever you want here")
+                  })
+                  self.mapViewController.GMapView.animate(with: GMSCameraUpdate.fit(gmsBounds, withPadding: 30.0))
+                  CATransaction.commit()
+                }
             } else {
                 self.mapViewController.GMapView.camera = camera
             }
