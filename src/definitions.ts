@@ -1,5 +1,6 @@
 import { PluginListenerHandle } from "@capacitor/core";
 
+import { LatLng } from './types/common/latlng.interface';
 import { PolylineOptions } from './types/shapes/polyline.interface';
 import { PolygonOptions } from './types/shapes/polygon.interface';
 import { CircleOptions } from './types/shapes/circle.interface';
@@ -49,6 +50,7 @@ export interface CapacitorGoogleMapsPlugin {
     longitude?: number,
     animate?: boolean,
     animationDuration?: number,
+    coordinates?: LatLng[],
   }): Promise<any>;
 
   /** Sets the map type  */
