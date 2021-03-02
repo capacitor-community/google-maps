@@ -28,7 +28,6 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
 
     @objc func create(_ call: CAPPluginCall) {
 
-        print("Local copy being used.")
         DispatchQueue.main.async {
             self.mapViewController = GMViewController();
             self.mapViewController.mapViewBounds = [
@@ -47,7 +46,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             self.notifyListeners("onMapReady", data: nil)
         }
         call.success([
-            "created": true
+            "created": self.mapViewController
         ])
     }
 
@@ -315,19 +314,21 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
                   CATransaction.begin()
                   CATransaction.setValue(animationDuration, forKey: kCATransactionAnimationDuration)
                   CATransaction.setCompletionBlock({
-                      print("animation complete, do whatever you want here")
+                    call.success([
+                        "cameraSet": true
+                    ])
                   })
                   self.mapViewController.GMapView.animate(with: GMSCameraUpdate.fit(gmsBounds, withPadding: 30.0))
                   CATransaction.commit()
                 }
             } else {
                 self.mapViewController.GMapView.camera = camera
+                call.success([
+                    "cameraSet": true
+                ])
             }
         }
 
-        call.success([
-            "cameraSet": true
-        ])
     }
 
     @objc func setMapStyle(_ call: CAPPluginCall) {
