@@ -46,7 +46,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             self.notifyListeners("onMapReady", data: nil)
         }
         call.success([
-            "created": self.mapViewController
+            "created": true
         ])
     }
 
