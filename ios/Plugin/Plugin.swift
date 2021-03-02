@@ -304,6 +304,9 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
                 /* FIXME: Use animation duration */
                 if coordinates == nil {
                   self.mapViewController.GMapView.animate(to: camera)
+                  call.success([
+                      "cameraSet": true
+                  ])
                 } else {
                   var gmsBounds = GMSCoordinateBounds()
                   for coordinate in coordinates ?? [] {
