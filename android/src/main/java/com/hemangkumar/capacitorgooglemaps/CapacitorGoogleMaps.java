@@ -29,8 +29,10 @@ import com.google.android.libraries.maps.GoogleMapOptions;
 import com.google.android.libraries.maps.MapView;
 import com.google.android.libraries.maps.OnMapReadyCallback;
 import com.google.android.libraries.maps.UiSettings;
+import com.google.android.libraries.maps.CameraUpdate;
 import com.google.android.libraries.maps.model.CameraPosition;
 import com.google.android.libraries.maps.model.CircleOptions;
+import com.google.android.libraries.maps.model.LatLngBounds;
 import com.google.android.libraries.maps.model.LatLng;
 import com.google.android.libraries.maps.model.MapStyleOptions;
 import com.google.android.libraries.maps.model.Marker;
@@ -471,33 +473,51 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
     @PluginMethod()
     public void setCamera(PluginCall call) {
 
-        final float viewingAngle = call.getFloat("viewingAngle", googleMap.getCameraPosition().tilt);
-        final float bearing = call.getFloat("bearing", googleMap.getCameraPosition().bearing);
-        final Float zoom = call.getFloat("zoom", googleMap.getCameraPosition().zoom);
-        final Double latitude = call.getDouble("latitude", googleMap.getCameraPosition().target.latitude);
-        final Double longitude = call.getDouble("longitude", googleMap.getCameraPosition().target.longitude);
-
+        final Integer viewingAngle = call.getInt("viewingAngle", 1);
+        final Integer bearing = call.getInt("bearing", 1);
+        final Integer zoom = call.getInt("zoom", 14);
+        final Double latitude = call.getDouble("latitude", 100.000);
+        final Double longitude = call.getDouble("longitude", -100.00);
         final Boolean animate = call.getBoolean("animate", false);
-        Double animationDuration = call.getDouble("animationDuration", 1000.0);
+        final Integer animationDuration = call.getInt("animationDuration", 1);
+        final JSArray coordinates = call.getArray("coordinates", new JSArray());
 
         getBridge().executeOnMainThread(new Runnable() {
             @Override
             public void run() {
-                CameraPosition cameraPosition = new CameraPosition.Builder()
+                if (coordinates.length() > 0) {
+                  LatLngBounds.Builder b = new LatLngBounds.Builder();
+                  for (int i = 0; i < coordinates.length(); i++) {
+                      try {
+                          JSONObject point = coordinates.getJSONObject(i);
+                          LatLng latLng = new LatLng(point.getDouble("latitude"), point.getDouble("longitude"));
+                          b.include(latLng);
+                      } catch (JSONException e) {
+                          e.printStackTrace();
+                      }
+                  }
+                  LatLngBounds bounds = b.build();
+                  CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
+                  googleMap.animateCamera(cu, animationDuration*1000, null);
+                } else {
+
+                    /*
+                     * TODO: Implement animationDuration etc when no coordinates are specified
+                     * */
+
+                        CameraPosition cameraPosition = new CameraPosition.Builder()
                         .target(new LatLng(latitude, longitude))
                         .zoom(zoom)
                         .tilt(viewingAngle)
                         .bearing(bearing)
                         .build();
-
-                if (animate) {
-                    /*
-                     * TODO: Implement animationDuration
-                     * */
-                    googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                } else {
-                    googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                  if (animate) {
+                      googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                  } else {
+                      googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                  }
                 }
+
             }
         });
 
