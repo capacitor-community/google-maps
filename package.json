@@ -1,7 +1,7 @@
 {
-  "name": "capacitor-googlemaps-native",
+  "name": "@capacitor-community/google-maps",
   "version": "0.0.6",
-  "description": "Plugin using native Maps API for Android and iOS.",
+  "description": "Capacitor Plugin using native Google Maps SDK for Android and iOS.",
   "main": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
   "scripts": {
@@ -42,9 +42,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/hemangsk/capacitor-googlemaps-native"
+    "url": "https://github.com/capacitor-community/google-maps.git"
   },
   "bugs": {
-    "url": "https://github.com/hemangsk/capacitor-googlemaps-native/issues"
+    "url": "https://github.com/capacitor-community/google-maps/issues"
   }
 }
