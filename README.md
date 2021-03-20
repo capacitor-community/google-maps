@@ -1,43 +1,38 @@
-<h1 align="center">Capacitor Google Maps Plugin</h1>
-<p align="center">Plugin using native Maps SDK for Android and iOS.</p>
+<p align="center"><br><img src="https://user-images.githubusercontent.com/236501/85893648-1c92e880-b7a8-11ea-926d-95355b8175c7.png" width="128" height="128" /></p>
+<h3 align="center">Google Maps</h3>
+<p align="center"><strong><code>@capacitor-community/google-maps</code></strong></p>
+<p align="center">Capacitor Plugin using native Google Maps SDK for Android and iOS.</p>
 <p align="center">
 <img align="center" height="300" src="https://user-images.githubusercontent.com/13018570/86005089-cd5fe880-ba31-11ea-9e35-11a9f0e782c7.png">
 </p>
 
-## Why ?
+<p align="center">
+  <img src="https://img.shields.io/badge/capacitor%20v3%20support-no-red?logo=Capacitor&style=flat-square" />
+  <img src="https://img.shields.io/maintenance/yes/2021?style=flat-square" />
+  <a href="https://github.com/capacitor-community/google-maps/actions?query=workflow%3A%22Publish%22"><img src="https://img.shields.io/github/workflow/status/capacitor-community/google-maps/Test%20and%20Build%20Plugin?style=flat-square" /></a>
+  <a href="https://www.npmjs.com/package/@capacitor-community/google-maps"><img src="https://img.shields.io/npm/l/@capacitor-community/google-maps?style=flat-square" /></a>
+<br>
+  <a href="https://www.npmjs.com/package/@capacitor-community/google-maps"><img src="https://img.shields.io/npm/dw/@capacitor-community/google-maps?style=flat-square" /></a>
+  <a href="https://www.npmjs.com/package/@capacitor-community/google-maps"><img src="https://img.shields.io/npm/v/@capacitor-community/google-maps?style=flat-square" /></a>
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+<a href="#contributors-"><img src="https://img.shields.io/badge/all%20contributors-3-orange?style=flat-square" /></a>
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
+</p>
 
-Maps SDK for Android & iOS bring better performance and offline caching compared to JS SDK and they're free to use.
+## Maintainers
 
-## Project Status
+| Maintainer | GitHub | Social |
+| -----------| -------| -------|
+| Hemang Kumar | [hemangsk](https://github.com/hemangsk) | [@hemang_kumar](https://twitter.com/hemang_kumar) |
 
-| Features  | Android | &nbsp; &nbsp; iOS &nbsp; &nbsp; | Current Status | Pending |
-| ------------- | ------------- |  ------------- | ------------- | ------------- |
-| Map Objects  | <h3 align="center">&#10003;</h3> | <h3 align="center">&#10003;</h3> | <li>``create()`` |
-| Markers  | <h5 align="center">WIP</h5> | <h5 align="center">WIP</h5> | <li>``addMarker()`` is implemented which allows you to show a marker with default tooltip design. <li>Marker icons can be set using URL. <li>Event: ``didTap`` | Info windows |
-| Business & POIs  | <h3 align="center">&#10003;</h3>  | <h3 align="center">&#10003;</h3>  | <li>Tap on any places of interest <li>Event: ``didTapPOIWithPlaceID`` |
-| Lite Mode  | <h3 align="center">&#10003;</h3>  | <h3 align="center">&#10005;</h3>  | <li>``create(liteMode?: boolean)`` | Not available for iOS
-| Street View  | <h3 align="center">&#10005;</h3>  | <h5 align="center">WIP</h5>  | <li>``createStreetView()``  |
-| Launch URL  | <h3 align="center">&#10005;</h3>  | <h3 align="center">&#10005;</h3> | |
-| Controls & Gestures  | <h5 align="center">WIP</h5>  | <h5 align="center">WIP</h5>  | <li>``settings()`` allow to set all the map UI settings. | Allow users to get current state of map settings.
-| Events  | <h5 align="center">WIP</h5> | <h5 align="center">WIP</h5>  | |
-| Camera & View  | <h3 align="center">&#10003;</h3>  | <h3 align="center">&#10003;</h3>  |<li>``setCamera()`` | Allow users to get current camera position
-| Location  | <h5 align="center">WIP</h5>  | <h5 align="center">WIP</h5>  | <li>android: ``enableCurrentLocation()`` ``onMyLocationButtonClick``, ``onMyLocationClick`` <li>iOS: ``enableCurrentLocation()``, ``myLocation()``| API wrapping needs improvement so that it becomes consistent for both platforms |
-| Drawing on Map  | <h5 align="center">WIP</h5>  | <h5 align="center">WIP</h5>  | | Shapes, Ground Overlays, Tile Overlays
-| Utility Library  | <h3 align="center">&#10005;</h3>  | <h3 align="center">&#10005;</h3>  | |
+## Installation
 
-## Getting Started
-
-### Installation
-
-#### Install package from npm
-```
+```bash
 npm i --save capacitor-googlemaps-native
-```
-
-#### Install plugin dependencies in native platforms
-```
 npx cap sync
 ```
+
+## Configuration
 
 ### Set up Google API Keys
 
@@ -61,7 +56,7 @@ You'll have two API keys by the end of this step. Lets proceed:
 ```
 - On iOS, this step is little different and mentioned below.
 
-### Regsiter Plugin on Android
+### Setup Plugin on Android
 
 `your-plugin/android/src/main/java/MainActivity.java`
 ```java
@@ -99,7 +94,7 @@ await CapacitorGoogleMaps.initialize({
 });
 ```
 
-### Usage
+## Usage
 
 #### An example with Angular
 
@@ -160,6 +155,23 @@ ionViewDidLeave() {
     CapacitorGoogleMaps.close();
 }
 ```
+
+## API
+
+| Features  | Android | &nbsp; &nbsp; iOS &nbsp; &nbsp; | Current Status | Pending |
+| ------------- | ------------- |  ------------- | ------------- | ------------- |
+| Map Objects  | <h3 align="center">&#10003;</h3> | <h3 align="center">&#10003;</h3> | <li>``create()`` |
+| Markers  | <h5 align="center">WIP</h5> | <h5 align="center">WIP</h5> | <li>``addMarker()`` is implemented which allows you to show a marker with default tooltip design. <li>Marker icons can be set using URL. <li>Event: ``didTap`` | Info windows |
+| Business & POIs  | <h3 align="center">&#10003;</h3>  | <h3 align="center">&#10003;</h3>  | <li>Tap on any places of interest <li>Event: ``didTapPOIWithPlaceID`` |
+| Lite Mode  | <h3 align="center">&#10003;</h3>  | <h3 align="center">&#10005;</h3>  | <li>``create(liteMode?: boolean)`` | Not available for iOS
+| Street View  | <h3 align="center">&#10005;</h3>  | <h5 align="center">WIP</h5>  | <li>``createStreetView()``  |
+| Launch URL  | <h3 align="center">&#10005;</h3>  | <h3 align="center">&#10005;</h3> | |
+| Controls & Gestures  | <h5 align="center">WIP</h5>  | <h5 align="center">WIP</h5>  | <li>``settings()`` allow to set all the map UI settings. | Allow users to get current state of map settings.
+| Events  | <h5 align="center">WIP</h5> | <h5 align="center">WIP</h5>  | |
+| Camera & View  | <h3 align="center">&#10003;</h3>  | <h3 align="center">&#10003;</h3>  |<li>``setCamera()`` | Allow users to get current camera position
+| Location  | <h5 align="center">WIP</h5>  | <h5 align="center">WIP</h5>  | <li>android: ``enableCurrentLocation()`` ``onMyLocationButtonClick``, ``onMyLocationClick`` <li>iOS: ``enableCurrentLocation()``, ``myLocation()``| API wrapping needs improvement so that it becomes consistent for both platforms |
+| Drawing on Map  | <h5 align="center">WIP</h5>  | <h5 align="center">WIP</h5>  | | Shapes, Ground Overlays, Tile Overlays
+| Utility Library  | <h3 align="center">&#10005;</h3>  | <h3 align="center">&#10005;</h3>  | |
 
 ## Known Issues
 
