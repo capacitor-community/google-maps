@@ -1,7 +1,7 @@
 PODS:
-  - Capacitor (2.2.0):
+  - Capacitor (3.0.0):
     - CapacitorCordova
-  - CapacitorCordova (2.2.0)
+  - CapacitorCordova (3.0.0)
   - GoogleMaps (3.9.0):
     - GoogleMaps/Maps (= 3.9.0)
   - GoogleMaps/Base (3.9.0)
@@ -24,10 +24,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@capacitor/ios"
 
 SPEC CHECKSUMS:
-  Capacitor: a8c89aa7384374b805ccc175b4a3374472b5941e
-  CapacitorCordova: a77bb95d31143546af63577154d9852d33c62a82
+  Capacitor: 06cd8cd01340f5b162e9528bf5569d87a6f29009
+  CapacitorCordova: 183c8d1af3851da6d7a371f273462c8e64e15464
   GoogleMaps: 4b5346bddfe6911bb89155d43c903020170523ac
 
-PODFILE CHECKSUM: 6e561d0e7441d17e35c85955cf1f080779bac0c2
+PODFILE CHECKSUM: 7e832971e257b32fc8d9dfccc06a604ce4ff1b04
 
 COCOAPODS: 1.9.3

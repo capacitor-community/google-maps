@@ -5,12 +5,6 @@ import { PolylineOptions } from './types/shapes/polyline.interface';
 import { PolygonOptions } from './types/shapes/polygon.interface';
 import { CircleOptions } from './types/shapes/circle.interface';
 
-declare module "@capacitor/core" {
-  interface PluginRegistry {
-    CapacitorGoogleMaps: CapacitorGoogleMapsPlugin;
-  }
-}
-
 export interface CapacitorGoogleMapsPlugin {
 
   /** Creates map view and displays it */

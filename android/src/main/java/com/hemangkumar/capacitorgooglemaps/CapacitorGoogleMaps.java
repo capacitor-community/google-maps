@@ -23,6 +23,8 @@ import com.getcapacitor.NativePlugin;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
+import com.getcapacitor.annotation.CapacitorPlugin;
+import com.getcapacitor.annotation.Permission;
 import com.google.android.libraries.maps.CameraUpdateFactory;
 import com.google.android.libraries.maps.GoogleMap;
 import com.google.android.libraries.maps.GoogleMapOptions;
@@ -46,14 +48,21 @@ import java.io.IOException;
 import java.util.List;
 
 
-@NativePlugin()
+@CapacitorPlugin(
+        name = "CapacitorGoogleMaps",
+        permissions = {
+                @Permission(
+                        strings = { Manifest.permission.ACCESS_FINE_LOCATION },
+                        alias = "geolocation"
+                ),
+                @Permission(strings = { Manifest.permission.INTERNET }, alias = "internet"),
+        }
+)
 public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener {
 
     private MapView mapView;
     GoogleMap googleMap;
     Integer mapViewParentId;
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private boolean locationPermissionGranted;
     Integer DEFAULT_WIDTH = 500;
     Integer DEFAULT_HEIGHT = 500;
     Float DEFAULT_ZOOM = 12.0f;
@@ -64,59 +73,12 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
         notifyListeners("onMapReady", null);
     }
 
-    @Override
-    protected void handleRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.handleRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    locationPermissionGranted = true;
-                }
-            }
-        }
-
-        if (locationPermissionGranted) {
-            notifyListeners("onLocationPermissionGranted", null);
-        }
-    }
-
     @PluginMethod()
     public void initialize(PluginCall call) {
         /*
-         *  TODO: Check location permissions and API key
+         *  TODO: Check API key
          */
-        call.success();
-    }
-
-    @PluginMethod()
-    public void requestLocationPermission(PluginCall call) {
-        ActivityCompat.requestPermissions(getBridge().getActivity(),
-                new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-
-        JSObject result = new JSObject();
-        result.put("locationPermissionRequested", true);
-
-        call.resolve(result);
-    }
-
-    @PluginMethod()
-    public void hasLocationPermission(PluginCall call) {
-        Context ctx = getBridge().getContext();
-
-        if (ContextCompat.checkSelfPermission(ctx,
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            locationPermissionGranted = true;
-        } else {
-            locationPermissionGranted = false;
-        }
-
-        JSObject result = new JSObject();
-        result.put("locationPermissionGranted", locationPermissionGranted);
-
-        call.resolve(result);
+        call.resolve();
     }
 
     @PluginMethod()
@@ -166,7 +128,7 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
                 mapView.getMapAsync(ctx);
             }
         });
-        call.success();
+        call.resolve();
     }
 
     @PluginMethod()
@@ -301,7 +263,7 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
 
         });
 
-        call.success();
+        call.resolve();
     }
 
     @PluginMethod()
@@ -314,7 +276,7 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
             }
         });
 
-        call.success();
+        call.resolve();
     }
 
     @PluginMethod()
@@ -327,7 +289,7 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
             }
         });
 
-        call.success();
+        call.resolve();
     }
 
     @PluginMethod()
@@ -344,7 +306,7 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
             }
         });
 
-        call.success();
+        call.resolve();
     }
 
     @PluginMethod()
@@ -356,7 +318,7 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
             }
         });
 
-        call.success();
+        call.resolve();
     }
 
     @PluginMethod()
@@ -423,7 +385,7 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
 
                         results.put(String.valueOf(index++), addressObject);
                     }
-                    call.success(results);
+                    call.resolve(results);
                 } catch (IOException e) {
                     call.error("Error in Geocode!");
                 }

@@ -13,15 +13,15 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
 
     @objc func initialize(_ call: CAPPluginCall) {
 
-        self.GOOGLE_MAPS_KEY = call.getString("key", "")!
+        self.GOOGLE_MAPS_KEY = call.getString("key", "")
 
         if self.GOOGLE_MAPS_KEY.isEmpty {
-            call.error("GOOGLE MAPS API key missing!")
+            call.reject("GOOGLE MAPS API key missing!")
             return
         }
 
         GMSServices.provideAPIKey(self.GOOGLE_MAPS_KEY)
-        call.success([
+        call.resolve([
             "initialized": true
         ])
     }
@@ -41,11 +41,11 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
                 "longitude": call.getDouble("longitude") ?? 0.0,
                 "zoom": call.getDouble("zoom") ?? (self.DEFAULT_ZOOM)
             ]
-            self.bridge.viewController.view.addSubview(self.mapViewController.view)
+            self.bridge?.viewController?.view.addSubview(self.mapViewController.view)
             self.mapViewController.GMapView.delegate = self
             self.notifyListeners("onMapReady", data: nil)
         }
-        call.success([
+        call.resolve([
             "created": true
         ])
     }
@@ -58,7 +58,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
         let title = call.getString("title") ?? ""
         let snippet = call.getString("snippet") ?? ""
         let isFlat = call.getBool("isFlat") ?? false
-        let url = URL(string: call.getString("iconUrl", "")!)
+        let url = URL(string: call.getString("iconUrl", ""))
         var imageData: Data?
 
         DispatchQueue.global().async {
@@ -85,7 +85,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             }
         }
 
-        call.success([
+        call.resolve([
             "markerAdded": true
         ])
     }
@@ -119,33 +119,33 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             self.mapViewController.GMapView.mapType = mapType
         }
 
-        call.success([
+        call.resolve([
             "mapTypeSet": specifiedMapType
         ])
     }
 
     @objc func setIndoorEnabled(_ call: CAPPluginCall) {
         DispatchQueue.main.async {
-            self.mapViewController.GMapView.isIndoorEnabled = call.getBool("enabled", false)!
+            self.mapViewController.GMapView.isIndoorEnabled = call.getBool("enabled", false)
         }
     }
 
     @objc func accessibilityElementsHidden(_ call: CAPPluginCall) {
         DispatchQueue.main.async {
-            self.mapViewController.GMapView.accessibilityElementsHidden = call.getBool("hidden", false)!
+            self.mapViewController.GMapView.accessibilityElementsHidden = call.getBool("hidden", false)
         }
     }
 
     @objc func enableCurrentLocation(_ call: CAPPluginCall) {
         DispatchQueue.main.async {
-            self.mapViewController.GMapView.isMyLocationEnabled = call.getBool("enabled", false)!
+            self.mapViewController.GMapView.isMyLocationEnabled = call.getBool("enabled", false)
             call.resolve()
         }
     }
 
     @objc func setTrafficEnabled(_ call: CAPPluginCall) {
         DispatchQueue.main.async {
-            self.mapViewController.GMapView.isTrafficEnabled = call.getBool("enabled", false)!
+            self.mapViewController.GMapView.isTrafficEnabled = call.getBool("enabled", false)
         }
     }
 
@@ -153,7 +153,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
         DispatchQueue.main.async {
             let location = self.mapViewController.GMapView.myLocation;
 
-            call.success([
+            call.resolve([
                 "latitude": location?.coordinate.latitude as Any,
                 "longitude": location?.coordinate.longitude as Any
             ])
@@ -172,7 +172,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             self.mapViewController.GMapView.padding = mapInsets
         }
 
-        call.success([
+        call.resolve([
             "padding" : true
         ])
     }
@@ -182,7 +182,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             self.mapViewController.GMapView.clear()
         }
 
-        call.success([
+        call.resolve([
             "mapViewCleared" : true
         ])
     }
@@ -194,7 +194,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             }
         }
 
-        call.success([
+        call.resolve([
             "mapViewClosed" : true
         ])
     }
@@ -304,7 +304,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
                 /* FIXME: Use animation duration */
                 if coordinates == nil {
                   self.mapViewController.GMapView.animate(to: camera)
-                  call.success([
+                    call.resolve([
                       "cameraSet": true
                   ])
                 } else {
@@ -317,7 +317,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
                   CATransaction.begin()
                   CATransaction.setValue(animationDuration, forKey: kCATransactionAnimationDuration)
                   CATransaction.setCompletionBlock({
-                    call.success([
+                    call.resolve([
                         "cameraSet": true
                     ])
                   })
@@ -326,7 +326,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
                 }
             } else {
                 self.mapViewController.GMapView.camera = camera
-                call.success([
+                call.resolve([
                     "cameraSet": true
                 ])
             }
@@ -340,11 +340,11 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
         DispatchQueue.main.async {
             do {
                 self.mapViewController.GMapView.mapStyle = try GMSMapStyle(jsonString: styleJsonString)
-                call.success([
+                call.resolve([
                     "stylesApplied": true
                 ])
             } catch {
-                call.error("One or more of the map styles failed to load. \(error)")
+                call.reject("One or more of the map styles failed to load. \(error)")
             }
 
         }
@@ -549,10 +549,10 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
                 "pitch": call.getDouble("pitch") ?? -10,
                 "zoom": call.getDouble("zoom") ?? Double(self.DEFAULT_ZOOM)
             ]
-            self.bridge.viewController.view.addSubview(self.streetViewController.view)
+            self.bridge?.viewController?.view.addSubview(self.streetViewController.view)
             self.streetViewController.GMapStreetView.delegate = self
         }
-        call.success([
+        call.resolve([
             "created": true
         ])
     }
@@ -569,7 +569,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             self.streetViewController.GMapStreetView.moveNearCoordinate(coordinate, radius: (radius))
         }
 
-        call.success([
+        call.resolve([
             "movedNearCoordinates": true
         ])
     }
@@ -591,7 +591,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             }
         }
 
-        call.success([
+        call.resolve([
             "cameraSet": true
         ])
     }
@@ -608,7 +608,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             marker.panoramaView = self.streetViewController.GMapStreetView
         }
 
-        call.success([
+        call.resolve([
             "markerAdded": true
         ])
     }
