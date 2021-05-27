@@ -13,11 +13,12 @@
   "author": "Hemang Kumar",
   "license": "MIT",
   "dependencies": {
-    "@capacitor/core": "^2.4.6"
+    "@capacitor/cli": "^3.0.0",
+    "@capacitor/core": "^3.0.0"
   },
   "devDependencies": {
-    "@capacitor/android": "^2.4.6",
-    "@capacitor/ios": "^2.4.6",
+    "@capacitor/android": "^3.0.0",
+    "@capacitor/ios": "^3.0.0",
     "rimraf": "^3.0.0",
     "typescript": "^3.9.7"
   },
