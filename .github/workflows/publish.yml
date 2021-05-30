@@ -1,11 +1,11 @@
-name: Release
+name: Publish
 
 on:
   release:
     types: [created]
 
 jobs:
-  build:
+  publish-npm:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -19,7 +19,7 @@ jobs:
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  build:
+  publish-github:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
