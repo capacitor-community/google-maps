@@ -5,21 +5,7 @@ on:
     types: [created]
 
 jobs:
-  publish-npm:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 12
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@capacitor-community'
-      - run: npm install
-      # Publish to GitHub Packages
-      - run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  publish-github:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
