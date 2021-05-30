@@ -1,11 +1,9 @@
-name: Publish
+name: Build
 
 on:
   push:
     branches:
       - master
-  release:
-    types: [ published ]
 
 jobs:
   test:
@@ -26,6 +24,4 @@ jobs:
           node-version: 12
           registry-url: https://registry.npmjs.org/
       - run: npm install
-      - run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
+      - run: npm run build
