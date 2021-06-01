@@ -8,7 +8,8 @@
     "build": "npm run clean && tsc",
     "clean": "rimraf ./dist",
     "watch": "tsc --watch",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "prepare": "npm run build"
   },
   "author": "@capacitor-community",
   "license": "MIT",
