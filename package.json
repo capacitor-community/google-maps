@@ -27,7 +27,7 @@
     "dist/",
     "ios/",
     "android/",
-    "CapacitorGooglemapsNative.podspec"
+    "CapacitorCommunityGooglemapsNative.podspec"
   ],
   "keywords": [
     "capacitor",
