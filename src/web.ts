@@ -96,8 +96,3 @@ export class CapacitorGoogleMapsWeb extends WebPlugin implements CapacitorGoogle
     throw new Error('Method not implemented.');
   }
 }
-
-const CapacitorGoogleMaps = new CapacitorGoogleMapsWeb();
-
-export { CapacitorGoogleMaps };
-
