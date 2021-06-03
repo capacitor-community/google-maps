@@ -1,7 +1,7 @@
 
   Pod::Spec.new do |s|
     s.name = 'CapacitorCommunityCapacitorGooglemapsNative'
-    s.version = '1.0.1'
+    s.version = '1.0.2'
     s.summary = 'Plugin using native Maps API for Android and iOS.'
     s.license = 'MIT'
     s.homepage = 'https://github.com/capacitor-community/capacitor-googlemaps-native'
