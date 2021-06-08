@@ -73,6 +73,38 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
         notifyListeners("onMapReady", null);
     }
 
+    @Override
+    protected void handleOnResume() {
+        super.handleOnResume();
+        if (mapView != null) {
+            mapView.onResume();
+        }
+    }
+
+    @Override
+    protected void handleOnStop() {
+        super.handleOnStop();
+        if (mapView != null) {
+            mapView.onStop();
+        }
+    }
+
+    @Override
+    protected void handleOnPause() {
+        if (mapView != null) {
+            mapView.onPause();
+        }
+        super.handleOnPause();
+    }
+
+    @Override
+    protected void handleOnDestroy() {
+        if (mapView != null) {
+            mapView.onDestroy();
+        }
+        super.handleOnDestroy();
+    }
+
     @PluginMethod()
     public void initialize(PluginCall call) {
         /*
@@ -125,6 +157,7 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
                 ((ViewGroup) getBridge().getWebView().getParent()).addView(mapViewParent);
 
                 mapView.onCreate(null);
+                mapView.onStart();
                 mapView.getMapAsync(ctx);
             }
         });
