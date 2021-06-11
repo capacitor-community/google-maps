@@ -207,6 +207,28 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
     }
 
     @PluginMethod()
+    public void removeMarker(final PluginCall call) {
+        getBridge().getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                final String id = call.getString("id", null);
+
+                if (id == null) {
+                    // todo
+                    return;
+                }
+
+                Marker marker = mHashMap.get(id);
+
+                if (marker != null) {
+                    marker.remove();
+                    mHashMap.remove(id);
+                }
+            }
+        });
+    }
+
+    @PluginMethod()
     public void addPolyline(final PluginCall call) {
         final JSArray points = call.getArray("points", new JSArray());
 
