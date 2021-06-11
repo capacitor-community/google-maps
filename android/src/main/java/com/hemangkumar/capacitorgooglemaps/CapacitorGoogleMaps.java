@@ -45,6 +45,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -66,6 +67,7 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
     Integer DEFAULT_WIDTH = 500;
     Integer DEFAULT_HEIGHT = 500;
     Float DEFAULT_ZOOM = 12.0f;
+    private HashMap<String, Marker> mHashMap = new HashMap<>();
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -165,7 +167,7 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
     }
 
     @PluginMethod()
-    public void addMarker(PluginCall call) {
+    public void addMarker(final PluginCall call) {
         final Double latitude = call.getDouble("latitude", 0d);
         final Double longitude = call.getDouble("longitude", 0d);
         final Float opacity = call.getFloat("opacity", 1.0f);
@@ -183,11 +185,25 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
                 markerOptions.title(title);
                 markerOptions.snippet(snippet);
                 markerOptions.flat(isFlat);
-                googleMap.addMarker(markerOptions);
+
+                Marker marker = googleMap.addMarker(markerOptions);
+
+                // get auto-generated id of the just added marker,
+                // put this marker into a hashmap with the corresponding id,
+                // so we can retrieve the marker by id later on
+                mHashMap.put(marker.getId(), marker);
+
+                // initialize JSObject to return when resolving this call
+                JSObject result = new JSObject();
+                JSObject markerResult = new JSObject();
+
+                // get marker specific values
+                markerResult.put("id", marker.getId());
+                result.put("marker", markerResult);
+
+                call.resolve(result);
             }
         });
-
-        call.resolve();
     }
 
     @PluginMethod()
@@ -348,6 +364,7 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
             @Override
             public void run() {
                 googleMap.clear();
+                mHashMap.clear();
             }
         });
 
@@ -677,6 +694,7 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
 
         location.put("coordinates", coordinates);
 
+        result.put("id", marker.getId());
         result.put("title", marker.getTitle());
         result.put("snippet", marker.getSnippet());
         result.put("result", location);
