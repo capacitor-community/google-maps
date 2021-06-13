@@ -1,0 +1,130 @@
+{
+  "projectName": "capacitor-googlemaps-native",
+  "projectOwner": "capacitor-community",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "none",
+  "contributors": [
+    {
+      "login": "gbrits",
+      "name": "Grant Brits",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14840021?v=4",
+      "profile": "https://maximus.agency/",
+      "contributions": [
+        "code",
+        "bug",
+        "ideas"
+      ]
+    },
+    {
+      "login": "tafelnl",
+      "name": "Tafel",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35837839?v=4",
+      "profile": "https://github.com/tafelnl",
+      "contributions": [
+        "code",
+        "bug",
+        "ideas"
+      ]
+    },
+    {
+      "login": "abcoskn",
+      "name": "abcoskn",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6419471?v=4",
+      "profile": "https://github.com/abcoskn",
+      "contributions": [
+        "code",
+        "bug"
+      ]
+    },
+    {
+      "login": "hyun-yang",
+      "name": "Hyun Yang",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2142419?v=4",
+      "profile": "https://github.com/hyun-yang",
+      "contributions": [
+        "bug",
+        "example"
+      ]
+    },
+    {
+      "login": "MelanieMarval",
+      "name": "Melanie Marval",
+      "avatar_url": "https://avatars.githubusercontent.com/u/43726363?v=4",
+      "profile": "https://github.com/MelanieMarval",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "tototares",
+      "name": "l4ke",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1064024?v=4",
+      "profile": "https://github.com/tototares",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "quaz579",
+      "name": "Ben Grossman",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13681950?v=4",
+      "profile": "https://github.com/quaz579",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "gerciljunio",
+      "name": "Gercil Junio",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4561073?v=4",
+      "profile": "https://github.com/gerciljunio",
+      "contributions": [
+        "userTesting"
+      ]
+    },
+    {
+      "login": "aacassandra",
+      "name": "Alauddin Afif Cassandra",
+      "avatar_url": "https://avatars.githubusercontent.com/u/29236058?v=4",
+      "profile": "https://github.com/aacassandra",
+      "contributions": [
+        "userTesting"
+      ]
+    },
+    {
+      "login": "togro",
+      "name": "togro",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7252575?v=4",
+      "profile": "https://github.com/togro",
+      "contributions": [
+        "bug",
+        "userTesting"
+      ]
+    },
+    {
+      "login": "selected-pixel-jameson",
+      "name": "selected-pixel-jameson",
+      "avatar_url": "https://avatars.githubusercontent.com/u/28204537?v=4",
+      "profile": "https://www.selectedpixel.com/",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "ChiKaLiO",
+      "name": "chikalio",
+      "avatar_url": "https://avatars.githubusercontent.com/u/12167528?v=4",
+      "profile": "https://github.com/ChiKaLiO",
+      "contributions": [
+        "bug"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7
+}

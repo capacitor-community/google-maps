@@ -1,4 +1,7 @@
 <p align="center"><br><img src="https://user-images.githubusercontent.com/236501/85893648-1c92e880-b7a8-11ea-926d-95355b8175c7.png" width="128" height="128" /></p>
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 <h3 align="center">Google Maps</h3>
 <p align="center"><strong><code>@capacitor-community/capacitor-googlemaps-native</code></strong></p>
 <p align="center">Capacitor Plugin using native Google Maps SDK for Android and iOS.</p>
@@ -170,3 +173,36 @@ ionViewDidLeave() {
 ## Known Issues
 
 <li> Right now, its not possible to allow Map view in the template to scroll along with the Page, it remains at its fixed position.
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://maximus.agency/"><img src="https://avatars.githubusercontent.com/u/14840021?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Grant Brits</b></sub></a><br /><a href="https://github.com/capacitor-community/capacitor-googlemaps-native/commits?author=gbrits" title="Code">💻</a> <a href="https://github.com/capacitor-community/capacitor-googlemaps-native/issues?q=author%3Agbrits" title="Bug reports">🐛</a> <a href="#ideas-gbrits" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/tafelnl"><img src="https://avatars.githubusercontent.com/u/35837839?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Tafel</b></sub></a><br /><a href="https://github.com/capacitor-community/capacitor-googlemaps-native/commits?author=tafelnl" title="Code">💻</a> <a href="https://github.com/capacitor-community/capacitor-googlemaps-native/issues?q=author%3Atafelnl" title="Bug reports">🐛</a> <a href="#ideas-tafelnl" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/abcoskn"><img src="https://avatars.githubusercontent.com/u/6419471?v=4?s=100" width="100px;" alt=""/><br /><sub><b>abcoskn</b></sub></a><br /><a href="https://github.com/capacitor-community/capacitor-googlemaps-native/commits?author=abcoskn" title="Code">💻</a> <a href="https://github.com/capacitor-community/capacitor-googlemaps-native/issues?q=author%3Aabcoskn" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/hyun-yang"><img src="https://avatars.githubusercontent.com/u/2142419?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Hyun Yang</b></sub></a><br /><a href="https://github.com/capacitor-community/capacitor-googlemaps-native/issues?q=author%3Ahyun-yang" title="Bug reports">🐛</a> <a href="#example-hyun-yang" title="Examples">💡</a></td>
+    <td align="center"><a href="https://github.com/MelanieMarval"><img src="https://avatars.githubusercontent.com/u/43726363?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Melanie Marval</b></sub></a><br /><a href="https://github.com/capacitor-community/capacitor-googlemaps-native/issues?q=author%3AMelanieMarval" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/tototares"><img src="https://avatars.githubusercontent.com/u/1064024?v=4?s=100" width="100px;" alt=""/><br /><sub><b>l4ke</b></sub></a><br /><a href="https://github.com/capacitor-community/capacitor-googlemaps-native/issues?q=author%3Atototares" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/quaz579"><img src="https://avatars.githubusercontent.com/u/13681950?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ben Grossman</b></sub></a><br /><a href="https://github.com/capacitor-community/capacitor-googlemaps-native/issues?q=author%3Aquaz579" title="Bug reports">🐛</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/gerciljunio"><img src="https://avatars.githubusercontent.com/u/4561073?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Gercil Junio</b></sub></a><br /><a href="#userTesting-gerciljunio" title="User Testing">📓</a></td>
+    <td align="center"><a href="https://github.com/aacassandra"><img src="https://avatars.githubusercontent.com/u/29236058?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Alauddin Afif Cassandra</b></sub></a><br /><a href="#userTesting-aacassandra" title="User Testing">📓</a></td>
+    <td align="center"><a href="https://github.com/togro"><img src="https://avatars.githubusercontent.com/u/7252575?v=4?s=100" width="100px;" alt=""/><br /><sub><b>togro</b></sub></a><br /><a href="https://github.com/capacitor-community/capacitor-googlemaps-native/issues?q=author%3Atogro" title="Bug reports">🐛</a> <a href="#userTesting-togro" title="User Testing">📓</a></td>
+    <td align="center"><a href="https://www.selectedpixel.com/"><img src="https://avatars.githubusercontent.com/u/28204537?v=4?s=100" width="100px;" alt=""/><br /><sub><b>selected-pixel-jameson</b></sub></a><br /><a href="https://github.com/capacitor-community/capacitor-googlemaps-native/issues?q=author%3Aselected-pixel-jameson" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/ChiKaLiO"><img src="https://avatars.githubusercontent.com/u/12167528?v=4?s=100" width="100px;" alt=""/><br /><sub><b>chikalio</b></sub></a><br /><a href="https://github.com/capacitor-community/capacitor-googlemaps-native/issues?q=author%3AChiKaLiO" title="Bug reports">🐛</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
