@@ -1,12 +1,47 @@
-<h1 align="center">Capacitor Google Maps Plugin</h1>
-<p align="center">Plugin using native Maps SDK for Android and iOS.</p>
+<p align="center"><br><img src="https://user-images.githubusercontent.com/236501/85893648-1c92e880-b7a8-11ea-926d-95355b8175c7.png" width="128" height="128" /></p>
+<h3 align="center">Google Maps</h3>
+<p align="center"><strong><code>@capacitor-community/capacitor-googlemaps-native</code></strong></p>
+<p align="center">Capacitor Plugin using native Google Maps SDK for Android and iOS.</p>
 <p align="center">
 <img align="center" height="300" src="https://user-images.githubusercontent.com/13018570/86005089-cd5fe880-ba31-11ea-9e35-11a9f0e782c7.png">
 </p>
 
-## Why ?
+<p align="center">
+  <img src="https://img.shields.io/badge/Capacitor%20V3%20Support-yes-green?logo=Capacitor&style=flat-square" />
+  <img src="https://img.shields.io/maintenance/yes/2021?style=flat-square" />
+  <a href="https://img.shields.io/github/workflow/status/capacitor-community/capacitor-googlemaps-native/Publish"><img src="https://img.shields.io/github/workflow/status/capacitor-community/capacitor-googlemaps-native/Build?style=flat-square" /></a>
+  <a href="https://www.npmjs.com/package/@capacitor-community/capacitor-googlemaps-native"><img src="https://img.shields.io/npm/l/@capacitor-community/capacitor-googlemaps-native?style=flat-square" /></a>
+<br>
+  <a href="https://www.npmjs.com/package/@capacitor-community/capacitor-googlemaps-native"><img src="https://img.shields.io/npm/dw/@capacitor-community/gcapacitor-googlemaps-native?style=flat-square" /></a>
+  <a href="https://www.npmjs.com/package/@capacitor-community/capacitor-googlemaps-native"><img src="https://img.shields.io/npm/v/@capacitor-community/capacitor-googlemaps-native?style=flat-square" /></a>
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+<a href="#contributors-"><img src="https://img.shields.io/badge/all%20contributors-3-orange?style=flat-square" /></a>
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
+</p>
+
+## Purpose
 
 Maps SDK for Android & iOS bring better performance and offline caching compared to JS SDK and they're free to use.
+
+## Maintainers
+
+| Maintainer | GitHub | Mail |
+| -----------| -------| -------|
+| Hemang Kumar | [hemangsk](https://github.com/hemangsk) | <a href="mailto:hemangsk@gmail.com">hemangsk@gmail.com</a> |
+
+## Support Development
+If you like this plugin and use it on your projects, please consider donating to support the development. Thank you!
+
+<table>
+        <tr>
+                <td>
+                        <a href="https://paypal.me/HEMANGKUMAR"><img src="https://img.shields.io/badge/Paypal-Support%20via%20Paypal-blue?style=for-the-badge&logo=paypal"></a>
+                </td>
+                <td>
+                        <a href="https://www.buymeacoffee.com/hemang"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=hemang&button_colour=5F7FFF&font_colour=ffffff&font_family=Inter&outline_colour=000000&coffee_colour=FFDD00"></a>
+                </td>
+        </tr>
+</table>
 
 ## Project Status
 
@@ -32,10 +67,6 @@ Maps SDK for Android & iOS bring better performance and offline caching compared
 #### Install package from npm
 ```
 npm i --save @capacitor-community/capacitor-googlemaps-native
-```
-
-#### Install plugin dependencies in native platforms
-```
 npx cap sync
 ```
 
@@ -61,35 +92,10 @@ You'll have two API keys by the end of this step. Lets proceed:
 ```
 - On iOS, this step is little different and mentioned below.
 
-### Regsiter Plugin on Android
-
-`your-plugin/android/src/main/java/MainActivity.java`
-```java
-...
-/* Import */
-import com.hemangkumar.capacitorgooglemaps.CapacitorGoogleMaps;
-...
-
-public class MainActivity extends BridgeActivity {
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-
-      this.init(savedInstanceState, new ArrayList<Class<? extends Plugin>>() {{
-
-      /* Add Plugin Class */
-      add(CapacitorGoogleMaps.class);
-
-
-     }});
-  }
-}
-
-```
 ### Importing & Initializing the plugin
 
 ```javascript
-const { CapacitorGoogleMaps } = Plugins;
+import { CapacitorGoogleMaps } from '@capacitor-community/capacitor-googlemaps-native';
 
 /* initialize() is important for iOS,
   Android doesn't need any initialization.
