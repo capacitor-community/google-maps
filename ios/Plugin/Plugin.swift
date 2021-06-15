@@ -100,6 +100,24 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
         }
     }
 
+    @objc func removeMarker(_ call: CAPPluginCall) {
+        DispatchQueue.main.async {
+            let id = call.getInt("id");
+
+            if (id == nil) {
+                // todo
+                return;
+            }
+
+            let marker = self.hashMap[id!];
+
+            if (marker != nil) {
+                marker?.map = nil;
+                self.hashMap[id!] = nil
+            }
+        }
+    }
+
     @objc func setMapType(_ call: CAPPluginCall) {
 
         let specifiedMapType = call.getString("type") ?? "normal"
