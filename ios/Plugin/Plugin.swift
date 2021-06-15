@@ -60,6 +60,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
         let title = call.getString("title") ?? ""
         let snippet = call.getString("snippet") ?? ""
         let isFlat = call.getBool("isFlat") ?? false
+        let metadata = call.getObject("metadata") ?? [:]
         let url = URL(string: call.getString("iconUrl", ""))
         var imageData: Data?
 
@@ -83,6 +84,9 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
                 }
 
                 marker.map = self.mapViewController.GMapView
+
+                // set metadata to marker
+                marker.userData = metadata
 
                 // get auto-generated id of the just added marker,
                 // put this marker into a hashmap with the corresponding id,
@@ -502,7 +506,8 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
             ],
             "id": marker.hash.hashValue,
             "title": marker.title ?? "",
-            "snippet": marker.snippet ?? ""
+            "snippet": marker.snippet ?? "",
+            "metadata": marker.userData
         ]])
         return false
     }
