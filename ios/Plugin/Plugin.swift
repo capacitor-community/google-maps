@@ -11,6 +11,8 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
     var streetViewController: GMStreetViewController!;
     var DEFAULT_ZOOM: Double = 12.0;
 
+    var hashMap = [Int : GMSMarker]();
+
     @objc func initialize(_ call: CAPPluginCall) {
 
         self.GOOGLE_MAPS_KEY = call.getString("key", "")
@@ -82,12 +84,20 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
 
                 marker.map = self.mapViewController.GMapView
 
+                // get auto-generated id of the just added marker,
+                // put this marker into a hashmap with the corresponding id,
+                // so we can retrieve the marker by id later on
+                self.hashMap[marker.hash.hashValue] = marker;
+
+                call.resolve([
+                    "markerAdded": true,
+                    // get marker specific values
+                    "marker": [
+                        "id": marker.hash.hashValue
+                    ]
+                ])
             }
         }
-
-        call.resolve([
-            "markerAdded": true
-        ])
     }
 
     @objc func setMapType(_ call: CAPPluginCall) {
@@ -180,6 +190,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
     @objc func clear(_ call: CAPPluginCall) {
         DispatchQueue.main.async {
             self.mapViewController.GMapView.clear()
+            self.hashMap.removeAll();
         }
 
         call.resolve([
@@ -471,6 +482,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
                 "latitude": marker.position.latitude,
                 "longitude": marker.position.longitude
             ],
+            "id": marker.hash.hashValue,
             "title": marker.title ?? "",
             "snippet": marker.snippet ?? ""
         ]])
