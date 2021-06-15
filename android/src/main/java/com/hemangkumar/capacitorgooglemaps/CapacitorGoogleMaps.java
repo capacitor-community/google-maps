@@ -174,6 +174,7 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
         final String title = call.getString("title", "");
         final String snippet = call.getString("snippet", "");
         final Boolean isFlat = call.getBoolean("isFlat", true);
+        final JSObject metadata = call.getObject("metadata");
 
         getBridge().getActivity().runOnUiThread(new Runnable() {
             @Override
@@ -187,6 +188,9 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
                 markerOptions.flat(isFlat);
 
                 Marker marker = googleMap.addMarker(markerOptions);
+
+                // set metadata to marker
+                marker.setTag(metadata);
 
                 // get auto-generated id of the just added marker,
                 // put this marker into a hashmap with the corresponding id,
@@ -710,6 +714,7 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
         JSObject result = new JSObject();
         JSObject location = new JSObject();
         JSObject coordinates = new JSObject();
+        JSObject metadata = (JSObject) marker.getTag();
 
         coordinates.put("latitude", marker.getPosition().latitude);
         coordinates.put("longitude", marker.getPosition().longitude);
@@ -720,6 +725,7 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
         result.put("title", marker.getTitle());
         result.put("snippet", marker.getSnippet());
         result.put("result", location);
+        result.put("metadata", metadata);
 
         notifyListeners("didTap", result);
     }
