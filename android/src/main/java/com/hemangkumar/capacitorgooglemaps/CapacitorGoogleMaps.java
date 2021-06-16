@@ -431,12 +431,13 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
         getBridge().executeOnMainThread(new Runnable() {
             @Override
             public void run() {
+                JSObject result = new JSObject();
                 JSObject bounds = new JSObject();        
                 JSObject farLeft = new JSObject();
                 JSObject farRight = new JSObject();
                 JSObject nearLeft = new JSObject();
                 JSObject nearRight = new JSObject();
-                
+
                 farLeft.put("latitude",googleMap.getProjection().getVisibleRegion().farLeft.latitude);
                 farLeft.put("longitude",googleMap.getProjection().getVisibleRegion().farLeft.longitude);
                 farRight.put("latitude",googleMap.getProjection().getVisibleRegion().farRight.latitude);
@@ -450,8 +451,9 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
                 bounds.put("farRight",farRight);
                 bounds.put("nearLeft",nearLeft);
                 bounds.put("nearRight",nearRight);
-
-                call.resolve(bounds);
+                result.put("bounds",bounds);
+                
+                call.resolve(result);
             }
         });
     }
