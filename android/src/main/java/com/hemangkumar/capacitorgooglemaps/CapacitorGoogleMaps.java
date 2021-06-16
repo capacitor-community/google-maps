@@ -76,6 +76,14 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
     }
 
     @Override
+    protected void handleOnStart() {
+        super.handleOnStart();
+        if (mapView != null) {
+            mapView.onStart();
+        }
+    }
+
+    @Override
     protected void handleOnResume() {
         super.handleOnResume();
         if (mapView != null) {
