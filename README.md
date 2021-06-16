@@ -16,7 +16,7 @@
   <a href="https://www.npmjs.com/package/@capacitor-community/capacitor-googlemaps-native"><img src="https://img.shields.io/npm/dw/@capacitor-community/gcapacitor-googlemaps-native?style=flat-square" /></a>
   <a href="https://www.npmjs.com/package/@capacitor-community/capacitor-googlemaps-native"><img src="https://img.shields.io/npm/v/@capacitor-community/capacitor-googlemaps-native?style=flat-square" /></a>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors-)
+<a href="#contributors"><img src="https://img.shields.io/badge/all%20contributors-13-orange?style=flat-square" /></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
