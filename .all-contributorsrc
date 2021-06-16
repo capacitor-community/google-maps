@@ -124,6 +124,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "J-Gonzalez",
+      "name": "Javier Gonzalez",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1047598?v=4",
+      "profile": "https://www.tickeri.com/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7

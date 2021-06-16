@@ -16,7 +16,7 @@
   <a href="https://www.npmjs.com/package/@capacitor-community/capacitor-googlemaps-native"><img src="https://img.shields.io/npm/dw/@capacitor-community/gcapacitor-googlemaps-native?style=flat-square" /></a>
   <a href="https://www.npmjs.com/package/@capacitor-community/capacitor-googlemaps-native"><img src="https://img.shields.io/npm/v/@capacitor-community/capacitor-googlemaps-native?style=flat-square" /></a>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors"><img src="https://img.shields.io/badge/all%20contributors-12-orange?style=flat-square" /></a>
+[![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
@@ -195,6 +195,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/togro"><img src="https://avatars.githubusercontent.com/u/7252575?v=4?s=100" width="100px;" alt=""/><br /><sub><b>togro</b></sub></a><br /><a href="https://github.com/capacitor-community/capacitor-googlemaps-native/issues?q=author%3Atogro" title="Bug reports">🐛</a> <a href="#userTesting-togro" title="User Testing">📓</a></td>
     <td align="center"><a href="https://www.selectedpixel.com/"><img src="https://avatars.githubusercontent.com/u/28204537?v=4?s=100" width="100px;" alt=""/><br /><sub><b>selected-pixel-jameson</b></sub></a><br /><a href="https://github.com/capacitor-community/capacitor-googlemaps-native/issues?q=author%3Aselected-pixel-jameson" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/ChiKaLiO"><img src="https://avatars.githubusercontent.com/u/12167528?v=4?s=100" width="100px;" alt=""/><br /><sub><b>chikalio</b></sub></a><br /><a href="https://github.com/capacitor-community/capacitor-googlemaps-native/issues?q=author%3AChiKaLiO" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://www.tickeri.com/"><img src="https://avatars.githubusercontent.com/u/1047598?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Javier Gonzalez</b></sub></a><br /><a href="https://github.com/capacitor-community/capacitor-googlemaps-native/commits?author=J-Gonzalez" title="Code">💻</a></td>
   </tr>
 </table>
 
