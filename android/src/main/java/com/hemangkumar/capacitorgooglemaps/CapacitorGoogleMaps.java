@@ -431,6 +431,38 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
     }
 
     @PluginMethod()
+    public void viewBounds(final PluginCall call) {
+        getBridge().executeOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                JSObject result = new JSObject();
+                JSObject bounds = new JSObject();        
+                JSObject farLeft = new JSObject();
+                JSObject farRight = new JSObject();
+                JSObject nearLeft = new JSObject();
+                JSObject nearRight = new JSObject();
+
+                farLeft.put("latitude",googleMap.getProjection().getVisibleRegion().farLeft.latitude);
+                farLeft.put("longitude",googleMap.getProjection().getVisibleRegion().farLeft.longitude);
+                farRight.put("latitude",googleMap.getProjection().getVisibleRegion().farRight.latitude);
+                farRight.put("longitude",googleMap.getProjection().getVisibleRegion().farRight.longitude);
+                nearLeft.put("latitude",googleMap.getProjection().getVisibleRegion().nearLeft.latitude);
+                nearLeft.put("longitude",googleMap.getProjection().getVisibleRegion().nearLeft.longitude);
+                nearRight.put("latitude",googleMap.getProjection().getVisibleRegion().nearRight.latitude);
+                nearRight.put("longitude",googleMap.getProjection().getVisibleRegion().nearRight.longitude);
+
+                bounds.put("farLeft",farLeft);
+                bounds.put("farRight",farRight);
+                bounds.put("nearLeft",nearLeft);
+                bounds.put("nearRight",nearRight);
+                result.put("bounds",bounds);
+                
+                call.resolve(result);
+            }
+        });
+    }
+
+    @PluginMethod()
     public void reverseGeocodeCoordinate(final PluginCall call) {
         final Double latitude = call.getDouble("latitude", 0.0);
         final Double longitude = call.getDouble("longitude", 0.0);
