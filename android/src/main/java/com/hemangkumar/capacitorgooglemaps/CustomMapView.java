@@ -1,49 +1,109 @@
 package com.hemangkumar.capacitorgooglemaps;
 
-import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
+import android.util.JsonReader;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 
-import com.getcapacitor.Bridge;
-import com.getcapacitor.PluginCall;
+import com.getcapacitor.JSObject;
 import com.google.android.libraries.maps.GoogleMap;
 import com.google.android.libraries.maps.GoogleMapOptions;
 import com.google.android.libraries.maps.MapView;
 import com.google.android.libraries.maps.OnMapReadyCallback;
 import com.google.android.libraries.maps.model.CameraPosition;
 import com.google.android.libraries.maps.model.LatLng;
+import com.google.android.libraries.maps.model.Marker;
+import com.google.android.libraries.maps.model.MarkerOptions;
 
-public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener {
+import java.util.HashMap;
+import java.util.UUID;
+
+public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener {
     private final Context context;
+    private final CustomMapViewEvents customMapViewEvents;
+
+    private final String id;
+
     MapView mapView;
     GoogleMap googleMap;
-    Integer DEFAULT_WIDTH = 500;
-    Integer DEFAULT_HEIGHT = 500;
-    Float DEFAULT_ZOOM = 12.0f;
 
-    PluginCall savedCallForCreate = null;
+    private HashMap<String, Marker> mHashMap = new HashMap<>();
 
-    public CustomMapView(@NonNull Context ctx) {
-        context = ctx;
+    String savedCallbackIdForCreate;
+
+    String savedCallbackIdForDidTapMarker;
+    String savedCallbackIdForDidTapMyLocationDot;
+    
+    public static final String EVENT_DID_TAP_MARKER = "didTapMarker";
+    public static final String EVENT_DID_TAP_MY_LOCATION_DOT = "didTapMyLocationDot";
+
+    public CustomMapView(@NonNull Context context, CustomMapViewEvents customMapViewEvents) {
+        this.context = context;
+        this.customMapViewEvents = customMapViewEvents;
+        this.id = UUID.randomUUID().toString();
+    }
+
+    public String getId() {
+        return id;
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        // populate `googleMap` variable for other methods to use
         this.googleMap = googleMap;
-        if (savedCallForCreate != null) {
-            savedCallForCreate.resolve();
-            savedCallForCreate = null;
+
+        // set listeners
+        this.googleMap.setOnMarkerClickListener(this);
+        this.googleMap.setOnMyLocationClickListener(this);
+        this.googleMap.setOnMyLocationButtonClickListener(this);
+
+        // execute callback
+        if (customMapViewEvents != null && savedCallbackIdForCreate != null) {
+            JSObject result = new JSObject();
+            result.put("mapId", id);
+            customMapViewEvents.onMapReady(savedCallbackIdForCreate, result);
         }
     }
 
     @Override
+    public boolean onMarkerClick(Marker marker) {
+        if (customMapViewEvents != null && savedCallbackIdForDidTapMarker != null) {
+            // initialize JSObjects to return
+            JSObject result = new JSObject();
+            JSObject positionResult = new JSObject();
+            JSObject markerResult = new JSObject();
+
+            // get position values
+            positionResult.put("latitude", marker.getPosition().latitude);
+            positionResult.put("longitude", marker.getPosition().longitude);
+
+            // get marker specific values
+            markerResult.put("id", marker.getId());
+            markerResult.put("title", marker.getTitle());
+            markerResult.put("snippet", marker.getSnippet());
+            markerResult.put("opacity", marker.getAlpha());
+            markerResult.put("isFlat", marker.isFlat());
+            markerResult.put("isDraggable", marker.isDraggable());
+
+            // return result
+            result.put("position", positionResult);
+            result.put("marker", markerResult);
+
+            customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapMarker, result);
+        }
+        return false;
+    }
+
+    @Override
     public void onMyLocationClick(@NonNull Location location) {
-        // todo
+        if (customMapViewEvents != null && savedCallbackIdForDidTapMyLocationDot != null) {
+            JSObject result = new JSObject(); // todo
+            customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapMyLocationDot, result);
+        }
     }
 
     @Override
@@ -81,24 +141,19 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnMyLocation
         }
     }
 
-    protected MapView create(PluginCall call) {
-        savedCallForCreate = call;
-
-        final Double latitude = call.getDouble("latitude");
-        final Double longitude = call.getDouble("longitude");
-        final Float zoom = call.getFloat("zoom", DEFAULT_ZOOM);
-
-        final boolean liteMode = call.getBoolean("enabled", false);
-
-        final Integer width = call.getInt("width", DEFAULT_WIDTH);
-        final Integer height = call.getInt("height", DEFAULT_HEIGHT);
-        final Integer x = call.getInt("x", 0);
-        final Integer y = call.getInt("y", 0);
-
-        return createMap(latitude, longitude, zoom, liteMode, width, height, x, y);
+    public void setCallbackIdForEvent(String callbackId, String eventName) {
+        if (callbackId != null && eventName != null) {
+            if (eventName.equals(CustomMapView.EVENT_DID_TAP_MARKER)) {
+                savedCallbackIdForDidTapMarker = callbackId;
+            } else if (eventName.equals(CustomMapView.EVENT_DID_TAP_MY_LOCATION_DOT)) {
+                savedCallbackIdForDidTapMyLocationDot = callbackId;
+            }
+        }
     }
 
-    private MapView createMap(Double latitude, Double longitude, float zoom, boolean liteMode, Integer width, Integer height, Integer x, Integer y) {
+    public void createMap(String callbackId, Double latitude, Double longitude, float zoom, boolean liteMode, Integer width, Integer height, Integer x, Integer y) {
+        savedCallbackIdForCreate = callbackId;
+
         LatLng latLng = new LatLng(latitude, longitude);
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(latLng)
@@ -120,8 +175,6 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnMyLocation
         mapView.onCreate(null);
         mapView.onStart();
         mapView.getMapAsync(this);
-
-        return mapView;
     }
 
     private int getScaledPixels(float pixels) {
@@ -139,5 +192,49 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnMyLocation
         mapViewParent.addView(mapView);
 
         parent.addView(mapViewParent);
+    }
+
+    public JSObject addMarker(Double latitude, Double longitude, String title, String snippet, Float opacity, Boolean isFlat, Boolean isDraggable, JSObject metadata) {
+        LatLng latLng = new LatLng(latitude, longitude);
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+        markerOptions.title(title);
+        markerOptions.snippet(snippet);
+        markerOptions.alpha(opacity);
+        markerOptions.flat(isFlat);
+        markerOptions.draggable(isDraggable);
+
+        Marker marker = googleMap.addMarker(markerOptions);
+
+        // set metadata to marker
+        marker.setTag(metadata);
+
+        // get auto-generated id of the just added marker,
+        // put this marker into a hashmap with the corresponding id,
+        // so we can retrieve the marker by id later on
+        mHashMap.put(marker.getId(), marker);
+
+        // initialize JSObjects to return
+        JSObject result = new JSObject();
+        JSObject positionResult = new JSObject();
+        JSObject markerResult = new JSObject();
+
+        // get position values
+        positionResult.put("latitude", marker.getPosition().latitude);
+        positionResult.put("longitude", marker.getPosition().longitude);
+
+        // get marker specific values
+        markerResult.put("id", marker.getId());
+        markerResult.put("title", marker.getTitle());
+        markerResult.put("snippet", marker.getSnippet());
+        markerResult.put("opacity", marker.getAlpha());
+        markerResult.put("isFlat", marker.isFlat());
+        markerResult.put("isDraggable", marker.isDraggable());
+
+        // return result
+        result.put("position", positionResult);
+        result.put("marker", markerResult);
+
+        return result;
     }
 }
