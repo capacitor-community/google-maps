@@ -95,47 +95,4 @@ public class CapacitorGoogleMaps extends Plugin {
         });
     }
 
-//    @PluginMethod()
-//    public void addMarker(final PluginCall call) {
-//        final Double latitude = call.getDouble("latitude", 0d);
-//        final Double longitude = call.getDouble("longitude", 0d);
-//        final Float opacity = call.getFloat("opacity", 1.0f);
-//        final String title = call.getString("title", "");
-//        final String snippet = call.getString("snippet", "");
-//        final Boolean isFlat = call.getBoolean("isFlat", true);
-//        final JSObject metadata = call.getObject("metadata");
-//
-//        getBridge().getActivity().runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                LatLng latLng = new LatLng(latitude, longitude);
-//                MarkerOptions markerOptions = new MarkerOptions();
-//                markerOptions.position(latLng);
-//                markerOptions.alpha(opacity);
-//                markerOptions.title(title);
-//                markerOptions.snippet(snippet);
-//                markerOptions.flat(isFlat);
-//
-//                Marker marker = googleMap.addMarker(markerOptions);
-//
-//                // set metadata to marker
-//                marker.setTag(metadata);
-//
-//                // get auto-generated id of the just added marker,
-//                // put this marker into a hashmap with the corresponding id,
-//                // so we can retrieve the marker by id later on
-//                mHashMap.put(marker.getId(), marker);
-//
-//                // initialize JSObject to return when resolving this call
-//                JSObject result = new JSObject();
-//                JSObject markerResult = new JSObject();
-//
-//                // get marker specific values
-//                markerResult.put("id", marker.getId());
-//                result.put("marker", markerResult);
-//
-//                call.resolve(result);
-//            }
-//        });
-//    }
 }
