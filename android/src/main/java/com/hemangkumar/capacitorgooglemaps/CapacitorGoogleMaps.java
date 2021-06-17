@@ -28,14 +28,6 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
     }
 
     @Override
-    protected void handleOnStart() {
-        super.handleOnStart();
-        if (mapView != null) {
-            mapView.onStart();
-        }
-    }
-
-    @Override
     protected void handleOnResume() {
         super.handleOnResume();
         for (CustomMapView customMapView : customMapViews.values()) {
