@@ -58,7 +58,7 @@ export interface CreateResult {
 
 export interface ElementFromPointResultOptions {
   eventChainId: string;
-  mapId: string;
+  mapId: string | null;
   isSameNode: boolean;
 }
 

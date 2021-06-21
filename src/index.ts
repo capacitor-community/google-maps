@@ -1,5 +1,8 @@
 import { registerPlugin } from "@capacitor/core";
-import { CapacitorGoogleMapsPlugin } from "./definitions";
+import {
+  CapacitorGoogleMapsPlugin,
+  ElementFromPointResultOptions,
+} from "./definitions";
 
 const CapacitorGoogleMaps = registerPlugin<CapacitorGoogleMapsPlugin>(
   "CapacitorGoogleMaps",
@@ -9,7 +12,7 @@ const CapacitorGoogleMaps = registerPlugin<CapacitorGoogleMapsPlugin>(
 );
 
 CapacitorGoogleMaps.addListener("didRequestElementFromPoint", (data) => {
-  const object: any = {
+  const object: ElementFromPointResultOptions = {
     eventChainId: data?.eventChainId,
     mapId: null,
     isSameNode: false,
