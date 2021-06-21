@@ -185,13 +185,7 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnMarkerClic
     }
 
     public void addToView(ViewGroup parent) {
-        FrameLayout mapViewParent = new FrameLayout(context);
-        int mapViewParentId = View.generateViewId();
-        mapViewParent.setId(mapViewParentId);
-
-        mapViewParent.addView(mapView);
-
-        parent.addView(mapViewParent);
+        parent.addView(mapView);
     }
 
     public JSObject addMarker(Double latitude, Double longitude, String title, String snippet, Float opacity, Boolean isFlat, Boolean isDraggable, JSObject metadata) {
