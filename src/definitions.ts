@@ -9,7 +9,7 @@ export interface CapacitorGoogleMapsPlugin {
   elementFromPointResult(options: ElementFromPointResultOptions): Promise<void>;
 
   /** Adds a marker on the map */
-  addMarker(options: AddMarkerOptions): Promise<AddMarkerResult>;
+  addMarker(options: AddMarkerOptions): Promise<MarkerResult>;
 
   addListener(
     eventName: "didRequestElementFromPoint",
@@ -70,7 +70,7 @@ export interface AddMarkerOptions {
   metadata?: object;
 }
 
-export interface AddMarkerResult {
+export interface MarkerResult {
   position: Position;
   marker: Marker;
 }

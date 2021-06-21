@@ -7,7 +7,7 @@ import {
   CreateResult,
   ElementFromPointResultOptions,
   AddMarkerOptions,
-  AddMarkerResult,
+  MarkerResult,
 } from "./definitions";
 
 export class CapacitorGoogleMapsWeb extends WebPlugin
@@ -33,7 +33,7 @@ export class CapacitorGoogleMapsWeb extends WebPlugin
     throw this.unimplemented("Not implemented on web.");
   }
 
-  async addMarker(_options: AddMarkerOptions): Promise<AddMarkerResult> {
+  async addMarker(_options: AddMarkerOptions): Promise<MarkerResult> {
     throw this.unimplemented("Not implemented on web.");
   }
 }
