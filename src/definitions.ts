@@ -1,5 +1,7 @@
 import { PluginListenerHandle } from "@capacitor/core";
 
+export type CallbackID = string;
+
 export interface CapacitorGoogleMapsPlugin {
   initialize(options: InitializeOptions): Promise<void>;
 
@@ -10,6 +12,8 @@ export interface CapacitorGoogleMapsPlugin {
 
   /** Adds a marker on the map */
   addMarker(options: AddMarkerOptions): Promise<MarkerResult>;
+
+  didTapMarker(callback: DidTapMarkerCallback): Promise<CallbackID>;
 
   addListener(
     eventName: "didRequestElementFromPoint",
@@ -74,6 +78,11 @@ export interface MarkerResult {
   position: Position;
   marker: Marker;
 }
+
+export type DidTapMarkerCallback = (
+  message: MarkerResult | null,
+  err?: any
+) => void;
 
 export interface DidRequestElementFromPointResult {
   eventChainId: string;

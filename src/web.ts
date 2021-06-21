@@ -2,12 +2,14 @@ import { WebPlugin } from "@capacitor/core";
 
 import {
   CapacitorGoogleMapsPlugin,
+  CallbackID,
   InitializeOptions,
   CreateOptions,
   CreateResult,
   ElementFromPointResultOptions,
   AddMarkerOptions,
   MarkerResult,
+  DidTapMarkerCallback,
 } from "./definitions";
 
 export class CapacitorGoogleMapsWeb extends WebPlugin
@@ -34,6 +36,10 @@ export class CapacitorGoogleMapsWeb extends WebPlugin
   }
 
   async addMarker(_options: AddMarkerOptions): Promise<MarkerResult> {
+    throw this.unimplemented("Not implemented on web.");
+  }
+
+  async didTapMarker(_callback: DidTapMarkerCallback): Promise<CallbackID> {
     throw this.unimplemented("Not implemented on web.");
   }
 }
