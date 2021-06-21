@@ -88,6 +88,7 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnMarkerClic
             markerResult.put("opacity", marker.getAlpha());
             markerResult.put("isFlat", marker.isFlat());
             markerResult.put("isDraggable", marker.isDraggable());
+            markerResult.put("metadata", marker.getTag());
 
             // return result
             result.put("position", positionResult);
@@ -224,6 +225,7 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnMarkerClic
         markerResult.put("opacity", marker.getAlpha());
         markerResult.put("isFlat", marker.isFlat());
         markerResult.put("isDraggable", marker.isDraggable());
+        markerResult.put("metadata", marker.getTag());
 
         // return result
         result.put("position", positionResult);
