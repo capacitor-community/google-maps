@@ -225,7 +225,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
         final Double latitude = call.getDouble("latitude");
         final Double longitude = call.getDouble("longitude");
         final Float zoom = call.getFloat("zoom", DEFAULT_ZOOM);
-        final Boolean liteMode = call.getBoolean("enabled", false);
+        final Boolean liteMode = call.getBoolean("liteMode", false);
         final Integer width = call.getInt("width", DEFAULT_WIDTH);
         final Integer height = call.getInt("height", DEFAULT_HEIGHT);
         final Integer x = call.getInt("x", 0);
