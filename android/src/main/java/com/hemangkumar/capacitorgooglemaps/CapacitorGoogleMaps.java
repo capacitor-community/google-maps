@@ -278,7 +278,8 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
         CustomMapView customMapView = customMapViews.get(mapId);
 
         if (customMapView != null) {
-            customMapView.setCallbackIdForEvent(callbackId, eventName);
+            Boolean preventDefault = call.getBoolean("preventDefault", false);
+            customMapView.setCallbackIdForEvent(callbackId, eventName, preventDefault);
         }
     }
 

@@ -84,6 +84,7 @@ export interface MarkerResult {
 
 export interface DidTapMarkerOptions {
   mapId: string;
+  preventDefault?: boolean;
 }
 
 export type DidTapMarkerCallback = (

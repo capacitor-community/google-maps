@@ -36,6 +36,8 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnMarkerClic
     String savedCallbackIdForCreate;
 
     String savedCallbackIdForDidTapMarker;
+    Boolean preventDefaultForDidTapMarker = false;
+
     String savedCallbackIdForDidTapMyLocationDot;
     
     public static final String EVENT_DID_TAP_MARKER = "didTapMarker";
@@ -96,7 +98,7 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnMarkerClic
 
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapMarker, result);
         }
-        return false;
+        return preventDefaultForDidTapMarker;
     }
 
     @Override
@@ -142,10 +144,14 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnMarkerClic
         }
     }
 
-    public void setCallbackIdForEvent(String callbackId, String eventName) {
+    public void setCallbackIdForEvent(String callbackId, String eventName, Boolean preventDefault) {
         if (callbackId != null && eventName != null) {
             if (eventName.equals(CustomMapView.EVENT_DID_TAP_MARKER)) {
                 savedCallbackIdForDidTapMarker = callbackId;
+                if (preventDefault == null) {
+                    preventDefault = false;
+                }
+                preventDefaultForDidTapMarker = preventDefault;
             } else if (eventName.equals(CustomMapView.EVENT_DID_TAP_MY_LOCATION_DOT)) {
                 savedCallbackIdForDidTapMyLocationDot = callbackId;
             }
