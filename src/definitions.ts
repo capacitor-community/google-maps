@@ -19,12 +19,12 @@ export interface CapacitorGoogleMapsPlugin {
 
 export interface Marker {
   id: string;
-  title?: string;
-  snippet?: string;
+  title: string;
+  snippet: string;
   opacity: number;
   isFlat: boolean;
   isDraggable: boolean;
-  metadata?: object;
+  metadata: object;
 }
 
 export interface Position {
