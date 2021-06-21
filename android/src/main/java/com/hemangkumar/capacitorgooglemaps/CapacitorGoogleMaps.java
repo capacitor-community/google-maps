@@ -27,7 +27,7 @@ import java.util.UUID;
 public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  {
     private final HashMap<String, CustomMapView> customMapViews = new HashMap<>();
     Float devicePixelRatio;
-    private String lastId;
+    private String lastEventChainId;
     public List<MotionEvent> previousEvents = new ArrayList<>();
     private String delegateTouchEventsToMapId;
 
@@ -36,8 +36,8 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
         // This method should be called after we requested the WebView through notifyListeners("didRequestElementFromPoint").
         // It should tell us if the exact point that was being touched, is from an element in which a MapView exists.
         // Otherwise it is a 'normal' HTML element, and we should thus not delegate touch events.
-        String id = call.getString("id");
-        if (id != null && id.equals(lastId)) {
+        String eventChainId = call.getString("eventChainId");
+        if (eventChainId != null && eventChainId.equals(lastEventChainId)) {
             Boolean isSameNode = call.getBoolean("isSameNode", false);
             if (isSameNode != null && isSameNode) {
                 // The WebView apparently has decides the touched point belongs to a certain MapView.
@@ -73,9 +73,9 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
 
                     // Generate a UUID, and assign it to lastId.
                     // This way we can make sure we are always referencing the last chain of events.
-                    lastId = UUID.randomUUID().toString();
+                    lastEventChainId = UUID.randomUUID().toString();
                     // Then add it to result object, so the WebView can reference the correct events when needed.
-                    result.put("id", lastId);
+                    result.put("eventChainId", lastEventChainId);
 
                     // Get the touched position.
                     int x = (int) event.getX();
