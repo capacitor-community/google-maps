@@ -8,5 +8,30 @@ const CapacitorGoogleMaps = registerPlugin<CapacitorGoogleMapsPlugin>(
   }
 );
 
+CapacitorGoogleMaps.addListener("didRequestElementFromPoint", (data) => {
+  const object: any = {
+    eventChainId: data?.eventChainId,
+    mapId: null,
+    isSameNode: false,
+  };
+
+  const { x, y } = data?.point || {};
+
+  if (x && y) {
+    const element = document.elementFromPoint(x, y);
+
+    const mapId = element?.getAttribute?.("data-maps-id");
+    if (mapId) {
+      // if (ref.isSameNode(element)) {
+      //   object.isSameNode = true;
+      // }
+      object.mapId = mapId;
+      object.isSameNode = true;
+    }
+  }
+
+  CapacitorGoogleMaps.elementFromPointResult(object);
+});
+
 export * from "./definitions";
 export { CapacitorGoogleMaps };
