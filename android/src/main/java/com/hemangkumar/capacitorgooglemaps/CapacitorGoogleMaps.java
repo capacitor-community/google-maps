@@ -3,6 +3,7 @@ package com.hemangkumar.capacitorgooglemaps;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.DragEvent;
@@ -107,7 +108,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
                                 MotionEvent e = previousEvents.get(i);
                                 if (e != null) {
                                     // Delegate this previous event to the MapView.
-                                    customMapView.mapView.dispatchTouchEvent(e);
+                                    dispatchTouchEvent(e, customMapView);
                                 }
                             }
                             // Since we delegated all previous events, we can now forget about them.
@@ -115,7 +116,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
                         }
 
                         // Finally delegate the current event to the MapView.
-                        customMapView.mapView.dispatchTouchEvent(event);
+                        dispatchTouchEvent(event, customMapView);
                     }
                 } else {
                     // If delegateTouchEventsToMapId is not set, but it could still be set later!
@@ -130,6 +131,25 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
                 return false;
             }
         });
+    }
+
+    private void dispatchTouchEvent(MotionEvent event, CustomMapView customMapView) {
+        Rect offsetViewBounds = new Rect();
+        // returns the visible bounds
+        customMapView.mapView.getDrawingRect(offsetViewBounds);
+        // calculates the relative coordinates to the parent
+        ViewGroup parentViewGroup = (ViewGroup) bridge.getWebView().getParent();
+        parentViewGroup.offsetDescendantRectToMyCoords(customMapView.mapView, offsetViewBounds);
+
+        int relativeTop = offsetViewBounds.top;
+        int relativeLeft = offsetViewBounds.left;
+
+        // Set location with offset points,
+        // because if a map is positioned with a different top and left point than the WebView,
+        // that should be accounted for.
+        event.setLocation(event.getX() - relativeLeft, event.getY() - relativeTop);
+
+        customMapView.mapView.dispatchTouchEvent(event);
     }
 
     @Override
