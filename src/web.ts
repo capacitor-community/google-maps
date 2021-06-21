@@ -9,6 +9,7 @@ import {
   ElementFromPointResultOptions,
   AddMarkerOptions,
   MarkerResult,
+  DidTapMarkerOptions,
   DidTapMarkerCallback,
 } from "./definitions";
 
@@ -39,7 +40,10 @@ export class CapacitorGoogleMapsWeb extends WebPlugin
     throw this.unimplemented("Not implemented on web.");
   }
 
-  async didTapMarker(_callback: DidTapMarkerCallback): Promise<CallbackID> {
+  async didTapMarker(
+    _options: DidTapMarkerOptions,
+    _callback: DidTapMarkerCallback
+  ): Promise<CallbackID> {
     throw this.unimplemented("Not implemented on web.");
   }
 }

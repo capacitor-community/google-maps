@@ -13,7 +13,10 @@ export interface CapacitorGoogleMapsPlugin {
   /** Adds a marker on the map */
   addMarker(options: AddMarkerOptions): Promise<MarkerResult>;
 
-  didTapMarker(callback: DidTapMarkerCallback): Promise<CallbackID>;
+  didTapMarker(
+    options: DidTapMarkerOptions,
+    callback: DidTapMarkerCallback
+  ): Promise<CallbackID>;
 
   addListener(
     eventName: "didRequestElementFromPoint",
@@ -77,6 +80,10 @@ export interface AddMarkerOptions {
 export interface MarkerResult {
   position: Position;
   marker: Marker;
+}
+
+export interface DidTapMarkerOptions {
+  mapId: string;
 }
 
 export type DidTapMarkerCallback = (
