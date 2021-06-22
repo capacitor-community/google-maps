@@ -22,7 +22,7 @@ import com.google.android.libraries.maps.model.MarkerOptions;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener {
+public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnInfoWindowCloseListener, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener {
     private final Context context;
     private final CustomMapViewEvents customMapViewEvents;
 
@@ -35,6 +35,8 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnMapClickLi
 
     String savedCallbackIdForCreate;
 
+    String savedCallbackIdForDidCloseInfoWindow;
+
     String savedCallbackIdForDidTapMap;
 
     String savedCallbackIdForDidTapMarker;
@@ -42,6 +44,7 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnMapClickLi
 
     String savedCallbackIdForDidTapMyLocationDot;
 
+    public static final String EVENT_DID_CLOSE_INFO_WINDOW = "didCloseInfoWindow";
     public static final String EVENT_DID_TAP_MAP = "didTapMap";
     public static final String EVENT_DID_TAP_MARKER = "didTapMarker";
     public static final String EVENT_DID_TAP_MY_LOCATION_DOT = "didTapMyLocationDot";
@@ -62,6 +65,7 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnMapClickLi
         this.googleMap = googleMap;
 
         // set listeners
+        this.googleMap.setOnInfoWindowCloseListener(this);
         this.googleMap.setOnMapClickListener(this);
         this.googleMap.setOnMarkerClickListener(this);
         this.googleMap.setOnMyLocationClickListener(this);
@@ -72,6 +76,35 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnMapClickLi
             JSObject result = new JSObject();
             result.put("mapId", id);
             customMapViewEvents.onMapReady(savedCallbackIdForCreate, result);
+        }
+    }
+
+    @Override
+    public void onInfoWindowClose(Marker marker) {
+        if (customMapViewEvents != null && savedCallbackIdForDidCloseInfoWindow != null) {
+            // initialize JSObjects to return
+            JSObject result = new JSObject();
+            JSObject positionResult = new JSObject();
+            JSObject markerResult = new JSObject();
+
+            // get position values
+            positionResult.put("latitude", marker.getPosition().latitude);
+            positionResult.put("longitude", marker.getPosition().longitude);
+
+            // get marker specific values
+            markerResult.put("id", marker.getId());
+            markerResult.put("title", marker.getTitle());
+            markerResult.put("snippet", marker.getSnippet());
+            markerResult.put("opacity", marker.getAlpha());
+            markerResult.put("isFlat", marker.isFlat());
+            markerResult.put("isDraggable", marker.isDraggable());
+            markerResult.put("metadata", marker.getTag());
+
+            // return result
+            result.put("position", positionResult);
+            result.put("marker", markerResult);
+
+            customMapViewEvents.resultForCallbackId(savedCallbackIdForDidCloseInfoWindow, result);
         }
     }
 
@@ -168,7 +201,9 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnMapClickLi
 
     public void setCallbackIdForEvent(String callbackId, String eventName, Boolean preventDefault) {
         if (callbackId != null && eventName != null) {
-            if (eventName.equals(CustomMapView.EVENT_DID_TAP_MAP)) {
+            if (eventName.equals(CustomMapView.EVENT_DID_CLOSE_INFO_WINDOW)) {
+                savedCallbackIdForDidCloseInfoWindow = callbackId;
+            } if (eventName.equals(CustomMapView.EVENT_DID_TAP_MAP)) {
                 savedCallbackIdForDidTapMap = callbackId;
             } else if (eventName.equals(CustomMapView.EVENT_DID_TAP_MARKER)) {
                 savedCallbackIdForDidTapMarker = callbackId;
