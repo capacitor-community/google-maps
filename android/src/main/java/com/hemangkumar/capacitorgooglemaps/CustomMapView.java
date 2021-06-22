@@ -82,28 +82,7 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnInfoWindow
     @Override
     public void onInfoWindowClose(Marker marker) {
         if (customMapViewEvents != null && savedCallbackIdForDidCloseInfoWindow != null) {
-            // initialize JSObjects to return
-            JSObject result = new JSObject();
-            JSObject positionResult = new JSObject();
-            JSObject markerResult = new JSObject();
-
-            // get position values
-            positionResult.put("latitude", marker.getPosition().latitude);
-            positionResult.put("longitude", marker.getPosition().longitude);
-
-            // get marker specific values
-            markerResult.put("id", marker.getId());
-            markerResult.put("title", marker.getTitle());
-            markerResult.put("snippet", marker.getSnippet());
-            markerResult.put("opacity", marker.getAlpha());
-            markerResult.put("isFlat", marker.isFlat());
-            markerResult.put("isDraggable", marker.isDraggable());
-            markerResult.put("metadata", marker.getTag());
-
-            // return result
-            result.put("position", positionResult);
-            result.put("marker", markerResult);
-
+            JSObject result = getResultForMarker(marker);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidCloseInfoWindow, result);
         }
     }
@@ -129,28 +108,7 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnInfoWindow
     @Override
     public boolean onMarkerClick(Marker marker) {
         if (customMapViewEvents != null && savedCallbackIdForDidTapMarker != null) {
-            // initialize JSObjects to return
-            JSObject result = new JSObject();
-            JSObject positionResult = new JSObject();
-            JSObject markerResult = new JSObject();
-
-            // get position values
-            positionResult.put("latitude", marker.getPosition().latitude);
-            positionResult.put("longitude", marker.getPosition().longitude);
-
-            // get marker specific values
-            markerResult.put("id", marker.getId());
-            markerResult.put("title", marker.getTitle());
-            markerResult.put("snippet", marker.getSnippet());
-            markerResult.put("opacity", marker.getAlpha());
-            markerResult.put("isFlat", marker.isFlat());
-            markerResult.put("isDraggable", marker.isDraggable());
-            markerResult.put("metadata", marker.getTag());
-
-            // return result
-            result.put("position", positionResult);
-            result.put("marker", markerResult);
-
+            JSObject result = getResultForMarker(marker);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapMarker, result);
         }
         return preventDefaultForDidTapMarker;
@@ -203,7 +161,7 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnInfoWindow
         if (callbackId != null && eventName != null) {
             if (eventName.equals(CustomMapView.EVENT_DID_CLOSE_INFO_WINDOW)) {
                 savedCallbackIdForDidCloseInfoWindow = callbackId;
-            } if (eventName.equals(CustomMapView.EVENT_DID_TAP_MAP)) {
+            } else if (eventName.equals(CustomMapView.EVENT_DID_TAP_MAP)) {
                 savedCallbackIdForDidTapMap = callbackId;
             } else if (eventName.equals(CustomMapView.EVENT_DID_TAP_MARKER)) {
                 savedCallbackIdForDidTapMarker = callbackId;
@@ -274,6 +232,10 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnInfoWindow
         // so we can retrieve the marker by id later on
         mHashMap.put(marker.getId(), marker);
 
+        return getResultForMarker(marker);
+    }
+
+    private JSObject getResultForMarker(Marker marker) {
         // initialize JSObjects to return
         JSObject result = new JSObject();
         JSObject positionResult = new JSObject();
