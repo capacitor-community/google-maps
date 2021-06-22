@@ -261,6 +261,11 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
     }
 
     @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
+    public void didTapMap(final PluginCall call) {
+        setCallbackIdForEvent(call, CustomMapView.EVENT_DID_TAP_MAP);
+    }
+
+    @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
     public void didTapMarker(final PluginCall call) {
         setCallbackIdForEvent(call, CustomMapView.EVENT_DID_TAP_MARKER);
     }

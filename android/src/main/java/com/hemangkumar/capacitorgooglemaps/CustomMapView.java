@@ -22,7 +22,7 @@ import com.google.android.libraries.maps.model.MarkerOptions;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener {
+public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener {
     private final Context context;
     private final CustomMapViewEvents customMapViewEvents;
 
@@ -35,11 +35,14 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnMarkerClic
 
     String savedCallbackIdForCreate;
 
+    String savedCallbackIdForDidTapMap;
+
     String savedCallbackIdForDidTapMarker;
     Boolean preventDefaultForDidTapMarker = false;
 
     String savedCallbackIdForDidTapMyLocationDot;
-    
+
+    public static final String EVENT_DID_TAP_MAP = "didTapMap";
     public static final String EVENT_DID_TAP_MARKER = "didTapMarker";
     public static final String EVENT_DID_TAP_MY_LOCATION_DOT = "didTapMyLocationDot";
 
@@ -59,6 +62,7 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnMarkerClic
         this.googleMap = googleMap;
 
         // set listeners
+        this.googleMap.setOnMapClickListener(this);
         this.googleMap.setOnMarkerClickListener(this);
         this.googleMap.setOnMyLocationClickListener(this);
         this.googleMap.setOnMyLocationButtonClickListener(this);
@@ -68,6 +72,24 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnMarkerClic
             JSObject result = new JSObject();
             result.put("mapId", id);
             customMapViewEvents.onMapReady(savedCallbackIdForCreate, result);
+        }
+    }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+        if (customMapViewEvents != null && savedCallbackIdForDidTapMap != null) {
+            // initialize JSObjects to return
+            JSObject result = new JSObject();
+            JSObject positionResult = new JSObject();
+
+            // get position values
+            positionResult.put("latitude", latLng.latitude);
+            positionResult.put("longitude", latLng.longitude);
+
+            // return result
+            result.put("position", positionResult);
+
+            customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapMap, result);
         }
     }
 
@@ -146,7 +168,9 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnMarkerClic
 
     public void setCallbackIdForEvent(String callbackId, String eventName, Boolean preventDefault) {
         if (callbackId != null && eventName != null) {
-            if (eventName.equals(CustomMapView.EVENT_DID_TAP_MARKER)) {
+            if (eventName.equals(CustomMapView.EVENT_DID_TAP_MAP)) {
+                savedCallbackIdForDidTapMap = callbackId;
+            } else if (eventName.equals(CustomMapView.EVENT_DID_TAP_MARKER)) {
                 savedCallbackIdForDidTapMarker = callbackId;
                 if (preventDefault == null) {
                     preventDefault = false;
