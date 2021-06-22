@@ -19,6 +19,8 @@ import com.google.android.libraries.maps.model.LatLng;
 import com.google.android.libraries.maps.model.Marker;
 import com.google.android.libraries.maps.model.MarkerOptions;
 
+import org.json.JSONException;
+
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -224,13 +226,20 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnInfoWindow
 
         Marker marker = googleMap.addMarker(markerOptions);
 
-        // set metadata to marker
-        marker.setTag(metadata);
-
-        // get auto-generated id of the just added marker,
+        // generate id for the just added marker,
         // put this marker into a hashmap with the corresponding id,
         // so we can retrieve the marker by id later on
-        mHashMap.put(marker.getId(), marker);
+        String markerId = UUID.randomUUID().toString();
+        mHashMap.put(markerId, marker);
+
+        JSObject tag = new JSObject();
+        // set id to tag
+        tag.put("markerId", markerId);
+        // then set metadata to tag
+        tag.put("metadata", metadata);
+
+        // finally set tag to marker
+        marker.setTag(tag);
 
         return getResultForMarker(marker);
     }
@@ -246,13 +255,28 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnInfoWindow
         positionResult.put("longitude", marker.getPosition().longitude);
 
         // get marker specific values
-        markerResult.put("id", marker.getId());
+        markerResult.put("markerId", marker.getId());
         markerResult.put("title", marker.getTitle());
         markerResult.put("snippet", marker.getSnippet());
         markerResult.put("opacity", marker.getAlpha());
         markerResult.put("isFlat", marker.isFlat());
         markerResult.put("isDraggable", marker.isDraggable());
-        markerResult.put("metadata", marker.getTag());
+        markerResult.put("metadata", new JSObject());
+
+        JSObject tag = (JSObject) marker.getTag();
+        if (tag != null) {
+            // get and set markerId to marker
+            String markerId = tag.getString("markerId");
+            markerResult.put("markerId", markerId);
+
+            // get and set metadata to marker
+            try {
+                JSObject metadata = tag.getJSObject("metadata", new JSObject());
+                markerResult.put("metadata", metadata);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
 
         // return result
         result.put("position", positionResult);

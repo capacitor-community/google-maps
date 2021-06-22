@@ -35,7 +35,7 @@ export interface CapacitorGoogleMapsPlugin {
 }
 
 export interface Marker {
-  id: string;
+  markerId: string;
   title: string;
   snippet: string;
   opacity: number;

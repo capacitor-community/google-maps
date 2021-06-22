@@ -190,7 +190,7 @@ addListener(eventName: "didRequestElementFromPoint", listenerFunc: (result: DidR
 
 | Prop              | Type                 |
 | ----------------- | -------------------- |
-| **`id`**          | <code>string</code>  |
+| **`markerId`**    | <code>string</code>  |
 | **`title`**       | <code>string</code>  |
 | **`snippet`**     | <code>string</code>  |
 | **`opacity`**     | <code>number</code>  |

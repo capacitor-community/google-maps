@@ -309,7 +309,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
         final Float opacity = call.getFloat("opacity", 1.0f);
         final Boolean isFlat = call.getBoolean("isFlat", false);
         final Boolean isDraggable = call.getBoolean("isDraggable", true);
-        final JSObject metadata = call.getObject("metadata");
+        final JSObject metadata = call.getObject("metadata", new JSObject());
 
         getBridge().getActivity().runOnUiThread(new Runnable() {
             @Override
