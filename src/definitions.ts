@@ -11,10 +11,20 @@ export interface CapacitorGoogleMapsPlugin {
   elementFromPointResult(options: ElementFromPointResultOptions): Promise<void>;
 
   /** Adds a marker on the map */
-  addMarker(options: AddMarkerOptions): Promise<MarkerResult>;
+  addMarker(options: AddMarkerOptions): Promise<MarkerAndPositionResult>;
+
+  didCloseInfoWindow(
+    options: DefaultEventOptions,
+    callback: DidCloseInfoWindowCallback
+  ): Promise<CallbackID>;
+
+  didTapMap(
+    options: DefaultEventOptions,
+    callback: DidTapMapCallback
+  ): Promise<CallbackID>;
 
   didTapMarker(
-    options: DidTapMarkerOptions,
+    options: DefaultEventWithPreventDefaultOptions,
     callback: DidTapMarkerCallback
   ): Promise<CallbackID>;
 
@@ -77,18 +87,36 @@ export interface AddMarkerOptions {
   metadata?: object;
 }
 
-export interface MarkerResult {
+export interface MarkerAndPositionResult {
   position: Position;
   marker: Marker;
 }
 
-export interface DidTapMarkerOptions {
+export interface PositionResult {
+  position: Position;
+}
+
+export interface DefaultEventOptions {
+  mapId: string;
+}
+
+export interface DefaultEventWithPreventDefaultOptions {
   mapId: string;
   preventDefault?: boolean;
 }
 
+export type DidCloseInfoWindowCallback = (
+  message: MarkerAndPositionResult | null,
+  err?: any
+) => void;
+
+export type DidTapMapCallback = (
+  message: PositionResult | null,
+  err?: any
+) => void;
+
 export type DidTapMarkerCallback = (
-  message: MarkerResult | null,
+  message: MarkerAndPositionResult | null,
   err?: any
 ) => void;
 
