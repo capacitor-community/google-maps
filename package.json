@@ -6,6 +6,7 @@
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
   "scripts": {
+    "docgen": "docgen --api CapacitorGoogleMapsPlugin --output-readme API_REFERENCE.md",
     "build": "npm run clean && tsc",
     "clean": "rimraf ./dist",
     "watch": "tsc --watch",
@@ -20,6 +21,7 @@
   },
   "devDependencies": {
     "@capacitor/android": "^3.0.0",
+    "@capacitor/docgen": "0.0.17",
     "@capacitor/ios": "^3.0.0",
     "all-contributors-cli": "^6.20.0",
     "rimraf": "^3.0.0",
