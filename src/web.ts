@@ -4,16 +4,18 @@ import {
   CapacitorGoogleMapsPlugin,
   CallbackID,
   InitializeOptions,
-  CreateOptions,
-  CreateResult,
+  CreateMapOptions,
+  CreateMapResult,
+  UpdateMapOptions,
+  UpdateMapResult,
   ElementFromPointResultOptions,
   AddMarkerOptions,
-  MarkerAndPositionResult,
-  DefaultEventOptions,
-  DefaultEventWithPreventDefaultOptions,
+  AddMarkerResult,
   DidCloseInfoWindowCallback,
   DidTapMapCallback,
   DidTapMarkerCallback,
+  DefaultEventOptions,
+  DefaultEventWithPreventDefaultOptions,
 } from "./definitions";
 
 export class CapacitorGoogleMapsWeb extends WebPlugin
@@ -29,7 +31,11 @@ export class CapacitorGoogleMapsWeb extends WebPlugin
     throw this.unimplemented("Not implemented on web.");
   }
 
-  async create(_options: CreateOptions): Promise<CreateResult> {
+  async createMap(_options: CreateMapOptions): Promise<CreateMapResult> {
+    throw this.unimplemented("Not implemented on web.");
+  }
+
+  async updateMap(_options: UpdateMapOptions): Promise<UpdateMapResult> {
     throw this.unimplemented("Not implemented on web.");
   }
 
@@ -39,9 +45,11 @@ export class CapacitorGoogleMapsWeb extends WebPlugin
     throw this.unimplemented("Not implemented on web.");
   }
 
-  async addMarker(
-    _options: AddMarkerOptions
-  ): Promise<MarkerAndPositionResult> {
+  async addMarker(_options: AddMarkerOptions): Promise<AddMarkerResult> {
+    throw this.unimplemented("Not implemented on web.");
+  }
+
+  async removeMarker(_markerId: string): Promise<void> {
     throw this.unimplemented("Not implemented on web.");
   }
 
