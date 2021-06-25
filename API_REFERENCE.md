@@ -8,12 +8,12 @@ Below is an index of all the methods available.
 - [`createMap(...)`](#createmap)
 - [`updateMap(...)`](#updatemap)
 - [`moveCamera(...)`](#movecamera)
-- [`elementFromPointResult(...)`](#elementfrompointresult)
 - [`addMarker(...)`](#addmarker)
 - [`removeMarker(...)`](#removemarker)
 - [`didCloseInfoWindow(...)`](#didcloseinfowindow)
 - [`didTapMap(...)`](#didtapmap)
 - [`didTapMarker(...)`](#didtapmarker)
+- [`elementFromPointResult(...)`](#elementfrompointresult)
 - [`addListener('didRequestElementFromPoint', ...)`](#addlistenerdidrequestelementfrompoint-)
 - [Interfaces](#interfaces)
 - [Type Aliases](#type-aliases)
@@ -75,18 +75,6 @@ moveCamera(options: MoveCameraOptions) => Promise<MoveCameraResult>
 | **`options`** | <code><a href="#movecameraoptions">MoveCameraOptions</a></code> |
 
 **Returns:** <code>Promise&lt;<a href="#movecameraresult">MoveCameraResult</a>&gt;</code>
-
----
-
-### elementFromPointResult(...)
-
-```typescript
-elementFromPointResult(options: ElementFromPointResultOptions) => Promise<void>
-```
-
-| Param         | Type                                                                                    |
-| ------------- | --------------------------------------------------------------------------------------- |
-| **`options`** | <code><a href="#elementfrompointresultoptions">ElementFromPointResultOptions</a></code> |
 
 ---
 
@@ -161,11 +149,29 @@ didTapMarker(options: DefaultEventWithPreventDefaultOptions, callback: DidTapMar
 
 ---
 
+### elementFromPointResult(...)
+
+```typescript
+elementFromPointResult(options: ElementFromPointResultOptions) => Promise<void>
+```
+
+After `didRequestElementFromPoint` fires, this method is used to let the WebView know whether or not to delegate the touch event to a certain MapView.
+It is handled automatically and you should probably not use it.
+
+| Param         | Type                                                                                    |
+| ------------- | --------------------------------------------------------------------------------------- |
+| **`options`** | <code><a href="#elementfrompointresultoptions">ElementFromPointResultOptions</a></code> |
+
+---
+
 ### addListener('didRequestElementFromPoint', ...)
 
 ```typescript
 addListener(eventName: "didRequestElementFromPoint", listenerFunc: (result: DidRequestElementFromPointResult) => void) => PluginListenerHandle
 ```
+
+This listens for touch events on the WebView.
+It is handled automatically and you should probably not use it.
 
 | Param              | Type                                                                                                               |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------ |
@@ -309,9 +315,9 @@ An intrinsic object that provides functions to convert JavaScript values to and 
 | Prop               | Type                                                      | Since |
 | ------------------ | --------------------------------------------------------- | ----- |
 | **`mapId`**        | <code>string</code>                                       | 2.0.0 |
-| **`preferences`**  | <code><a href="#mappreferences">MapPreferences</a></code> | 2.0.0 |
 | **`element`**      | <code>HTMLElement</code>                                  | 2.0.0 |
 | **`boundingRect`** | <code><a href="#boundingrect">BoundingRect</a></code>     | 2.0.0 |
+| **`preferences`**  | <code><a href="#mappreferences">MapPreferences</a></code> | 2.0.0 |
 
 #### MoveCameraResult
 
@@ -326,14 +332,6 @@ An intrinsic object that provides functions to convert JavaScript values to and 
 | **`mapId`**          | <code>string</code>                                       |                                                                                                                                     |                | 2.0.0 |
 | **`cameraPosition`** | <code><a href="#cameraposition">CameraPosition</a></code> | See <a href="#cameraposition">CameraPosition</a>                                                                                    |                | 2.0.0 |
 | **`duration`**       | <code>number</code>                                       | The duration of the animation in milliseconds. If not specified, or equals or smaller than 0, the camera movement will be immediate | <code>0</code> | 2.0.0 |
-
-#### ElementFromPointResultOptions
-
-| Prop               | Type                 |
-| ------------------ | -------------------- |
-| **`eventChainId`** | <code>string</code>  |
-| **`mapId`**        | <code>string</code>  |
-| **`isSameNode`**   | <code>boolean</code> |
 
 #### AddMarkerResult
 
@@ -405,6 +403,14 @@ An intrinsic object that provides functions to convert JavaScript values to and 
 | -------------- | ----------------------------------------- |
 | **`position`** | <code><a href="#latlng">LatLng</a></code> |
 | **`marker`**   | <code><a href="#marker">Marker</a></code> |
+
+#### ElementFromPointResultOptions
+
+| Prop               | Type                 |
+| ------------------ | -------------------- |
+| **`eventChainId`** | <code>string</code>  |
+| **`mapId`**        | <code>string</code>  |
+| **`isSameNode`**   | <code>boolean</code> |
 
 #### PluginListenerHandle
 

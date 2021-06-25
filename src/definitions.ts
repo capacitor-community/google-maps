@@ -46,8 +46,6 @@ export interface CapacitorGoogleMapsPlugin {
 
   moveCamera(options: MoveCameraOptions): Promise<MoveCameraResult>;
 
-  elementFromPointResult(options: ElementFromPointResultOptions): Promise<void>;
-
   addMarker(options: AddMarkerOptions): Promise<AddMarkerResult>;
 
   removeMarker(markerId: string): Promise<void>;
@@ -67,6 +65,16 @@ export interface CapacitorGoogleMapsPlugin {
     callback: DidTapMarkerCallback
   ): Promise<CallbackID>;
 
+  /**
+   * After `didRequestElementFromPoint` fires, this method is used to let the WebView know whether or not to delegate the touch event to a certain MapView.
+   * It is handled automatically and you should probably not use it.
+   */
+  elementFromPointResult(options: ElementFromPointResultOptions): Promise<void>;
+
+  /**
+   * This listens for touch events on the WebView.
+   * It is handled automatically and you should probably not use it.
+   */
   addListener(
     eventName: "didRequestElementFromPoint",
     listenerFunc: (result: DidRequestElementFromPointResult) => void
