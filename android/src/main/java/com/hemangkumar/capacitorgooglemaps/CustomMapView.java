@@ -14,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
 import com.getcapacitor.JSObject;
+import com.google.android.libraries.maps.CameraUpdate;
+import com.google.android.libraries.maps.CameraUpdateFactory;
 import com.google.android.libraries.maps.GoogleMap;
 import com.google.android.libraries.maps.GoogleMapOptions;
 import com.google.android.libraries.maps.MapView;
@@ -257,6 +259,18 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnInfoWindow
             this.googleMap.setMyLocationEnabled(this.mapPreferences.appearance.isMyLocationDotShown);
         }
         this.googleMap.setTrafficEnabled(this.mapPreferences.appearance.isTrafficShown);
+
+        return getResultForMap();
+    }
+
+    public JSObject moveCamera(Integer duration) {
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(this.mapCameraPosition.cameraPosition);
+
+        if (duration == null || duration <= 0) {
+            googleMap.moveCamera(cameraUpdate);
+        } else {
+            googleMap.animateCamera(cameraUpdate, duration, null);
+        }
 
         return getResultForMap();
     }

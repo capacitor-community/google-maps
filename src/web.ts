@@ -8,6 +8,8 @@ import {
   CreateMapResult,
   UpdateMapOptions,
   UpdateMapResult,
+  MoveCameraOptions,
+  MoveCameraResult,
   ElementFromPointResultOptions,
   AddMarkerOptions,
   AddMarkerResult,
@@ -36,6 +38,10 @@ export class CapacitorGoogleMapsWeb extends WebPlugin
   }
 
   async updateMap(_options: UpdateMapOptions): Promise<UpdateMapResult> {
+    throw this.unimplemented("Not implemented on web.");
+  }
+
+  async moveCamera(_options: MoveCameraOptions): Promise<MoveCameraResult> {
     throw this.unimplemented("Not implemented on web.");
   }
 

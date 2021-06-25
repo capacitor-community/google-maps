@@ -37,9 +37,3 @@ export interface CameraPosition {
    */
   zoom: number;
 }
-
-// export interface MoveCameraOptions {
-//   cameraPosition: CameraPosition;
-//   duration: number;
-//   callback: any; // todo
-// }

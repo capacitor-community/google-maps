@@ -272,6 +272,32 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
         });
     }
 
+    @PluginMethod
+    public void moveCamera(final PluginCall call) {
+        final String mapId = call.getString("mapId");
+
+        getBridge().getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                CustomMapView customMapView = customMapViews.get(mapId);
+
+                if (customMapView != null) {
+                    final MapCameraPosition mapCameraPosition = customMapView.mapCameraPosition;
+                    mapCameraPosition.updateFromJSObject(call.getObject("cameraPosition"));
+
+                    Integer duration = call.getInt("duration", 0);
+
+                    // @TODO: add move listeners for movement
+                    JSObject result = customMapView.moveCamera(duration);
+
+                    call.resolve(result);
+                } else {
+                    call.reject("map not found");
+                }
+            }
+        });
+    }
+
     @Override
     public void onMapReady(String callbackId, JSObject result) {
         PluginCall call = bridge.getSavedCall(callbackId);

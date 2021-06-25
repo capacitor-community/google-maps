@@ -7,6 +7,7 @@ Below is an index of all the methods available.
 - [`initialize(...)`](#initialize)
 - [`createMap(...)`](#createmap)
 - [`updateMap(...)`](#updatemap)
+- [`moveCamera(...)`](#movecamera)
 - [`elementFromPointResult(...)`](#elementfrompointresult)
 - [`addMarker(...)`](#addmarker)
 - [`removeMarker(...)`](#removemarker)
@@ -60,6 +61,20 @@ updateMap(options: UpdateMapOptions) => Promise<UpdateMapResult>
 | **`options`** | <code><a href="#updatemapoptions">UpdateMapOptions</a></code> |
 
 **Returns:** <code>Promise&lt;<a href="#updatemapresult">UpdateMapResult</a>&gt;</code>
+
+---
+
+### moveCamera(...)
+
+```typescript
+moveCamera(options: MoveCameraOptions) => Promise<MoveCameraResult>
+```
+
+| Param         | Type                                                            |
+| ------------- | --------------------------------------------------------------- |
+| **`options`** | <code><a href="#movecameraoptions">MoveCameraOptions</a></code> |
+
+**Returns:** <code>Promise&lt;<a href="#movecameraresult">MoveCameraResult</a>&gt;</code>
 
 ---
 
@@ -297,6 +312,20 @@ An intrinsic object that provides functions to convert JavaScript values to and 
 | **`preferences`**  | <code><a href="#mappreferences">MapPreferences</a></code> | 2.0.0 |
 | **`element`**      | <code>HTMLElement</code>                                  | 2.0.0 |
 | **`boundingRect`** | <code><a href="#boundingrect">BoundingRect</a></code>     | 2.0.0 |
+
+#### MoveCameraResult
+
+| Prop            | Type                                            | Since |
+| --------------- | ----------------------------------------------- | ----- |
+| **`googleMap`** | <code><a href="#googlemap">GoogleMap</a></code> | 2.0.0 |
+
+#### MoveCameraOptions
+
+| Prop                 | Type                                                      | Description                                                                                                                         | Default        | Since |
+| -------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | -------------- | ----- |
+| **`mapId`**          | <code>string</code>                                       |                                                                                                                                     |                | 2.0.0 |
+| **`cameraPosition`** | <code><a href="#cameraposition">CameraPosition</a></code> | See <a href="#cameraposition">CameraPosition</a>                                                                                    |                | 2.0.0 |
+| **`duration`**       | <code>number</code>                                       | The duration of the animation in milliseconds. If not specified, or equals or smaller than 0, the camera movement will be immediate | <code>0</code> | 2.0.0 |
 
 #### ElementFromPointResultOptions
 

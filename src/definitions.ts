@@ -7,6 +7,8 @@ import {
   CreateMapResult,
   UpdateMapOptions,
   UpdateMapResult,
+  MoveCameraOptions,
+  MoveCameraResult,
   ElementFromPointResultOptions,
   AddMarkerOptions,
   AddMarkerResult,
@@ -41,6 +43,8 @@ export interface CapacitorGoogleMapsPlugin {
   createMap(options: CreateMapOptions): Promise<CreateMapResult>;
 
   updateMap(options: UpdateMapOptions): Promise<UpdateMapResult>;
+
+  moveCamera(options: MoveCameraOptions): Promise<MoveCameraResult>;
 
   elementFromPointResult(options: ElementFromPointResultOptions): Promise<void>;
 
