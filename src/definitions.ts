@@ -13,9 +13,13 @@ import {
   AddMarkerOptions,
   AddMarkerResult,
   // events
+  DidTapInfoWindowCallback,
   DidCloseInfoWindowCallback,
   DidTapMapCallback,
+  DidLongPressMapCallback,
   DidTapMarkerCallback,
+  DidTapMyLocationButtonCallback,
+  DidTapMyLocationDotCallback,
 } from "./interfaces";
 
 export type CallbackID = string;
@@ -50,6 +54,11 @@ export interface CapacitorGoogleMapsPlugin {
 
   removeMarker(markerId: string): Promise<void>;
 
+  didTapInfoWindow(
+    options: DefaultEventOptions,
+    callback: DidTapInfoWindowCallback
+  ): Promise<CallbackID>;
+
   didCloseInfoWindow(
     options: DefaultEventOptions,
     callback: DidCloseInfoWindowCallback
@@ -60,9 +69,24 @@ export interface CapacitorGoogleMapsPlugin {
     callback: DidTapMapCallback
   ): Promise<CallbackID>;
 
+  didLongPressMap(
+    options: DefaultEventOptions,
+    callback: DidLongPressMapCallback
+  ): Promise<CallbackID>;
+
   didTapMarker(
     options: DefaultEventWithPreventDefaultOptions,
     callback: DidTapMarkerCallback
+  ): Promise<CallbackID>;
+
+  didTapMyLocationButton(
+    options: DefaultEventWithPreventDefaultOptions,
+    callback: DidTapMyLocationButtonCallback
+  ): Promise<CallbackID>;
+
+  didTapMyLocationDot(
+    options: DefaultEventOptions,
+    callback: DidTapMyLocationDotCallback
   ): Promise<CallbackID>;
 
   /**

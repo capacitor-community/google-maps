@@ -10,9 +10,13 @@ Below is an index of all the methods available.
 - [`moveCamera(...)`](#movecamera)
 - [`addMarker(...)`](#addmarker)
 - [`removeMarker(...)`](#removemarker)
+- [`didTapInfoWindow(...)`](#didtapinfowindow)
 - [`didCloseInfoWindow(...)`](#didcloseinfowindow)
 - [`didTapMap(...)`](#didtapmap)
+- [`didLongPressMap(...)`](#didlongpressmap)
 - [`didTapMarker(...)`](#didtapmarker)
+- [`didTapMyLocationButton(...)`](#didtapmylocationbutton)
+- [`didTapMyLocationDot(...)`](#didtapmylocationdot)
 - [`elementFromPointResult(...)`](#elementfrompointresult)
 - [`addListener('didRequestElementFromPoint', ...)`](#addlistenerdidrequestelementfrompoint-)
 - [Interfaces](#interfaces)
@@ -104,6 +108,21 @@ removeMarker(markerId: string) => Promise<void>
 
 ---
 
+### didTapInfoWindow(...)
+
+```typescript
+didTapInfoWindow(options: DefaultEventOptions, callback: DidTapInfoWindowCallback) => Promise<CallbackID>
+```
+
+| Param          | Type                                                                          |
+| -------------- | ----------------------------------------------------------------------------- |
+| **`options`**  | <code><a href="#defaulteventoptions">DefaultEventOptions</a></code>           |
+| **`callback`** | <code><a href="#didtapinfowindowcallback">DidTapInfoWindowCallback</a></code> |
+
+**Returns:** <code>Promise&lt;string&gt;</code>
+
+---
+
 ### didCloseInfoWindow(...)
 
 ```typescript
@@ -134,6 +153,21 @@ didTapMap(options: DefaultEventOptions, callback: DidTapMapCallback) => Promise<
 
 ---
 
+### didLongPressMap(...)
+
+```typescript
+didLongPressMap(options: DefaultEventOptions, callback: DidLongPressMapCallback) => Promise<CallbackID>
+```
+
+| Param          | Type                                                                        |
+| -------------- | --------------------------------------------------------------------------- |
+| **`options`**  | <code><a href="#defaulteventoptions">DefaultEventOptions</a></code>         |
+| **`callback`** | <code><a href="#didlongpressmapcallback">DidLongPressMapCallback</a></code> |
+
+**Returns:** <code>Promise&lt;string&gt;</code>
+
+---
+
 ### didTapMarker(...)
 
 ```typescript
@@ -144,6 +178,36 @@ didTapMarker(options: DefaultEventWithPreventDefaultOptions, callback: DidTapMar
 | -------------- | ------------------------------------------------------------------------------------------------------- |
 | **`options`**  | <code><a href="#defaulteventwithpreventdefaultoptions">DefaultEventWithPreventDefaultOptions</a></code> |
 | **`callback`** | <code><a href="#didtapmarkercallback">DidTapMarkerCallback</a></code>                                   |
+
+**Returns:** <code>Promise&lt;string&gt;</code>
+
+---
+
+### didTapMyLocationButton(...)
+
+```typescript
+didTapMyLocationButton(options: DefaultEventWithPreventDefaultOptions, callback: DidTapMyLocationButtonCallback) => Promise<CallbackID>
+```
+
+| Param          | Type                                                                                                    |
+| -------------- | ------------------------------------------------------------------------------------------------------- |
+| **`options`**  | <code><a href="#defaulteventwithpreventdefaultoptions">DefaultEventWithPreventDefaultOptions</a></code> |
+| **`callback`** | <code><a href="#didtapmylocationbuttoncallback">DidTapMyLocationButtonCallback</a></code>               |
+
+**Returns:** <code>Promise&lt;string&gt;</code>
+
+---
+
+### didTapMyLocationDot(...)
+
+```typescript
+didTapMyLocationDot(options: DefaultEventOptions, callback: DidTapMyLocationDotCallback) => Promise<CallbackID>
+```
+
+| Param          | Type                                                                                |
+| -------------- | ----------------------------------------------------------------------------------- |
+| **`options`**  | <code><a href="#defaulteventoptions">DefaultEventOptions</a></code>                 |
+| **`callback`** | <code><a href="#didtapmylocationdotcallback">DidTapMyLocationDotCallback</a></code> |
 
 **Returns:** <code>Promise&lt;string&gt;</code>
 
@@ -377,6 +441,13 @@ An intrinsic object that provides functions to convert JavaScript values to and 
 | ----------- | ------------------- |
 | **`mapId`** | <code>string</code> |
 
+#### DidTapInfoWindowResult
+
+| Prop           | Type                                      |
+| -------------- | ----------------------------------------- |
+| **`position`** | <code><a href="#latlng">LatLng</a></code> |
+| **`marker`**   | <code><a href="#marker">Marker</a></code> |
+
 #### DidCloseInfoWindowResult
 
 | Prop           | Type                                      |
@@ -385,6 +456,12 @@ An intrinsic object that provides functions to convert JavaScript values to and 
 | **`marker`**   | <code><a href="#marker">Marker</a></code> |
 
 #### DidTapMapResult
+
+| Prop           | Type                                      |
+| -------------- | ----------------------------------------- |
+| **`position`** | <code><a href="#latlng">LatLng</a></code> |
+
+#### DidLongPressMapResult
 
 | Prop           | Type                                      |
 | -------------- | ----------------------------------------- |
@@ -403,6 +480,12 @@ An intrinsic object that provides functions to convert JavaScript values to and 
 | -------------- | ----------------------------------------- |
 | **`position`** | <code><a href="#latlng">LatLng</a></code> |
 | **`marker`**   | <code><a href="#marker">Marker</a></code> |
+
+#### DidTapMyLocationDotResult
+
+| Prop           | Type                                      |
+| -------------- | ----------------------------------------- |
+| **`position`** | <code><a href="#latlng">LatLng</a></code> |
 
 #### ElementFromPointResultOptions
 
@@ -427,21 +510,37 @@ An intrinsic object that provides functions to convert JavaScript values to and 
 
 ### Type Aliases
 
-#### DidCloseInfoWindowCallback
+#### DidTapInfoWindowCallback
 
-<code>(result: <a href="#didcloseinfowindowresult">DidCloseInfoWindowResult</a>, err?: any): void</code>
+<code>(result: <a href="#didtapinfowindowresult">DidTapInfoWindowResult</a>, err?: any): void</code>
 
 #### CallbackID
 
 <code>string</code>
 
+#### DidCloseInfoWindowCallback
+
+<code>(result: <a href="#didcloseinfowindowresult">DidCloseInfoWindowResult</a>, err?: any): void</code>
+
 #### DidTapMapCallback
 
 <code>(result: <a href="#didtapmapresult">DidTapMapResult</a>, err?: any): void</code>
 
+#### DidLongPressMapCallback
+
+<code>(result: <a href="#didlongpressmapresult">DidLongPressMapResult</a>, err?: any): void</code>
+
 #### DidTapMarkerCallback
 
 <code>(result: <a href="#didtapmarkerresult">DidTapMarkerResult</a>, err?: any): void</code>
+
+#### DidTapMyLocationButtonCallback
+
+<code>(result: null, err?: any): void</code>
+
+#### DidTapMyLocationDotCallback
+
+<code>(result: <a href="#didtapmylocationdotresult">DidTapMyLocationDotResult</a>, err?: any): void</code>
 
 ### Enums
 

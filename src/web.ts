@@ -13,9 +13,13 @@ import {
   ElementFromPointResultOptions,
   AddMarkerOptions,
   AddMarkerResult,
+  DidTapInfoWindowCallback,
   DidCloseInfoWindowCallback,
   DidTapMapCallback,
+  DidLongPressMapCallback,
   DidTapMarkerCallback,
+  DidTapMyLocationButtonCallback,
+  DidTapMyLocationDotCallback,
   DefaultEventOptions,
   DefaultEventWithPreventDefaultOptions,
 } from "./definitions";
@@ -53,6 +57,13 @@ export class CapacitorGoogleMapsWeb extends WebPlugin
     throw this.unimplemented("Not implemented on web.");
   }
 
+  async didTapInfoWindow(
+    _options: DefaultEventOptions,
+    _callback: DidTapInfoWindowCallback
+  ): Promise<CallbackID> {
+    throw this.unimplemented("Not implemented on web.");
+  }
+
   async didCloseInfoWindow(
     _options: DefaultEventOptions,
     _callback: DidCloseInfoWindowCallback
@@ -67,9 +78,30 @@ export class CapacitorGoogleMapsWeb extends WebPlugin
     throw this.unimplemented("Not implemented on web.");
   }
 
+  async didLongPressMap(
+    _options: DefaultEventOptions,
+    _callback: DidLongPressMapCallback
+  ): Promise<CallbackID> {
+    throw this.unimplemented("Not implemented on web.");
+  }
+
   async didTapMarker(
     _options: DefaultEventWithPreventDefaultOptions,
     _callback: DidTapMarkerCallback
+  ): Promise<CallbackID> {
+    throw this.unimplemented("Not implemented on web.");
+  }
+
+  async didTapMyLocationButton(
+    _options: DefaultEventWithPreventDefaultOptions,
+    _callback: DidTapMyLocationButtonCallback
+  ): Promise<CallbackID> {
+    throw this.unimplemented("Not implemented on web.");
+  }
+
+  async didTapMyLocationDot(
+    _options: DefaultEventWithPreventDefaultOptions,
+    _callback: DidTapMyLocationDotCallback
   ): Promise<CallbackID> {
     throw this.unimplemented("Not implemented on web.");
   }

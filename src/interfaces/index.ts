@@ -7,9 +7,13 @@ export { ElementFromPointResultOptions } from "./methods/ElementFromPointResult"
 export { AddMarkerOptions, AddMarkerResult } from "./methods/AddMarker";
 
 // events
-export { DidCloseInfoWindowCallback } from "./events/DidCloseInfoWindow";
-export { DidTapMapCallback } from "./events/DidTapMap";
-export { DidTapMarkerCallback } from "./events/DidTapMarker";
+export * from "./events/DidTapInfoWindow";
+export * from "./events/DidCloseInfoWindow";
+export * from "./events/DidTapMap";
+export * from "./events/DidLongPressMap";
+export * from "./events/DidTapMarker";
+export * from "./events/DidTapMyLocationButton";
+export * from "./events/DidTapMyLocationDot";
 
 // models
 export { CameraPosition } from "./models/GoogleMap/Camera/Position";

@@ -306,6 +306,11 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
     }
 
     @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
+    public void didTapInfoWindow(final PluginCall call) {
+        setCallbackIdForEvent(call, CustomMapView.EVENT_DID_TAP_INFO_WINDOW);
+    }
+
+    @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
     public void didCloseInfoWindow(final PluginCall call) {
         setCallbackIdForEvent(call, CustomMapView.EVENT_DID_CLOSE_INFO_WINDOW);
     }
@@ -316,8 +321,18 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
     }
 
     @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
+    public void didLongPressMap(final PluginCall call) {
+        setCallbackIdForEvent(call, CustomMapView.EVENT_DID_LONG_PRESS_MAP);
+    }
+
+    @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
     public void didTapMarker(final PluginCall call) {
         setCallbackIdForEvent(call, CustomMapView.EVENT_DID_TAP_MARKER);
+    }
+
+    @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
+    public void didTapMyLocationButton(final PluginCall call) {
+        setCallbackIdForEvent(call, CustomMapView.EVENT_DID_TAP_MY_LOCATION_BUTTON);
     }
 
     @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
@@ -354,7 +369,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
         final String snippet = call.getString("snippet", "");
         final Float opacity = call.getFloat("opacity", 1.0f);
         final Boolean isFlat = call.getBoolean("isFlat", false);
-        final Boolean isDraggable = call.getBoolean("isDraggable", true);
+        final Boolean isDraggable = call.getBoolean("isDraggable", false);
         final JSObject metadata = call.getObject("metadata", new JSObject());
 
         getBridge().getActivity().runOnUiThread(new Runnable() {

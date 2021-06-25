@@ -5,8 +5,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.util.JsonReader;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
@@ -22,17 +20,24 @@ import com.google.android.libraries.maps.MapView;
 import com.google.android.libraries.maps.OnMapReadyCallback;
 import com.google.android.libraries.maps.UiSettings;
 import com.google.android.libraries.maps.model.LatLng;
-import com.google.android.libraries.maps.model.MapStyleOptions;
 import com.google.android.libraries.maps.model.Marker;
 import com.google.android.libraries.maps.model.MarkerOptions;
 
 import org.json.JSONException;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
-public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnInfoWindowCloseListener, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener {
+public class CustomMapView
+        implements OnMapReadyCallback,
+        GoogleMap.OnInfoWindowClickListener,
+        GoogleMap.OnInfoWindowCloseListener,
+        GoogleMap.OnMapClickListener,
+        GoogleMap.OnMapLongClickListener,
+        GoogleMap.OnMarkerClickListener,
+        GoogleMap.OnMyLocationClickListener,
+        GoogleMap.OnMyLocationButtonClickListener
+{
     private final Context context;
     private final CustomMapViewEvents customMapViewEvents;
 
@@ -45,18 +50,28 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnInfoWindow
 
     String savedCallbackIdForCreate;
 
+    String savedCallbackIdForDidTapInfoWindow;
+
     String savedCallbackIdForDidCloseInfoWindow;
 
     String savedCallbackIdForDidTapMap;
 
+    String savedCallbackIdForDidLongPressMap;
+
     String savedCallbackIdForDidTapMarker;
     Boolean preventDefaultForDidTapMarker = false;
 
+    String savedCallbackIdForDidTapMyLocationButton;
+    Boolean preventDefaultForDidTapMyLocationButton = false;
+
     String savedCallbackIdForDidTapMyLocationDot;
 
+    public static final String EVENT_DID_TAP_INFO_WINDOW = "didTapInfoWindow";
     public static final String EVENT_DID_CLOSE_INFO_WINDOW = "didCloseInfoWindow";
     public static final String EVENT_DID_TAP_MAP = "didTapMap";
+    public static final String EVENT_DID_LONG_PRESS_MAP = "didLongPressMap";
     public static final String EVENT_DID_TAP_MARKER = "didTapMarker";
+    public static final String EVENT_DID_TAP_MY_LOCATION_BUTTON = "didTapMyLocationButton";
     public static final String EVENT_DID_TAP_MY_LOCATION_DOT = "didTapMyLocationDot";
 
     public MapCameraPosition mapCameraPosition;
@@ -97,8 +112,10 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnInfoWindow
         this.googleMap.setTrafficEnabled(this.mapPreferences.appearance.isTrafficShown);
 
         // set listeners
+        this.googleMap.setOnInfoWindowClickListener(this);
         this.googleMap.setOnInfoWindowCloseListener(this);
         this.googleMap.setOnMapClickListener(this);
+        this.googleMap.setOnMapLongClickListener(this);
         this.googleMap.setOnMarkerClickListener(this);
         this.googleMap.setOnMyLocationClickListener(this);
         this.googleMap.setOnMyLocationButtonClickListener(this);
@@ -107,6 +124,14 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnInfoWindow
         if (customMapViewEvents != null && savedCallbackIdForCreate != null) {
             JSObject result = getResultForMap();
             customMapViewEvents.onMapReady(savedCallbackIdForCreate, result);
+        }
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        if (customMapViewEvents != null && savedCallbackIdForDidTapInfoWindow != null) {
+            JSObject result = getResultForMarker(marker);
+            customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapInfoWindow, result);
         }
     }
 
@@ -121,18 +146,16 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnInfoWindow
     @Override
     public void onMapClick(LatLng latLng) {
         if (customMapViewEvents != null && savedCallbackIdForDidTapMap != null) {
-            // initialize JSObjects to return
-            JSObject result = new JSObject();
-            JSObject positionResult = new JSObject();
-
-            // get position values
-            positionResult.put("latitude", latLng.latitude);
-            positionResult.put("longitude", latLng.longitude);
-
-            // return result
-            result.put("position", positionResult);
-
+            JSObject result = getResultForPosition(latLng);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapMap, result);
+        }
+    }
+
+    @Override
+    public void onMapLongClick(LatLng latLng) {
+        if (customMapViewEvents != null && savedCallbackIdForDidLongPressMap != null) {
+            JSObject result = getResultForPosition(latLng);
+            customMapViewEvents.resultForCallbackId(savedCallbackIdForDidLongPressMap, result);
         }
     }
 
@@ -148,14 +171,17 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnInfoWindow
     @Override
     public void onMyLocationClick(@NonNull Location location) {
         if (customMapViewEvents != null && savedCallbackIdForDidTapMyLocationDot != null) {
-            JSObject result = new JSObject(); // todo
+            JSObject result = getResultForPosition(location);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapMyLocationDot, result);
         }
     }
 
     @Override
     public boolean onMyLocationButtonClick() {
-        return false;
+        if (customMapViewEvents != null && savedCallbackIdForDidTapMyLocationButton != null) {
+            customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapMyLocationButton, null);
+        }
+        return preventDefaultForDidTapMyLocationButton;
     }
 
     protected void handleOnStart() {
@@ -190,16 +216,26 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnInfoWindow
 
     public void setCallbackIdForEvent(String callbackId, String eventName, Boolean preventDefault) {
         if (callbackId != null && eventName != null) {
-            if (eventName.equals(CustomMapView.EVENT_DID_CLOSE_INFO_WINDOW)) {
+            if (eventName.equals(CustomMapView.EVENT_DID_TAP_INFO_WINDOW)) {
+                savedCallbackIdForDidTapInfoWindow = callbackId;
+            } else if (eventName.equals(CustomMapView.EVENT_DID_CLOSE_INFO_WINDOW)) {
                 savedCallbackIdForDidCloseInfoWindow = callbackId;
             } else if (eventName.equals(CustomMapView.EVENT_DID_TAP_MAP)) {
                 savedCallbackIdForDidTapMap = callbackId;
+            } else if (eventName.equals(CustomMapView.EVENT_DID_LONG_PRESS_MAP)) {
+                savedCallbackIdForDidLongPressMap = callbackId;
             } else if (eventName.equals(CustomMapView.EVENT_DID_TAP_MARKER)) {
                 savedCallbackIdForDidTapMarker = callbackId;
                 if (preventDefault == null) {
                     preventDefault = false;
                 }
                 preventDefaultForDidTapMarker = preventDefault;
+            } else if (eventName.equals(CustomMapView.EVENT_DID_TAP_MY_LOCATION_BUTTON)) {
+                savedCallbackIdForDidTapMyLocationButton = callbackId;
+                if (preventDefault == null) {
+                    preventDefault = false;
+                }
+                preventDefaultForDidTapMyLocationButton = preventDefault;
             } else if (eventName.equals(CustomMapView.EVENT_DID_TAP_MY_LOCATION_DOT)) {
                 savedCallbackIdForDidTapMyLocationDot = callbackId;
             }
@@ -329,6 +365,36 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnInfoWindow
             return result;
         }
         return null;
+    }
+
+    private JSObject getResultForPosition(Location location) {
+
+        // initialize JSObjects to return
+        JSObject result = new JSObject();
+        JSObject positionResult = new JSObject();
+        result.put("position", positionResult);
+
+        // get position values
+        positionResult.put("latitude", location.getLatitude());
+        positionResult.put("longitude", location.getLongitude());
+
+        // return result
+        return result;
+    }
+
+    private JSObject getResultForPosition(LatLng latLng) {
+
+        // initialize JSObjects to return
+        JSObject result = new JSObject();
+        JSObject positionResult = new JSObject();
+        result.put("position", positionResult);
+
+        // get position values
+        positionResult.put("latitude", latLng.latitude);
+        positionResult.put("longitude", latLng.longitude);
+
+        // return result
+        return result;
     }
 
     private JSObject getResultForMarker(Marker marker) {
