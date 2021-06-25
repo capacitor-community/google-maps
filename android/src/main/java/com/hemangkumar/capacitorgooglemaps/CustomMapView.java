@@ -1,6 +1,9 @@
 package com.hemangkumar.capacitorgooglemaps;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.util.JsonReader;
 import android.view.View;
@@ -8,13 +11,14 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 
 import com.getcapacitor.JSObject;
 import com.google.android.libraries.maps.GoogleMap;
 import com.google.android.libraries.maps.GoogleMapOptions;
 import com.google.android.libraries.maps.MapView;
 import com.google.android.libraries.maps.OnMapReadyCallback;
-import com.google.android.libraries.maps.model.CameraPosition;
+import com.google.android.libraries.maps.UiSettings;
 import com.google.android.libraries.maps.model.LatLng;
 import com.google.android.libraries.maps.model.Marker;
 import com.google.android.libraries.maps.model.MarkerOptions;
@@ -22,6 +26,7 @@ import com.google.android.libraries.maps.model.MarkerOptions;
 import org.json.JSONException;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnInfoWindowCloseListener, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener {
@@ -51,6 +56,9 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnInfoWindow
     public static final String EVENT_DID_TAP_MARKER = "didTapMarker";
     public static final String EVENT_DID_TAP_MY_LOCATION_DOT = "didTapMyLocationDot";
 
+    public MapCameraPosition mapCameraPosition;
+    public MapPreferences mapPreferences;
+
     public CustomMapView(@NonNull Context context, CustomMapViewEvents customMapViewEvents) {
         this.context = context;
         this.customMapViewEvents = customMapViewEvents;
@@ -61,10 +69,28 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnInfoWindow
         return id;
     }
 
+    private boolean hasPermission() {
+        return ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
         // populate `googleMap` variable for other methods to use
         this.googleMap = googleMap;
+
+        // set controls
+        UiSettings googleMapUISettings = this.googleMap.getUiSettings();
+        googleMapUISettings.setIndoorLevelPickerEnabled(this.mapPreferences.controls.isIndoorLevelPickerEnabled);
+        googleMapUISettings.setMyLocationButtonEnabled(this.mapPreferences.controls.isMyLocationButtonEnabled);
+
+        // set appearance
+        this.googleMap.setBuildingsEnabled(this.mapPreferences.appearance.isBuildingsShown);
+        this.googleMap.setIndoorEnabled(this.mapPreferences.appearance.isIndoorShown);
+        if (hasPermission()) {
+            this.googleMap.setMyLocationEnabled(this.mapPreferences.appearance.isMyLocationDotShown);
+        }
+        this.googleMap.setTrafficEnabled(this.mapPreferences.appearance.isTrafficShown);
 
         // set listeners
         this.googleMap.setOnInfoWindowCloseListener(this);
@@ -75,8 +101,7 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnInfoWindow
 
         // execute callback
         if (customMapViewEvents != null && savedCallbackIdForCreate != null) {
-            JSObject result = new JSObject();
-            result.put("mapId", id);
+            JSObject result = getResultForMap();
             customMapViewEvents.onMapReady(savedCallbackIdForCreate, result);
         }
     }
@@ -177,30 +202,59 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnInfoWindow
         }
     }
 
-    public void createMap(String callbackId, Double latitude, Double longitude, float zoom, boolean liteMode, Integer width, Integer height, Integer x, Integer y) {
+    public void createMap(String callbackId, BoundingRect boundingRect, MapCameraPosition mapCameraPosition, MapPreferences mapPreferences) {
         savedCallbackIdForCreate = callbackId;
 
-        LatLng latLng = new LatLng(latitude, longitude);
-        CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(latLng)
-                .zoom(zoom)
-                .build();
+        this.mapCameraPosition = mapCameraPosition;
+        this.mapPreferences = mapPreferences;
 
-        GoogleMapOptions googleMapOptions = new GoogleMapOptions();
-        googleMapOptions.camera(cameraPosition);
-        googleMapOptions.liteMode(liteMode);
+        GoogleMapOptions googleMapOptions = this.mapPreferences.generateGoogleMapOptions();
+        googleMapOptions.camera(this.mapCameraPosition.cameraPosition);
 
         mapView = new MapView(context, googleMapOptions);
 
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(getScaledPixels(width), getScaledPixels(height));
-        lp.topMargin = getScaledPixels(y);
-        lp.leftMargin = getScaledPixels(x);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(getScaledPixels(boundingRect.width), getScaledPixels(boundingRect.height));
+        lp.topMargin = getScaledPixels(boundingRect.y);
+        lp.leftMargin = getScaledPixels(boundingRect.x);
 
         mapView.setLayoutParams(lp);
 
         mapView.onCreate(null);
         mapView.onStart();
         mapView.getMapAsync(this);
+    }
+
+    @SuppressLint("MissingPermission")
+    public JSObject invalidateMap() {
+        if (this.googleMap == null) {
+            return null;
+        }
+
+        UiSettings googleMapUISettings = this.googleMap.getUiSettings();
+
+        // set gestures
+        googleMapUISettings.setRotateGesturesEnabled(this.mapPreferences.gestures.isRotateAllowed);
+        googleMapUISettings.setScrollGesturesEnabled(this.mapPreferences.gestures.isScrollAllowed);
+        googleMapUISettings.setScrollGesturesEnabledDuringRotateOrZoom(this.mapPreferences.gestures.isScrollAllowedDuringRotateOrZoom);
+        googleMapUISettings.setTiltGesturesEnabled(this.mapPreferences.gestures.isTiltAllowed);
+        googleMapUISettings.setZoomGesturesEnabled(this.mapPreferences.gestures.isZoomAllowed);
+
+        // set controls
+        googleMapUISettings.setCompassEnabled(this.mapPreferences.controls.isCompassButtonEnabled);
+        googleMapUISettings.setIndoorLevelPickerEnabled(this.mapPreferences.controls.isIndoorLevelPickerEnabled);
+        googleMapUISettings.setMapToolbarEnabled(this.mapPreferences.controls.isMapToolbarEnabled);
+        googleMapUISettings.setMyLocationButtonEnabled(this.mapPreferences.controls.isMyLocationButtonEnabled);
+        googleMapUISettings.setZoomControlsEnabled(this.mapPreferences.controls.isZoomButtonsEnabled);
+
+        // set appearance
+        this.googleMap.setBuildingsEnabled(this.mapPreferences.appearance.isBuildingsShown);
+        this.googleMap.setIndoorEnabled(this.mapPreferences.appearance.isIndoorShown);
+        if (hasPermission()) {
+            this.googleMap.setMyLocationEnabled(this.mapPreferences.appearance.isMyLocationDotShown);
+        }
+        this.googleMap.setTrafficEnabled(this.mapPreferences.appearance.isTrafficShown);
+
+        return getResultForMap();
     }
 
     private int getScaledPixels(float pixels) {
@@ -242,6 +296,21 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnInfoWindow
         marker.setTag(tag);
 
         return getResultForMarker(marker);
+    }
+
+    private JSObject getResultForMap() {
+        if (this.mapView != null && this.googleMap != null) {
+            JSObject result = new JSObject();
+            JSObject resultGoogleMap = new JSObject();
+            result.put("googleMap", resultGoogleMap);
+
+            resultGoogleMap.put("mapId", id);
+
+            // @TODO: add cameraPosition etc. to result as well.
+
+            return result;
+        }
+        return null;
     }
 
     private JSObject getResultForMarker(Marker marker) {

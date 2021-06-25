@@ -212,24 +212,20 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
     }
 
     @PluginMethod()
-    public void create(final PluginCall call) {
-        Integer DEFAULT_WIDTH = 500;
-        Integer DEFAULT_HEIGHT = 500;
-        Float DEFAULT_ZOOM = 12.0f;
-
+    public void createMap(final PluginCall call) {
         final CapacitorGoogleMaps ctx = this;
 
         bridge.saveCall(call);
         final String callbackId = call.getCallbackId();
 
-        final Double latitude = call.getDouble("latitude");
-        final Double longitude = call.getDouble("longitude");
-        final Float zoom = call.getFloat("zoom", DEFAULT_ZOOM);
-        final Boolean liteMode = call.getBoolean("liteMode", false);
-        final Integer width = call.getInt("width", DEFAULT_WIDTH);
-        final Integer height = call.getInt("height", DEFAULT_HEIGHT);
-        final Integer x = call.getInt("x", 0);
-        final Integer y = call.getInt("y", 0);
+        final BoundingRect boundingRect = new BoundingRect();
+        boundingRect.updateFromJSObject(call.getObject("boundingRect"));
+
+        final MapCameraPosition mapCameraPosition = new MapCameraPosition();
+        mapCameraPosition.updateFromJSObject(call.getObject("cameraPosition"));
+
+        final MapPreferences mapPreferences = new MapPreferences();
+        mapPreferences.updateFromJSObject(call.getObject("preferences"));
 
         getBridge().getActivity().runOnUiThread(new Runnable() {
             @Override
@@ -238,7 +234,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
 
                 customMapViews.put(customMapView.getId(), customMapView);
 
-                customMapView.createMap(callbackId, latitude, longitude, zoom, liteMode, width, height, x, y);
+                customMapView.createMap(callbackId, boundingRect, mapCameraPosition, mapPreferences);
 
                 customMapView.addToView(((ViewGroup) bridge.getWebView().getParent()));
 
@@ -249,6 +245,29 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
                 // Hide the background
                 bridge.getWebView().setBackgroundColor(Color.TRANSPARENT);
                 bridge.getWebView().loadUrl("javascript:document.documentElement.style.backgroundColor = 'transparent';void(0);");
+            }
+        });
+    }
+
+    @PluginMethod()
+    public void updateMap(final PluginCall call) {
+        final String mapId = call.getString("mapId");
+
+        getBridge().getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                CustomMapView customMapView = customMapViews.get(mapId);
+
+                if (customMapView != null) {
+                    final MapPreferences mapPreferences = customMapView.mapPreferences;
+                    mapPreferences.updateFromJSObject(call.getObject("preferences"));
+
+                    JSObject result = customMapView.invalidateMap();
+
+                    call.resolve(result);
+                } else {
+                    call.reject("map not found");
+                }
             }
         });
     }
