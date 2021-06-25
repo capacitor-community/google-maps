@@ -20,6 +20,7 @@ import com.google.android.libraries.maps.MapView;
 import com.google.android.libraries.maps.OnMapReadyCallback;
 import com.google.android.libraries.maps.UiSettings;
 import com.google.android.libraries.maps.model.LatLng;
+import com.google.android.libraries.maps.model.MapStyleOptions;
 import com.google.android.libraries.maps.model.Marker;
 import com.google.android.libraries.maps.model.MarkerOptions;
 
@@ -85,6 +86,7 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnInfoWindow
         googleMapUISettings.setMyLocationButtonEnabled(this.mapPreferences.controls.isMyLocationButtonEnabled);
 
         // set appearance
+        this.googleMap.setMapStyle(this.mapPreferences.appearance.style);
         this.googleMap.setBuildingsEnabled(this.mapPreferences.appearance.isBuildingsShown);
         this.googleMap.setIndoorEnabled(this.mapPreferences.appearance.isIndoorShown);
         if (hasPermission()) {
@@ -247,6 +249,8 @@ public class CustomMapView implements OnMapReadyCallback, GoogleMap.OnInfoWindow
         googleMapUISettings.setZoomControlsEnabled(this.mapPreferences.controls.isZoomButtonsEnabled);
 
         // set appearance
+        this.googleMap.setMapType(this.mapPreferences.appearance.type);
+        this.googleMap.setMapStyle(this.mapPreferences.appearance.style);
         this.googleMap.setBuildingsEnabled(this.mapPreferences.appearance.isBuildingsShown);
         this.googleMap.setIndoorEnabled(this.mapPreferences.appearance.isIndoorShown);
         if (hasPermission()) {

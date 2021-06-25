@@ -54,6 +54,9 @@ public class MapPreferences {
 
         // set appearance
         if (this.appearance != null) {
+            // set mapType
+            googleMapOptions.mapType(this.appearance.type);
+
             // appearance.isIndoorShown can only be set through `GoogleMap`
             // appearance.isBuildingsShown can only be set through `GoogleMap`
             // appearance.isMyLocationDotShown can only be set through `GoogleMap`
