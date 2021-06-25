@@ -17,19 +17,19 @@ public class MapPreferencesAppearance {
         this.isTrafficShown = false;
     }
 
-    public void updateFromJSObject(@Nullable JSObject gesturesObject) {
-        if (gesturesObject != null) {
-            if (gesturesObject.has("isBuildingsShown")) {
-                this.isBuildingsShown = gesturesObject.getBool("isBuildingsShown");
+    public void updateFromJSObject(@Nullable JSObject jsObject) {
+        if (jsObject != null) {
+            if (jsObject.has("isBuildingsShown")) {
+                this.isBuildingsShown = jsObject.getBool("isBuildingsShown");
             }
-            if (gesturesObject.has("isIndoorShown")) {
-                this.isIndoorShown = gesturesObject.getBool("isIndoorShown");
+            if (jsObject.has("isIndoorShown")) {
+                this.isIndoorShown = jsObject.getBool("isIndoorShown");
             }
-            if (gesturesObject.has("isMyLocationDotShown")) {
-                this.isMyLocationDotShown = gesturesObject.getBool("isMyLocationDotShown");
+            if (jsObject.has("isMyLocationDotShown")) {
+                this.isMyLocationDotShown = jsObject.getBool("isMyLocationDotShown");
             }
-            if (gesturesObject.has("isTrafficShown")) {
-                this.isTrafficShown = gesturesObject.getBool("isTrafficShown");
+            if (jsObject.has("isTrafficShown")) {
+                this.isTrafficShown = jsObject.getBool("isTrafficShown");
             }
         }
     }

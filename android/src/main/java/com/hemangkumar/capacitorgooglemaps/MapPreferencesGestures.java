@@ -19,22 +19,22 @@ public class MapPreferencesGestures {
         this.isZoomAllowed = true;
     }
 
-    public void updateFromJSObject(@Nullable JSObject gesturesObject) {
-        if (gesturesObject != null) {
-            if (gesturesObject.has("isRotateAllowed")) {
-                this.isRotateAllowed = gesturesObject.getBool("isRotateAllowed");
+    public void updateFromJSObject(@Nullable JSObject jsObject) {
+        if (jsObject != null) {
+            if (jsObject.has("isRotateAllowed")) {
+                this.isRotateAllowed = jsObject.getBool("isRotateAllowed");
             }
-            if (gesturesObject.has("isScrollAllowed")) {
-                this.isScrollAllowed = gesturesObject.getBool("isScrollAllowed");
+            if (jsObject.has("isScrollAllowed")) {
+                this.isScrollAllowed = jsObject.getBool("isScrollAllowed");
             }
-            if (gesturesObject.has("isScrollAllowedDuringRotateOrZoom")) {
-                this.isScrollAllowedDuringRotateOrZoom = gesturesObject.getBool("isScrollAllowedDuringRotateOrZoom");
+            if (jsObject.has("isScrollAllowedDuringRotateOrZoom")) {
+                this.isScrollAllowedDuringRotateOrZoom = jsObject.getBool("isScrollAllowedDuringRotateOrZoom");
             }
-            if (gesturesObject.has("isTiltAllowed")) {
-                this.isTiltAllowed = gesturesObject.getBool("isTiltAllowed");
+            if (jsObject.has("isTiltAllowed")) {
+                this.isTiltAllowed = jsObject.getBool("isTiltAllowed");
             }
-            if (gesturesObject.has("isZoomAllowed")) {
-                this.isZoomAllowed = gesturesObject.getBool("isZoomAllowed");
+            if (jsObject.has("isZoomAllowed")) {
+                this.isZoomAllowed = jsObject.getBool("isZoomAllowed");
             }
         }
     }

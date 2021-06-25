@@ -19,19 +19,19 @@ public class MapPreferencesControls {
         this.isZoomButtonsEnabled = false;
     }
 
-    public void updateFromJSObject(@Nullable JSObject gesturesObject) {
-        if (gesturesObject != null) {
-            if (gesturesObject.has("isCompassButtonEnabled")) {
-                this.isCompassButtonEnabled = gesturesObject.getBool("isCompassButtonEnabled");
+    public void updateFromJSObject(@Nullable JSObject jsObject) {
+        if (jsObject != null) {
+            if (jsObject.has("isCompassButtonEnabled")) {
+                this.isCompassButtonEnabled = jsObject.getBool("isCompassButtonEnabled");
             }
-            if (gesturesObject.has("isMapToolbarEnabled")) {
-                this.isMapToolbarEnabled = gesturesObject.getBool("isMapToolbarEnabled");
+            if (jsObject.has("isMapToolbarEnabled")) {
+                this.isMapToolbarEnabled = jsObject.getBool("isMapToolbarEnabled");
             }
-            if (gesturesObject.has("isMyLocationButtonEnabled")) {
-                this.isMyLocationButtonEnabled = gesturesObject.getBool("isMyLocationButtonEnabled");
+            if (jsObject.has("isMyLocationButtonEnabled")) {
+                this.isMyLocationButtonEnabled = jsObject.getBool("isMyLocationButtonEnabled");
             }
-            if (gesturesObject.has("isZoomButtonsEnabled")) {
-                this.isZoomButtonsEnabled = gesturesObject.getBool("isZoomButtonsEnabled");
+            if (jsObject.has("isZoomButtonsEnabled")) {
+                this.isZoomButtonsEnabled = jsObject.getBool("isZoomButtonsEnabled");
             }
         }
     }
