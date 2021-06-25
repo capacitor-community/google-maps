@@ -1,4 +1,9 @@
-import { GoogleMap, BoundingRect, MapPreferences } from "./../../definitions";
+import {
+  GoogleMap,
+  BoundingRect,
+  MapPreferences,
+  CameraPosition,
+} from "./../../definitions";
 
 export interface CreateMapOptions {
   /**
@@ -9,6 +14,12 @@ export interface CreateMapOptions {
    * @since 2.0.0
    */
   boundingRect?: BoundingRect;
+  /**
+   * See CameraPosition
+   *
+   * @since 2.0.0
+   */
+  cameraPosition: CameraPosition;
   /**
    * @since 2.0.0
    */

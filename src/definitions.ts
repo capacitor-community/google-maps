@@ -38,9 +38,9 @@ export interface DidRequestElementFromPointResult {
 export interface CapacitorGoogleMapsPlugin {
   initialize(options: InitializeOptions): Promise<void>;
 
-  createMap(options?: CreateMapOptions): Promise<CreateMapResult>;
+  createMap(options: CreateMapOptions): Promise<CreateMapResult>;
 
-  updateMap(options?: UpdateMapOptions): Promise<UpdateMapResult>;
+  updateMap(options: UpdateMapOptions): Promise<UpdateMapResult>;
 
   elementFromPointResult(options: ElementFromPointResultOptions): Promise<void>;
 

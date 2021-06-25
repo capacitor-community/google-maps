@@ -27,7 +27,7 @@ export interface MapControls {
    * If `true`, the Map Toolbar is enabled.
    * If enabled, and the Map Toolbar can be shown in the current context, users will see a bar with various context-dependent actions, including 'open this map in the Google Maps app' and 'find directions to the highlighted marker in the Google Maps app'.
    *
-   * @default true
+   * @default false
    * @since 2.0.0
    */
   isMapToolbarEnabled: boolean;
@@ -47,7 +47,7 @@ export interface MapControls {
    * When pressed, they cause the camera to zoom in (or out) by one zoom level.
    * If disabled, the zoom controls are not shown.
    *
-   * @default true
+   * @default false
    * @since 2.0.0
    */
   isZoomButtonsEnabled: boolean;

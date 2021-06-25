@@ -38,7 +38,7 @@ initialize(options: InitializeOptions) => Promise<void>
 ### createMap(...)
 
 ```typescript
-createMap(options?: CreateMapOptions) => Promise<CreateMapResult>
+createMap(options: CreateMapOptions) => Promise<CreateMapResult>
 ```
 
 | Param         | Type                                                          |
@@ -52,7 +52,7 @@ createMap(options?: CreateMapOptions) => Promise<CreateMapResult>
 ### updateMap(...)
 
 ```typescript
-updateMap(options?: UpdateMapOptions) => Promise<UpdateMapResult>
+updateMap(options: UpdateMapOptions) => Promise<UpdateMapResult>
 ```
 
 | Param         | Type                                                          |
@@ -182,13 +182,7 @@ addListener(eventName: "didRequestElementFromPoint", listenerFunc: (result: DidR
 | -------------------- | --------------------------------------------------------- | ------------------------------------------------ | ----- |
 | **`mapId`**          | <code>string</code>                                       | GUID representing the unique id of this map      | 2.0.0 |
 | **`cameraPosition`** | <code><a href="#cameraposition">CameraPosition</a></code> | See <a href="#cameraposition">CameraPosition</a> | 2.0.0 |
-| **`gestures`**       | <code><a href="#mapgestures">MapGestures</a></code>       | See <a href="#mapgestures">MapGestures</a>       | 2.0.0 |
-| **`controls`**       | <code><a href="#mapcontrols">MapControls</a></code>       | See <a href="#mapcontrols">MapControls</a>       | 2.0.0 |
-| **`appearance`**     | <code><a href="#mapappearance">MapAppearance</a></code>   | See <a href="#mapappearance">MapAppearance</a>   | 2.0.0 |
-| **`maxZoom`**        | <code>number</code>                                       |                                                  |       |
-| **`minZoom`**        | <code>number</code>                                       |                                                  |       |
-| **`padding`**        | <code>any</code>                                          |                                                  |       |
-| **`liteMode`**       | <code>boolean</code>                                      |                                                  |       |
+| **`preferences`**    | <code><a href="#mappreferences">MapPreferences</a></code> | See <a href="#mappreferences">MapPreferences</a> | 2.0.0 |
 
 #### CameraPosition
 
@@ -212,6 +206,18 @@ A data class representing a pair of latitude and longitude coordinates, stored a
 | **`latitude`**  | <code>number</code> | Latitude, in degrees. This value is in the range [-90, 90].    | 2.0.0 |
 | **`longitude`** | <code>number</code> | Longitude, in degrees. This value is in the range [-180, 180]. | 2.0.0 |
 
+#### MapPreferences
+
+| Prop             | Type                                                    | Description                                    | Since |
+| ---------------- | ------------------------------------------------------- | ---------------------------------------------- | ----- |
+| **`gestures`**   | <code><a href="#mapgestures">MapGestures</a></code>     | See <a href="#mapgestures">MapGestures</a>     | 2.0.0 |
+| **`controls`**   | <code><a href="#mapcontrols">MapControls</a></code>     | See <a href="#mapcontrols">MapControls</a>     | 2.0.0 |
+| **`appearance`** | <code><a href="#mapappearance">MapAppearance</a></code> | See <a href="#mapappearance">MapAppearance</a> | 2.0.0 |
+| **`maxZoom`**    | <code>number</code>                                     |                                                |       |
+| **`minZoom`**    | <code>number</code>                                     |                                                |       |
+| **`padding`**    | <code>any</code>                                        |                                                |       |
+| **`liteMode`**   | <code>boolean</code>                                    |                                                |       |
+
 #### MapGestures
 
 Aggregates all gesture parameters such as allowing for rotating, scrolling, tilting and zooming the map.
@@ -228,12 +234,12 @@ Aggregates all gesture parameters such as allowing for rotating, scrolling, tilt
 
 Aggregates all control parameters such as enabling the compass, my-location and zoom buttons as well as the toolbar.
 
-| Prop                            | Type                 | Description                                                                                                                                                                                                                                                                                                                                                                                                | Default           | Since |
-| ------------------------------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- | ----- |
-| **`isCompassButtonEnabled`**    | <code>boolean</code> | If `true`, the compass button is enabled. The compass is an icon on the map that indicates the direction of north on the map. If enabled, it is only shown when the camera is rotated away from its default orientation (bearing of 0). When a user taps the compass, the camera orients itself to its default orientation and fades away shortly after. If disabled, the compass will never be displayed. | <code>true</code> | 2.0.0 |
-| **`isMapToolbarEnabled`**       | <code>boolean</code> | (Android only) If `true`, the Map Toolbar is enabled. If enabled, and the Map Toolbar can be shown in the current context, users will see a bar with various context-dependent actions, including 'open this map in the Google Maps app' and 'find directions to the highlighted marker in the Google Maps app'.                                                                                           | <code>true</code> | 2.0.0 |
-| **`isMyLocationButtonEnabled`** | <code>boolean</code> | If `true`, the my-location button is enabled. This is a button visible on the map that, when tapped by users, will center the map on the current user location. If the button is enabled, it is only shown when <a href="#mapappearance">`MapAppearance.isMyLocationDotShown</a> === true`.                                                                                                                | <code>true</code> | 2.0.0 |
-| **`isZoomButtonsEnabled`**      | <code>boolean</code> | (Android only) If `true`, the zoom controls are enabled. The zoom controls are a pair of buttons (one for zooming in, one for zooming out) that appear on the screen when enabled. When pressed, they cause the camera to zoom in (or out) by one zoom level. If disabled, the zoom controls are not shown.                                                                                                | <code>true</code> | 2.0.0 |
+| Prop                            | Type                 | Description                                                                                                                                                                                                                                                                                                                                                                                                | Default            | Since |
+| ------------------------------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ | ----- |
+| **`isCompassButtonEnabled`**    | <code>boolean</code> | If `true`, the compass button is enabled. The compass is an icon on the map that indicates the direction of north on the map. If enabled, it is only shown when the camera is rotated away from its default orientation (bearing of 0). When a user taps the compass, the camera orients itself to its default orientation and fades away shortly after. If disabled, the compass will never be displayed. | <code>true</code>  | 2.0.0 |
+| **`isMapToolbarEnabled`**       | <code>boolean</code> | (Android only) If `true`, the Map Toolbar is enabled. If enabled, and the Map Toolbar can be shown in the current context, users will see a bar with various context-dependent actions, including 'open this map in the Google Maps app' and 'find directions to the highlighted marker in the Google Maps app'.                                                                                           | <code>false</code> | 2.0.0 |
+| **`isMyLocationButtonEnabled`** | <code>boolean</code> | If `true`, the my-location button is enabled. This is a button visible on the map that, when tapped by users, will center the map on the current user location. If the button is enabled, it is only shown when <a href="#mapappearance">`MapAppearance.isMyLocationDotShown</a> === true`.                                                                                                                | <code>true</code>  | 2.0.0 |
+| **`isZoomButtonsEnabled`**      | <code>boolean</code> | (Android only) If `true`, the zoom controls are enabled. The zoom controls are a pair of buttons (one for zooming in, one for zooming out) that appear on the screen when enabled. When pressed, they cause the camera to zoom in (or out) by one zoom level. If disabled, the zoom controls are not shown.                                                                                                | <code>false</code> | 2.0.0 |
 
 #### MapAppearance
 
@@ -261,11 +267,12 @@ An intrinsic object that provides functions to convert JavaScript values to and 
 
 #### CreateMapOptions
 
-| Prop               | Type                                                      | Since |
-| ------------------ | --------------------------------------------------------- | ----- |
-| **`element`**      | <code>HTMLElement</code>                                  | 2.0.0 |
-| **`boundingRect`** | <code><a href="#boundingrect">BoundingRect</a></code>     | 2.0.0 |
-| **`preferences`**  | <code><a href="#mappreferences">MapPreferences</a></code> | 2.0.0 |
+| Prop                 | Type                                                      | Description                                      | Since |
+| -------------------- | --------------------------------------------------------- | ------------------------------------------------ | ----- |
+| **`element`**        | <code>HTMLElement</code>                                  |                                                  | 2.0.0 |
+| **`boundingRect`**   | <code><a href="#boundingrect">BoundingRect</a></code>     |                                                  | 2.0.0 |
+| **`cameraPosition`** | <code><a href="#cameraposition">CameraPosition</a></code> | See <a href="#cameraposition">CameraPosition</a> | 2.0.0 |
+| **`preferences`**    | <code><a href="#mappreferences">MapPreferences</a></code> |                                                  | 2.0.0 |
 
 #### BoundingRect
 
@@ -275,19 +282,6 @@ An intrinsic object that provides functions to convert JavaScript values to and 
 | **`height`** | <code>number</code> |
 | **`x`**      | <code>number</code> |
 | **`y`**      | <code>number</code> |
-
-#### MapPreferences
-
-| Prop                 | Type                                                      | Description                                      | Since |
-| -------------------- | --------------------------------------------------------- | ------------------------------------------------ | ----- |
-| **`cameraPosition`** | <code><a href="#cameraposition">CameraPosition</a></code> | See <a href="#cameraposition">CameraPosition</a> | 2.0.0 |
-| **`gestures`**       | <code><a href="#mapgestures">MapGestures</a></code>       | See <a href="#mapgestures">MapGestures</a>       | 2.0.0 |
-| **`controls`**       | <code><a href="#mapcontrols">MapControls</a></code>       | See <a href="#mapcontrols">MapControls</a>       | 2.0.0 |
-| **`appearance`**     | <code><a href="#mapappearance">MapAppearance</a></code>   | See <a href="#mapappearance">MapAppearance</a>   | 2.0.0 |
-| **`maxZoom`**        | <code>number</code>                                       |                                                  |       |
-| **`minZoom`**        | <code>number</code>                                       |                                                  |       |
-| **`padding`**        | <code>any</code>                                          |                                                  |       |
-| **`liteMode`**       | <code>boolean</code>                                      |                                                  |       |
 
 #### UpdateMapResult
 

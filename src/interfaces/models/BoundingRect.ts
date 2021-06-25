@@ -1,5 +1,5 @@
 /**
- * @todo
+ * @todo: documentation
  */
 export interface BoundingRect {
   width: number;

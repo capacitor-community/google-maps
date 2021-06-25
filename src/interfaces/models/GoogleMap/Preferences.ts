@@ -2,16 +2,9 @@ import {
   MapAppearance,
   MapControls,
   MapGestures,
-  CameraPosition,
 } from "./../../../definitions";
 
 export interface MapPreferences {
-  /**
-   * See CameraPosition
-   *
-   * @since 2.0.0
-   */
-  cameraPosition: CameraPosition;
   /**
    * See MapGestures
    *
@@ -37,5 +30,5 @@ export interface MapPreferences {
 
   padding: any; // @todo: Sets padding on the map.
 
-  liteMode: boolean;
+  liteMode: boolean; // @todo
 }
