@@ -19,6 +19,7 @@ import com.google.android.libraries.maps.GoogleMapOptions;
 import com.google.android.libraries.maps.MapView;
 import com.google.android.libraries.maps.OnMapReadyCallback;
 import com.google.android.libraries.maps.UiSettings;
+import com.google.android.libraries.maps.model.CameraPosition;
 import com.google.android.libraries.maps.model.LatLng;
 import com.google.android.libraries.maps.model.Marker;
 import com.google.android.libraries.maps.model.MarkerOptions;
@@ -297,6 +298,13 @@ public class CustomMapView
         this.googleMap.setTrafficEnabled(this.mapPreferences.appearance.isTrafficShown);
 
         return getResultForMap();
+    }
+
+    public CameraPosition getCameraPosition() {
+        if (this.googleMap != null) {
+            return this.googleMap.getCameraPosition();
+        }
+        return null;
     }
 
     public JSObject moveCamera(Integer duration) {

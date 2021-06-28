@@ -17,9 +17,12 @@ public class MapCameraPosition {
         this.cameraPosition = CameraPosition.builder().target(new LatLng(0, 0)).build();
     }
 
-    public void updateFromJSObject(@Nullable JSObject cameraPosition) {
+    public void updateFromJSObject(@Nullable JSObject cameraPosition, CameraPosition previousCameraPosition) {
         CameraPosition.Builder cameraPositionBuilder;
-        if (this.cameraPosition != null) {
+        if (previousCameraPosition != null) {
+            // use given cameraPosition as the base
+            cameraPositionBuilder = new CameraPosition.Builder(previousCameraPosition);
+        } else if (this.cameraPosition != null) {
             // use oldCameraPosition as the base
             cameraPositionBuilder = new CameraPosition.Builder(this.cameraPosition);
         } else {

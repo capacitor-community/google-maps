@@ -18,6 +18,7 @@ import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 import com.google.android.libraries.maps.model.Marker;
+import com.google.android.libraries.maps.model.CameraPosition;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -222,7 +223,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
         boundingRect.updateFromJSObject(call.getObject("boundingRect"));
 
         final MapCameraPosition mapCameraPosition = new MapCameraPosition();
-        mapCameraPosition.updateFromJSObject(call.getObject("cameraPosition"));
+        mapCameraPosition.updateFromJSObject(call.getObject("cameraPosition"), null);
 
         final MapPreferences mapPreferences = new MapPreferences();
         mapPreferences.updateFromJSObject(call.getObject("preferences"));
@@ -283,7 +284,16 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
 
                 if (customMapView != null) {
                     final MapCameraPosition mapCameraPosition = customMapView.mapCameraPosition;
-                    mapCameraPosition.updateFromJSObject(call.getObject("cameraPosition"));
+
+                    CameraPosition previousCameraPosition = null;
+                    Boolean usePreviousCameraPositionAsBase = call.getBoolean("usePreviousCameraPositionAsBase", false);
+                    if (usePreviousCameraPositionAsBase == null || !usePreviousCameraPositionAsBase) {
+                        // if we should not use the previous one,
+                        // use the current one
+                        previousCameraPosition = customMapView.getCameraPosition();
+                    }
+
+                    mapCameraPosition.updateFromJSObject(call.getObject("cameraPosition"), previousCameraPosition);
 
                     Integer duration = call.getInt("duration", 0);
 
