@@ -56,7 +56,7 @@ public class MapCameraPosition {
             if (cameraPosition.has("tilt")) {
                 try {
                     float tilt = (float) cameraPosition.getDouble("tilt");
-                    if (0.0F <= tilt && tilt <= 90.0F) {
+                    if (tilt < 0.0F || tilt > 90.0F) {
                         Log.d("GoogleMap", "Tilt needs to be between 0 and 90 inclusive: " + tilt);
                     } else {
                         cameraPositionBuilder.tilt(tilt);
