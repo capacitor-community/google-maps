@@ -13,6 +13,13 @@ public class MapPreferencesAppearance {
     public Boolean isMyLocationDotShown;
     public Boolean isTrafficShown;
 
+    public static final String TYPE_KEY = "type";
+    public static final String STYLE_KEY = "style";
+    public static final String BUILDINGS_SHOWN_KEY = "isBuildingsShown";
+    public static final String INDOOR_SHOWN_KEY = "isIndoorShown";
+    public static final String MY_LOCATION_DOT_SHOWN_KEY = "isMyLocationDotShown";
+    public static final String TRAFFIC_SHOWN_KEY = "isTrafficShown";
+
     public MapPreferencesAppearance() {
         this.type = 1;
         this.style = null;
@@ -25,8 +32,8 @@ public class MapPreferencesAppearance {
     public void updateFromJSObject(@Nullable JSObject jsObject) {
         if (jsObject != null) {
             // update mapType
-            if (jsObject.has("type")) {
-                Integer mapType = jsObject.getInteger("type", 1);
+            if (jsObject.has(TYPE_KEY)) {
+                Integer mapType = jsObject.getInteger(TYPE_KEY, 1);
                 if (mapType != null) {
                     if (mapType < 0 || mapType > 4) {
                         mapType = 1;
@@ -34,25 +41,25 @@ public class MapPreferencesAppearance {
                     this.type = mapType;
                 }
             }
-            if (jsObject.has("style")) {
-                String mapStyle = jsObject.getString("style", null);
+            if (jsObject.has(STYLE_KEY)) {
+                String mapStyle = jsObject.getString(STYLE_KEY, null);
                 if (mapStyle == null) {
                     this.style = null;
                 } else {
                     this.style = new MapStyleOptions(mapStyle);
                 }
             }
-            if (jsObject.has("isBuildingsShown")) {
-                this.isBuildingsShown = jsObject.getBool("isBuildingsShown");
+            if (jsObject.has(BUILDINGS_SHOWN_KEY)) {
+                this.isBuildingsShown = jsObject.getBool(BUILDINGS_SHOWN_KEY);
             }
-            if (jsObject.has("isIndoorShown")) {
-                this.isIndoorShown = jsObject.getBool("isIndoorShown");
+            if (jsObject.has(INDOOR_SHOWN_KEY)) {
+                this.isIndoorShown = jsObject.getBool(INDOOR_SHOWN_KEY);
             }
-            if (jsObject.has("isMyLocationDotShown")) {
-                this.isMyLocationDotShown = jsObject.getBool("isMyLocationDotShown");
+            if (jsObject.has(MY_LOCATION_DOT_SHOWN_KEY)) {
+                this.isMyLocationDotShown = jsObject.getBool(MY_LOCATION_DOT_SHOWN_KEY);
             }
-            if (jsObject.has("isTrafficShown")) {
-                this.isTrafficShown = jsObject.getBool("isTrafficShown");
+            if (jsObject.has(TRAFFIC_SHOWN_KEY)) {
+                this.isTrafficShown = jsObject.getBool(TRAFFIC_SHOWN_KEY);
             }
         }
     }

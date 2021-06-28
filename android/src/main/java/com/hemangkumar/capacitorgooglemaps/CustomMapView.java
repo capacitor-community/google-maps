@@ -99,8 +99,8 @@ public class CustomMapView
 
         // set controls
         UiSettings googleMapUISettings = this.googleMap.getUiSettings();
-        googleMapUISettings.setIndoorLevelPickerEnabled(this.mapPreferences.controls.isIndoorLevelPickerEnabled);
-        googleMapUISettings.setMyLocationButtonEnabled(this.mapPreferences.controls.isMyLocationButtonEnabled);
+        googleMapUISettings.setIndoorLevelPickerEnabled(this.mapPreferences.controls.getBoolean(MapPreferencesControls.INDOOR_LEVEL_PICKER_KEY));
+        googleMapUISettings.setMyLocationButtonEnabled(this.mapPreferences.controls.getBoolean(MapPreferencesControls.MY_LOCATION_BUTTON_KEY));
 
         // set appearance
         this.googleMap.setMapStyle(this.mapPreferences.appearance.style);
@@ -273,18 +273,18 @@ public class CustomMapView
         UiSettings googleMapUISettings = this.googleMap.getUiSettings();
 
         // set gestures
-        googleMapUISettings.setRotateGesturesEnabled(this.mapPreferences.gestures.isRotateAllowed);
-        googleMapUISettings.setScrollGesturesEnabled(this.mapPreferences.gestures.isScrollAllowed);
-        googleMapUISettings.setScrollGesturesEnabledDuringRotateOrZoom(this.mapPreferences.gestures.isScrollAllowedDuringRotateOrZoom);
-        googleMapUISettings.setTiltGesturesEnabled(this.mapPreferences.gestures.isTiltAllowed);
-        googleMapUISettings.setZoomGesturesEnabled(this.mapPreferences.gestures.isZoomAllowed);
+        googleMapUISettings.setRotateGesturesEnabled(this.mapPreferences.gestures.getBoolean(MapPreferencesGestures.ROTATE_ALLOWED_KEY));
+        googleMapUISettings.setScrollGesturesEnabled(this.mapPreferences.gestures.getBoolean(MapPreferencesGestures.SCROLL_ALLOWED_KEY));
+        googleMapUISettings.setScrollGesturesEnabledDuringRotateOrZoom(this.mapPreferences.gestures.getBoolean(MapPreferencesGestures.SCROLL_ALLOWED_DURING_ROTATE_OR_ZOOM_KEY));
+        googleMapUISettings.setTiltGesturesEnabled(this.mapPreferences.gestures.getBoolean(MapPreferencesGestures.TILT_ALLOWED_KEY));
+        googleMapUISettings.setZoomGesturesEnabled(this.mapPreferences.gestures.getBoolean(MapPreferencesGestures.ZOOM_ALLOWED_KEY));
 
         // set controls
-        googleMapUISettings.setCompassEnabled(this.mapPreferences.controls.isCompassButtonEnabled);
-        googleMapUISettings.setIndoorLevelPickerEnabled(this.mapPreferences.controls.isIndoorLevelPickerEnabled);
-        googleMapUISettings.setMapToolbarEnabled(this.mapPreferences.controls.isMapToolbarEnabled);
-        googleMapUISettings.setMyLocationButtonEnabled(this.mapPreferences.controls.isMyLocationButtonEnabled);
-        googleMapUISettings.setZoomControlsEnabled(this.mapPreferences.controls.isZoomButtonsEnabled);
+        googleMapUISettings.setCompassEnabled(this.mapPreferences.controls.getBoolean(MapPreferencesControls.COMPASS_BUTTON_KEY));
+        googleMapUISettings.setIndoorLevelPickerEnabled(this.mapPreferences.controls.getBoolean(MapPreferencesControls.INDOOR_LEVEL_PICKER_KEY));
+        googleMapUISettings.setMapToolbarEnabled(this.mapPreferences.controls.getBoolean(MapPreferencesControls.MAP_TOOLBAR_KEY));
+        googleMapUISettings.setMyLocationButtonEnabled(this.mapPreferences.controls.getBoolean(MapPreferencesControls.MY_LOCATION_BUTTON_KEY));
+        googleMapUISettings.setZoomControlsEnabled(this.mapPreferences.controls.getBoolean(MapPreferencesControls.ZOOM_BUTTONS_KEY));
 
         // set appearance
         this.googleMap.setMapType(this.mapPreferences.appearance.type);

@@ -1,38 +1,21 @@
 package com.hemangkumar.capacitorgooglemaps;
 
-import androidx.annotation.Nullable;
+import java.util.HashMap;
 
-import com.getcapacitor.JSObject;
-
-public class MapPreferencesControls {
-    public Boolean isCompassButtonEnabled;
-    public Boolean isIndoorLevelPickerEnabled;
-    public Boolean isMapToolbarEnabled;
-    public Boolean isMyLocationButtonEnabled;
-    public Boolean isZoomButtonsEnabled;
+public class MapPreferencesControls extends JSObjectDefaults {
+    public static final String COMPASS_BUTTON_KEY = "isCompassButtonEnabled";
+    public static final String INDOOR_LEVEL_PICKER_KEY = "isIndoorLevelPickerEnabled";
+    public static final String MAP_TOOLBAR_KEY = "isMapToolbarEnabled";
+    public static final String MY_LOCATION_BUTTON_KEY = "isMyLocationButtonEnabled";
+    public static final String ZOOM_BUTTONS_KEY = "isZoomButtonsEnabled";
 
     public MapPreferencesControls() {
-        this.isCompassButtonEnabled = true;
-        this.isIndoorLevelPickerEnabled = false;
-        this.isMapToolbarEnabled = false;
-        this.isMyLocationButtonEnabled = true;
-        this.isZoomButtonsEnabled = false;
-    }
-
-    public void updateFromJSObject(@Nullable JSObject jsObject) {
-        if (jsObject != null) {
-            if (jsObject.has("isCompassButtonEnabled")) {
-                this.isCompassButtonEnabled = jsObject.getBool("isCompassButtonEnabled");
-            }
-            if (jsObject.has("isMapToolbarEnabled")) {
-                this.isMapToolbarEnabled = jsObject.getBool("isMapToolbarEnabled");
-            }
-            if (jsObject.has("isMyLocationButtonEnabled")) {
-                this.isMyLocationButtonEnabled = jsObject.getBool("isMyLocationButtonEnabled");
-            }
-            if (jsObject.has("isZoomButtonsEnabled")) {
-                this.isZoomButtonsEnabled = jsObject.getBool("isZoomButtonsEnabled");
-            }
-        }
+        super(new HashMap<String, Object>(){{
+            put(COMPASS_BUTTON_KEY, Boolean.TRUE);
+            put(INDOOR_LEVEL_PICKER_KEY, Boolean.FALSE);
+            put(MAP_TOOLBAR_KEY, Boolean.FALSE);
+            put(MY_LOCATION_BUTTON_KEY, Boolean.TRUE);
+            put(ZOOM_BUTTONS_KEY, Boolean.FALSE);
+        }});
     }
 }

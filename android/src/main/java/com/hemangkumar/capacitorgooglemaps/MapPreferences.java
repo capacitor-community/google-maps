@@ -35,18 +35,18 @@ public class MapPreferences {
 
         // set gestures
         if (this.gestures != null) {
-            googleMapOptions.rotateGesturesEnabled(gestures.isRotateAllowed);
-            googleMapOptions.scrollGesturesEnabled(gestures.isScrollAllowed);
-            googleMapOptions.scrollGesturesEnabledDuringRotateOrZoom(gestures.isScrollAllowedDuringRotateOrZoom);
-            googleMapOptions.tiltGesturesEnabled(gestures.isTiltAllowed);
-            googleMapOptions.zoomGesturesEnabled(gestures.isZoomAllowed);
+            googleMapOptions.rotateGesturesEnabled(gestures.getBoolean(MapPreferencesGestures.ROTATE_ALLOWED_KEY));
+            googleMapOptions.scrollGesturesEnabled(gestures.getBoolean(MapPreferencesGestures.SCROLL_ALLOWED_KEY));
+            googleMapOptions.scrollGesturesEnabledDuringRotateOrZoom(gestures.getBoolean(MapPreferencesGestures.SCROLL_ALLOWED_DURING_ROTATE_OR_ZOOM_KEY));
+            googleMapOptions.tiltGesturesEnabled(gestures.getBoolean(MapPreferencesGestures.TILT_ALLOWED_KEY));
+            googleMapOptions.zoomGesturesEnabled(gestures.getBoolean(MapPreferencesGestures.ZOOM_ALLOWED_KEY));
         }
 
         // set controls
         if (this.controls != null) {
-            googleMapOptions.compassEnabled(controls.isCompassButtonEnabled);
-            googleMapOptions.mapToolbarEnabled(controls.isMapToolbarEnabled);
-            googleMapOptions.zoomControlsEnabled(controls.isZoomButtonsEnabled);
+            googleMapOptions.compassEnabled(controls.getBoolean(MapPreferencesControls.COMPASS_BUTTON_KEY));
+            googleMapOptions.mapToolbarEnabled(controls.getBoolean(MapPreferencesControls.MAP_TOOLBAR_KEY));
+            googleMapOptions.zoomControlsEnabled(controls.getBoolean(MapPreferencesControls.ZOOM_BUTTONS_KEY));
 
             // controls.isIndoorLevelPickerEnabled can only be set through `UiSettings`
             // controls.isMyLocationButtonEnabled can only be set through `UiSettings`
@@ -57,6 +57,7 @@ public class MapPreferences {
             // set mapType
             googleMapOptions.mapType(this.appearance.type);
 
+            // appearance.style can only be set through `GoogleMap`
             // appearance.isIndoorShown can only be set through `GoogleMap`
             // appearance.isBuildingsShown can only be set through `GoogleMap`
             // appearance.isMyLocationDotShown can only be set through `GoogleMap`

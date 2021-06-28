@@ -1,41 +1,21 @@
 package com.hemangkumar.capacitorgooglemaps;
 
-import androidx.annotation.Nullable;
+import java.util.HashMap;
 
-import com.getcapacitor.JSObject;
-
-public class MapPreferencesGestures {
-    public Boolean isRotateAllowed;
-    public Boolean isScrollAllowed;
-    public Boolean isScrollAllowedDuringRotateOrZoom;
-    public Boolean isTiltAllowed;
-    public Boolean isZoomAllowed;
+public class MapPreferencesGestures extends JSObjectDefaults {
+    public static final String ROTATE_ALLOWED_KEY = "isRotateAllowed";
+    public static final String SCROLL_ALLOWED_KEY = "isScrollAllowed";
+    public static final String SCROLL_ALLOWED_DURING_ROTATE_OR_ZOOM_KEY = "isScrollAllowedDuringRotateOrZoom";
+    public static final String TILT_ALLOWED_KEY = "isTiltAllowed";
+    public static final String ZOOM_ALLOWED_KEY = "isZoomAllowed";
 
     public MapPreferencesGestures() {
-        this.isRotateAllowed = true;
-        this.isScrollAllowed = true;
-        this.isScrollAllowedDuringRotateOrZoom = true;
-        this.isTiltAllowed = true;
-        this.isZoomAllowed = true;
-    }
-
-    public void updateFromJSObject(@Nullable JSObject jsObject) {
-        if (jsObject != null) {
-            if (jsObject.has("isRotateAllowed")) {
-                this.isRotateAllowed = jsObject.getBool("isRotateAllowed");
-            }
-            if (jsObject.has("isScrollAllowed")) {
-                this.isScrollAllowed = jsObject.getBool("isScrollAllowed");
-            }
-            if (jsObject.has("isScrollAllowedDuringRotateOrZoom")) {
-                this.isScrollAllowedDuringRotateOrZoom = jsObject.getBool("isScrollAllowedDuringRotateOrZoom");
-            }
-            if (jsObject.has("isTiltAllowed")) {
-                this.isTiltAllowed = jsObject.getBool("isTiltAllowed");
-            }
-            if (jsObject.has("isZoomAllowed")) {
-                this.isZoomAllowed = jsObject.getBool("isZoomAllowed");
-            }
-        }
+        super(new HashMap<String, Object>(){{
+            put(ROTATE_ALLOWED_KEY, Boolean.TRUE);
+            put(SCROLL_ALLOWED_KEY, Boolean.TRUE);
+            put(SCROLL_ALLOWED_DURING_ROTATE_OR_ZOOM_KEY, Boolean.TRUE);
+            put(TILT_ALLOWED_KEY, Boolean.TRUE);
+            put(ZOOM_ALLOWED_KEY, Boolean.TRUE);
+        }});
     }
 }
