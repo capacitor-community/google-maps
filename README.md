@@ -22,15 +22,16 @@
 
 ## Purpose
 
-Maps SDK for Android & iOS bring better performance and offline caching compared to JS SDK and they're free to use.
+Under the hood this package makes use of the native Maps SDK for Android and iOS. The native Maps SDK has much better performance than the JS equivalent. It also adds support for offline caching. On top of that it is completely free to use ([native pricing](https://developers.google.com/maps/billing/gmp-billing#maps-product)), in contrary to the JS SDK ([JS pricing](https://developers.google.com/maps/documentation/javascript/usage-and-billing#new-payg)).
 
 ## Maintainers
 
-| Maintainer | GitHub | Mail |
-| -----------| -------| -------|
+| Maintainer   | GitHub                                  | Mail                                                       |
+| ------------ | --------------------------------------- | ---------------------------------------------------------- |
 | Hemang Kumar | [hemangsk](https://github.com/hemangsk) | <a href="mailto:hemangsk@gmail.com">hemangsk@gmail.com</a> |
 
 ## Support Development
+
 If you like this plugin and use it on your projects, please consider donating to support the development. Thank you!
 
 <table>
@@ -44,133 +45,170 @@ If you like this plugin and use it on your projects, please consider donating to
         </tr>
 </table>
 
-## Project Status
-
-| Features  | Android | &nbsp; &nbsp; iOS &nbsp; &nbsp; | Current Status | Pending |
-| ------------- | ------------- |  ------------- | ------------- | ------------- |
-| Map Objects  | <h3 align="center">&#10003;</h3> | <h3 align="center">&#10003;</h3> | <li>``create()`` |
-| Markers  | <h5 align="center">WIP</h5> | <h5 align="center">WIP</h5> | <li>``addMarker()`` is implemented which allows you to show a marker with default tooltip design. <li>Marker icons can be set using URL. <li>Event: ``didTap`` | Info windows |
-| Business & POIs  | <h3 align="center">&#10003;</h3>  | <h3 align="center">&#10003;</h3>  | <li>Tap on any places of interest <li>Event: ``didTapPOIWithPlaceID`` |
-| Lite Mode  | <h3 align="center">&#10003;</h3>  | <h3 align="center">&#10005;</h3>  | <li>``create(liteMode?: boolean)`` | Not available for iOS
-| Street View  | <h3 align="center">&#10005;</h3>  | <h5 align="center">WIP</h5>  | <li>``createStreetView()``  |
-| Launch URL  | <h3 align="center">&#10005;</h3>  | <h3 align="center">&#10005;</h3> | |
-| Controls & Gestures  | <h5 align="center">WIP</h5>  | <h5 align="center">WIP</h5>  | <li>``settings()`` allow to set all the map UI settings. | Allow users to get current state of map settings.
-| Events  | <h5 align="center">WIP</h5> | <h5 align="center">WIP</h5>  | |
-| Camera & View  | <h3 align="center">&#10003;</h3>  | <h3 align="center">&#10003;</h3>  |<li>``setCamera()`` | Allow users to get current camera position
-| Location  | <h5 align="center">WIP</h5>  | <h5 align="center">WIP</h5>  | <li>android: ``enableCurrentLocation()`` ``onMyLocationButtonClick``, ``onMyLocationClick`` <li>iOS: ``enableCurrentLocation()``, ``myLocation()``| API wrapping needs improvement so that it becomes consistent for both platforms |
-| Drawing on Map  | <h5 align="center">WIP</h5>  | <h5 align="center">WIP</h5>  | | Shapes, Ground Overlays, Tile Overlays
-| Utility Library  | <h3 align="center">&#10005;</h3>  | <h3 align="center">&#10005;</h3>  | |
-
 ## Getting Started
 
 ### Installation
 
 #### Install package from npm
+
 ```
 npm i --save @capacitor-community/capacitor-googlemaps-native
 npx cap sync
 ```
 
-### Set up Google API Keys
+### Setup
+
+#### Obtain API Keys
+
+You must add an API key for the Maps SDK to any app that uses the SDK.
+
+Before you start using the Maps SDK, you need a project with a billing account and the Maps SDK (both for Android and iOS) enabled.
+
+Extensive and detailed steps can be found here:
 
 - [Android](https://developers.google.com/maps/documentation/android-sdk/get-api-key)
 - [iOS](https://developers.google.com/maps/documentation/ios-sdk/get-api-key)
 
-You'll have two API keys by the end of this step. Lets proceed:
+You should have two API keys by the end of this step. Lets proceed:
 
-### Add API key to your App
+#### Adding API keys to your App
 
-- [Android](https://developers.google.com/maps/documentation/android-sdk/get-api-key) in AndroidManifest.xml:
-```
+##### Android
+
+Please follow the guide here: https://developers.google.com/maps/documentation/android-sdk/get-api-key#add_key
+
+Alternatively, you can (but really should not) use the following quick and dirty way:
+
+In your `AndroidManifest.xml` add the following lines:
+
+```diff
 <application>
 ...
-
-<meta-data
-        android:name="com.google.android.geo.API_KEY"
-        android:value="YOUR_ANDROID_MAPS_API_KEY"/>
++  <meta-data
++    android:name="com.google.android.geo.API_KEY"
++    android:value="YOUR_ANDROID_MAPS_API_KEY"/>
 ...
 </application>
 ```
-- On iOS, this step is little different and mentioned below.
 
-### Importing & Initializing the plugin
+where `YOUR_ANDROID_MAPS_API_KEY` is the API key you aqcuired in the previous step.
+
+##### iOS
+
+On iOS, the API key needs to be set programmatically. This is done using the [`initialize`](./API_REFERENCE.md#initialize) method.
+
+### Initializing a Map instance
+
+After following all installation steps, you can follow this small guide to quickly setup a simple Map instance.
+
+#### Setting up your HTML
+
+The Maps SDK renders a native element (MapView) behind your webapp (WebView). You need to specify the boundaries (which is explained later) that is rendered in. So it is NOT an HTMLElement, but rather a native element. It can therefore not be styled, mutated or listened to like you would with a 'normal' HTMLElement.
+
+At the moment,the only drawback of this is, that the map instance does not size and move along with the div that it is attached to. This is a known issue and it will be solved in the future as there are some known solutions as well. However, most use cases would use a Map instance that stays at a fixed position anyway.
+
+Therefore the only requirement right now is to make sure the 'foster element' (the element which you are going to attach the Map instance to) remains at the same position. This can be achieved by preventing it to be able to scroll and to make the current view portrait (or landscape) only.
+
+So let's get to it. Let's assume you have the following layout:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Maps SDK for Capacitor - Basic Example</title>
+    <style>
+      body {
+        margin: 0;
+      }
+      #container {
+        width: 100vw;
+        height: 100vh;
+        background: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container"></div>
+  </body>
+</html>
+```
+
+Note that it can be anything really. Like with Capacitor itself, it does not matter what framework you are using. Angular, Vue, React, Svelte... they are all supported.
+
+#### Setting up your JavaScript
+
+The Plugin can be imported as follows:
 
 ```javascript
-import { CapacitorGoogleMaps } from '@capacitor-community/capacitor-googlemaps-native';
-
-/* initialize() is important for iOS,
-  Android doesn't need any initialization.
-*/
-await CapacitorGoogleMaps.initialize({
- key: "YOUR_IOS_API_KEY"
-});
+import { CapacitorGoogleMaps } from "@capacitor-community/capacitor-googlemaps-native";
 ```
 
-### Usage
+Let's assume you have imported the Plugin correctly. A simple Maps instance can then be initialized as follows:
 
-#### An example with Angular
+```javascript
+const initializeMap = async () => {
+  // first of all, you should initialize the Maps SDK:
+  await CapacitorGoogleMaps.initialize({
+    key: "YOUR_IOS_MAPS_API_KEY",
+    devicePixelRatio: window.devicePixelRatio, // this line is very important
+  });
 
-`component.html`
+  // then get the element you want to attach the Maps instance to:
+  const element = document.getElementById("container");
 
-```
-<div id="map" #map></div>
-```
+  // afterwards get its boundaries like so:
+  const boundingRect = element.getBoundingClientRect();
 
-`component.css`
-
-```
-#map {
-    margin: 2em 1em;
-    height: 250px;
-    border: 1px solid black;
-  }
-```
-
-`component.ts`
-
-```typescript
-@ViewChild('map') mapView: ElementRef;
-
-async ionViewDidEnter() {
-    const boundingRect = this.mapView.nativeElement.getBoundingClientRect() as DOMRect;
-
-    CapacitorGoogleMaps.create({
-      width: Math.round(boundingRect.width),
-      height: Math.round(boundingRect.height),
-      x: Math.round(boundingRect.x),
-      y: Math.round(boundingRect.y),
-      latitude: -33.86,
-      longitude: 151.20,
-      zoom: 12
+  // we can now create the map using the boundaries of #container
+  try {
+    const result = await CapacitorGoogleMaps.createMap({
+      boundingRect: {
+        width: Math.round(boundingRect.width),
+        height: Math.round(boundingRect.height),
+        x: Math.round(boundingRect.x),
+        y: Math.round(boundingRect.y),
+      },
     });
 
-    CapacitorGoogleMaps.addListener("onMapReady", async function() {
+    // remove background, so map can be seen
+    element.style.background = "";
 
-      /*
-        We can do all the magic here when map is ready
-      */
+    // finally set `data-maps-id` attribute for delegating touch events
+    element.setAttribute("data-maps-id", result.googleMap.mapId);
 
-      CapacitorGoogleMaps.addMarker({
-        latitude: -33.86,
-        longitude: 151.20,
-        title: "Custom Title",
-        snippet: "Custom Snippet",
-      });
+    alert("Map loaded successfully");
+  } catch (e) {
+    alert("Map failed to load");
+  }
+};
 
-      CapacitorGoogleMaps.setMapType({
-        "type": "normal"
-      })
-    })
-}
+(function () {
+  // on page load, execute the above method
+  initializeMap();
 
-ionViewDidLeave() {
-    CapacitorGoogleMaps.close();
-}
+  // Some frameworks and a recommended lifecycle hook you could use to initialize the Map:
+  // Ionic: `ionViewDidEnter`
+  // Angular: `mounted`
+  // Vue: `mounted`
+  // React: `componentDidMount`
+
+  // Of course you can also initialize the Map on different events, like clicking on a button.
+  // Just make sure you do not unnecessarily initialize it multiple times.
+})();
 ```
+
+### What's next?
+
+As the previous example shows, it is really easy to integrate the Maps SDK into your app. But, of course, there are many more possibilities.
+
+- Refer to [API Reference](./API_REFERENCE.md) to learn more everything about the Maps API.
+- Take a look at some examples [here](https://github.com/DutchConcepts/capacitor-google-maps-examples).
 
 ## Known Issues
 
-<li> Right now, its not possible to allow Map view in the template to scroll along with the Page, it remains at its fixed position.
+- Right now, its not possible to allow Map view in the template to scroll along with the Page, it remains at its fixed position.
 
 ## Contributors ✨
 
