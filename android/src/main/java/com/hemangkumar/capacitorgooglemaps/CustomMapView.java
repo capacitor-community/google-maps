@@ -300,6 +300,10 @@ public class CustomMapView
         return getResultForMap();
     }
 
+    public JSObject getMap() {
+        return getResultForMap();
+    }
+
     public CameraPosition getCameraPosition() {
         if (this.googleMap != null) {
             return this.googleMap.getCameraPosition();
@@ -362,13 +366,62 @@ public class CustomMapView
 
     private JSObject getResultForMap() {
         if (this.mapView != null && this.googleMap != null) {
+            // initialize JSObjects
             JSObject result = new JSObject();
+
             JSObject resultGoogleMap = new JSObject();
             result.put("googleMap", resultGoogleMap);
 
+            JSObject resultCameraPosition = new JSObject();
+            resultGoogleMap.put("cameraPosition", resultCameraPosition);
+
+            JSObject resultPreferences = new JSObject();
+            resultGoogleMap.put("preferences", resultPreferences);
+
+            JSObject resultGestures = new JSObject();
+            resultPreferences.put("gestures", resultGestures);
+
+            JSObject resultControls = new JSObject();
+            resultPreferences.put("controls", resultControls);
+
+            JSObject resultAppearance = new JSObject();
+            resultPreferences.put("appearance", resultAppearance);
+
+            // get CameraPosition
+            CameraPosition cameraPosition = this.getCameraPosition();
+
+            // get UISettings
+            UiSettings googleMapUISettings = this.googleMap.getUiSettings();
+
+            // return mapId
             resultGoogleMap.put("mapId", id);
 
-            // @TODO: add cameraPosition etc. to result as well.
+            // return cameraPosition
+            resultCameraPosition.put("target", cameraPosition.target);
+            resultCameraPosition.put("bearing", cameraPosition.bearing);
+            resultCameraPosition.put("tilt", cameraPosition.tilt);
+            resultCameraPosition.put("zoom", cameraPosition.zoom);
+
+            // return gestures
+            resultGestures.put(MapPreferencesGestures.ROTATE_ALLOWED_KEY, googleMapUISettings.isRotateGesturesEnabled());
+            resultGestures.put(MapPreferencesGestures.SCROLL_ALLOWED_KEY, googleMapUISettings.isScrollGesturesEnabled());
+            resultGestures.put(MapPreferencesGestures.SCROLL_ALLOWED_DURING_ROTATE_OR_ZOOM_KEY, googleMapUISettings.isScrollGesturesEnabledDuringRotateOrZoom());
+            resultGestures.put(MapPreferencesGestures.TILT_ALLOWED_KEY, googleMapUISettings.isTiltGesturesEnabled());
+            resultGestures.put(MapPreferencesGestures.ZOOM_ALLOWED_KEY, googleMapUISettings.isZoomGesturesEnabled());
+
+            // return controls
+            resultControls.put(MapPreferencesControls.COMPASS_BUTTON_KEY, googleMapUISettings.isCompassEnabled());
+            // resultControls.put(MapPreferencesControls.INDOOR_LEVEL_PICKER_KEY, googleMapUISettings.isIndoorLevelPickerEnabled());
+            resultControls.put(MapPreferencesControls.MAP_TOOLBAR_KEY, googleMapUISettings.isMapToolbarEnabled());
+            resultControls.put(MapPreferencesControls.MY_LOCATION_BUTTON_KEY, googleMapUISettings.isMyLocationButtonEnabled());
+            resultControls.put(MapPreferencesControls.ZOOM_BUTTONS_KEY, googleMapUISettings.isZoomControlsEnabled());
+
+            // return appearance
+            resultAppearance.put(MapPreferencesAppearance.TYPE_KEY, this.googleMap.getMapType());
+            resultAppearance.put(MapPreferencesAppearance.BUILDINGS_SHOWN_KEY, this.googleMap.isBuildingsEnabled());
+            resultAppearance.put(MapPreferencesAppearance.INDOOR_SHOWN_KEY, this.googleMap.isIndoorEnabled());
+            resultAppearance.put(MapPreferencesAppearance.MY_LOCATION_DOT_SHOWN_KEY, this.googleMap.isMyLocationEnabled());
+            resultAppearance.put(MapPreferencesAppearance.TRAFFIC_SHOWN_KEY, this.googleMap.isTrafficEnabled());
 
             return result;
         }
