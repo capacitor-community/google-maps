@@ -92,7 +92,7 @@ You'll have two API keys by the end of this step. Lets proceed:
 ...
 </application>
 ```
-As of [Capacitor 3](https://capacitorjs.com/docs/updating/3-0), the plugin needs to be regitered in MainActivity.java:
+As of [Capacitor 3](https://capacitorjs.com/docs/updating/3-0), the plugin needs to be registered in MainActivity.java:
 ```java
 import com.hemangkumar.capacitorgooglemaps.CapacitorGoogleMaps;
 //...
