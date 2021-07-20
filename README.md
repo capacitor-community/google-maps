@@ -80,7 +80,8 @@ You'll have two API keys by the end of this step. Lets proceed:
 
 ### Add API key to your App
 
-- [Android](https://developers.google.com/maps/documentation/android-sdk/get-api-key) in AndroidManifest.xml:
+#### Android
+[Android](https://developers.google.com/maps/documentation/android-sdk/get-api-key) in AndroidManifest.xml:
 ```
 <application>
 ...
@@ -91,6 +92,23 @@ You'll have two API keys by the end of this step. Lets proceed:
 ...
 </application>
 ```
+As of [Capacitor 3](https://capacitorjs.com/docs/updating/3-0), the plugin needs to be registered in MainActivity.java:
+```java
+import com.hemangkumar.capacitorgooglemaps.CapacitorGoogleMaps;
+//...
+
+public class MainActivity extends BridgeActivity {
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+
+    // ...
+    registerPlugin(CapacitorGoogleMaps.class);
+  }
+}
+
+```
+#### iOS
 - On iOS, this step is little different and mentioned below.
 
 ### Importing & Initializing the plugin
@@ -112,13 +130,13 @@ await CapacitorGoogleMaps.initialize({
 
 `component.html`
 
-```
+```html
 <div id="map" #map></div>
 ```
 
 `component.css`
 
-```
+```css
 #map {
     margin: 2em 1em;
     height: 250px;
