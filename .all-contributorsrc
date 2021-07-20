@@ -133,6 +133,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "parawanderer",
+      "name": "Shane B.",
+      "avatar_url": "https://avatars.githubusercontent.com/u/37834723?v=4",
+      "profile": "https://github.com/parawanderer",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
