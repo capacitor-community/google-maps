@@ -87,12 +87,12 @@ class CustomMapView: UIViewController, GMSMapViewDelegate {
     
     internal func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
         if (customMapViewEvents != nil && savedCallbackIdForDidTapMap != nil) {
-            let result: JSObject = self.getResultForPosition(coordinate: coordinate);
+            let result: PluginCallResultData = self.getResultForPosition(coordinate: coordinate);
             customMapViewEvents.resultForCallbackId(callbackId: savedCallbackIdForDidTapMap, result: result);
         }
     }
     
-    private func getResultForPosition(coordinate: CLLocationCoordinate2D) -> JSObject {
+    private func getResultForPosition(coordinate: CLLocationCoordinate2D) -> PluginCallResultData {
         return [
             "position": [
                 "latitude": coordinate.latitude,

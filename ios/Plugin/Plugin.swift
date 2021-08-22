@@ -129,13 +129,13 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         customMapView.setCallbackIdForEvent(callbackId: callbackId, eventName: eventName, preventDefault: preventDefault);
     }
     
-    override func lastResultForCallbackId(callbackId: String, result: JSObject) {
+    override func lastResultForCallbackId(callbackId: String, result: PluginCallResultData) {
         let call = bridge?.savedCall(withID: callbackId);
         call?.resolve(result);
         bridge?.releaseCall(call!);
     }
     
-    override func resultForCallbackId(callbackId: String, result: JSObject) {
+    override func resultForCallbackId(callbackId: String, result: PluginCallResultData) {
         let call = bridge?.savedCall(withID: callbackId);
         call?.resolve(result);
     }
