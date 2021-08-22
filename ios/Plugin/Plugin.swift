@@ -118,6 +118,10 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_TAP_MAP)
     }
     
+    @objc func didTapMarker(_ call: CAPPluginCall) {
+        setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_TAP_MARKER)
+    }
+    
     func setCallbackIdForEvent(call: CAPPluginCall, eventName: String) {
         call.keepAlive = true;
         let callbackId = call.callbackId;

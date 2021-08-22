@@ -13,7 +13,11 @@ class CustomMapView: UIViewController, GMSMapViewDelegate {
     
     var savedCallbackIdForDidTapMap: String!;
     
+    var savedCallbackIdForDidTapMarker: String!;
+    var preventDefaultForDidTapMarker: Bool = false;
+    
     static var EVENT_DID_TAP_MAP: String = "didTapMap";
+    static var EVENT_DID_TAP_MARKER: String = "didTapMarker";
     
     var mapViewBounds: [String : Double]!
     var cameraPosition: [String: Double]!
@@ -81,6 +85,9 @@ class CustomMapView: UIViewController, GMSMapViewDelegate {
         if (callbackId != nil && eventName != nil) {
             if (eventName == CustomMapView.EVENT_DID_TAP_MAP) {
                 savedCallbackIdForDidTapMap = callbackId;
+            } else if (eventName == CustomMapView.EVENT_DID_TAP_MARKER) {
+                savedCallbackIdForDidTapMarker = callbackId;
+                preventDefaultForDidTapMarker = preventDefault ?? false;
             }
         }
     }
@@ -90,6 +97,14 @@ class CustomMapView: UIViewController, GMSMapViewDelegate {
             let result: PluginCallResultData = self.getResultForPosition(coordinate: coordinate);
             customMapViewEvents.resultForCallbackId(callbackId: savedCallbackIdForDidTapMap, result: result);
         }
+    }
+    
+    internal func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
+        if (customMapViewEvents != nil && savedCallbackIdForDidTapMap != nil) {
+            let result: PluginCallResultData = CustomMarker.getResultForMarker(marker);
+            customMapViewEvents.resultForCallbackId(callbackId: savedCallbackIdForDidTapMarker, result: result);
+        }
+        return preventDefaultForDidTapMarker;
     }
     
     private func getResultForPosition(coordinate: CLLocationCoordinate2D) -> PluginCallResultData {
