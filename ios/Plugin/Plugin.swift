@@ -52,10 +52,30 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         }
     }
     
+    @objc func didTapMap(_ call: CAPPluginCall) {
+        setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_TAP_MAP)
+    }
+    
+    func setCallbackIdForEvent(call: CAPPluginCall, eventName: String) {
+        call.keepAlive = true;
+        let callbackId = call.callbackId;
+        guard let mapId = call.getString("mapId") else { return };
+        
+        let customMapView: CustomMapView = customMapViews[mapId]!;
+        
+        let preventDefault: Bool = call.getBool("preventDefault", false);
+        customMapView.setCallbackIdForEvent(callbackId: callbackId, eventName: eventName, preventDefault: preventDefault);
+    }
+    
     override func lastResultForCallbackId(callbackId: String, result: JSObject) {
         let call = bridge?.savedCall(withID: callbackId);
         call?.resolve(result);
         bridge?.releaseCall(call!);
+    }
+    
+    override func resultForCallbackId(callbackId: String, result: JSObject) {
+        let call = bridge?.savedCall(withID: callbackId);
+        call?.resolve(result);
     }
 
 }

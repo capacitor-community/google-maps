@@ -11,6 +11,10 @@ class CustomMapView: UIViewController, GMSMapViewDelegate {
     
     var savedCallbackIdForCreate: String!;
     
+    var savedCallbackIdForDidTapMap: String!;
+    
+    static var EVENT_DID_TAP_MAP: String = "didTapMap";
+    
     var mapViewBounds: [String : Double]!
     var cameraPosition: [String: Double]!
     
@@ -42,6 +46,30 @@ class CustomMapView: UIViewController, GMSMapViewDelegate {
                 "mapId": self.id
             ]
         ])
+    }
+    
+    public func setCallbackIdForEvent(callbackId: String!, eventName: String!, preventDefault: Bool!) {
+        if (callbackId != nil && eventName != nil) {
+            if (eventName == CustomMapView.EVENT_DID_TAP_MAP) {
+                savedCallbackIdForDidTapMap = callbackId;
+            }
+        }
+    }
+    
+    internal func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
+        if (customMapViewEvents != nil && savedCallbackIdForDidTapMap != nil) {
+            let result: JSObject = self.getResultForPosition(coordinate: coordinate);
+            customMapViewEvents.resultForCallbackId(callbackId: savedCallbackIdForDidTapMap, result: result);
+        }
+    }
+    
+    private func getResultForPosition(coordinate: CLLocationCoordinate2D) -> JSObject {
+        return [
+            "position": [
+                "latitude": coordinate.latitude,
+                "longitude": coordinate.longitude
+            ]
+        ]
     }
 
 }

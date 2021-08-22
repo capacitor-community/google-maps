@@ -6,4 +6,5 @@
 CAP_PLUGIN(CapacitorGoogleMaps, "CapacitorGoogleMaps",
            CAP_PLUGIN_METHOD(initialize, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(createMap, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(didTapMap, CAPPluginReturnCallback);
 )
