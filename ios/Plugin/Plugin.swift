@@ -98,6 +98,22 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         }
     }
     
+    @objc func removeMarker(_ call: CAPPluginCall) {
+        let markerId: String = call.getString("markerId", "");
+        
+        DispatchQueue.main.async {
+            let customMarker = self.customMarkers[markerId];
+            
+            if (customMarker != nil) {
+                customMarker?.map = nil;
+                self.customMarkers[markerId] = nil;
+                call.resolve();
+            } else {
+                call.reject("marker not found");
+            }
+        }
+    }
+    
     @objc func didTapMap(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_TAP_MAP)
     }
