@@ -8,6 +8,8 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
     var GOOGLE_MAPS_KEY: String = "";
     
     var customMapViews = [String : CustomMapView]();
+    
+    var customMarkers = [String : CustomMarker]();
 
     @objc func initialize(_ call: CAPPluginCall) {
 
@@ -71,6 +73,29 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             }
         }
         
+    }
+    
+    @objc func addMarker(_ call: CAPPluginCall) {
+        let mapId: String = call.getString("mapId", "");
+
+        DispatchQueue.main.async {
+            let customMapView = self.customMapViews[mapId];
+            
+            if (customMapView != nil) {
+                let preferences = call.getObject("preferences", JSObject());
+                
+                let marker = CustomMarker();
+                marker.updateFromJSObject(preferences: preferences);
+                
+                marker.map = customMapView?.GMapView;
+                
+                self.customMarkers[marker.id] = marker;
+                
+                call.resolve(CustomMarker.getResultForMarker(marker));
+            } else {
+                call.reject("map not found");
+            }
+        }
     }
     
     @objc func didTapMap(_ call: CAPPluginCall) {
