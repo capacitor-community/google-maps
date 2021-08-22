@@ -55,6 +55,24 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         }
     }
     
+    @objc func updateMap(_ call: CAPPluginCall) {
+        let mapId: String = call.getString("mapId")!;
+
+        DispatchQueue.main.async {
+            let customMapView = self.customMapViews[mapId];
+            
+            if (customMapView != nil) {
+                let preferences = call.getObject("preferences");
+                customMapView?.mapPreferences.updateFromJSObject(preferences);
+                
+                customMapView?.invalidateMap();
+            } else {
+                call.reject("map not found");
+            }
+        }
+        
+    }
+    
     @objc func didTapMap(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_TAP_MAP)
     }
