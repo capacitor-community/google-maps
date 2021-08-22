@@ -3,7 +3,7 @@ import Capacitor
 import GoogleMaps
 
 @objc(CapacitorGoogleMaps)
-public class CapacitorGoogleMaps: CAPPlugin {
+public class CapacitorGoogleMaps: CustomMapViewEvents {
 
     var GOOGLE_MAPS_KEY: String = "";
     
@@ -27,7 +27,10 @@ public class CapacitorGoogleMaps: CAPPlugin {
     @objc func createMap(_ call: CAPPluginCall) {
 
         DispatchQueue.main.async {
-            let customMapView : CustomMapView = CustomMapView();
+            let customMapView : CustomMapView = CustomMapView(customMapViewEvents: self);
+            
+            self.bridge?.saveCall(call)
+            customMapView.savedCallbackIdForCreate = call.callbackId;
             
             customMapView.mapViewBounds = [
                 "width": call.getDouble("width") ?? 500,
@@ -46,9 +49,13 @@ public class CapacitorGoogleMaps: CAPPlugin {
             customMapView.GMapView.delegate = customMapView;
             
             self.customMapViews[customMapView.id] = customMapView;
-            
-            call.resolve();
         }
+    }
+    
+    override func lastResultForCallbackId(callbackId: String, result: JSObject) {
+        let call = bridge?.savedCall(withID: callbackId);
+        call?.resolve(result);
+        bridge?.releaseCall(call!);
     }
 
 }
