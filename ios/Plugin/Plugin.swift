@@ -44,6 +44,9 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
                 "zoom": call.getDouble("zoom") ?? (12.0)
             ]
             
+            let preferences = call.getObject("preferences");
+            customMapView.mapPreferences.updateFromJSObject(preferences);
+            
             self.bridge?.viewController?.view.addSubview(customMapView.view);
 
             customMapView.GMapView.delegate = customMapView;

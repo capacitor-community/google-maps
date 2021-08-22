@@ -17,6 +17,7 @@ class CustomMapView: UIViewController, GMSMapViewDelegate {
     
     var mapViewBounds: [String : Double]!
     var cameraPosition: [String: Double]!
+    var mapPreferences = MapPreferences();
     
     // This allows you to initialise your custom UIViewController without a nib or bundle.
     convenience init(customMapViewEvents: CustomMapViewEvents) {
@@ -41,11 +42,39 @@ class CustomMapView: UIViewController, GMSMapViewDelegate {
         self.GMapView = GMSMapView.map(withFrame: frame, camera: camera)
         self.view = GMapView
         
+        self.invalidateMap();
+        
         self.customMapViewEvents.lastResultForCallbackId(callbackId: savedCallbackIdForCreate, result: [
             "googleMap": [
                 "mapId": self.id
             ]
-        ])
+        ]);
+    }
+    
+    func invalidateMap() {
+        if (self.GMapView == nil) {
+            return;
+        }
+        
+        // set gestures
+        self.GMapView.settings.rotateGestures = self.mapPreferences.gestures.isRotateAllowed;
+        self.GMapView.settings.scrollGestures = self.mapPreferences.gestures.isScrollAllowed;
+        self.GMapView.settings.allowScrollGesturesDuringRotateOrZoom = self.mapPreferences.gestures.isScrollAllowedDuringRotateOrZoom;
+        self.GMapView.settings.tiltGestures = self.mapPreferences.gestures.isTiltAllowed;
+        self.GMapView.settings.zoomGestures = self.mapPreferences.gestures.isZoomAllowed;
+        
+        // set controls
+        self.GMapView.settings.compassButton = self.mapPreferences.controls.isCompassButtonEnabled;
+        self.GMapView.settings.indoorPicker = self.mapPreferences.controls.isIndoorLevelPickerEnabled;
+        self.GMapView.settings.myLocationButton = self.mapPreferences.controls.isMyLocationButtonEnabled;
+        
+        // set appearance
+        self.GMapView.mapType = self.mapPreferences.appearance.type;
+        self.GMapView.mapStyle = self.mapPreferences.appearance.style;
+        self.GMapView.isBuildingsEnabled = self.mapPreferences.appearance.isBuildingsShown;
+        self.GMapView.isIndoorEnabled = self.mapPreferences.appearance.isIndoorShown;
+        self.GMapView.isMyLocationEnabled = self.mapPreferences.appearance.isMyLocationDotShown;
+        self.GMapView.isTrafficEnabled = self.mapPreferences.appearance.isTrafficShown;
     }
     
     public func setCallbackIdForEvent(callbackId: String!, eventName: String!, preventDefault: Bool!) {
