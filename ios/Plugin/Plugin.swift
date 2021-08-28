@@ -97,6 +97,35 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             }
         }
     }
+    
+    @objc func addMarkers(_ call: CAPPluginCall) {
+        let mapId: String = call.getString("mapId", "");
+
+        DispatchQueue.main.async {
+            let customMapView = self.customMapViews[mapId];
+
+            if (customMapView != nil) {
+                let markers = call.getArray("markers", []);
+                
+                for item in markers {
+                    let markerObject = item as? JSObject ?? JSObject();
+
+                    let preferences = markerObject["preferences"] as? JSObject ?? JSObject();
+
+                    let marker = CustomMarker();
+                    marker.updateFromJSObject(preferences: preferences);
+
+                    marker.map = customMapView?.GMapView;
+
+                    self.customMarkers[marker.id] = marker;
+                }
+
+                call.resolve();
+            } else {
+                call.reject("map not found");
+            }
+        }
+    }
 
     @objc func removeMarker(_ call: CAPPluginCall) {
         let markerId: String = call.getString("markerId", "");

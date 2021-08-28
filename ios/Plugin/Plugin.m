@@ -8,6 +8,7 @@ CAP_PLUGIN(CapacitorGoogleMaps, "CapacitorGoogleMaps",
            CAP_PLUGIN_METHOD(createMap, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(updateMap, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(addMarker, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(addMarkers, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(removeMarker, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(didTapInfoWindow, CAPPluginReturnCallback);
            CAP_PLUGIN_METHOD(didCloseInfoWindow, CAPPluginReturnCallback);
