@@ -35,8 +35,8 @@ class CustomMapView: UIViewController, GMSMapViewDelegate {
     static var EVENT_DID_TAP_MY_LOCATION_BUTTON: String = "didTapMyLocationButton";
     static var EVENT_DID_TAP_MY_LOCATION_DOT: String = "didTapMyLocationDot";
 
-    var mapViewBounds: [String : Double]!
-    var cameraPosition: [String: Double]!
+    var boundingRect = BoundingRect();
+    var mapCameraPosition = MapCameraPosition();
     var mapPreferences = MapPreferences();
 
     // This allows you to initialise your custom UIViewController without a nib or bundle.
@@ -56,11 +56,15 @@ class CustomMapView: UIViewController, GMSMapViewDelegate {
     }
 
     override func viewDidLoad() {
-        super.viewDidLoad()
-        let camera = GMSCameraPosition.camera(withLatitude: cameraPosition["latitude"] ?? 0, longitude: cameraPosition["longitude"] ?? 0, zoom: Float(cameraPosition["zoom"] ?? Double(12.0)))
-        let frame = CGRect(x: mapViewBounds["x"] ?? 0, y: mapViewBounds["y"]!, width: mapViewBounds["width"] ?? 0, height: mapViewBounds["height"] ?? 0)
-        self.GMapView = GMSMapView.map(withFrame: frame, camera: camera)
-        self.view = GMapView
+        super.viewDidLoad();
+        
+        let frame = CGRect(x: self.boundingRect.x, y: self.boundingRect.y, width: self.boundingRect.width, height: self.boundingRect.height);
+        
+        let camera = GMSCameraPosition.camera(withLatitude: self.mapCameraPosition.latitude, longitude: self.mapCameraPosition.longitude, zoom: self.mapCameraPosition.zoom, bearing: self.mapCameraPosition.bearing, viewingAngle: self.mapCameraPosition.tilt);
+        
+        self.GMapView = GMSMapView.map(withFrame: frame, camera: camera);
+        
+        self.view = GMapView;
 
         self.invalidateMap();
 

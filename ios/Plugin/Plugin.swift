@@ -33,18 +33,12 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
 
             self.bridge?.saveCall(call)
             customMapView.savedCallbackIdForCreate = call.callbackId;
-
-            customMapView.mapViewBounds = [
-                "width": call.getDouble("width") ?? 500,
-                "height": call.getDouble("height") ?? 500,
-                "x": call.getDouble("x") ?? 0,
-                "y": call.getDouble("y") ?? 0,
-            ]
-            customMapView.cameraPosition = [
-                "latitude": call.getDouble("latitude") ?? 0,
-                "longitude": call.getDouble("longitude") ?? 0,
-                "zoom": call.getDouble("zoom") ?? (12.0)
-            ]
+            
+            let boundingRect = call.getObject("boundingRect", JSObject());
+            customMapView.boundingRect.updateFromJSObject(boundingRect);
+            
+            let mapCameraPosition = call.getObject("cameraPosition", JSObject());
+            customMapView.mapCameraPosition.updateFromJSObject(mapCameraPosition);
 
             let preferences = call.getObject("preferences");
             customMapView.mapPreferences.updateFromJSObject(preferences);
