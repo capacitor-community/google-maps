@@ -40,7 +40,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             let mapCameraPosition = call.getObject("cameraPosition", JSObject());
             customMapView.mapCameraPosition.updateFromJSObject(mapCameraPosition);
 
-            let preferences = call.getObject("preferences");
+            let preferences = call.getObject("preferences", JSObject());
             customMapView.mapPreferences.updateFromJSObject(preferences);
 
             self.bridge?.viewController?.view.addSubview(customMapView.view);
@@ -58,7 +58,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             let customMapView = self.customMapViews[mapId];
 
             if (customMapView != nil) {
-                let preferences = call.getObject("preferences");
+                let preferences = call.getObject("preferences", JSObject());
                 customMapView?.mapPreferences.updateFromJSObject(preferences);
 
                 customMapView?.invalidateMap();
