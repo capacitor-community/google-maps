@@ -7,20 +7,20 @@ class MapCameraPosition {
     public static let BEARING_KEY: String! = "bearing";
     public static let TILT_KEY: String! = "tilt";
     public static let ZOOM_KEY: String! = "zoom";
-    
+
     private static let TARGET_DEFAULT: JSObject! = JSObject();
     private static let LATITUDE_DEFAULT: Double! = 0.0;
     private static let LONGITUDE_DEFAULT: Double! = 0.0;
     private static let BEARING_DEFAULT: Double! = 0.0;
     private static let TILT_DEFAULT: Double! = 0.0;
     private static let ZOOM_DEFAULT: Float! = 12.0;
-    
+
     public var latitude: Double!;
     public var longitude: Double!;
     public var bearing: Double!;
     public var tilt: Double!;
     public var zoom: Float!;
-    
+
     public init () {
         self.latitude = MapCameraPosition.LATITUDE_DEFAULT;
         self.longitude = MapCameraPosition.LONGITUDE_DEFAULT;
