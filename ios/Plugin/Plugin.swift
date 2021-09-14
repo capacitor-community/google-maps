@@ -31,6 +31,10 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
     @objc func create(_ call: CAPPluginCall) {
 
         DispatchQueue.main.async {
+            if self.mapViewController != nil {
+                self.mapViewController.view = nil
+            }
+
             self.mapViewController = GMViewController();
             self.mapViewController.mapViewBounds = [
                 "width": call.getDouble("width") ?? 500,
