@@ -23,6 +23,9 @@ export class CapacitorGoogleMapsWeb extends WebPlugin implements CapacitorGoogle
   addMarker(_options: { latitude: number; longitude: number; opacity?: number; title?: string; snippet?: string; isFlat?: boolean; url?: string }): Promise<any> {
     throw new Error('Method not implemented.');
   }
+  removeMarker(_options: { id: number; }): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
   setCamera(_options: { viewingAngle?: number; bearing?: number; zoom?: number; latitude?: number; longitude?: number; animate?: boolean; animationDuration?: number; coordinates?: LatLng[] }): Promise<any> {
     throw new Error('Method not implemented.');
   }
