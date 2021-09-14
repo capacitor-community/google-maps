@@ -150,6 +150,13 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
                 googleMapOptions.camera(cameraPosition);
                 googleMapOptions.liteMode(liteMode);
 
+                if (mapViewParentId != null){
+                    View viewToRemove = ((ViewGroup) getBridge().getWebView().getParent()).findViewById(mapViewParentId);
+                    if (viewToRemove != null){
+                        ((ViewGroup) getBridge().getWebView().getParent()).removeViewInLayout(viewToRemove);
+                    }
+                }
+
                 FrameLayout mapViewParent = new FrameLayout(getBridge().getContext());
                 mapViewParentId = View.generateViewId();
                 mapViewParent.setId(mapViewParentId);
