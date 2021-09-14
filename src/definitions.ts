@@ -32,6 +32,9 @@ export interface CapacitorGoogleMapsPlugin {
     url?: string;
   }): Promise<any>;
 
+  /** Removes a marker on the map */
+  removeMarker(options: { id: number }): Promise<any>;
+
   /** Repositions the camera */
   setCamera(options: {
     viewingAngle?: number;
