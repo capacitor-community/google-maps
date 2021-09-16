@@ -417,8 +417,12 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
         getBridge().executeOnMainThread(new Runnable() {
             @Override
             public void run() {
-                View viewToRemove = ((ViewGroup) getBridge().getWebView().getParent()).findViewById(mapViewParentId);
-                ((ViewGroup) getBridge().getWebView().getParent()).removeViewInLayout(viewToRemove);
+                if (mapViewParentId != null){
+                    View viewToRemove = ((ViewGroup) getBridge().getWebView().getParent()).findViewById(mapViewParentId);
+                    if (viewToRemove != null){
+                        ((ViewGroup) getBridge().getWebView().getParent()).removeViewInLayout(viewToRemove);
+                    }
+                }
             }
         });
     }
@@ -428,8 +432,12 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
         getBridge().executeOnMainThread(new Runnable() {
             @Override
             public void run() {
-                View viewToHide = ((ViewGroup) getBridge().getWebView().getParent()).findViewById(mapViewParentId);
-                viewToHide.setVisibility(View.INVISIBLE);
+                if (mapViewParentId != null){
+                    View viewToHide = ((ViewGroup) getBridge().getWebView().getParent()).findViewById(mapViewParentId);
+                    if (viewToHide != null){
+                        viewToHide.setVisibility(View.INVISIBLE);
+                    }
+                }
             }
         });
     }
@@ -439,8 +447,12 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
         getBridge().executeOnMainThread(new Runnable() {
             @Override
             public void run() {
-                View viewToShow = ((ViewGroup) getBridge().getWebView().getParent()).findViewById(mapViewParentId);
-                viewToShow.setVisibility(View.VISIBLE);
+                if (mapViewParentId != null){
+                    View viewToShow = ((ViewGroup) getBridge().getWebView().getParent()).findViewById(mapViewParentId);
+                    if (viewToRemove != null){
+                        viewToShow.setVisibility(View.VISIBLE);
+                    }
+                }
             }
         });
     }
