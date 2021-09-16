@@ -68,6 +68,11 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
         let url = URL(string: call.getString("iconUrl", ""))
         var imageData: Data?
 
+        if self.mapViewController == nil {
+            call.reject("Map is not ready")
+            return
+        }
+
         DispatchQueue.global().async {
 
             if url != nil {
