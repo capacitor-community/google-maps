@@ -191,6 +191,11 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
         final Boolean isFlat = call.getBoolean("isFlat", true);
         final JSObject metadata = call.getObject("metadata");
 
+        if (googleMap == null){
+            call.reject("Map is not ready");
+            return;
+        }
+
         getBridge().getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
