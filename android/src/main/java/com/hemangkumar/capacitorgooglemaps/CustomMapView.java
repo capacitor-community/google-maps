@@ -37,7 +37,10 @@ public class CustomMapView
         GoogleMap.OnMarkerDragListener,
         GoogleMap.OnMyLocationClickListener,
         GoogleMap.OnMyLocationButtonClickListener,
-        GoogleMap.OnPoiClickListener
+        GoogleMap.OnPoiClickListener,
+        GoogleMap.OnCameraMoveStartedListener,
+        GoogleMap.OnCameraMoveListener,
+        GoogleMap.OnCameraIdleListener
 {
     private final Context context;
     private final CustomMapViewEvents customMapViewEvents;
@@ -73,7 +76,11 @@ public class CustomMapView
 
     String savedCallbackIdForDidTapMyLocationDot;
 
-    String getSavedCallbackIdForDidTapPoi;
+    String savedCallbackIdForDidTapPoi;
+
+    String savedCallbackIdForDidBeginMovingCamera;
+    String savedCallbackIdForDidMoveCamera;
+    String savedCallbackIdForDidEndMovingCamera;
 
     public static final String EVENT_DID_TAP_INFO_WINDOW = "didTapInfoWindow";
     public static final String EVENT_DID_CLOSE_INFO_WINDOW = "didCloseInfoWindow";
@@ -86,6 +93,9 @@ public class CustomMapView
     public static final String EVENT_DID_TAP_MY_LOCATION_BUTTON = "didTapMyLocationButton";
     public static final String EVENT_DID_TAP_MY_LOCATION_DOT = "didTapMyLocationDot";
     public static final String EVENT_DID_TAP_POI = "didTapPoi";
+    public static final String EVENT_DID_BEGIN_MOVING_CAMERA = "didBeginMovingCamera";
+    public static final String EVENT_DID_MOVE_CAMERA = "didMoveCamera";
+    public static final String EVENT_DID_END_MOVING_CAMERA = "didEndMovingCamera";
 
     public MapCameraPosition mapCameraPosition;
     public MapPreferences mapPreferences;
@@ -215,9 +225,30 @@ public class CustomMapView
 
     @Override
     public void onPoiClick(PointOfInterest pointOfInterest) {
-        if (customMapViewEvents != null && getSavedCallbackIdForDidTapPoi != null) {
+        if (customMapViewEvents != null && savedCallbackIdForDidTapPoi != null) {
             JSObject result = getResultForPoi(pointOfInterest);
-            customMapViewEvents.resultForCallbackId(getSavedCallbackIdForDidTapPoi, result);
+            customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapPoi, result);
+        }
+    }
+
+    @Override
+    public void onCameraMoveStarted(int i) {
+        if (customMapViewEvents != null && savedCallbackIdForDidBeginMovingCamera != null) {
+            customMapViewEvents.resultForCallbackId(savedCallbackIdForDidBeginMovingCamera, null);
+        }
+    }
+
+    @Override
+    public void onCameraMove() {
+        if (customMapViewEvents != null && savedCallbackIdForDidMoveCamera != null) {
+            customMapViewEvents.resultForCallbackId(savedCallbackIdForDidMoveCamera, null);
+        }
+    }
+
+    @Override
+    public void onCameraIdle() {
+        if (customMapViewEvents != null && savedCallbackIdForDidEndMovingCamera != null) {
+            customMapViewEvents.resultForCallbackId(savedCallbackIdForDidEndMovingCamera, null);
         }
     }
 
@@ -293,7 +324,16 @@ public class CustomMapView
                 savedCallbackIdForDidTapMyLocationDot = callbackId;
             } else if (eventName.equals((CustomMapView.EVENT_DID_TAP_POI))) {
                 this.googleMap.setOnPoiClickListener(this);
-                getSavedCallbackIdForDidTapPoi = callbackId;
+                savedCallbackIdForDidTapPoi = callbackId;
+            } else if (eventName.equals((CustomMapView.EVENT_DID_BEGIN_MOVING_CAMERA))) {
+                this.googleMap.setOnCameraMoveStartedListener(this);
+                savedCallbackIdForDidBeginMovingCamera = callbackId;
+            } else if (eventName.equals((CustomMapView.EVENT_DID_MOVE_CAMERA))) {
+                this.googleMap.setOnCameraMoveListener(this);
+                savedCallbackIdForDidMoveCamera = callbackId;
+            } else if (eventName.equals((CustomMapView.EVENT_DID_END_MOVING_CAMERA))) {
+                this.googleMap.setOnCameraIdleListener(this);
+                savedCallbackIdForDidEndMovingCamera = callbackId;
             }
         }
     }

@@ -424,6 +424,19 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
         setCallbackIdForEvent(call, CustomMapView.EVENT_DID_TAP_POI);
     }
 
+    @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
+    public void didBeginMovingCamera(final PluginCall call) {
+        setCallbackIdForEvent(call, CustomMapView.EVENT_DID_BEGIN_MOVING_CAMERA);
+    }
+    @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
+    public void didMoveCamera(final PluginCall call) {
+        setCallbackIdForEvent(call, CustomMapView.EVENT_DID_MOVE_CAMERA);
+    }
+    @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
+    public void didEndMovingCamera(final PluginCall call) {
+        setCallbackIdForEvent(call, CustomMapView.EVENT_DID_END_MOVING_CAMERA);
+    }
+
     public void setCallbackIdForEvent(final PluginCall call, final String eventName) {
         call.setKeepAlive(true);
         final String callbackId = call.getCallbackId();
