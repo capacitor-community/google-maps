@@ -36,6 +36,7 @@ public class CustomMapView
         GoogleMap.OnMapClickListener,
         GoogleMap.OnMapLongClickListener,
         GoogleMap.OnMarkerClickListener,
+        GoogleMap.OnMarkerDragListener,
         GoogleMap.OnMyLocationClickListener,
         GoogleMap.OnMyLocationButtonClickListener
 {
@@ -62,6 +63,12 @@ public class CustomMapView
     String savedCallbackIdForDidTapMarker;
     Boolean preventDefaultForDidTapMarker = false;
 
+    String savedCallbackIdForDidBeginDraggingMarker;
+
+    String savedCallbackIdForDidDragMarker;
+
+    String savedCallbackIdForDidEndDraggingMarker;
+
     String savedCallbackIdForDidTapMyLocationButton;
     Boolean preventDefaultForDidTapMyLocationButton = false;
 
@@ -72,6 +79,9 @@ public class CustomMapView
     public static final String EVENT_DID_TAP_MAP = "didTapMap";
     public static final String EVENT_DID_LONG_PRESS_MAP = "didLongPressMap";
     public static final String EVENT_DID_TAP_MARKER = "didTapMarker";
+    public static final String EVENT_DID_BEGIN_DRAGGING_MARKER = "didBeginDraggingMarker";
+    public static final String EVENT_DID_DRAG_MARKER = "didDragMarker";
+    public static final String EVENT_DID_END_DRAGGING_MARKER = "didEndDraggingMarker";
     public static final String EVENT_DID_TAP_MY_LOCATION_BUTTON = "didTapMyLocationButton";
     public static final String EVENT_DID_TAP_MY_LOCATION_DOT = "didTapMyLocationDot";
 
@@ -118,6 +128,7 @@ public class CustomMapView
         this.googleMap.setOnMapClickListener(this);
         this.googleMap.setOnMapLongClickListener(this);
         this.googleMap.setOnMarkerClickListener(this);
+        this.googleMap.setOnMarkerDragListener(this);
         this.googleMap.setOnMyLocationClickListener(this);
         this.googleMap.setOnMyLocationButtonClickListener(this);
 
@@ -167,6 +178,30 @@ public class CustomMapView
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapMarker, result);
         }
         return preventDefaultForDidTapMarker;
+    }
+
+    @Override
+    public void onMarkerDragStart(Marker marker) {
+        if (customMapViewEvents != null && savedCallbackIdForDidBeginDraggingMarker != null) {
+            JSObject result = CustomMarker.getResultForMarker(marker);
+            customMapViewEvents.resultForCallbackId(savedCallbackIdForDidBeginDraggingMarker, result);
+        }
+    }
+
+    @Override
+    public void onMarkerDrag(Marker marker) {
+        if (customMapViewEvents != null && savedCallbackIdForDidDragMarker != null) {
+            JSObject result = CustomMarker.getResultForMarker(marker);
+            customMapViewEvents.resultForCallbackId(savedCallbackIdForDidDragMarker, result);
+        }
+    }
+
+    @Override
+    public void onMarkerDragEnd(Marker marker) {
+        if (customMapViewEvents != null && savedCallbackIdForDidEndDraggingMarker != null) {
+            JSObject result = CustomMarker.getResultForMarker(marker);
+            customMapViewEvents.resultForCallbackId(savedCallbackIdForDidEndDraggingMarker, result);
+        }
     }
 
     @Override
@@ -231,6 +266,12 @@ public class CustomMapView
                     preventDefault = false;
                 }
                 preventDefaultForDidTapMarker = preventDefault;
+            } else if (eventName.equals(CustomMapView.EVENT_DID_BEGIN_DRAGGING_MARKER)) {
+                savedCallbackIdForDidBeginDraggingMarker = callbackId;
+            } else if (eventName.equals(CustomMapView.EVENT_DID_DRAG_MARKER)) {
+                savedCallbackIdForDidDragMarker = callbackId;
+            } else if (eventName.equals(CustomMapView.EVENT_DID_END_DRAGGING_MARKER)) {
+                savedCallbackIdForDidEndDraggingMarker = callbackId;
             } else if (eventName.equals(CustomMapView.EVENT_DID_TAP_MY_LOCATION_BUTTON)) {
                 savedCallbackIdForDidTapMyLocationButton = callbackId;
                 if (preventDefault == null) {
