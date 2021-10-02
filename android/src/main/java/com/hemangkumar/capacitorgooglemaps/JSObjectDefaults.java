@@ -100,4 +100,13 @@ public abstract class JSObjectDefaults {
         Double returnedDouble = JSObjectDefaults.getDoubleSafe(jsObject, name, (double) defaultValue);
         return returnedDouble.floatValue();
     }
+
+    @NonNull
+    public static Boolean getBooleanSafe(JSObject jsObject, @NonNull String name, @NonNull Boolean defaultValue) {
+        Boolean returnedBoolean = jsObject.getBoolean(name, false);
+        if (returnedBoolean != null) {
+            return returnedBoolean;
+        }
+        return defaultValue;
+    }
 }

@@ -131,7 +131,7 @@ public class CustomMapView
     @Override
     public void onInfoWindowClick(Marker marker) {
         if (customMapViewEvents != null && savedCallbackIdForDidTapInfoWindow != null) {
-            JSObject result = getResultForMarker(marker);
+            JSObject result = CustomMarker.getResultForMarker(marker);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapInfoWindow, result);
         }
     }
@@ -139,7 +139,7 @@ public class CustomMapView
     @Override
     public void onInfoWindowClose(Marker marker) {
         if (customMapViewEvents != null && savedCallbackIdForDidCloseInfoWindow != null) {
-            JSObject result = getResultForMarker(marker);
+            JSObject result = CustomMarker.getResultForMarker(marker);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidCloseInfoWindow, result);
         }
     }
@@ -163,7 +163,7 @@ public class CustomMapView
     @Override
     public boolean onMarkerClick(Marker marker) {
         if (customMapViewEvents != null && savedCallbackIdForDidTapMarker != null) {
-            JSObject result = getResultForMarker(marker);
+            JSObject result = CustomMarker.getResultForMarker(marker);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapMarker, result);
         }
         return preventDefaultForDidTapMarker;
@@ -334,34 +334,10 @@ public class CustomMapView
         parent.addView(mapView);
     }
 
-    public JSObject addMarker(Double latitude, Double longitude, String title, String snippet, Float opacity, Boolean isFlat, Boolean isDraggable, JSObject metadata) {
-        LatLng latLng = new LatLng(latitude, longitude);
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
-        markerOptions.title(title);
-        markerOptions.snippet(snippet);
-        markerOptions.alpha(opacity);
-        markerOptions.flat(isFlat);
-        markerOptions.draggable(isDraggable);
-
-        Marker marker = googleMap.addMarker(markerOptions);
-
-        // generate id for the just added marker,
-        // put this marker into a hashmap with the corresponding id,
-        // so we can retrieve the marker by id later on
-        String markerId = UUID.randomUUID().toString();
-        mHashMap.put(markerId, marker);
-
-        JSObject tag = new JSObject();
-        // set id to tag
-        tag.put("markerId", markerId);
-        // then set metadata to tag
-        tag.put("metadata", metadata);
-
-        // finally set tag to marker
-        marker.setTag(tag);
-
-        return getResultForMarker(marker);
+    public Marker addMarker(CustomMarker customMarker) {
+        Marker marker = customMarker.addToMap(googleMap);
+        mHashMap.put(customMarker.markerId, marker);
+        return marker;
     }
 
     private JSObject getResultForMap() {
@@ -374,6 +350,9 @@ public class CustomMapView
 
             JSObject resultCameraPosition = new JSObject();
             resultGoogleMap.put("cameraPosition", resultCameraPosition);
+
+            JSObject resultCameraPositionTarget = new JSObject();
+            resultCameraPosition.put("target", resultCameraPositionTarget);
 
             JSObject resultPreferences = new JSObject();
             resultGoogleMap.put("preferences", resultPreferences);
@@ -397,7 +376,8 @@ public class CustomMapView
             resultGoogleMap.put("mapId", id);
 
             // return cameraPosition
-            resultCameraPosition.put("target", cameraPosition.target);
+            resultCameraPositionTarget.put("latitude", cameraPosition.target.latitude);
+            resultCameraPositionTarget.put("longitude", cameraPosition.target.longitude);
             resultCameraPosition.put("bearing", cameraPosition.bearing);
             resultCameraPosition.put("tilt", cameraPosition.tilt);
             resultCameraPosition.put("zoom", cameraPosition.zoom);
@@ -455,47 +435,6 @@ public class CustomMapView
         positionResult.put("longitude", latLng.longitude);
 
         // return result
-        return result;
-    }
-
-    private JSObject getResultForMarker(Marker marker) {
-        // initialize JSObjects to return
-        JSObject result = new JSObject();
-        JSObject positionResult = new JSObject();
-        JSObject markerResult = new JSObject();
-
-        // get position values
-        positionResult.put("latitude", marker.getPosition().latitude);
-        positionResult.put("longitude", marker.getPosition().longitude);
-
-        // get marker specific values
-        markerResult.put("markerId", marker.getId());
-        markerResult.put("title", marker.getTitle());
-        markerResult.put("snippet", marker.getSnippet());
-        markerResult.put("opacity", marker.getAlpha());
-        markerResult.put("isFlat", marker.isFlat());
-        markerResult.put("isDraggable", marker.isDraggable());
-        markerResult.put("metadata", new JSObject());
-
-        JSObject tag = (JSObject) marker.getTag();
-        if (tag != null) {
-            // get and set markerId to marker
-            String markerId = tag.getString("markerId");
-            markerResult.put("markerId", markerId);
-
-            // get and set metadata to marker
-            try {
-                JSObject metadata = tag.getJSObject("metadata", new JSObject());
-                markerResult.put("metadata", metadata);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        // return result
-        result.put("position", positionResult);
-        result.put("marker", markerResult);
-
         return result;
     }
 }

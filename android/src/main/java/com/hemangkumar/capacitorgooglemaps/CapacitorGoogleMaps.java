@@ -13,6 +13,7 @@ import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 import com.google.android.libraries.maps.model.CameraPosition;
+import com.google.android.libraries.maps.model.Marker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -387,27 +388,20 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
     public void addMarker(final PluginCall call) {
         final String mapId = call.getString("mapId");
 
-        JSObject preferences = JSObjectDefaults.getJSObjectSafe(call, "preferences", new JSObject());
-
-        final JSObject position = JSObjectDefaults.getJSObjectSafe(preferences, "position", new JSObject());
-        final Double latitude = JSObjectDefaults.getDoubleSafe(position, "latitude", 0d);
-        final Double longitude = JSObjectDefaults.getDoubleSafe(position, "longitude", 0d);
-        final String title = preferences.getString("title", "");
-        final String snippet = preferences.getString("snippet", "");
-        final Float opacity = JSObjectDefaults.getFloatSafe(preferences, "opacity", 1f);
-        final Boolean isFlat = preferences.getBoolean("isFlat", false);
-        final Boolean isDraggable = preferences.getBoolean("isDraggable", false);
-        final JSObject metadata = JSObjectDefaults.getJSObjectSafe(preferences, "metadata", new JSObject());
-
         getBridge().getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 CustomMapView customMapView = customMapViews.get(mapId);
 
                 if (customMapView != null) {
-                    JSObject result = customMapView.addMarker(latitude, longitude, title, snippet, opacity, isFlat, isDraggable, metadata);
+                    JSObject preferences = JSObjectDefaults.getJSObjectSafe(call, "preferences", new JSObject());
 
-                    call.resolve(result);
+                    CustomMarker customMarker = new CustomMarker();
+                    customMarker.updateFromJSObject(preferences);
+
+                    Marker marker = customMapView.addMarker(customMarker);
+
+                    call.resolve(CustomMarker.getResultForMarker(marker));
                 } else {
                     call.reject("map not found");
                 }
