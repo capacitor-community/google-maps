@@ -19,6 +19,7 @@ export * from "./events/DidDragMarker";
 export * from "./events/DidEndDraggingMarker";
 export * from "./events/DidTapMyLocationButton";
 export * from "./events/DidTapMyLocationDot";
+export * from "./events/DidTapPoi";
 
 // models
 export { CameraPosition } from "./models/GoogleMap/Camera/Position";
@@ -29,5 +30,6 @@ export { MapControls } from "./models/GoogleMap/Controls";
 export { MapGestures } from "./models/GoogleMap/Gestures";
 export { GoogleMap } from "./models/GoogleMap/GoogleMap";
 export { MapPreferences } from "./models/GoogleMap/Preferences";
+export { PointOfInterest } from "./models/GoogleMap/PointOfInterest";
 export { BoundingRect } from "./models/BoundingRect";
 export { LatLng } from "./models/LatLng";
