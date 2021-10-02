@@ -2,6 +2,8 @@
 export { InitializeOptions } from "./methods/Initialize";
 export { CreateMapOptions, CreateMapResult } from "./methods/CreateMap";
 export { UpdateMapOptions, UpdateMapResult } from "./methods/UpdateMap";
+export { RemoveMapOptions } from "./methods/RemoveMap";
+export { ClearMapOptions } from "./methods/ClearMap";
 export { MoveCameraOptions, MoveCameraResult } from "./methods/MoveCamera";
 export { ElementFromPointResultOptions } from "./methods/ElementFromPointResult";
 export { AddMarkerOptions, AddMarkerResult } from "./methods/AddMarker";
