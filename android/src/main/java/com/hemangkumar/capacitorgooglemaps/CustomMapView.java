@@ -22,9 +22,7 @@ import com.google.android.libraries.maps.UiSettings;
 import com.google.android.libraries.maps.model.CameraPosition;
 import com.google.android.libraries.maps.model.LatLng;
 import com.google.android.libraries.maps.model.Marker;
-import com.google.android.libraries.maps.model.MarkerOptions;
-
-import org.json.JSONException;
+import com.google.android.libraries.maps.model.PointOfInterest;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -38,7 +36,8 @@ public class CustomMapView
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnMarkerDragListener,
         GoogleMap.OnMyLocationClickListener,
-        GoogleMap.OnMyLocationButtonClickListener
+        GoogleMap.OnMyLocationButtonClickListener,
+        GoogleMap.OnPoiClickListener
 {
     private final Context context;
     private final CustomMapViewEvents customMapViewEvents;
@@ -74,6 +73,8 @@ public class CustomMapView
 
     String savedCallbackIdForDidTapMyLocationDot;
 
+    String getSavedCallbackIdForDidTapPoi;
+
     public static final String EVENT_DID_TAP_INFO_WINDOW = "didTapInfoWindow";
     public static final String EVENT_DID_CLOSE_INFO_WINDOW = "didCloseInfoWindow";
     public static final String EVENT_DID_TAP_MAP = "didTapMap";
@@ -84,6 +85,7 @@ public class CustomMapView
     public static final String EVENT_DID_END_DRAGGING_MARKER = "didEndDraggingMarker";
     public static final String EVENT_DID_TAP_MY_LOCATION_BUTTON = "didTapMyLocationButton";
     public static final String EVENT_DID_TAP_MY_LOCATION_DOT = "didTapMyLocationDot";
+    public static final String EVENT_DID_TAP_POI = "didTapPoi";
 
     public MapCameraPosition mapCameraPosition;
     public MapPreferences mapPreferences;
@@ -211,6 +213,14 @@ public class CustomMapView
         return preventDefaultForDidTapMyLocationButton;
     }
 
+    @Override
+    public void onPoiClick(PointOfInterest pointOfInterest) {
+        if (customMapViewEvents != null && getSavedCallbackIdForDidTapPoi != null) {
+            JSObject result = getResultForPoi(pointOfInterest);
+            customMapViewEvents.resultForCallbackId(getSavedCallbackIdForDidTapPoi, result);
+        }
+    }
+
     protected void handleOnStart() {
         if (mapView != null) {
             mapView.onStart();
@@ -281,6 +291,9 @@ public class CustomMapView
             } else if (eventName.equals(CustomMapView.EVENT_DID_TAP_MY_LOCATION_DOT)) {
                 this.googleMap.setOnMyLocationClickListener(this);
                 savedCallbackIdForDidTapMyLocationDot = callbackId;
+            } else if (eventName.equals((CustomMapView.EVENT_DID_TAP_POI))) {
+                this.googleMap.setOnPoiClickListener(this);
+                getSavedCallbackIdForDidTapPoi = callbackId;
             }
         }
     }
@@ -486,6 +499,26 @@ public class CustomMapView
         positionResult.put("longitude", latLng.longitude);
 
         // return result
+        return result;
+    }
+
+    private JSObject getResultForPoi(PointOfInterest pointOfInterest) {
+        // initialize JSObjects to return
+        JSObject result = new JSObject();
+        JSObject positionResult = new JSObject();
+        JSObject poiResult = new JSObject();
+
+        // get position values
+        positionResult.put("latitude", pointOfInterest.latLng.latitude);
+        positionResult.put("longitude", pointOfInterest.latLng.longitude);
+
+        // get other values
+        poiResult.put("name", pointOfInterest.name);
+        poiResult.put("placeId", pointOfInterest.placeId);
+
+        // return result
+        result.put("position", positionResult);
+        result.put("poi", poiResult);
         return result;
     }
 }
