@@ -19,7 +19,7 @@ public class CustomMarker {
     public String markerId = UUID.randomUUID().toString();
 
     private final MarkerOptions markerOptions = new MarkerOptions();
-    private final JSObject metadata = new JSObject();
+    private JSObject tag = new JSObject();
 
     public void updateFromJSObject(JSObject preferences) {
         final JSObject position = JSObjectDefaults.getJSObjectSafe(preferences, "position", new JSObject());
@@ -45,7 +45,7 @@ public class CustomMarker {
 
     public Marker addToMap(GoogleMap googleMap) {
         Marker marker = googleMap.addMarker(this.markerOptions);
-        marker.setTag(this.metadata);
+        marker.setTag(this.tag);
         return marker;
     }
 
@@ -54,7 +54,9 @@ public class CustomMarker {
         // set id to tag
         tag.put("markerId", this.markerId);
         // then set metadata to tag
-        tag.put("metadata", this.metadata);
+        tag.put("metadata", jsObject);
+        // save in tag variable
+        this.tag = tag;
     }
 
     public static JSObject getResultForMarker(Marker marker) {
