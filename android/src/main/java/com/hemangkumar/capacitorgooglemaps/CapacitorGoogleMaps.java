@@ -1,23 +1,17 @@
 package com.hemangkumar.capacitorgooglemaps;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.util.DisplayMetrics;
-import android.view.Display;
-import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
-import com.google.android.libraries.maps.model.Marker;
 import com.google.android.libraries.maps.model.CameraPosition;
 
 import java.util.ArrayList;
@@ -393,14 +387,17 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
     public void addMarker(final PluginCall call) {
         final String mapId = call.getString("mapId");
 
-        final Double latitude = call.getDouble("latitude", 0d);
-        final Double longitude = call.getDouble("longitude", 0d);
-        final String title = call.getString("title", "");
-        final String snippet = call.getString("snippet", "");
-        final Float opacity = call.getFloat("opacity", 1.0f);
-        final Boolean isFlat = call.getBoolean("isFlat", false);
-        final Boolean isDraggable = call.getBoolean("isDraggable", false);
-        final JSObject metadata = call.getObject("metadata", new JSObject());
+        JSObject preferences = JSObjectDefaults.getJSObjectSafe(call, "preferences", new JSObject());
+
+        final JSObject position = JSObjectDefaults.getJSObjectSafe(preferences, "position", new JSObject());
+        final Double latitude = JSObjectDefaults.getDoubleSafe(position, "latitude", 0d);
+        final Double longitude = JSObjectDefaults.getDoubleSafe(position, "longitude", 0d);
+        final String title = preferences.getString("title", "");
+        final String snippet = preferences.getString("snippet", "");
+        final Float opacity = JSObjectDefaults.getFloatSafe(preferences, "opacity", 1f);
+        final Boolean isFlat = preferences.getBoolean("isFlat", false);
+        final Boolean isDraggable = preferences.getBoolean("isDraggable", false);
+        final JSObject metadata = JSObjectDefaults.getJSObjectSafe(preferences, "metadata", new JSObject());
 
         getBridge().getActivity().runOnUiThread(new Runnable() {
             @Override

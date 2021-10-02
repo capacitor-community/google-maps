@@ -1,8 +1,12 @@
 package com.hemangkumar.capacitorgooglemaps;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.getcapacitor.JSObject;
+import com.getcapacitor.PluginCall;
+
+import org.json.JSONException;
 
 import java.util.HashMap;
 
@@ -61,5 +65,39 @@ public abstract class JSObjectDefaults {
                 }
             }
         }
+    }
+
+    @NonNull
+    public static JSObject getJSObjectSafe(JSObject jsObject, @NonNull String name, @NonNull JSObject defaultValue) {
+        JSObject returnedJsObject = jsObject.getJSObject(name);
+        if (returnedJsObject != null) {
+            return returnedJsObject;
+        }
+        return defaultValue;
+    }
+
+    @NonNull
+    public static JSObject getJSObjectSafe(PluginCall call, @NonNull String name, @NonNull JSObject defaultValue) {
+        if (call != null) {
+            JSObject jsObject = call.getObject(name, defaultValue);
+            if (jsObject != null) {
+                return jsObject;
+            }
+        }
+        return new JSObject();
+    }
+
+    @NonNull
+    public static Double getDoubleSafe(JSObject jsObject, @NonNull String name, @NonNull Double defaultValue) {
+        try {
+            return jsObject.getDouble(name);
+        } catch (JSONException ignored) {}
+        return defaultValue;
+    }
+
+    @NonNull
+    public static Float getFloatSafe(JSObject jsObject, @NonNull String name, @NonNull Float defaultValue) {
+        Double returnedDouble = JSObjectDefaults.getDoubleSafe(jsObject, name, (double) defaultValue);
+        return returnedDouble.floatValue();
     }
 }
