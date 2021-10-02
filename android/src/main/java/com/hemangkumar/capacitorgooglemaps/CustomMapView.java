@@ -452,12 +452,6 @@ public class CustomMapView
             JSObject resultGoogleMap = new JSObject();
             result.put("googleMap", resultGoogleMap);
 
-            JSObject resultCameraPosition = new JSObject();
-            resultGoogleMap.put("cameraPosition", resultCameraPosition);
-
-            JSObject resultCameraPositionTarget = new JSObject();
-            resultCameraPosition.put("target", resultCameraPositionTarget);
-
             JSObject resultPreferences = new JSObject();
             resultGoogleMap.put("preferences", resultPreferences);
 
@@ -470,9 +464,6 @@ public class CustomMapView
             JSObject resultAppearance = new JSObject();
             resultPreferences.put("appearance", resultAppearance);
 
-            // get CameraPosition
-            CameraPosition cameraPosition = this.getCameraPosition();
-
             // get UISettings
             UiSettings googleMapUISettings = this.googleMap.getUiSettings();
 
@@ -480,11 +471,7 @@ public class CustomMapView
             resultGoogleMap.put("mapId", id);
 
             // return cameraPosition
-            resultCameraPositionTarget.put("latitude", cameraPosition.target.latitude);
-            resultCameraPositionTarget.put("longitude", cameraPosition.target.longitude);
-            resultCameraPosition.put("bearing", cameraPosition.bearing);
-            resultCameraPosition.put("tilt", cameraPosition.tilt);
-            resultCameraPosition.put("zoom", cameraPosition.zoom);
+            this.getResultForCameraPosition(resultGoogleMap);
 
             // return gestures
             resultGestures.put(MapPreferencesGestures.ROTATE_ALLOWED_KEY, googleMapUISettings.isRotateGesturesEnabled());
@@ -510,6 +497,26 @@ public class CustomMapView
             return result;
         }
         return null;
+    }
+
+    private JSObject getResultForCameraPosition(JSObject resultObjectToExtend) {
+        JSObject resultCameraPosition = new JSObject();
+        resultObjectToExtend.put("cameraPosition", resultCameraPosition);
+
+        JSObject resultCameraPositionTarget = new JSObject();
+        resultCameraPosition.put("target", resultCameraPositionTarget);
+
+        // get CameraPosition
+        CameraPosition cameraPosition = this.getCameraPosition();
+
+        // return cameraPosition
+        resultCameraPositionTarget.put("latitude", cameraPosition.target.latitude);
+        resultCameraPositionTarget.put("longitude", cameraPosition.target.longitude);
+        resultCameraPosition.put("bearing", cameraPosition.bearing);
+        resultCameraPosition.put("tilt", cameraPosition.tilt);
+        resultCameraPosition.put("zoom", cameraPosition.zoom);
+
+        return resultObjectToExtend;
     }
 
     private JSObject getResultForPosition(Location location) {
