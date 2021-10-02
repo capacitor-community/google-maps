@@ -490,7 +490,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
 
                     Marker marker = customMapView.addMarker(customMarker);
 
-                    call.resolve(CustomMarker.getResultForMarker(marker));
+                    call.resolve(CustomMarker.getResultForMarker(marker, mapId));
                 } else {
                     call.reject("map not found");
                 }

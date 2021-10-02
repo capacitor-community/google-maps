@@ -145,7 +145,7 @@ public class CustomMapView
     @Override
     public void onInfoWindowClick(Marker marker) {
         if (customMapViewEvents != null && savedCallbackIdForDidTapInfoWindow != null) {
-            JSObject result = CustomMarker.getResultForMarker(marker);
+            JSObject result = CustomMarker.getResultForMarker(marker, this.id);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapInfoWindow, result);
         }
     }
@@ -153,7 +153,7 @@ public class CustomMapView
     @Override
     public void onInfoWindowClose(Marker marker) {
         if (customMapViewEvents != null && savedCallbackIdForDidCloseInfoWindow != null) {
-            JSObject result = CustomMarker.getResultForMarker(marker);
+            JSObject result = CustomMarker.getResultForMarker(marker, this.id);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidCloseInfoWindow, result);
         }
     }
@@ -177,7 +177,7 @@ public class CustomMapView
     @Override
     public boolean onMarkerClick(Marker marker) {
         if (customMapViewEvents != null && savedCallbackIdForDidTapMarker != null) {
-            JSObject result = CustomMarker.getResultForMarker(marker);
+            JSObject result = CustomMarker.getResultForMarker(marker, this.id);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapMarker, result);
         }
         return preventDefaultForDidTapMarker;
@@ -186,7 +186,7 @@ public class CustomMapView
     @Override
     public void onMarkerDragStart(Marker marker) {
         if (customMapViewEvents != null && savedCallbackIdForDidBeginDraggingMarker != null) {
-            JSObject result = CustomMarker.getResultForMarker(marker);
+            JSObject result = CustomMarker.getResultForMarker(marker, this.id);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidBeginDraggingMarker, result);
         }
     }
@@ -194,7 +194,7 @@ public class CustomMapView
     @Override
     public void onMarkerDrag(Marker marker) {
         if (customMapViewEvents != null && savedCallbackIdForDidDragMarker != null) {
-            JSObject result = CustomMarker.getResultForMarker(marker);
+            JSObject result = CustomMarker.getResultForMarker(marker, this.id);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidDragMarker, result);
         }
     }
@@ -202,7 +202,7 @@ public class CustomMapView
     @Override
     public void onMarkerDragEnd(Marker marker) {
         if (customMapViewEvents != null && savedCallbackIdForDidEndDraggingMarker != null) {
-            JSObject result = CustomMarker.getResultForMarker(marker);
+            JSObject result = CustomMarker.getResultForMarker(marker, this.id);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidEndDraggingMarker, result);
         }
     }

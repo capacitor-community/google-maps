@@ -59,11 +59,14 @@ public class CustomMarker {
         this.tag = tag;
     }
 
-    public static JSObject getResultForMarker(Marker marker) {
+    public static JSObject getResultForMarker(Marker marker, String mapId) {
         // initialize JSObjects to return
         JSObject result = new JSObject();
         JSObject positionResult = new JSObject();
         JSObject markerResult = new JSObject();
+
+        // get map id
+        positionResult.put("mapId", mapId);
 
         // get position values
         positionResult.put("latitude", marker.getPosition().latitude);
