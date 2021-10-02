@@ -234,7 +234,15 @@ public class CustomMapView
     @Override
     public void onCameraMoveStarted(int i) {
         if (customMapViewEvents != null && savedCallbackIdForDidBeginMovingCamera != null) {
-            customMapViewEvents.resultForCallbackId(savedCallbackIdForDidBeginMovingCamera, null);
+            int reason = 2;
+            if (i == REASON_GESTURE) {
+                // Camera motion initiated in response to user gestures on the map.
+                // For example: pan, tilt, pinch to zoom, or rotate.
+                reason = 1;
+            }
+            JSObject result = new JSObject();
+            result.put("reason", reason);
+            customMapViewEvents.resultForCallbackId(savedCallbackIdForDidBeginMovingCamera, result);
         }
     }
 
@@ -248,7 +256,7 @@ public class CustomMapView
     @Override
     public void onCameraIdle() {
         if (customMapViewEvents != null && savedCallbackIdForDidEndMovingCamera != null) {
-            customMapViewEvents.resultForCallbackId(savedCallbackIdForDidEndMovingCamera, null);
+            customMapViewEvents.resultForCallbackId(savedCallbackIdForDidEndMovingCamera, this.getResultForCameraPosition(new JSObject()));
         }
     }
 
