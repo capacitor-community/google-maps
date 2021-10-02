@@ -452,6 +452,15 @@ public class CustomMapView
         return marker;
     }
 
+    public void removeMarker(String markerId) {
+        Marker marker = markers.get(markerId);
+
+        if (marker != null) {
+            marker.remove();
+            markers.remove(markerId);
+        }
+    }
+
     private JSObject getResultForMap() {
         if (this.mapView != null && this.googleMap != null) {
             // initialize JSObjects
