@@ -7,6 +7,8 @@ Below is an index of all the methods available.
 - [`initialize(...)`](#initialize)
 - [`createMap(...)`](#createmap)
 - [`updateMap(...)`](#updatemap)
+- [`removeMap(...)`](#removemap)
+- [`clearMap(...)`](#clearmap)
 - [`moveCamera(...)`](#movecamera)
 - [`addMarker(...)`](#addmarker)
 - [`removeMarker(...)`](#removemarker)
@@ -15,8 +17,15 @@ Below is an index of all the methods available.
 - [`didTapMap(...)`](#didtapmap)
 - [`didLongPressMap(...)`](#didlongpressmap)
 - [`didTapMarker(...)`](#didtapmarker)
+- [`didBeginDraggingMarker(...)`](#didbegindraggingmarker)
+- [`didDragMarker(...)`](#diddragmarker)
+- [`didEndDraggingMarker(...)`](#didenddraggingmarker)
 - [`didTapMyLocationButton(...)`](#didtapmylocationbutton)
 - [`didTapMyLocationDot(...)`](#didtapmylocationdot)
+- [`didTapPoi(...)`](#didtappoi)
+- [`didBeginMovingCamera(...)`](#didbeginmovingcamera)
+- [`didMoveCamera(...)`](#didmovecamera)
+- [`didEndMovingCamera(...)`](#didendmovingcamera)
 - [`elementFromPointResult(...)`](#elementfrompointresult)
 - [`addListener('didRequestElementFromPoint', ...)`](#addlistenerdidrequestelementfrompoint-)
 - [Interfaces](#interfaces)
@@ -68,6 +77,30 @@ updateMap(options: UpdateMapOptions) => Promise<UpdateMapResult>
 
 ---
 
+### removeMap(...)
+
+```typescript
+removeMap(options: RemoveMapOptions) => Promise<void>
+```
+
+| Param         | Type                                                          |
+| ------------- | ------------------------------------------------------------- |
+| **`options`** | <code><a href="#removemapoptions">RemoveMapOptions</a></code> |
+
+---
+
+### clearMap(...)
+
+```typescript
+clearMap(options: ClearMapOptions) => Promise<void>
+```
+
+| Param         | Type                                                        |
+| ------------- | ----------------------------------------------------------- |
+| **`options`** | <code><a href="#clearmapoptions">ClearMapOptions</a></code> |
+
+---
+
 ### moveCamera(...)
 
 ```typescript
@@ -99,12 +132,12 @@ addMarker(options: AddMarkerOptions) => Promise<AddMarkerResult>
 ### removeMarker(...)
 
 ```typescript
-removeMarker(markerId: string) => Promise<void>
+removeMarker(options: RemoveMarkerOptions) => Promise<void>
 ```
 
-| Param          | Type                |
-| -------------- | ------------------- |
-| **`markerId`** | <code>string</code> |
+| Param         | Type                                                                |
+| ------------- | ------------------------------------------------------------------- |
+| **`options`** | <code><a href="#removemarkeroptions">RemoveMarkerOptions</a></code> |
 
 ---
 
@@ -183,6 +216,51 @@ didTapMarker(options: DefaultEventWithPreventDefaultOptions, callback: DidTapMar
 
 ---
 
+### didBeginDraggingMarker(...)
+
+```typescript
+didBeginDraggingMarker(options: DefaultEventOptions, callback: DidBeginDraggingMarkerCallback) => Promise<CallbackID>
+```
+
+| Param          | Type                                                                                      |
+| -------------- | ----------------------------------------------------------------------------------------- |
+| **`options`**  | <code><a href="#defaulteventoptions">DefaultEventOptions</a></code>                       |
+| **`callback`** | <code><a href="#didbegindraggingmarkercallback">DidBeginDraggingMarkerCallback</a></code> |
+
+**Returns:** <code>Promise&lt;string&gt;</code>
+
+---
+
+### didDragMarker(...)
+
+```typescript
+didDragMarker(options: DefaultEventOptions, callback: DidDragMarkerCallback) => Promise<CallbackID>
+```
+
+| Param          | Type                                                                    |
+| -------------- | ----------------------------------------------------------------------- |
+| **`options`**  | <code><a href="#defaulteventoptions">DefaultEventOptions</a></code>     |
+| **`callback`** | <code><a href="#diddragmarkercallback">DidDragMarkerCallback</a></code> |
+
+**Returns:** <code>Promise&lt;string&gt;</code>
+
+---
+
+### didEndDraggingMarker(...)
+
+```typescript
+didEndDraggingMarker(options: DefaultEventOptions, callback: DidEndDraggingMarkerCallback) => Promise<CallbackID>
+```
+
+| Param          | Type                                                                                  |
+| -------------- | ------------------------------------------------------------------------------------- |
+| **`options`**  | <code><a href="#defaulteventoptions">DefaultEventOptions</a></code>                   |
+| **`callback`** | <code><a href="#didenddraggingmarkercallback">DidEndDraggingMarkerCallback</a></code> |
+
+**Returns:** <code>Promise&lt;string&gt;</code>
+
+---
+
 ### didTapMyLocationButton(...)
 
 ```typescript
@@ -208,6 +286,66 @@ didTapMyLocationDot(options: DefaultEventOptions, callback: DidTapMyLocationDotC
 | -------------- | ----------------------------------------------------------------------------------- |
 | **`options`**  | <code><a href="#defaulteventoptions">DefaultEventOptions</a></code>                 |
 | **`callback`** | <code><a href="#didtapmylocationdotcallback">DidTapMyLocationDotCallback</a></code> |
+
+**Returns:** <code>Promise&lt;string&gt;</code>
+
+---
+
+### didTapPoi(...)
+
+```typescript
+didTapPoi(options: DefaultEventOptions, callback: DidTapPoiCallback) => Promise<CallbackID>
+```
+
+| Param          | Type                                                                |
+| -------------- | ------------------------------------------------------------------- |
+| **`options`**  | <code><a href="#defaulteventoptions">DefaultEventOptions</a></code> |
+| **`callback`** | <code><a href="#didtappoicallback">DidTapPoiCallback</a></code>     |
+
+**Returns:** <code>Promise&lt;string&gt;</code>
+
+---
+
+### didBeginMovingCamera(...)
+
+```typescript
+didBeginMovingCamera(options: DefaultEventOptions, callback: DidBeginMovingCameraCallback) => Promise<CallbackID>
+```
+
+| Param          | Type                                                                                  |
+| -------------- | ------------------------------------------------------------------------------------- |
+| **`options`**  | <code><a href="#defaulteventoptions">DefaultEventOptions</a></code>                   |
+| **`callback`** | <code><a href="#didbeginmovingcameracallback">DidBeginMovingCameraCallback</a></code> |
+
+**Returns:** <code>Promise&lt;string&gt;</code>
+
+---
+
+### didMoveCamera(...)
+
+```typescript
+didMoveCamera(options: DefaultEventOptions, callback: DidMoveCameraCallback) => Promise<CallbackID>
+```
+
+| Param          | Type                                                                    |
+| -------------- | ----------------------------------------------------------------------- |
+| **`options`**  | <code><a href="#defaulteventoptions">DefaultEventOptions</a></code>     |
+| **`callback`** | <code><a href="#didmovecameracallback">DidMoveCameraCallback</a></code> |
+
+**Returns:** <code>Promise&lt;string&gt;</code>
+
+---
+
+### didEndMovingCamera(...)
+
+```typescript
+didEndMovingCamera(options: DefaultEventOptions, callback: DidEndMovingCameraCallback) => Promise<CallbackID>
+```
+
+| Param          | Type                                                                              |
+| -------------- | --------------------------------------------------------------------------------- |
+| **`options`**  | <code><a href="#defaulteventoptions">DefaultEventOptions</a></code>               |
+| **`callback`** | <code><a href="#didendmovingcameracallback">DidEndMovingCameraCallback</a></code> |
 
 **Returns:** <code>Promise&lt;string&gt;</code>
 
@@ -383,6 +521,18 @@ An intrinsic object that provides functions to convert JavaScript values to and 
 | **`boundingRect`** | <code><a href="#boundingrect">BoundingRect</a></code>     | 2.0.0 |
 | **`preferences`**  | <code><a href="#mappreferences">MapPreferences</a></code> | 2.0.0 |
 
+#### RemoveMapOptions
+
+| Prop        | Type                | Since |
+| ----------- | ------------------- | ----- |
+| **`mapId`** | <code>string</code> | 2.0.0 |
+
+#### ClearMapOptions
+
+| Prop        | Type                | Since |
+| ----------- | ------------------- | ----- |
+| **`mapId`** | <code>string</code> | 2.0.0 |
+
 #### MoveCameraResult
 
 | Prop            | Type                                            | Since |
@@ -409,6 +559,7 @@ An intrinsic object that provides functions to convert JavaScript values to and 
 
 | Prop              | Type                 | Description                                                                                                                                                                                                                                                                                               | Since |
 | ----------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
+| **`mapId`**       | <code>string</code>  | GUID representing the map this marker is part of                                                                                                                                                                                                                                                          | 2.0.0 |
 | **`markerId`**    | <code>string</code>  | GUID representing the unique id of this marker                                                                                                                                                                                                                                                            | 2.0.0 |
 | **`title`**       | <code>string</code>  | A text string that's displayed in an info window when the user taps the marker. You can change this value at any time.                                                                                                                                                                                    | 2.0.0 |
 | **`snippet`**     | <code>string</code>  | Additional text that's displayed below the title. You can change this value at any time.                                                                                                                                                                                                                  | 2.0.0 |
@@ -435,6 +586,13 @@ An intrinsic object that provides functions to convert JavaScript values to and 
 | **`isFlat`**      | <code>boolean</code> | Controls whether this marker should be flat against the Earth's surface (`true`) or a billboard facing the camera (`false`).                                                                                                                                                                              | <code>false</code> | 2.0.0 |
 | **`isDraggable`** | <code>boolean</code> | Controls whether this marker can be dragged interactively. When a marker is draggable, it can be moved by the user by long pressing on the marker.                                                                                                                                                        | <code>false</code> | 2.0.0 |
 | **`metadata`**    | <code>object</code>  | You can use this property to associate an arbitrary object with this overlay. The Google Maps SDK neither reads nor writes this property. Note that metadata should not hold any strong references to any Maps objects, otherwise a retain cycle may be created (preventing objects from being released). | <code>{}</code>    | 2.0.0 |
+
+#### RemoveMarkerOptions
+
+| Prop           | Type                | Since |
+| -------------- | ------------------- | ----- |
+| **`mapId`**    | <code>string</code> | 2.0.0 |
+| **`markerId`** | <code>string</code> | 2.0.0 |
 
 #### DefaultEventOptions
 
@@ -482,11 +640,120 @@ An intrinsic object that provides functions to convert JavaScript values to and 
 | **`position`** | <code><a href="#latlng">LatLng</a></code> |
 | **`marker`**   | <code><a href="#marker">Marker</a></code> |
 
+#### DidBeginDraggingMarkerResult
+
+| Prop           | Type                                      |
+| -------------- | ----------------------------------------- |
+| **`position`** | <code><a href="#latlng">LatLng</a></code> |
+| **`marker`**   | <code><a href="#marker">Marker</a></code> |
+
+#### DidDragMarkerResult
+
+| Prop           | Type                                      |
+| -------------- | ----------------------------------------- |
+| **`position`** | <code><a href="#latlng">LatLng</a></code> |
+| **`marker`**   | <code><a href="#marker">Marker</a></code> |
+
+#### DidEndDraggingMarkerResult
+
+| Prop           | Type                                      |
+| -------------- | ----------------------------------------- |
+| **`position`** | <code><a href="#latlng">LatLng</a></code> |
+| **`marker`**   | <code><a href="#marker">Marker</a></code> |
+
 #### DidTapMyLocationDotResult
 
 | Prop           | Type                                      |
 | -------------- | ----------------------------------------- |
 | **`position`** | <code><a href="#latlng">LatLng</a></code> |
+
+#### DidTapPoiResult
+
+| Prop           | Type                                                        |
+| -------------- | ----------------------------------------------------------- |
+| **`position`** | <code><a href="#latlng">LatLng</a></code>                   |
+| **`poi`**      | <code><a href="#pointofinterest">PointOfInterest</a></code> |
+
+#### PointOfInterest
+
+| Prop          | Type                                      | Description                                                                                                                                               | Since |
+| ------------- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
+| **`name`**    | <code><a href="#string">String</a></code> | The name of the POI.                                                                                                                                      | 2.0.0 |
+| **`placeId`** | <code><a href="#string">String</a></code> | The placeId of the POI. Read more about what you can use a placeId for here: https://developers.google.com/maps/documentation/places/web-service/place-id | 2.0.0 |
+
+#### String
+
+Allows manipulation and formatting of text strings and determination and location of substrings within strings.
+
+| Prop         | Type                | Description                                                  |
+| ------------ | ------------------- | ------------------------------------------------------------ |
+| **`length`** | <code>number</code> | Returns the length of a <a href="#string">String</a> object. |
+
+| Method                | Signature                                                                                                                      | Description                                                                                                                                   |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| **toString**          | () =&gt; string                                                                                                                | Returns a string representation of a string.                                                                                                  |
+| **charAt**            | (pos: number) =&gt; string                                                                                                     | Returns the character at the specified index.                                                                                                 |
+| **charCodeAt**        | (index: number) =&gt; number                                                                                                   | Returns the Unicode value of the character at the specified location.                                                                         |
+| **concat**            | (...strings: string[]) =&gt; string                                                                                            | Returns a string that contains the concatenation of two or more strings.                                                                      |
+| **indexOf**           | (searchString: string, position?: number) =&gt; number                                                                         | Returns the position of the first occurrence of a substring.                                                                                  |
+| **lastIndexOf**       | (searchString: string, position?: number) =&gt; number                                                                         | Returns the last occurrence of a substring in the string.                                                                                     |
+| **localeCompare**     | (that: string) =&gt; number                                                                                                    | Determines whether two strings are equivalent in the current locale.                                                                          |
+| **match**             | (regexp: string \| <a href="#regexp">RegExp</a>) =&gt; <a href="#regexpmatcharray">RegExpMatchArray</a> \| null                | Matches a string with a regular expression, and returns an array containing the results of that search.                                       |
+| **replace**           | (searchValue: string \| <a href="#regexp">RegExp</a>, replaceValue: string) =&gt; string                                       | Replaces text in a string, using a regular expression or search string.                                                                       |
+| **replace**           | (searchValue: string \| <a href="#regexp">RegExp</a>, replacer: (substring: string, ...args: any[]) =&gt; string) =&gt; string | Replaces text in a string, using a regular expression or search string.                                                                       |
+| **search**            | (regexp: string \| <a href="#regexp">RegExp</a>) =&gt; number                                                                  | Finds the first substring match in a regular expression search.                                                                               |
+| **slice**             | (start?: number, end?: number) =&gt; string                                                                                    | Returns a section of a string.                                                                                                                |
+| **split**             | (separator: string \| <a href="#regexp">RegExp</a>, limit?: number) =&gt; string[]                                             | Split a string into substrings using the specified separator and return them as an array.                                                     |
+| **substring**         | (start: number, end?: number) =&gt; string                                                                                     | Returns the substring at the specified location within a <a href="#string">String</a> object.                                                 |
+| **toLowerCase**       | () =&gt; string                                                                                                                | Converts all the alphabetic characters in a string to lowercase.                                                                              |
+| **toLocaleLowerCase** | (locales?: string \| string[]) =&gt; string                                                                                    | Converts all alphabetic characters to lowercase, taking into account the host environment's current locale.                                   |
+| **toUpperCase**       | () =&gt; string                                                                                                                | Converts all the alphabetic characters in a string to uppercase.                                                                              |
+| **toLocaleUpperCase** | (locales?: string \| string[]) =&gt; string                                                                                    | Returns a string where all alphabetic characters have been converted to uppercase, taking into account the host environment's current locale. |
+| **trim**              | () =&gt; string                                                                                                                | Removes the leading and trailing white space and line terminator characters from a string.                                                    |
+| **substr**            | (from: number, length?: number) =&gt; string                                                                                   | Gets a substring beginning at the specified location and having the specified length.                                                         |
+| **valueOf**           | () =&gt; string                                                                                                                | Returns the primitive value of the specified object.                                                                                          |
+
+#### RegExpMatchArray
+
+| Prop        | Type                |
+| ----------- | ------------------- |
+| **`index`** | <code>number</code> |
+| **`input`** | <code>string</code> |
+
+#### RegExp
+
+| Prop             | Type                 | Description                                                                                                                                                          |
+| ---------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`source`**     | <code>string</code>  | Returns a copy of the text of the regular expression pattern. Read-only. The regExp argument is a Regular expression object. It can be a variable name or a literal. |
+| **`global`**     | <code>boolean</code> | Returns a Boolean value indicating the state of the global flag (g) used with a regular expression. Default is false. Read-only.                                     |
+| **`ignoreCase`** | <code>boolean</code> | Returns a Boolean value indicating the state of the ignoreCase flag (i) used with a regular expression. Default is false. Read-only.                                 |
+| **`multiline`**  | <code>boolean</code> | Returns a Boolean value indicating the state of the multiline flag (m) used with a regular expression. Default is false. Read-only.                                  |
+| **`lastIndex`**  | <code>number</code>  |                                                                                                                                                                      |
+
+| Method      | Signature                                                                     | Description                                                                                                                   |
+| ----------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| **exec**    | (string: string) =&gt; <a href="#regexpexecarray">RegExpExecArray</a> \| null | Executes a search on a string using a regular expression pattern, and returns an array containing the results of that search. |
+| **test**    | (string: string) =&gt; boolean                                                | Returns a Boolean value that indicates whether or not a pattern exists in a searched string.                                  |
+| **compile** | () =&gt; this                                                                 |                                                                                                                               |
+
+#### RegExpExecArray
+
+| Prop        | Type                |
+| ----------- | ------------------- |
+| **`index`** | <code>number</code> |
+| **`input`** | <code>string</code> |
+
+#### DidBeginMovingCameraResult
+
+| Prop         | Type                                                                  |
+| ------------ | --------------------------------------------------------------------- |
+| **`reason`** | <code><a href="#cameramovementreason">CameraMovementReason</a></code> |
+
+#### DidEndMovingCameraResult
+
+| Prop                 | Type                                                      |
+| -------------------- | --------------------------------------------------------- |
+| **`cameraPosition`** | <code><a href="#cameraposition">CameraPosition</a></code> |
 
 #### ElementFromPointResultOptions
 
@@ -535,6 +802,18 @@ An intrinsic object that provides functions to convert JavaScript values to and 
 
 <code>(result: <a href="#didtapmarkerresult">DidTapMarkerResult</a>, err?: any): void</code>
 
+#### DidBeginDraggingMarkerCallback
+
+<code>(result: <a href="#didbegindraggingmarkerresult">DidBeginDraggingMarkerResult</a>, err?: any): void</code>
+
+#### DidDragMarkerCallback
+
+<code>(result: <a href="#diddragmarkerresult">DidDragMarkerResult</a>, err?: any): void</code>
+
+#### DidEndDraggingMarkerCallback
+
+<code>(result: <a href="#didenddraggingmarkerresult">DidEndDraggingMarkerResult</a>, err?: any): void</code>
+
 #### DidTapMyLocationButtonCallback
 
 <code>(result: null, err?: any): void</code>
@@ -542,6 +821,22 @@ An intrinsic object that provides functions to convert JavaScript values to and 
 #### DidTapMyLocationDotCallback
 
 <code>(result: <a href="#didtapmylocationdotresult">DidTapMyLocationDotResult</a>, err?: any): void</code>
+
+#### DidTapPoiCallback
+
+<code>(result: <a href="#didtappoiresult">DidTapPoiResult</a>, err?: any): void</code>
+
+#### DidBeginMovingCameraCallback
+
+<code>(result: <a href="#didbeginmovingcameraresult">DidBeginMovingCameraResult</a>, err?: any): void</code>
+
+#### DidMoveCameraCallback
+
+<code>(result: null, err?: any): void</code>
+
+#### DidEndMovingCameraCallback
+
+<code>(result: <a href="#didendmovingcameraresult">DidEndMovingCameraResult</a>, err?: any): void</code>
 
 ### Enums
 
@@ -554,5 +849,12 @@ An intrinsic object that provides functions to convert JavaScript values to and 
 | **`Satellite`** | <code>2</code> | Satellite imagery with no labels.        | 2.0.0 |
 | **`Terrain`**   | <code>3</code> | Topographic data.                        | 2.0.0 |
 | **`Hybrid`**    | <code>4</code> | Satellite imagery with roads and labels. | 2.0.0 |
+
+#### CameraMovementReason
+
+| Members       | Value          | Description                                                                                                                                                                                                                                   | Since |
+| ------------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
+| **`Gesture`** | <code>1</code> | Camera motion initiated in response to user gestures on the map. For example: pan, tilt, pinch to zoom, or rotate.                                                                                                                            | 2.0.0 |
+| **`Other`**   | <code>2</code> | Indicates that this is part of a programmatic change - for example, via methods such as `moveCamera`. This may also be the case if a user has tapped on the My Location or compass buttons, which generate animations that change the camera. | 2.0.0 |
 
 </docgen-api>
