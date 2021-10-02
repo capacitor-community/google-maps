@@ -375,6 +375,15 @@ public class CustomMapView
         parent.addView(mapView);
     }
 
+    public void removeFromView(ViewGroup parent) {
+        parent.removeView(mapView);
+    }
+
+    public void clear() {
+        googleMap.clear();
+        mHashMap.clear();
+    }
+
     public Marker addMarker(CustomMarker customMarker) {
         Marker marker = customMarker.addToMap(googleMap);
         mHashMap.put(customMarker.markerId, marker);

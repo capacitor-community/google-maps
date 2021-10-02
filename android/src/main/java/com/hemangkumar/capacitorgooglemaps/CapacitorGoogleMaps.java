@@ -288,6 +288,45 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
         });
     }
 
+    @PluginMethod(returnType = PluginMethod.RETURN_NONE)
+    public void removeMap(final PluginCall call) {
+        final String mapId = call.getString("mapId");
+
+        getBridge().getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                CustomMapView customMapView = customMapViews.get(mapId);
+
+                if (customMapView != null) {
+                    customMapView.removeFromView(((ViewGroup) bridge.getWebView().getParent()));
+                    customMapViews.remove(mapId);
+                    call.resolve();
+                } else {
+                    call.reject("map not found");
+                }
+            }
+        });
+    }
+
+    @PluginMethod(returnType = PluginMethod.RETURN_NONE)
+    public void clearMap(final PluginCall call) {
+        final String mapId = call.getString("mapId");
+
+        getBridge().getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                CustomMapView customMapView = customMapViews.get(mapId);
+
+                if (customMapView != null) {
+                    customMapView.clear();
+                    call.resolve();
+                } else {
+                    call.reject("map not found");
+                }
+            }
+        });
+    }
+
     @PluginMethod
     public void moveCamera(final PluginCall call) {
         final String mapId = call.getString("mapId");
