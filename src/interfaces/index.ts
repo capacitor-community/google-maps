@@ -12,6 +12,9 @@ export * from "./events/DidCloseInfoWindow";
 export * from "./events/DidTapMap";
 export * from "./events/DidLongPressMap";
 export * from "./events/DidTapMarker";
+export * from "./events/DidBeginDraggingMarker";
+export * from "./events/DidDragMarker";
+export * from "./events/DidEndDraggingMarker";
 export * from "./events/DidTapMyLocationButton";
 export * from "./events/DidTapMyLocationDot";
 

@@ -18,6 +18,9 @@ import {
   DidTapMapCallback,
   DidLongPressMapCallback,
   DidTapMarkerCallback,
+  DidBeginDraggingMarkerCallback,
+  DidDragMarkerCallback,
+  DidEndDraggingMarkerCallback,
   DidTapMyLocationButtonCallback,
   DidTapMyLocationDotCallback,
 } from "./interfaces";
@@ -77,6 +80,21 @@ export interface CapacitorGoogleMapsPlugin {
   didTapMarker(
     options: DefaultEventWithPreventDefaultOptions,
     callback: DidTapMarkerCallback
+  ): Promise<CallbackID>;
+
+  didBeginDraggingMarker(
+    options: DefaultEventOptions,
+    callback: DidBeginDraggingMarkerCallback
+  ): Promise<CallbackID>;
+
+  didDragMarker(
+    options: DefaultEventOptions,
+    callback: DidDragMarkerCallback
+  ): Promise<CallbackID>;
+
+  didEndDraggingMarker(
+    options: DefaultEventOptions,
+    callback: DidEndDraggingMarkerCallback
   ): Promise<CallbackID>;
 
   didTapMyLocationButton(
