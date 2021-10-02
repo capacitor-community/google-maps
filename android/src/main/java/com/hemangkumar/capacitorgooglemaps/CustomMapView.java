@@ -50,7 +50,7 @@ public class CustomMapView
     MapView mapView;
     GoogleMap googleMap;
 
-    private HashMap<String, Marker> mHashMap = new HashMap<>();
+    private HashMap<String, Marker> markers = new HashMap<>();
 
     String savedCallbackIdForCreate;
 
@@ -443,12 +443,12 @@ public class CustomMapView
 
     public void clear() {
         googleMap.clear();
-        mHashMap.clear();
+        markers.clear();
     }
 
     public Marker addMarker(CustomMarker customMarker) {
         Marker marker = customMarker.addToMap(googleMap);
-        mHashMap.put(customMarker.markerId, marker);
+        markers.put(customMarker.markerId, marker);
         return marker;
     }
 
