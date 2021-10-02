@@ -1,5 +1,6 @@
 package com.hemangkumar.capacitorgooglemaps;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -12,6 +13,7 @@ import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
+import com.getcapacitor.annotation.Permission;
 import com.google.android.libraries.maps.model.CameraPosition;
 import com.google.android.libraries.maps.model.Marker;
 
@@ -20,7 +22,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-@CapacitorPlugin
+@CapacitorPlugin(
+        name = "CapacitorGoogleMaps",
+        permissions = {
+                @Permission(
+                        strings = { Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION },
+                        alias = "location"
+                ),
+        }
+)
 public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  {
     private final HashMap<String, CustomMapView> customMapViews = new HashMap<>();
     Float devicePixelRatio;
