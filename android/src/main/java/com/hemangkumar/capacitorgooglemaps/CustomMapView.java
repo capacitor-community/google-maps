@@ -122,15 +122,6 @@ public class CustomMapView
         }
         this.googleMap.setTrafficEnabled(this.mapPreferences.appearance.isTrafficShown);
 
-        // set listeners
-        this.googleMap.setOnInfoWindowClickListener(this);
-        this.googleMap.setOnInfoWindowCloseListener(this);
-        this.googleMap.setOnMapClickListener(this);
-        this.googleMap.setOnMapLongClickListener(this);
-        this.googleMap.setOnMarkerClickListener(this);
-        this.googleMap.setOnMarkerDragListener(this);
-        this.googleMap.setOnMyLocationClickListener(this);
-        this.googleMap.setOnMyLocationButtonClickListener(this);
 
         // execute callback
         if (customMapViewEvents != null && savedCallbackIdForCreate != null) {
@@ -253,32 +244,42 @@ public class CustomMapView
     public void setCallbackIdForEvent(String callbackId, String eventName, Boolean preventDefault) {
         if (callbackId != null && eventName != null) {
             if (eventName.equals(CustomMapView.EVENT_DID_TAP_INFO_WINDOW)) {
+                this.googleMap.setOnInfoWindowClickListener(this);
                 savedCallbackIdForDidTapInfoWindow = callbackId;
             } else if (eventName.equals(CustomMapView.EVENT_DID_CLOSE_INFO_WINDOW)) {
+                this.googleMap.setOnInfoWindowCloseListener(this);
                 savedCallbackIdForDidCloseInfoWindow = callbackId;
             } else if (eventName.equals(CustomMapView.EVENT_DID_TAP_MAP)) {
+                this.googleMap.setOnMapClickListener(this);
                 savedCallbackIdForDidTapMap = callbackId;
             } else if (eventName.equals(CustomMapView.EVENT_DID_LONG_PRESS_MAP)) {
+                this.googleMap.setOnMapLongClickListener(this);
                 savedCallbackIdForDidLongPressMap = callbackId;
             } else if (eventName.equals(CustomMapView.EVENT_DID_TAP_MARKER)) {
+                this.googleMap.setOnMarkerClickListener(this);
                 savedCallbackIdForDidTapMarker = callbackId;
                 if (preventDefault == null) {
                     preventDefault = false;
                 }
                 preventDefaultForDidTapMarker = preventDefault;
             } else if (eventName.equals(CustomMapView.EVENT_DID_BEGIN_DRAGGING_MARKER)) {
+                this.googleMap.setOnMarkerDragListener(this);
                 savedCallbackIdForDidBeginDraggingMarker = callbackId;
             } else if (eventName.equals(CustomMapView.EVENT_DID_DRAG_MARKER)) {
+                this.googleMap.setOnMarkerDragListener(this);
                 savedCallbackIdForDidDragMarker = callbackId;
             } else if (eventName.equals(CustomMapView.EVENT_DID_END_DRAGGING_MARKER)) {
+                this.googleMap.setOnMarkerDragListener(this);
                 savedCallbackIdForDidEndDraggingMarker = callbackId;
             } else if (eventName.equals(CustomMapView.EVENT_DID_TAP_MY_LOCATION_BUTTON)) {
+                this.googleMap.setOnMyLocationButtonClickListener(this);
                 savedCallbackIdForDidTapMyLocationButton = callbackId;
                 if (preventDefault == null) {
                     preventDefault = false;
                 }
                 preventDefaultForDidTapMyLocationButton = preventDefault;
             } else if (eventName.equals(CustomMapView.EVENT_DID_TAP_MY_LOCATION_DOT)) {
+                this.googleMap.setOnMyLocationClickListener(this);
                 savedCallbackIdForDidTapMyLocationDot = callbackId;
             }
         }
