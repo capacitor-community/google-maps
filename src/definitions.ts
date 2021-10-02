@@ -26,6 +26,9 @@ import {
   DidTapMyLocationButtonCallback,
   DidTapMyLocationDotCallback,
   DidTapPoiCallback,
+  DidBeginMovingCameraCallback,
+  DidMoveCameraCallback,
+  DidEndMovingCameraCallback
 } from "./interfaces";
 
 export type CallbackID = string;
@@ -117,6 +120,21 @@ export interface CapacitorGoogleMapsPlugin {
   didTapPoi(
     options: DefaultEventOptions,
     callback: DidTapPoiCallback
+  ): Promise<CallbackID>;
+
+  didBeginMovingCamera(
+    options: DefaultEventOptions,
+    callback: DidBeginMovingCameraCallback
+  ): Promise<CallbackID>;
+
+  didMoveCamera(
+    options: DefaultEventOptions,
+    callback: DidMoveCameraCallback
+  ): Promise<CallbackID>;
+
+  didEndMovingCamera(
+    options: DefaultEventOptions,
+    callback: DidEndMovingCameraCallback
   ): Promise<CallbackID>;
 
   /**

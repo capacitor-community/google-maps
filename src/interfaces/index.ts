@@ -20,8 +20,12 @@ export * from "./events/DidEndDraggingMarker";
 export * from "./events/DidTapMyLocationButton";
 export * from "./events/DidTapMyLocationDot";
 export * from "./events/DidTapPoi";
+export * from "./events/DidBeginMovingCamera";
+export * from "./events/DidMoveCamera";
+export * from "./events/DidEndMovingCamera";
 
 // models
+export { CameraMovementReason } from "./models/GoogleMap/Camera/MovementReason";
 export { CameraPosition } from "./models/GoogleMap/Camera/Position";
 export { Marker } from "./models/GoogleMap/Marker/Marker";
 export { MarkerPreferences } from "./models/GoogleMap/Marker/MarkerPreferences";
