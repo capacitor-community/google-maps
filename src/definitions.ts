@@ -14,6 +14,7 @@ import {
   ElementFromPointResultOptions,
   AddMarkerOptions,
   AddMarkerResult,
+  RemoveMarkerOptions,
   // events
   DidTapInfoWindowCallback,
   DidCloseInfoWindowCallback,
@@ -28,7 +29,7 @@ import {
   DidTapPoiCallback,
   DidBeginMovingCameraCallback,
   DidMoveCameraCallback,
-  DidEndMovingCameraCallback
+  DidEndMovingCameraCallback,
 } from "./interfaces";
 
 export type CallbackID = string;
@@ -65,7 +66,7 @@ export interface CapacitorGoogleMapsPlugin {
 
   addMarker(options: AddMarkerOptions): Promise<AddMarkerResult>;
 
-  removeMarker(markerId: string): Promise<void>;
+  removeMarker(options: RemoveMarkerOptions): Promise<void>;
 
   didTapInfoWindow(
     options: DefaultEventOptions,

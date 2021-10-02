@@ -13,6 +13,7 @@ import {
   ElementFromPointResultOptions,
   AddMarkerOptions,
   AddMarkerResult,
+  RemoveMarkerOptions,
   DidTapInfoWindowCallback,
   DidCloseInfoWindowCallback,
   DidTapMapCallback,
@@ -53,7 +54,7 @@ export class CapacitorGoogleMapsWeb extends WebPlugin
     throw this.unimplemented("Not implemented on web.");
   }
 
-  async removeMarker(_markerId: string): Promise<void> {
+  async removeMarker(_options: RemoveMarkerOptions): Promise<void> {
     throw this.unimplemented("Not implemented on web.");
   }
 
