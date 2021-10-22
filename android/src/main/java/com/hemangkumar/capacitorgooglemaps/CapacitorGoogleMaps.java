@@ -468,7 +468,7 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
             @Override
             public void run() {
                 JSObject result = new JSObject();
-                JSObject bounds = new JSObject();        
+                JSObject bounds = new JSObject();
                 JSObject farLeft = new JSObject();
                 JSObject farRight = new JSObject();
                 JSObject nearLeft = new JSObject();
@@ -488,7 +488,7 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
                 bounds.put("nearLeft",nearLeft);
                 bounds.put("nearRight",nearRight);
                 result.put("bounds",bounds);
-                
+
                 call.resolve(result);
             }
         });
@@ -573,18 +573,21 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
     @PluginMethod()
     public void setCamera(PluginCall call) {
 
-        final float viewingAngle = call.getFloat("viewingAngle", googleMap.getCameraPosition().tilt);
-        final float bearing = call.getFloat("bearing", googleMap.getCameraPosition().bearing);
-        final Float zoom = call.getFloat("zoom", googleMap.getCameraPosition().zoom);
-        final Double latitude = call.getDouble("latitude", googleMap.getCameraPosition().target.latitude);
-        final Double longitude = call.getDouble("longitude", googleMap.getCameraPosition().target.longitude);
 
-        final Boolean animate = call.getBoolean("animate", false);
-        Double animationDuration = call.getDouble("animationDuration", 1000.0);
 
         getBridge().executeOnMainThread(new Runnable() {
             @Override
             public void run() {
+
+                float viewingAngle = call.getFloat("viewingAngle", googleMap.getCameraPosition().tilt);
+                float bearing = call.getFloat("bearing", googleMap.getCameraPosition().bearing);
+                Float zoom = call.getFloat("zoom", googleMap.getCameraPosition().zoom);
+                Double latitude = call.getDouble("latitude", googleMap.getCameraPosition().target.latitude);
+                Double longitude = call.getDouble("longitude", googleMap.getCameraPosition().target.longitude);
+
+                Boolean animate = call.getBoolean("animate", false);
+                Double animationDuration = call.getDouble("animationDuration", 1000.0);
+
                 CameraPosition cameraPosition = new CameraPosition.Builder()
                         .target(new LatLng(latitude, longitude))
                         .zoom(zoom)
