@@ -454,7 +454,7 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
             public void run() {
                 if (mapViewParentId != null){
                     View viewToShow = ((ViewGroup) getBridge().getWebView().getParent()).findViewById(mapViewParentId);
-                    if (viewToRemove != null){
+                    if (viewToShow != null){
                         viewToShow.setVisibility(View.VISIBLE);
                     }
                 }
