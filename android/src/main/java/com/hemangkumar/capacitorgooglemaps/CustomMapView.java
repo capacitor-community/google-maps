@@ -578,6 +578,21 @@ public class CustomMapView implements OnMapReadyCallback,
            return null;
     }
 
+    public boolean updateMarker(String markerId, JSObject newPreferences) {
+        boolean isUpdated = false;
+        Iterator<CustomMarker> iterator = this.mClusterManager.getAlgorithm().getItems().iterator();
+        while (iterator.hasNext()) {
+            CustomMarker customMarker = iterator.next();
+            if(customMarker.getMarkerId().equals(markerId)) {
+                customMarker.updateFromJSObject(newPreferences);
+                isUpdated = mClusterManager.updateItem(customMarker);
+                mClusterManager.cluster();
+            }
+        }
+
+        return isUpdated;
+    }
+
     public void removeMarker(String markerId) {
         Iterator<CustomMarker> iterator = this.mClusterManager.getAlgorithm().getItems().iterator();
         while (iterator.hasNext()) {
