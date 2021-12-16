@@ -16,7 +16,7 @@
   <a href="https://www.npmjs.com/package/@capacitor-community/capacitor-googlemaps-native"><img src="https://img.shields.io/npm/dw/@capacitor-community/gcapacitor-googlemaps-native?style=flat-square" /></a>
   <a href="https://www.npmjs.com/package/@capacitor-community/capacitor-googlemaps-native"><img src="https://img.shields.io/npm/v/@capacitor-community/capacitor-googlemaps-native?style=flat-square" /></a>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors"><img src="https://img.shields.io/badge/all%20contributors-13-orange?style=flat-square" /></a>
+<a href="#contributors-"><img src="https://img.shields.io/badge/all_contributors-17-orange.svg?style=flat-square" /></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
@@ -29,20 +29,6 @@ Maps SDK for Android & iOS bring better performance and offline caching compared
 | Maintainer | GitHub | Mail |
 | -----------| -------| -------|
 | Hemang Kumar | [hemangsk](https://github.com/hemangsk) | <a href="mailto:hemangsk@gmail.com">hemangsk@gmail.com</a> |
-
-## Support Development
-If you like this plugin and use it on your projects, please consider donating to support the development. Thank you!
-
-<table>
-        <tr>
-                <td>
-                        <a href="https://paypal.me/HEMANGKUMAR"><img src="https://img.shields.io/badge/Paypal-Support%20via%20Paypal-blue?style=for-the-badge&logo=paypal"></a>
-                </td>
-                <td>
-                        <a href="https://www.buymeacoffee.com/hemang"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=hemang&button_colour=5F7FFF&font_colour=ffffff&font_family=Inter&outline_colour=000000&coffee_colour=FFDD00"></a>
-                </td>
-        </tr>
-</table>
 
 ## Project Status
 
@@ -80,7 +66,8 @@ You'll have two API keys by the end of this step. Lets proceed:
 
 ### Add API key to your App
 
-- [Android](https://developers.google.com/maps/documentation/android-sdk/get-api-key) in AndroidManifest.xml:
+#### Android
+[Android](https://developers.google.com/maps/documentation/android-sdk/get-api-key) in AndroidManifest.xml:
 ```
 <application>
 ...
@@ -91,6 +78,23 @@ You'll have two API keys by the end of this step. Lets proceed:
 ...
 </application>
 ```
+As of [Capacitor 3](https://capacitorjs.com/docs/updating/3-0), the plugin needs to be registered in MainActivity.java:
+```java
+import com.hemangkumar.capacitorgooglemaps.CapacitorGoogleMaps;
+//...
+
+public class MainActivity extends BridgeActivity {
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+
+    // ...
+    registerPlugin(CapacitorGoogleMaps.class);
+  }
+}
+
+```
+#### iOS
 - On iOS, this step is little different and mentioned below.
 
 ### Importing & Initializing the plugin
@@ -112,13 +116,13 @@ await CapacitorGoogleMaps.initialize({
 
 `component.html`
 
-```
+```html
 <div id="map" #map></div>
 ```
 
 `component.css`
 
-```
+```css
 #map {
     margin: 2em 1em;
     height: 250px;
@@ -196,6 +200,12 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://www.selectedpixel.com/"><img src="https://avatars.githubusercontent.com/u/28204537?v=4?s=100" width="100px;" alt=""/><br /><sub><b>selected-pixel-jameson</b></sub></a><br /><a href="https://github.com/capacitor-community/capacitor-googlemaps-native/issues?q=author%3Aselected-pixel-jameson" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/ChiKaLiO"><img src="https://avatars.githubusercontent.com/u/12167528?v=4?s=100" width="100px;" alt=""/><br /><sub><b>chikalio</b></sub></a><br /><a href="https://github.com/capacitor-community/capacitor-googlemaps-native/issues?q=author%3AChiKaLiO" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://www.tickeri.com/"><img src="https://avatars.githubusercontent.com/u/1047598?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Javier Gonzalez</b></sub></a><br /><a href="https://github.com/capacitor-community/capacitor-googlemaps-native/commits?author=J-Gonzalez" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/parawanderer"><img src="https://avatars.githubusercontent.com/u/37834723?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Shane B.</b></sub></a><br /><a href="https://github.com/capacitor-community/capacitor-googlemaps-native/commits?author=parawanderer" title="Documentation">📖</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/dragermrb"><img src="https://avatars.githubusercontent.com/u/11479696?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Manuel Rodríguez</b></sub></a><br /><a href="https://github.com/capacitor-community/capacitor-googlemaps-native/commits?author=dragermrb" title="Code">💻</a></td>
+    <td align="center"><a href="https://jamilusalism.github.io/"><img src="https://avatars.githubusercontent.com/u/20730765?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jamilu Salisu</b></sub></a><br /><a href="https://github.com/capacitor-community/capacitor-googlemaps-native/commits?author=jamilusalism" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/rastafan"><img src="https://avatars.githubusercontent.com/u/7632849?v=4?s=100" width="100px;" alt=""/><br /><sub><b>rastafan</b></sub></a><br /><a href="https://github.com/capacitor-community/capacitor-googlemaps-native/commits?author=rastafan" title="Code">💻</a></td>
   </tr>
 </table>
 
