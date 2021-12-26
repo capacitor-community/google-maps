@@ -1,15 +1,54 @@
 import Foundation
 import Capacitor
 import GoogleMaps
+import UIKit
+
+
 
 @objc(CapacitorGoogleMaps)
 public class CapacitorGoogleMaps: CustomMapViewEvents {
+    
 
     var GOOGLE_MAPS_KEY: String = "";
 
     var customMapViews = [String : CustomMapView]();
 
     var customMarkers = [String : CustomMarker]();
+    
+    var devicePixelRatio : Float = 0;
+    
+    public var lastEventChainId : String = "";
+    public var previousEvents: [UIEvent] = []
+    public var delegateTouchEventsToMapId : String?;
+    
+    var overlayView : CustomTopView? = nil;
+    
+    
+    public func notifyListenerFromPlugin(_ eventName: String, _ data: JSObject) {
+       notifyListeners(eventName, data: data)
+    }
+    
+    /**
+     This method should be called after we requested the WebView through notifyListeners("didRequestElementFromPoint").
+     It should tell us if the exact point that was being touched, is from an element in which a MapView exists.
+     Otherwise it is a 'normal' HTML element, and we should thus not delegate touch events.
+     */
+    @objc func elementFromPointResult(_ call: CAPPluginCall) {
+        var eventChainId : String? = call.getString("eventChainId");
+        if(eventChainId != nil && eventChainId == self.lastEventChainId) {
+            var isSameNode : Bool? = call.getBool("isSameNode", false);
+            if (isSameNode != nil && isSameNode == true) {
+                // The WebView apparently has decide the touched point belongs to a certains MapView
+                // Now we should find out which one exactly.
+                var mapId : String? = call.getString("mapId");
+                if (mapId != nil) {
+                    delegateTouchEventsToMapId = mapId!;
+                }
+            }
+        }
+        call.resolve();
+    }
+
 
     @objc func initialize(_ call: CAPPluginCall) {
 
@@ -21,10 +60,15 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         }
 
         GMSServices.provideAPIKey(self.GOOGLE_MAPS_KEY)
+        self.devicePixelRatio = call.getFloat("devicePixelRatio", 0)
+        self.overlayView = CustomTopView(self, self.webView!.frame)
+        self.overlayView?.devicePixelRatio = self.devicePixelRatio
         call.resolve([
             "initialized": true
         ])
     }
+    
+
 
     @objc func createMap(_ call: CAPPluginCall) {
 
@@ -42,12 +86,34 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
 
             let preferences = call.getObject("preferences", JSObject());
             customMapView.mapPreferences.updateFromJSObject(preferences);
-
-            self.bridge?.viewController?.view.addSubview(customMapView.view);
+    
+            
+            self.bridge?.webView?.addSubview(customMapView.view)
 
             customMapView.GMapView.delegate = customMapView;
-
             self.customMapViews[customMapView.id] = customMapView;
+            
+
+            // Bring the WebView in front of the MapView
+            // This allows us to overlay the MapView in HTML/CSS
+            self.bridge?.webView?.sendSubviewToBack(customMapView.view)
+        
+            
+            // Hide the background
+            self.bridge?.webView?.isOpaque = false;
+            self.bridge?.webView?.backgroundColor = UIColor.clear
+            
+            // Adding third UIView on top of the WebView for getting touches
+            // and translate them to MapView
+            self.overlayView?.isUserInteractionEnabled = true;
+            self.overlayView?.isOpaque = false
+            self.overlayView?.backgroundColor = UIColor.clear
+            self.overlayView?.valOfMapView = customMapView
+            // here will be adding new MapViewId to overlayView
+            // TODO
+
+            self.bridge?.webView?.addSubview(self.overlayView!)
+            self.bridge?.webView?.bringSubviewToFront(self.overlayView!)
         }
     }
 
