@@ -11,18 +11,24 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
 
     var GOOGLE_MAPS_KEY: String = "";
 
-    var customMapViews = [String : CustomMapView]();
+    var customMapViewControllers = [String : CustomMapViewController]();
 
     var customMarkers = [String : CustomMarker]();
     
     var devicePixelRatio : Float = 0;
     
-    public var lastEventChainId : String = "";
+    open var lastEventChainId : String = "";
+//        get {
+//            return lastEventChainId
+//        }
+//        set {
+//            lastEventChainId = newValue
+//        }
+//    };
     public var previousEvents: [UIEvent] = []
     public var delegateTouchEventsToMapId : String?;
     
-    var overlayView : CustomTopView? = nil;
-    
+    var overlayViewController: CustomOverlayViewController?
     
     public func notifyListenerFromPlugin(_ eventName: String, _ data: JSObject) {
        notifyListeners(eventName, data: data)
@@ -42,10 +48,14 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
                 // Now we should find out which one exactly.
                 var mapId : String? = call.getString("mapId");
                 if (mapId != nil) {
-                    delegateTouchEventsToMapId = mapId!;
+                    self.delegateTouchEventsToMapId = mapId!;
+                    self.overlayViewController!.delegateTouchEventsToMapId = self.delegateTouchEventsToMapId
                 }
             }
         }
+        print("eventChainId: " + eventChainId!)
+        print("isSameNode: " + String(call.getBool("isSameNode", false)))
+        print("mapId: " + (self.delegateTouchEventsToMapId ?? "nothing"))
         call.resolve();
     }
 
@@ -61,8 +71,6 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
 
         GMSServices.provideAPIKey(self.GOOGLE_MAPS_KEY)
         self.devicePixelRatio = call.getFloat("devicePixelRatio", 0)
-        self.overlayView = CustomTopView(self, self.webView!.frame)
-        self.overlayView?.devicePixelRatio = self.devicePixelRatio
         call.resolve([
             "initialized": true
         ])
@@ -73,30 +81,31 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
     @objc func createMap(_ call: CAPPluginCall) {
 
         DispatchQueue.main.async {
-            let customMapView : CustomMapView = CustomMapView(customMapViewEvents: self);
+            let customMapViewController : CustomMapViewController = CustomMapViewController(customMapViewEvents: self);
 
             self.bridge?.saveCall(call)
-            customMapView.savedCallbackIdForCreate = call.callbackId;
+            customMapViewController.savedCallbackIdForCreate = call.callbackId;
             
             let boundingRect = call.getObject("boundingRect", JSObject());
-            customMapView.boundingRect.updateFromJSObject(boundingRect);
+            customMapViewController.boundingRect.updateFromJSObject(boundingRect);
             
             let mapCameraPosition = call.getObject("cameraPosition", JSObject());
-            customMapView.mapCameraPosition.updateFromJSObject(mapCameraPosition);
+            customMapViewController.mapCameraPosition.updateFromJSObject(mapCameraPosition);
 
             let preferences = call.getObject("preferences", JSObject());
-            customMapView.mapPreferences.updateFromJSObject(preferences);
+            customMapViewController.mapPreferences.updateFromJSObject(preferences);
     
             
-            self.bridge?.webView?.addSubview(customMapView.view)
+            self.bridge?.webView?.addSubview(customMapViewController.view)
 
-            customMapView.GMapView.delegate = customMapView;
-            self.customMapViews[customMapView.id] = customMapView;
+            customMapViewController.GMapView.delegate = customMapViewController;
+            
+            self.customMapViewControllers[customMapViewController.id] = customMapViewController;
             
 
             // Bring the WebView in front of the MapView
             // This allows us to overlay the MapView in HTML/CSS
-            self.bridge?.webView?.sendSubviewToBack(customMapView.view)
+            self.bridge?.webView?.sendSubviewToBack(customMapViewController.view)
         
             
             // Hide the background
@@ -105,15 +114,31 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             
             // Adding third UIView on top of the WebView for getting touches
             // and translate them to MapView
-            self.overlayView?.isUserInteractionEnabled = true;
-            self.overlayView?.isOpaque = false
-            self.overlayView?.backgroundColor = UIColor.clear
-            self.overlayView?.valOfMapView = customMapView
-            // here will be adding new MapViewId to overlayView
-            // TODO
-
-            self.bridge?.webView?.addSubview(self.overlayView!)
-            self.bridge?.webView?.bringSubviewToFront(self.overlayView!)
+            
+            self.overlayViewController = CustomOverlayViewController();
+            self.overlayViewController!.instanceOfGoogleMapsPlugin = self
+            self.overlayViewController!.devicePixelRatio = self.devicePixelRatio
+//
+//            self.bridge?.viewController?.addChild(customMapViewController)
+//            self.bridge?.viewController?.addChild(self.overlayViewController!)
+            self.bridge?.webView?.addSubview(self.overlayViewController!.view)
+            self.bridge?.webView?.bringSubviewToFront(self.overlayViewController!.view)
+            
+            self.overlayViewController!.view.isOpaque = false
+            self.overlayViewController!.view.backgroundColor = UIColor.clear
+            self.overlayViewController!.view.isUserInteractionEnabled = true
+            
+//            customMapViewController.GMapView.delegate = self.overlayViewController;
+            
+//            self.overlayView?.isUserInteractionEnabled = true;
+//            self.overlayView?.isOpaque = false
+//            self.overlayView?.backgroundColor = UIColor.clear
+//            self.overlayView?.valOfMapView = customMapViewController
+//            // here will be adding new MapViewId to overlayView
+//            // TODO
+//
+//            self.bridge?.webView?.addSubview(self.overlayView!)
+//            self.bridge?.webView?.bringSubviewToFront(self.overlayView!)
         }
     }
 
@@ -121,13 +146,13 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         let mapId: String = call.getString("mapId")!;
 
         DispatchQueue.main.async {
-            let customMapView = self.customMapViews[mapId];
+            let customMapViewController = self.customMapViewControllers[mapId];
 
-            if (customMapView != nil) {
+            if (customMapViewController != nil) {
                 let preferences = call.getObject("preferences", JSObject());
-                customMapView?.mapPreferences.updateFromJSObject(preferences);
+                customMapViewController?.mapPreferences.updateFromJSObject(preferences);
 
-                customMapView?.invalidateMap();
+                customMapViewController?.invalidateMap();
             } else {
                 call.reject("map not found");
             }
@@ -139,15 +164,15 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         let mapId: String = call.getString("mapId", "");
 
         DispatchQueue.main.async {
-            let customMapView = self.customMapViews[mapId];
+            let customMapViewController = self.customMapViewControllers[mapId];
 
-            if (customMapView != nil) {
+            if (customMapViewController != nil) {
                 let preferences = call.getObject("preferences", JSObject());
 
                 let marker = CustomMarker();
                 marker.updateFromJSObject(preferences: preferences);
 
-                marker.map = customMapView?.GMapView;
+                marker.map = customMapViewController?.GMapView;
 
                 self.customMarkers[marker.id] = marker;
 
@@ -162,9 +187,9 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         let mapId: String = call.getString("mapId", "");
 
         DispatchQueue.main.async {
-            let customMapView = self.customMapViews[mapId];
+            let customMapViewController = self.customMapViewControllers[mapId];
 
-            if (customMapView != nil) {
+            if (customMapViewController != nil) {
                 let markers = call.getArray("markers", []);
                 
                 for item in markers {
@@ -175,7 +200,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
                     let marker = CustomMarker();
                     marker.updateFromJSObject(preferences: preferences);
 
-                    marker.map = customMapView?.GMapView;
+                    marker.map = customMapViewController?.GMapView;
 
                     self.customMarkers[marker.id] = marker;
                 }
@@ -204,31 +229,31 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
     }
 
     @objc func didTapInfoWindow(_ call: CAPPluginCall) {
-        setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_TAP_INFO_WINDOW);
+        setCallbackIdForEvent(call: call, eventName: Events.EVENT_DID_TAP_INFO_WINDOW);
     }
 
     @objc func didCloseInfoWindow(_ call: CAPPluginCall) {
-        setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_CLOSE_INFO_WINDOW);
+        setCallbackIdForEvent(call: call, eventName: Events.EVENT_DID_CLOSE_INFO_WINDOW);
     }
 
     @objc func didTapMap(_ call: CAPPluginCall) {
-        setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_TAP_MAP);
+        setCallbackIdForEvent(call: call, eventName: Events.EVENT_DID_TAP_MAP);
     }
 
     @objc func didLongPressMap(_ call: CAPPluginCall) {
-        setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_LONG_PRESS_MAP);
+        setCallbackIdForEvent(call: call, eventName: Events.EVENT_DID_LONG_PRESS_MAP);
     }
 
     @objc func didTapMarker(_ call: CAPPluginCall) {
-        setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_TAP_MARKER);
+        setCallbackIdForEvent(call: call, eventName: Events.EVENT_DID_TAP_MARKER);
     }
 
     @objc func didTapMyLocationButton(_ call: CAPPluginCall) {
-        setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_TAP_MY_LOCATION_BUTTON);
+        setCallbackIdForEvent(call: call, eventName: Events.EVENT_DID_TAP_MY_LOCATION_BUTTON);
     }
 
     @objc func didTapMyLocationDot(_ call: CAPPluginCall) {
-        setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_TAP_MY_LOCATION_DOT);
+        setCallbackIdForEvent(call: call, eventName: Events.EVENT_DID_TAP_MY_LOCATION_DOT);
     }
 
     func setCallbackIdForEvent(call: CAPPluginCall, eventName: String) {
@@ -236,10 +261,10 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         let callbackId = call.callbackId;
         guard let mapId = call.getString("mapId") else { return };
 
-        let customMapView: CustomMapView = customMapViews[mapId]!;
+        let customMapViewController: CustomMapViewController = customMapViewControllers[mapId]!;
 
         let preventDefault: Bool = call.getBool("preventDefault", false);
-        customMapView.setCallbackIdForEvent(callbackId: callbackId, eventName: eventName, preventDefault: preventDefault);
+        customMapViewController.setCallbackIdForEvent(callbackId: callbackId, eventName: eventName, preventDefault: preventDefault);
     }
 
     override func lastResultForCallbackId(callbackId: String, result: PluginCallResultData) {
