@@ -141,9 +141,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
                         // just go further
                             return false
                         } else {
-                            // if there is no mapView than we on html
-//                            mainClass?.bridge?.webView?.subviews[countOfHTMLElementsOfView].isUserInteractionEnabled = true
-//                            return false
+                            // if there is no mapView than we on html view
                         }
                                                 
                     }
@@ -360,5 +358,29 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         }
     }
     
+    @objc func getArrayHTMLElements(_ call: CAPPluginCall) {
+        
+        var result = JSObject();
+        
+        // sending full array of BoundingRect
+        result.updateValue(self.arrayHTMLElements, forKey: "arrayHTMLElements")
+        
+        call.resolve(result)
+    }
+    
+    @objc func setArrayHTMLElements(_ call: CAPPluginCall) {
+        
+        let response = call.getObject("arrayOfHTMLElements", JSObject());
+        
+        self.arrayHTMLElements.removeAll(keepingCapacity: true)
+        
+        let newArray : [BoundingRect] = response["rectangles"] as! [BoundingRect]
+        
+        for boundingRect in newArray {
+            self.arrayHTMLElements.append(boundingRect)
+        }
+        
+        call.resolve();
+    }
 
 }
