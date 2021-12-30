@@ -9,6 +9,11 @@ import UIKit
 @objc(CapacitorGoogleMaps)
 public class CapacitorGoogleMaps: CustomMapViewEvents {
     
+    // --constants--
+    let TAG_NUMBER_FOR_MAP_UIVIEW : Int = 10;
+    let TAG_NUMBER_FOR_TOP_OVERLAY_UIVIEW : Int = 20;
+    let TAG_NUMBER_FOR_DEFAULT_WEBVIEW_SUBVIEW : Int = 1;
+    
 
     var GOOGLE_MAPS_KEY: String = "";
 
@@ -19,7 +24,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
     var hasTopView : Bool = false;
     
     var arrayHTMLElements = [BoundingRect]();
-
+    
 
     @objc func initialize(_ call: CAPPluginCall) {
 
@@ -31,6 +36,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         }
 
         GMSServices.provideAPIKey(self.GOOGLE_MAPS_KEY)
+        
         call.resolve([
             "initialized": true
         ])
@@ -56,6 +62,9 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             customMapViewController.mapPreferences.updateFromJSObject(preferences);
             
             
+            customMapViewController.view.tag = self.TAG_NUMBER_FOR_MAP_UIVIEW;
+            
+            // elements on the top of the mapView
             // getting JSOobject
             let elementsOnTop = call.getObject("elementsOnTop", JSObject());
             // getting two dimensional array of child elements
@@ -100,10 +109,10 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
                 override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
                     
                     // if (count-1) is the top view, then hmtl layout is second and here must be (count-2)
-                    var countOfHTMLElementsOfView: Int = (mainClass?.bridge?.webView?.subviews.count)! - 2;
+                    let numberOfHTMLElementsOfView: Int = (mainClass?.bridge?.webView?.subviews.count)! - 2;
                     
                     // make html view default off
-                    mainClass?.bridge?.webView?.subviews[countOfHTMLElementsOfView].isUserInteractionEnabled = false
+                    mainClass?.bridge?.webView?.subviews[numberOfHTMLElementsOfView].isUserInteractionEnabled = false
                     
                     // checking the hit in the elements
                     for boundingRect in mainClass?.arrayHTMLElements ?? [] {
@@ -114,7 +123,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
                            point.y < (boundingRect.y + boundingRect.height)) {
                             // touch point inside of html element
                             // then we make this subview is toucheable
-                            mainClass?.bridge?.webView?.subviews[countOfHTMLElementsOfView].isUserInteractionEnabled = true
+                            mainClass?.bridge?.webView?.subviews[numberOfHTMLElementsOfView].isUserInteractionEnabled = true
                             return false
                         }
                     }
@@ -138,7 +147,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
                         }
                                                 
                     }
-                    mainClass?.bridge?.webView?.subviews[countOfHTMLElementsOfView].isUserInteractionEnabled = true
+                    mainClass?.bridge?.webView?.subviews[numberOfHTMLElementsOfView].isUserInteractionEnabled = true
                     return false
                 }
             }
@@ -148,6 +157,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
                 overlayView.mainClass = self
                 overlayView.isOpaque = true;
                 overlayView.backgroundColor = UIColor.clear
+                overlayView.tag = self.TAG_NUMBER_FOR_TOP_OVERLAY_UIVIEW;
                 self.bridge?.webView?.addSubview(overlayView)
                 
                 self.hasTopView = true
@@ -295,5 +305,60 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             call?.resolve();
         }
     }
+    
+    
+    
+    @objc func blockMapViews(_ call: CAPPluginCall) {
+        
+        DispatchQueue.main.async {
+        
+        // turn off every map
+        for mapview in self.customMapViewControllers {
+            mapview.value.view.isUserInteractionEnabled = false;
+        }
+        
+        // and turn on html elements view
+        // if (count-1) is the top view, then hmtl layout is second and here must be (count-2)
+        let numberOfHTMLElementsOfView: Int = (self.bridge?.webView?.subviews.count)! - 2;
+        self.bridge?.webView?.subviews[numberOfHTMLElementsOfView].isUserInteractionEnabled = true
+        
+        // and if we don't need maps then we dont need and topOverlayView
+        // for transmiting touches
+        if(self.hasTopView == true) {
+            // first view is the top view
+            let numberOfTopOverlayView: Int = (self.bridge?.webView?.subviews.count)! - 2;
+            self.bridge?.webView?.subviews[numberOfTopOverlayView].isUserInteractionEnabled = false
+        }
+        
+            call.resolve([
+                "mapsBlocked": true
+            ])
+        }
+    }
+    
+    @objc func unblockMapViews(_ call: CAPPluginCall) {
+        
+        DispatchQueue.main.async {
+        
+        // turn on every map
+        for mapview in self.customMapViewControllers {
+            mapview.value.view.isUserInteractionEnabled = true;
+        }
+        
+        
+        // and if we need maps then we need topOverlayView
+        // for transmiting touches
+        if(self.hasTopView == true) {
+            // first view is the top view
+            let numberOfTopOverlayView: Int = (self.bridge?.webView?.subviews.count)! - 2;
+            self.bridge?.webView?.subviews[numberOfTopOverlayView].isUserInteractionEnabled = false
+        }
+        
+            call.resolve([
+                "mapsBlocked": false
+            ])
+        }
+    }
+    
 
 }
