@@ -29,4 +29,15 @@ class BoundingRect {
         self.x = object[BoundingRect.X_KEY] as? Double ?? BoundingRect.X_DEFAULT;
         self.y = object[BoundingRect.Y_KEY] as? Double ?? BoundingRect.Y_DEFAULT;
     }
+    
+    func getJSObject() -> JSObject {
+        
+        var rectangleAsJSObject = JSObject();
+        rectangleAsJSObject.updateValue(self.width, forKey: BoundingRect.WIDTH_KEY);
+        rectangleAsJSObject.updateValue(self.height, forKey: BoundingRect.HEIGHT_KEY);
+        rectangleAsJSObject.updateValue(self.x, forKey: BoundingRect.X_KEY);
+        rectangleAsJSObject.updateValue(self.y, forKey: BoundingRect.Y_KEY);
+        
+        return rectangleAsJSObject;
+    }
 }
