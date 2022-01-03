@@ -7,6 +7,7 @@
 
 import Capacitor
 import GoogleMaps
+import GoogleMapsUtils
 
 class CustomMapViewController: UIViewController, GMSMapViewDelegate {
     
