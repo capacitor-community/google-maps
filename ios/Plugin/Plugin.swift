@@ -85,7 +85,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             
             self.bridge?.webView?.addSubview(customMapViewController.view)
             
-            customMapViewController.GMapView.delegate = customMapViewController;
+            customMapViewController.mapView.delegate = customMapViewController;
             
             self.customMapViewControllers[customMapViewController.id] = customMapViewController;
             
@@ -186,17 +186,18 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         let mapId: String = call.getString("mapId", "");
         
         DispatchQueue.main.async {
+            // find what mapview marker belongs
             let customMapViewController = self.customMapViewControllers[mapId];
             
             if (customMapViewController != nil) {
+                // get preferences of new marker
                 let preferences = call.getObject("preferences", JSObject());
                 
                 let marker = CustomMarker();
                 marker.updateFromJSObject(preferences: preferences);
                 
-                marker.map = customMapViewController?.GMapView;
-                
-                self.customMarkers[marker.id] = marker;
+                // add new marker to the map
+                customMapViewController?.addMarker(marker);
                 
                 call.resolve(CustomMarker.getResultForMarker(marker));
             } else {
@@ -209,11 +210,13 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         let mapId: String = call.getString("mapId", "");
         
         DispatchQueue.main.async {
+            // find what mapview marker belongs
             let customMapViewController = self.customMapViewControllers[mapId];
             
             if (customMapViewController != nil) {
                 let markers = call.getArray("markers", []);
                 
+                var markerArray = [CustomMarker]();
                 for item in markers {
                     let markerObject = item as? JSObject ?? JSObject();
                     
@@ -221,11 +224,10 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
                     
                     let marker = CustomMarker();
                     marker.updateFromJSObject(preferences: preferences);
-                    
-                    marker.map = customMapViewController?.GMapView;
-                    
-                    self.customMarkers[marker.id] = marker;
+                    markerArray.append(marker);
+
                 }
+                customMapViewController?.addMarkers(markerArray);
                 
                 call.resolve();
             } else {
@@ -241,8 +243,9 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             let customMarker = self.customMarkers[markerId];
             
             if (customMarker != nil) {
-                customMarker?.map = nil;
-                self.customMarkers[markerId] = nil;
+                
+//                customMarker?.map = nil;
+//                self.customMarkers[markerId] = nil;
                 call.resolve();
             } else {
                 call.reject("marker not found");

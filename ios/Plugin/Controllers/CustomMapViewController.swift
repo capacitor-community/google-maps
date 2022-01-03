@@ -9,13 +9,16 @@ import Capacitor
 import GoogleMaps
 import GoogleMapsUtils
 
+let kClusterItemCount = 10000
+
+
 class CustomMapViewController: UIViewController, GMSMapViewDelegate {
     
     var customMapViewEvents: CustomMapViewEvents!;
     
     var id: String!;
     
-    var GMapView: GMSMapView!
+    var mapView: GMSMapView!
     
     
     
@@ -23,6 +26,9 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
     var mapCameraPosition = MapCameraPosition();
     var mapPreferences = MapPreferences();
     
+    
+    private var mClusterManager: GMUClusterManager!
+    private var mMarkersList: [CustomMarker]!
     
     
     var savedCallbackIdForCreate: String!;
@@ -61,17 +67,28 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
     }
 
     
-    override func viewDidLoad() {
-        super.viewDidLoad();
-        
+    override func loadView() {
         let frame = CGRect(x: self.boundingRect.x, y: self.boundingRect.y, width: self.boundingRect.width, height: self.boundingRect.height);
         
         let camera = GMSCameraPosition.camera(withLatitude: self.mapCameraPosition.latitude, longitude: self.mapCameraPosition.longitude, zoom: self.mapCameraPosition.zoom, bearing: self.mapCameraPosition.bearing, viewingAngle: self.mapCameraPosition.tilt);
         
-        self.GMapView = GMSMapView.map(withFrame: frame, camera: camera);
+        self.mapView = GMSMapView.map(withFrame: frame, camera: camera);
         
-        self.view = GMapView;
-
+        self.view = mapView;
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad();
+        
+        // Set up the cluster manager with default icon generator and renderer.
+        let iconGenerator = GMUDefaultClusterIconGenerator()
+        let algorithm = GMUNonHierarchicalDistanceBasedAlgorithm()
+        let renderer = GMUDefaultClusterRenderer(mapView: mapView, clusterIconGenerator: iconGenerator)
+        mClusterManager = GMUClusterManager(map: mapView, algorithm: algorithm, renderer: renderer)
+        
+        // Register self to listen to GMSMapViewDelegate events.
+        mClusterManager.setMapDelegate(self)
+        
         self.invalidateMap();
 
         self.customMapViewEvents.lastResultForCallbackId(callbackId: savedCallbackIdForCreate, result: [
@@ -86,36 +103,36 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
 //        var uir : UIResponder = UIResponder()
 //        uir.touchesBegan(touches, with: event)
         
-        self.GMapView.point(inside: (touches.first?.location(in: self.view))!, with: event)
+        self.mapView.point(inside: (touches.first?.location(in: self.view))!, with: event)
 //        self.GMapView.touchesBegan(touches, with: event)
 //        super.touchesBegan(touches, with: event)
     }
     
     
     func invalidateMap() {
-        if (self.GMapView == nil) {
+        if (self.mapView == nil) {
             return;
         }
 
         // set gestures
-        self.GMapView.settings.rotateGestures = self.mapPreferences.gestures.isRotateAllowed;
-        self.GMapView.settings.scrollGestures = self.mapPreferences.gestures.isScrollAllowed;
-        self.GMapView.settings.allowScrollGesturesDuringRotateOrZoom = self.mapPreferences.gestures.isScrollAllowedDuringRotateOrZoom;
-        self.GMapView.settings.tiltGestures = self.mapPreferences.gestures.isTiltAllowed;
-        self.GMapView.settings.zoomGestures = self.mapPreferences.gestures.isZoomAllowed;
+        self.mapView.settings.rotateGestures = self.mapPreferences.gestures.isRotateAllowed;
+        self.mapView.settings.scrollGestures = self.mapPreferences.gestures.isScrollAllowed;
+        self.mapView.settings.allowScrollGesturesDuringRotateOrZoom = self.mapPreferences.gestures.isScrollAllowedDuringRotateOrZoom;
+        self.mapView.settings.tiltGestures = self.mapPreferences.gestures.isTiltAllowed;
+        self.mapView.settings.zoomGestures = self.mapPreferences.gestures.isZoomAllowed;
 
         // set controls
-        self.GMapView.settings.compassButton = self.mapPreferences.controls.isCompassButtonEnabled;
-        self.GMapView.settings.indoorPicker = self.mapPreferences.controls.isIndoorLevelPickerEnabled;
-        self.GMapView.settings.myLocationButton = self.mapPreferences.controls.isMyLocationButtonEnabled;
+        self.mapView.settings.compassButton = self.mapPreferences.controls.isCompassButtonEnabled;
+        self.mapView.settings.indoorPicker = self.mapPreferences.controls.isIndoorLevelPickerEnabled;
+        self.mapView.settings.myLocationButton = self.mapPreferences.controls.isMyLocationButtonEnabled;
 
         // set appearance
-        self.GMapView.mapType = self.mapPreferences.appearance.type;
-        self.GMapView.mapStyle = self.mapPreferences.appearance.style;
-        self.GMapView.isBuildingsEnabled = self.mapPreferences.appearance.isBuildingsShown;
-        self.GMapView.isIndoorEnabled = self.mapPreferences.appearance.isIndoorShown;
-        self.GMapView.isMyLocationEnabled = self.mapPreferences.appearance.isMyLocationDotShown;
-        self.GMapView.isTrafficEnabled = self.mapPreferences.appearance.isTrafficShown;
+        self.mapView.mapType = self.mapPreferences.appearance.type;
+        self.mapView.mapStyle = self.mapPreferences.appearance.style;
+        self.mapView.isBuildingsEnabled = self.mapPreferences.appearance.isBuildingsShown;
+        self.mapView.isIndoorEnabled = self.mapPreferences.appearance.isIndoorShown;
+        self.mapView.isMyLocationEnabled = self.mapPreferences.appearance.isMyLocationDotShown;
+        self.mapView.isTrafficEnabled = self.mapPreferences.appearance.isTrafficShown;
     }
     
     
@@ -144,6 +161,34 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
             }
         
         }
+        
+    }
+    
+    public func clear() {
+        mapView.clear();
+        mClusterManager.clearItems();
+    }
+    
+    public func addMarker(_ customMarker: CustomMarker!) {
+        // TO-DO: Implement setting of custom icon
+        self.mClusterManager.add(customMarker);
+        self.mClusterManager.cluster();
+    }
+    
+    public func addMarkers(_ markerArray: [CustomMarker]!) {
+        self.mClusterManager.add(markerArray);
+        self.mClusterManager.cluster();
+    }
+    
+    public func updateMarker(_ markerId: String, _ preferences:JSObject) -> Bool {
+        var isUpdated : Bool = false;
+        
+        
+        
+        return isUpdated;
+    }
+    
+    public func removeMarker(_ markerId: String) {
         
     }
     
@@ -179,6 +224,16 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
     }
 
     internal func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
+        
+        mapView.animate(toLocation: marker.position)
+        if let _ = marker.userData as? GMUCluster {
+          mapView.animate(toZoom: mapView.camera.zoom + 1)
+          NSLog("Did tap cluster")
+          return true
+        }
+        NSLog("Did tap marker")
+//        return false
+        
         if (customMapViewEvents != nil && savedCallbackIdForDidTapMarker != nil) {
             let result: PluginCallResultData = CustomMarker.getResultForMarker(marker);
             customMapViewEvents.resultForCallbackId(callbackId: savedCallbackIdForDidTapMarker, result: result);
