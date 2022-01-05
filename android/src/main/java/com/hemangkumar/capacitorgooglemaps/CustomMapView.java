@@ -34,11 +34,8 @@ import com.hemangkumar.capacitorgooglemaps.utility.MapPreferencesAppearance;
 import com.hemangkumar.capacitorgooglemaps.utility.MapPreferencesControls;
 import com.hemangkumar.capacitorgooglemaps.utility.MapPreferencesGestures;
 
-import org.json.JSONException;
-
 import java.util.Iterator;
 import java.util.UUID;
-import java.util.HashMap;
 
 public class CustomMapView implements OnMapReadyCallback,
         GoogleMap.OnInfoWindowClickListener,
