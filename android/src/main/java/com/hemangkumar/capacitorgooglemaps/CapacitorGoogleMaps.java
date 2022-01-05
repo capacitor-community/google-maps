@@ -16,6 +16,7 @@ import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.annotation.Permission;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Marker;
 import com.google.maps.android.clustering.ClusterManager;
@@ -40,6 +41,8 @@ import java.util.UUID;
         }
 )
 public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
+
+    private String GOOGLE_MAPS_KEY;
 
     private final HashMap<String, CustomMapView> customMapViews = new HashMap<>();
     Float devicePixelRatio;
@@ -234,6 +237,9 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
         /*
          *  TODO: Check API key
          */
+        this.GOOGLE_MAPS_KEY = call.getString("key");
+
+
         devicePixelRatio = call.getFloat("devicePixelRatio");
         call.resolve();
     }
