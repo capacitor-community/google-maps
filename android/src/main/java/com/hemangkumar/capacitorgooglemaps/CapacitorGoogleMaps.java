@@ -365,6 +365,75 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
         });
     }
 
+    @PluginMethod()
+    public void close(PluginCall call) {
+        final String mapId = call.getString("mapId");
+
+        getBridge().executeOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                CustomMapView customMapView = customMapViews.get(mapId);
+                if (customMapView != null){
+                    View viewToRemove = customMapViews.get(mapId).mapView;
+                    if (viewToRemove != null){
+                        ((ViewGroup) getBridge().getWebView().getParent()).removeViewInLayout(viewToRemove);
+                        call.resolve();
+                    }
+                }
+                else {
+                    call.reject("map not found");
+                }
+
+            }
+        });
+    }
+
+    @PluginMethod()
+    public void hide(PluginCall call) {
+        final String mapId = call.getString("mapId");
+
+        getBridge().executeOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                CustomMapView customMapView = customMapViews.get(mapId);
+                if (customMapView != null){
+                    View viewToHide = customMapViews.get(mapId).mapView;
+                    if (viewToHide != null){
+                        viewToHide.setVisibility(View.INVISIBLE);
+                        call.resolve();
+                    }
+                }
+                else {
+                    call.reject("map not found");
+                }
+            }
+        });
+    }
+
+    @PluginMethod()
+    public void show(PluginCall call) {
+        final String mapId = call.getString("mapId");
+
+        getBridge().executeOnMainThread(new Runnable() {
+            CustomMapView customMapView = customMapViews.get(mapId);
+            @Override
+            public void run() {
+                CustomMapView customMapView = customMapViews.get(mapId);
+                if (customMapView != null){
+                    View viewToShow = customMapViews.get(mapId).mapView;
+                    if (viewToShow != null){
+                        viewToShow.setVisibility(View.VISIBLE);
+                        call.resolve();
+                    }
+                }
+                else {
+                    call.reject("map not found");
+                }
+            }
+        });
+    }
+
+
     @PluginMethod
     public void moveCamera(final PluginCall call) {
         final String mapId = call.getString("mapId");
@@ -575,6 +644,8 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
             }
         });
     }
+
+
 
 
 }
