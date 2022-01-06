@@ -27,7 +27,6 @@ public class CustomMarker implements ClusterItem {
 
     public int profilePhoto;
 
-
     public void updateFromJSObject(JSObject preferences) {
         final JSObject position = JSObjectDefaults.getJSObjectSafe(preferences, "position", new JSObject());
         final Double latitude = JSObjectDefaults.getDoubleSafe(position, "latitude", 0d);
@@ -152,4 +151,5 @@ public class CustomMarker implements ClusterItem {
     public int hashCode() {
         return Objects.hash(markerId);
     }
+
 }
