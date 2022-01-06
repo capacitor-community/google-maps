@@ -34,6 +34,7 @@ import com.hemangkumar.capacitorgooglemaps.utility.MapPreferencesAppearance;
 import com.hemangkumar.capacitorgooglemaps.utility.MapPreferencesControls;
 import com.hemangkumar.capacitorgooglemaps.utility.MapPreferencesGestures;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.UUID;
 
@@ -570,8 +571,8 @@ public class CustomMapView implements OnMapReadyCallback,
         mClusterManager.clearItems();
     }
 
-    public Marker addMarker(CustomMarker customMarker) {
-        customMarker.setProfilePhoto(R.drawable.ic_launcher);
+    public void addMarker(CustomMarker customMarker) {
+//        customMarker.setProfilePhoto(R.drawable.ic_launcher);
         this.mClusterManager.addItem(customMarker);
         this.mClusterManager.cluster();
 
@@ -582,7 +583,13 @@ public class CustomMapView implements OnMapReadyCallback,
 //                return marker;
 //            }
 //        }
-           return null;
+    }
+
+    public void addMarkers(Collection<CustomMarker> arrayOfCustomMarkers) {
+
+        this.mClusterManager.addItems(arrayOfCustomMarkers);
+        this.mClusterManager.cluster();
+
     }
 
     public boolean updateMarker(String markerId, JSObject newPreferences) {

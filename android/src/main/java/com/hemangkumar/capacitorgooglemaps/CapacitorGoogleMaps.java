@@ -24,6 +24,9 @@ import com.google.maps.android.clustering.ClusterManager;
 import com.hemangkumar.capacitorgooglemaps.model.CustomMarker;
 import com.hemangkumar.capacitorgooglemaps.utility.Events;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -598,6 +601,44 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
             }
         });
     }
+
+    @PluginMethod()
+    public void addMarkers(final PluginCall call) {
+        final String mapId = call.getString("mapId");
+
+        getBridge().getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                CustomMapView customMapView = customMapViews.get(mapId);
+
+                if (customMapView != null) {
+                JSObject markersObj = call.getObject("markers");
+                try {
+                    JSONArray arrayOfMarkers = markersObj.getJSONArray("arrayOfMarkers");
+                    int length = arrayOfMarkers.length();
+                    ArrayList<CustomMarker> customMarkers = new ArrayList<>(length);
+                    for(int i =0; i<length; i++) {
+                        JSObject jsObject = JSObject.fromJSONObject(arrayOfMarkers.getJSONObject(i));
+                        JSObject preferences = JSObjectDefaults.getJSObjectSafe(jsObject, "preferences", new JSObject());
+
+                        CustomMarker customMarker = new CustomMarker();
+                        customMarker.updateFromJSObject(preferences);
+
+                        customMarkers.add(customMarker);
+                    }
+                    customMapView.addMarkers(customMarkers);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                    call.resolve();
+                } else {
+                    call.reject("map not found");
+                }
+
+            }
+        });
+    }
+
 
     @PluginMethod()
     public void updateMarker(final PluginCall call) {
