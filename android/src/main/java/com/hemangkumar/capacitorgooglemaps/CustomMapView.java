@@ -108,6 +108,16 @@ public class CustomMapView implements OnMapReadyCallback,
     String savedCallbackIdForDidTapClusterInfoWindow;
 
 
+    private boolean isHidden = false;
+
+    public boolean isHidden() {
+        return isHidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        isHidden = hidden;
+    }
+
     public CustomMapView(@NonNull Context context, @NonNull Activity activity, CustomMapViewEvents customMapViewEvents) {
         this.context = context;
         this.activity = activity;

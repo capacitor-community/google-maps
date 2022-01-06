@@ -125,7 +125,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
 
                 if (delegateTouchEventsToMapId != null) {
                     CustomMapView customMapView = customMapViews.get(delegateTouchEventsToMapId);
-                    if (customMapView != null) {
+                    if (customMapView != null && !customMapView.isHidden()) {
                         // Apparently, all touch events should be delegated to a specific MapView.
 
                         // If previous events exist, we should execute those first
@@ -400,6 +400,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
                     View viewToHide = customMapViews.get(mapId).mapView;
                     if (viewToHide != null){
                         viewToHide.setVisibility(View.INVISIBLE);
+                        customMapView.setHidden(true);
                         call.resolve();
                     }
                 }
@@ -423,6 +424,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
                     View viewToShow = customMapViews.get(mapId).mapView;
                     if (viewToShow != null){
                         viewToShow.setVisibility(View.VISIBLE);
+                        customMapView.setHidden(false);
                         call.resolve();
                     }
                 }
