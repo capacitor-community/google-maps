@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -24,9 +25,11 @@ import com.hemangkumar.capacitorgooglemaps.capacitorgooglemaps.R;
 public class OwnIconRenderer extends DefaultClusterRenderer<CustomMarker> {
 
     // == fields ==
-//    private final IconGenerator mIconGenerator;
+    private final IconGenerator mIconGenerator;
     private final IconGenerator mClusterIconGenerator;
     private final ImageView mClusterImageView;
+    private final ImageView mImageView;
+    private final int mDimension;
 
     private Context context;
 
@@ -41,8 +44,9 @@ public class OwnIconRenderer extends DefaultClusterRenderer<CustomMarker> {
         super(context, map, clusterManager);
         this.context = context;
 
-//        mIconGenerator = new IconGenerator(context);
+        mIconGenerator = new IconGenerator(context);
         mClusterIconGenerator = new IconGenerator(context);
+
 
         View multiProfile = activity.getLayoutInflater().inflate(R.layout.multi_profile, null);
         mClusterImageView = multiProfile.findViewById(R.id.image);
@@ -50,32 +54,44 @@ public class OwnIconRenderer extends DefaultClusterRenderer<CustomMarker> {
         mClusterIconGenerator.setContentView(multiProfile);
         mClusterIconGenerator.setBackground(null);
 
+
+        mImageView = new ImageView(context);
+        mDimension = (int) context.getResources().getDimension(R.dimen.custom_profile_image);
+        mImageView.setLayoutParams(new ViewGroup.LayoutParams(mDimension, mDimension));
+        int padding = (int) context.getResources().getDimension(R.dimen.custom_profile_padding);
+        mImageView.setPadding(padding, padding, padding, padding);
+        mIconGenerator.setContentView(mImageView);
+
     }
 
     @Override
-    protected void onBeforeClusterItemRendered(@NonNull CustomMarker person,
+    protected void onBeforeClusterItemRendered(@NonNull CustomMarker customMarker,
                                                MarkerOptions markerOptions) {
         // Draw a single marker - set the info window to show their name
         markerOptions
-//              .icon(getItemIcon(person))
+                .icon(getItemIcon(customMarker))
                 .zIndex(0)
-                .title(person.getTitle());
+                .title(customMarker.getTitle());
     }
 
 
     @Override
-    protected void onClusterItemUpdated(@NonNull CustomMarker person, Marker marker) {
+    protected void onClusterItemUpdated(@NonNull CustomMarker customMarker, Marker marker) {
         // Same implementation as onBeforeClusterItemRendered() (to update cached markers)
-//      marker.setIcon(getItemIcon(person));
-        marker.setTitle(person.getTitle());
+        marker.setIcon(getItemIcon(customMarker));
+        marker.setTitle(customMarker.getTitle());
     }
 
 
-//    private BitmapDescriptor getItemIcon(CustomMarker person) {
-//      mImageView.setImageResource(person.profilePhoto);
-//        Bitmap icon = mIconGenerator.makeIcon();
-//        return BitmapDescriptorFactory.fromBitmap(icon);
-//    }
+    private BitmapDescriptor getItemIcon(CustomMarker customMarker) {
+        int ic = customMarker.getMarkerCategory().getIcon();
+        if(customMarker.getMarkerCategory().getIcon() == 0) {
+            return null;
+        }
+        mImageView.setImageResource(ic);
+        Bitmap icon = mIconGenerator.makeIcon();
+        return BitmapDescriptorFactory.fromBitmap(icon);
+    }
 
     @Override
     protected void onBeforeClusterRendered(@NonNull Cluster<CustomMarker> cluster, MarkerOptions markerOptions) {

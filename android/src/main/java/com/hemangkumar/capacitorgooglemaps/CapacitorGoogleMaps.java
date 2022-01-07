@@ -5,10 +5,12 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
@@ -21,7 +23,9 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Marker;
 import com.google.maps.android.clustering.ClusterManager;
 
+import com.hemangkumar.capacitorgooglemaps.capacitorgooglemaps.R;
 import com.hemangkumar.capacitorgooglemaps.model.CustomMarker;
+import com.hemangkumar.capacitorgooglemaps.model.MarkerCategory;
 import com.hemangkumar.capacitorgooglemaps.utility.Events;
 
 import org.json.JSONArray;
@@ -54,9 +58,6 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     public List<MotionEvent> previousEvents = new ArrayList<>();
     private String delegateTouchEventsToMapId;
 
-
-
-
     /**
      *  This method should be called after we requested the WebView through notifyListeners("didRequestElementFromPoint").
      *  It should tell us if the exact point that was being touched, is from an element in which a MapView exists.
@@ -84,6 +85,8 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     @Override
     public void load() {
         super.load();
+
+        initMarkerCategories();
 
         this.getBridge().getWebView().setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -688,8 +691,21 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
         });
     }
 
+    @PluginMethod(returnType = PluginMethod.RETURN_NONE)
+    public void initMarkerCategories(final PluginCall call) {
+        final int id = call.getInt("id");
+        final String title = call.getString("title");
+        final String pathToIcon = call.getString("pathToIcon");
 
 
+    }
+
+    private void initMarkerCategories() {
+
+        new MarkerCategory(0, "default", 0);
+        new MarkerCategory(1, "first", R.drawable.ruth);
+        new MarkerCategory(2, "second", R.drawable.gran);
+    }
 
 }
 

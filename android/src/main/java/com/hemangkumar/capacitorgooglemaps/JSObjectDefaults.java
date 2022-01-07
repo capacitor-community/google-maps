@@ -96,6 +96,14 @@ public abstract class JSObjectDefaults {
     }
 
     @NonNull
+    public static Integer getIntegerSafe(JSObject jsObject, @NonNull String name, @NonNull Integer defaultValue) {
+        try {
+            return jsObject.getInt(name);
+        } catch (JSONException ignored) {}
+        return defaultValue;
+    }
+
+    @NonNull
     public static Float getFloatSafe(JSObject jsObject, @NonNull String name, @NonNull Float defaultValue) {
         Double returnedDouble = JSObjectDefaults.getDoubleSafe(jsObject, name, (double) defaultValue);
         return returnedDouble.floatValue();

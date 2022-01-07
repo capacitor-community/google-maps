@@ -25,7 +25,7 @@ public class CustomMarker implements ClusterItem {
     private final MarkerOptions markerOptions = new MarkerOptions();
     private JSObject tag = new JSObject();
 
-    public int profilePhoto;
+    private int markerCategoryId;
 
     public void updateFromJSObject(JSObject preferences) {
         final JSObject position = JSObjectDefaults.getJSObjectSafe(preferences, "position", new JSObject());
@@ -38,6 +38,7 @@ public class CustomMarker implements ClusterItem {
         final Float opacity = JSObjectDefaults.getFloatSafe(preferences, "opacity", 1f);
         final Boolean isFlat = JSObjectDefaults.getBooleanSafe(preferences,"isFlat", false);
         final Boolean isDraggable = JSObjectDefaults.getBooleanSafe(preferences,"isDraggable", false);
+        final Integer markerCategoryId = JSObjectDefaults.getIntegerSafe(preferences, "category", 0);
 
         this.setMetadata(JSObjectDefaults.getJSObjectSafe(preferences, "metadata", new JSObject()));
 
@@ -47,13 +48,10 @@ public class CustomMarker implements ClusterItem {
         this.markerOptions.alpha(opacity);
         this.markerOptions.flat(isFlat);
         this.markerOptions.draggable(isDraggable);
+
+        this.markerCategoryId = markerCategoryId;
     }
 
-//    public Marker addToMap(GoogleMap googleMap) {
-//        Marker marker = googleMap.addMarker(this.markerOptions);
-//        marker.setTag(this.tag);
-//        return marker;
-//    }
 
     private void setMetadata(@NonNull JSObject jsObject) {
         JSObject tag = new JSObject();
@@ -109,14 +107,6 @@ public class CustomMarker implements ClusterItem {
         return result;
     }
 
-    public int getProfilePhoto() {
-        return profilePhoto;
-    }
-
-    public void setProfilePhoto(int profilePhoto) {
-        this.profilePhoto = profilePhoto;
-    }
-
     public String getMarkerId() {
         return markerId;
     }
@@ -137,6 +127,10 @@ public class CustomMarker implements ClusterItem {
     @Override
     public String getSnippet() {
         return this.markerOptions.getSnippet();
+    }
+
+    public MarkerCategory getMarkerCategory() {
+        return MarkerCategory.getMarkerCategoryById(this.markerCategoryId);
     }
 
     @Override
