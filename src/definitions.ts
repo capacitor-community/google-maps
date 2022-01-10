@@ -29,7 +29,7 @@ export interface CapacitorGoogleMapsPlugin {
     title?: string;
     snippet?: string;
     isFlat?: boolean;
-    url?: string;
+    iconUrl?: string;
   }): Promise<any>;
 
   /** Removes a marker on the map */
