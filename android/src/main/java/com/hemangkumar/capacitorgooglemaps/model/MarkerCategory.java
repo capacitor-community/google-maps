@@ -1,5 +1,7 @@
 package com.hemangkumar.capacitorgooglemaps.model;
 
+import android.graphics.Bitmap;
+
 import com.google.android.gms.maps.model.BitmapDescriptor;
 
 import java.util.ArrayList;
@@ -11,7 +13,7 @@ public class MarkerCategory {
 
     private int id;
     private String title;
-    private int icon;
+    private Bitmap icon;
 
     static private Map<Integer, MarkerCategory> markerCategories = new HashMap();
 
@@ -31,15 +33,15 @@ public class MarkerCategory {
         this.title = title;
     }
 
-    public int getIcon() {
+    public Bitmap getIcon() {
         return icon;
     }
 
-    public void setIcon(int icon) {
+    public void setIcon(Bitmap icon) {
         this.icon = icon;
     }
 
-    public MarkerCategory(int id, String title, int icon) {
+    public MarkerCategory(int id, String title, Bitmap icon) {
         this.id = id;
         this.title = title;
         this.icon = icon;

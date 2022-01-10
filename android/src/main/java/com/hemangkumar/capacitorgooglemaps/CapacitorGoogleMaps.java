@@ -3,12 +3,19 @@ package com.hemangkumar.capacitorgooglemaps;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Environment;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
@@ -31,10 +38,23 @@ import com.hemangkumar.capacitorgooglemaps.utility.Events;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Array;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @CapacitorPlugin(
@@ -49,7 +69,13 @@ import java.util.UUID;
 )
 public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
 
+
+    // -- constants --
+    private String MARKER_CATEGORY_DIRECTORY = "marker-categories";
+
+    // -- private fields --
     private String GOOGLE_MAPS_KEY;
+
 
     private final HashMap<String, CustomMapView> customMapViews = new HashMap<>();
     Float devicePixelRatio;
@@ -697,15 +723,89 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
         final String title = call.getString("title");
         final String pathToIcon = call.getString("pathToIcon");
 
+        new MarkerCategory(id, title, null);
 
     }
 
     private void initMarkerCategories() {
+        new MarkerCategory(0, "default", null);
+//        new MarkerCategory(1, "first", R.drawable.ruth);
+//        new MarkerCategory(2, "second", R.drawable.gran);
 
-        new MarkerCategory(0, "default", 0);
-        new MarkerCategory(1, "first", R.drawable.ruth);
-        new MarkerCategory(2, "second", R.drawable.gran);
+        // here we get names of files (name.png) in the
+//        List<String> markerCategoriesList = fetchMarkersCategoriesFilesFromAssets(this.getBridge().getContext());
+
+
+
+        HashMap<String, Bitmap> markerCategoriesNamesAndIcons = getImagesFromAsset(MARKER_CATEGORY_DIRECTORY, getContext());
+
+        int i = 1;
+        for (String nameOfCategory :
+                markerCategoriesNamesAndIcons.keySet()) {
+            new MarkerCategory(i, nameOfCategory, markerCategoriesNamesAndIcons.get(nameOfCategory));
+            i++;
+        }
+
+
     }
+
+//    private ArrayList<String> fetchMarkersCategoriesFilesFromAssets(Context context) {
+//        return getListOfFilesFromAsset(MARKER_CATEGORY_DIRECTORY, context);
+//    }
+
+//    private ArrayList<String> getListOfFilesFromAsset(String path, Context context) {
+//        ArrayList<String> listOfFiles = null;
+//        try {
+//            String[] namesOfFiles = context.getAssets().list(path);
+//            listOfFiles = new ArrayList<>(Arrays.asList(namesOfFiles));
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return listOfFiles;
+//    }
+
+    private HashMap<String, Bitmap> getImagesFromAsset(String path, Context context) {
+        HashMap<String, Bitmap> stringBitmapHashMap = new HashMap<>();
+
+        AssetManager assetManager = context.getAssets();
+
+        // regex for tank.png
+        String textGroups = "(.+?)(\\.[^.]*$|$)";
+        Pattern textPattern = Pattern.compile(textGroups);
+
+        try {
+            // get array of names of files
+            String[] namesOfFiles = context.getAssets().list(path);
+            for (String nameOfFile :
+                    namesOfFiles) {
+
+                Matcher textMatcher = textPattern.matcher(nameOfFile);
+                while(textMatcher.find()) {
+                    File pathToFile = new File(path, nameOfFile);
+                    InputStream istr = assetManager.open(pathToFile.getPath());
+                    Bitmap bitmap = BitmapFactory.decodeStream(istr);
+                    istr.close();
+                    stringBitmapHashMap.put(textMatcher.group(1), bitmap);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return stringBitmapHashMap;
+    }
+
+//    private Bitmap getBitmapFromAssets(String fileName) throws IOException {
+//        AssetManager assetManager = getContext().getAssets();
+//
+//        InputStream istr = assetManager.open(fileName);
+//        Bitmap bitmap = BitmapFactory.decodeStream(istr);
+//        istr.close();
+//
+//        return bitmap;
+//    }
 
 }
 

@@ -34,6 +34,13 @@ android {
     lintOptions {
         abortOnError false
     }
+    sourceSets {
+        main {
+            assets {
+                srcDirs 'src/main/assets', 'src/main/marker-categories-assets', 'src/main/assets/marker-categories'
+            }
+        }
+    }
 }
 
 repositories {

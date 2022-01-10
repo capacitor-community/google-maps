@@ -84,11 +84,13 @@ public class OwnIconRenderer extends DefaultClusterRenderer<CustomMarker> {
 
 
     private BitmapDescriptor getItemIcon(CustomMarker customMarker) {
-        int ic = customMarker.getMarkerCategory().getIcon();
-        if(customMarker.getMarkerCategory().getIcon() == 0) {
+        if(customMarker.getMarkerCategory().getIcon() == null) {
             return null;
         }
-        mImageView.setImageResource(ic);
+
+
+        mImageView.setImageBitmap(customMarker.getMarkerCategory().getIcon());
+//        mImageView.setImageResource(ic);
         Bitmap icon = mIconGenerator.makeIcon();
         return BitmapDescriptorFactory.fromBitmap(icon);
     }
