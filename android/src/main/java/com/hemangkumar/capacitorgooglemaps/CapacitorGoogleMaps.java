@@ -197,6 +197,7 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
         final Boolean isFlat = call.getBoolean("isFlat", true);
         final JSObject metadata = call.getObject("metadata");
         final String url = call.getString("iconUrl", "");
+        final Boolean draggable = call.getBoolean("draggable", false);
 
         if (googleMap == null){
             call.reject("Map is not ready");
@@ -215,6 +216,7 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
                 markerOptions.title(title);
                 markerOptions.snippet(snippet);
                 markerOptions.flat(isFlat);
+                markerOptions.draggable(draggable);
 
                 if (imageBitmap != null) {
                     markerOptions.icon(BitmapDescriptorFactory.fromBitmap(imageBitmap));
@@ -738,6 +740,36 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
     }
 
     @PluginMethod()
+    public void setOnMarkerDragListener(PluginCall call) {
+
+        final CapacitorGoogleMaps ctx = this;
+
+        getBridge().executeOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                googleMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+                    @Override
+                    public void onMarkerDragStart(Marker marker) {
+                        ctx.onMarkerDragStart(marker);
+                    }
+
+                    @Override
+                    public void onMarkerDrag(Marker marker) {
+                        // not implemented
+                    }
+
+                    @Override
+                    public void onMarkerDragEnd(Marker marker) {
+                        ctx.onMarkerDragEnd(marker);
+                    }
+                });
+            }
+        });
+
+        call.resolve();
+    }
+
+    @PluginMethod()
     public void enableCurrentLocation(final PluginCall call) {
 
         final boolean enableLocation = call.getBoolean("enabled", false);
@@ -808,6 +840,46 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
         result.put("metadata", metadata);
 
         notifyListeners("didTap", result);
+    }
+
+    public void onMarkerDragStart(Marker marker) {
+        JSObject result = new JSObject();
+        JSObject location = new JSObject();
+        JSObject coordinates = new JSObject();
+        JSObject metadata = (JSObject) marker.getTag();
+
+        coordinates.put("latitude", marker.getPosition().latitude);
+        coordinates.put("longitude", marker.getPosition().longitude);
+
+        location.put("coordinates", coordinates);
+
+        result.put("id", marker.getId());
+        result.put("title", marker.getTitle());
+        result.put("snippet", marker.getSnippet());
+        result.put("result", location);
+        result.put("metadata", metadata);
+
+        notifyListeners("didBeginDragging", result);
+    }
+
+    public void onMarkerDragEnd(Marker marker) {
+        JSObject result = new JSObject();
+        JSObject location = new JSObject();
+        JSObject coordinates = new JSObject();
+        JSObject metadata = (JSObject) marker.getTag();
+
+        coordinates.put("latitude", marker.getPosition().latitude);
+        coordinates.put("longitude", marker.getPosition().longitude);
+
+        location.put("coordinates", coordinates);
+
+        result.put("id", marker.getId());
+        result.put("title", marker.getTitle());
+        result.put("snippet", marker.getSnippet());
+        result.put("result", location);
+        result.put("metadata", metadata);
+
+        notifyListeners("didEndDragging", result);
     }
 
     public boolean onMyLocationButtonClick() {
