@@ -5,6 +5,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -31,6 +33,7 @@ import com.google.android.libraries.maps.GoogleMapOptions;
 import com.google.android.libraries.maps.MapView;
 import com.google.android.libraries.maps.OnMapReadyCallback;
 import com.google.android.libraries.maps.UiSettings;
+import com.google.android.libraries.maps.model.BitmapDescriptorFactory;
 import com.google.android.libraries.maps.model.CameraPosition;
 import com.google.android.libraries.maps.model.CircleOptions;
 import com.google.android.libraries.maps.model.LatLng;
@@ -45,6 +48,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 
@@ -190,11 +196,14 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
         final String snippet = call.getString("snippet", "");
         final Boolean isFlat = call.getBoolean("isFlat", true);
         final JSObject metadata = call.getObject("metadata");
+        final String url = call.getString("iconUrl", "");
 
         if (googleMap == null){
             call.reject("Map is not ready");
             return;
         }
+
+        Bitmap imageBitmap = getBitmapFromURL(url);
 
         getBridge().getActivity().runOnUiThread(new Runnable() {
             @Override
@@ -206,6 +215,10 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
                 markerOptions.title(title);
                 markerOptions.snippet(snippet);
                 markerOptions.flat(isFlat);
+
+                if (imageBitmap != null) {
+                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(imageBitmap));
+                }
 
                 Marker marker = googleMap.addMarker(markerOptions);
 
@@ -820,4 +833,17 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
         return (int) (pixels * scale + 0.5f);
     }
 
+    public Bitmap getBitmapFromURL(String src) {
+        try {
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap bitmap = BitmapFactory.decodeStream(input);
+            return Bitmap.createScaledBitmap(bitmap, getScaledPixels(bitmap.getWidth()), this.getScaledPixels(bitmap.getHeight()), true);
+        } catch (IOException e) {
+            return null;
+        }
+    }
 }
