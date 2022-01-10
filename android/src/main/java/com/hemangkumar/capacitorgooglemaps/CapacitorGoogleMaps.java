@@ -787,7 +787,7 @@ public class CapacitorGoogleMaps extends Plugin implements OnMapReadyCallback, G
 
         result.put("result", location);
 
-        notifyListeners("didTapAt", location);
+        notifyListeners("didTapAt", result);
     }
 
     public void onMarkerClick(Marker marker) {
