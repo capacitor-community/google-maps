@@ -30,6 +30,7 @@ export interface CapacitorGoogleMapsPlugin {
     snippet?: string;
     isFlat?: boolean;
     iconUrl?: string;
+    draggable?: boolean;
   }): Promise<any>;
 
   /** Removes a marker on the map */
@@ -131,7 +132,11 @@ export interface CapacitorGoogleMapsPlugin {
     listenerFunc: (results: any) => void
   ): PluginListenerHandle;
   addListener(
-    eventName: 'dragEnded',
+    eventName: 'didBeginDragging',
+    listenerFunc: (results: any) => void
+  ): PluginListenerHandle;
+  addListener(
+    eventName: 'didEndDragging',
     listenerFunc: (results: any) => void
   ): PluginListenerHandle;
   addListener(

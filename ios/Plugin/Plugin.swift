@@ -66,6 +66,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
         let isFlat = call.getBool("isFlat") ?? false
         let metadata = call.getObject("metadata") ?? [:]
         let url = URL(string: call.getString("iconUrl", ""))
+        let draggable = call.getBool("draggable") ?? false
         var imageData: Data?
 
         if self.mapViewController == nil {
@@ -87,6 +88,7 @@ public class CapacitorGoogleMaps: CAPPlugin, GMSMapViewDelegate, GMSPanoramaView
                 marker.snippet = snippet
                 marker.isFlat = isFlat
                 marker.opacity = opacity
+                marker.isDraggable = draggable
 
                 if imageData != nil {
                     marker.icon = UIImage(data: imageData!)
