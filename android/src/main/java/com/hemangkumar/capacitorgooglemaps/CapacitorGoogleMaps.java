@@ -52,6 +52,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -718,26 +719,25 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     }
 
     @PluginMethod(returnType = PluginMethod.RETURN_NONE)
-    public void initMarkerCategories(final PluginCall call) {
+    public void addMarkerCategory(final PluginCall call) {
         final int id = call.getInt("id");
         final String title = call.getString("title");
         final String pathToIcon = call.getString("pathToIcon");
 
-        new MarkerCategory(id, title, null);
+        Bitmap bitmap = BitmapFactory.decodeFile(pathToIcon);
+
+        new MarkerCategory(id, title, bitmap);
+
+        int k = 0;
 
     }
 
     private void initMarkerCategories() {
+        // default marker icon for zero category
         new MarkerCategory(0, "default", null);
-//        new MarkerCategory(1, "first", R.drawable.ruth);
-//        new MarkerCategory(2, "second", R.drawable.gran);
 
-        // here we get names of files (name.png) in the
-//        List<String> markerCategoriesList = fetchMarkersCategoriesFilesFromAssets(this.getBridge().getContext());
-
-
-
-        HashMap<String, Bitmap> markerCategoriesNamesAndIcons = getImagesFromAsset(MARKER_CATEGORY_DIRECTORY, getContext());
+        // getting map of names of categories and icons of this
+        HashMap<String, Bitmap> markerCategoriesNamesAndIcons = fetchMarkersCategoriesFilesFromAssets(getContext());
 
         int i = 1;
         for (String nameOfCategory :
@@ -746,32 +746,19 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
             i++;
         }
 
-
     }
 
-//    private ArrayList<String> fetchMarkersCategoriesFilesFromAssets(Context context) {
-//        return getListOfFilesFromAsset(MARKER_CATEGORY_DIRECTORY, context);
-//    }
+    private HashMap<String, Bitmap> fetchMarkersCategoriesFilesFromAssets(Context context) {
+        return getImagesFromAsset(MARKER_CATEGORY_DIRECTORY, context);
+    }
 
-//    private ArrayList<String> getListOfFilesFromAsset(String path, Context context) {
-//        ArrayList<String> listOfFiles = null;
-//        try {
-//            String[] namesOfFiles = context.getAssets().list(path);
-//            listOfFiles = new ArrayList<>(Arrays.asList(namesOfFiles));
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return listOfFiles;
-//    }
 
     private HashMap<String, Bitmap> getImagesFromAsset(String path, Context context) {
         HashMap<String, Bitmap> stringBitmapHashMap = new HashMap<>();
 
         AssetManager assetManager = context.getAssets();
 
-        // regex for tank.png
+        // regex for pictures only (tank.png)
         String textGroups = "(.+?)(\\.[^.]*$|$)";
         Pattern textPattern = Pattern.compile(textGroups);
 
@@ -796,16 +783,6 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
 
         return stringBitmapHashMap;
     }
-
-//    private Bitmap getBitmapFromAssets(String fileName) throws IOException {
-//        AssetManager assetManager = getContext().getAssets();
-//
-//        InputStream istr = assetManager.open(fileName);
-//        Bitmap bitmap = BitmapFactory.decodeStream(istr);
-//        istr.close();
-//
-//        return bitmap;
-//    }
 
 }
 
