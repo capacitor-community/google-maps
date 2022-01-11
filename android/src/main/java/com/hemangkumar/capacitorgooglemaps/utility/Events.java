@@ -1,6 +1,6 @@
 package com.hemangkumar.capacitorgooglemaps.utility;
 
-public class Events {
+public abstract class Events {
 
     public static final String EVENT_DID_TAP_INFO_WINDOW = "didTapInfoWindow";
     public static final String EVENT_DID_CLOSE_INFO_WINDOW = "didCloseInfoWindow";
