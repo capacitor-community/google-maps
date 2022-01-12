@@ -26,13 +26,13 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.PointOfInterest;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
-import com.hemangkumar.capacitorgooglemaps.capacitorgooglemaps.R;
 import com.hemangkumar.capacitorgooglemaps.model.CustomMarker;
 import com.hemangkumar.capacitorgooglemaps.model.OwnIconRenderer;
-import com.hemangkumar.capacitorgooglemaps.utility.Events;
-import com.hemangkumar.capacitorgooglemaps.utility.MapPreferencesAppearance;
-import com.hemangkumar.capacitorgooglemaps.utility.MapPreferencesControls;
-import com.hemangkumar.capacitorgooglemaps.utility.MapPreferencesGestures;
+import com.hemangkumar.capacitorgooglemaps.mapsutility.Events;
+import com.hemangkumar.capacitorgooglemaps.mapsutility.MapPreferencesAppearance;
+import com.hemangkumar.capacitorgooglemaps.mapsutility.MapPreferencesControls;
+import com.hemangkumar.capacitorgooglemaps.mapsutility.MapPreferencesGestures;
+import com.hemangkumar.capacitorgooglemaps.utils.BoundingRect;
 
 import java.util.Collection;
 import java.util.Iterator;

@@ -4,9 +4,9 @@ import androidx.annotation.Nullable;
 
 import com.getcapacitor.JSObject;
 import com.google.android.gms.maps.GoogleMapOptions;
-import com.hemangkumar.capacitorgooglemaps.utility.MapPreferencesAppearance;
-import com.hemangkumar.capacitorgooglemaps.utility.MapPreferencesControls;
-import com.hemangkumar.capacitorgooglemaps.utility.MapPreferencesGestures;
+import com.hemangkumar.capacitorgooglemaps.mapsutility.MapPreferencesAppearance;
+import com.hemangkumar.capacitorgooglemaps.mapsutility.MapPreferencesControls;
+import com.hemangkumar.capacitorgooglemaps.mapsutility.MapPreferencesGestures;
 
 public class MapPreferences {
     public MapPreferencesGestures gestures;
