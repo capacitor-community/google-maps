@@ -50,6 +50,10 @@ public class MarkerCategory {
     }
 
     public static MarkerCategory getMarkerCategoryById(int id) {
-        return markerCategories.get(id);
+        if(markerCategories.containsKey(id)) {
+            return markerCategories.get(id);
+        } else {
+            return markerCategories.get(0);
+        }
     }
 }
