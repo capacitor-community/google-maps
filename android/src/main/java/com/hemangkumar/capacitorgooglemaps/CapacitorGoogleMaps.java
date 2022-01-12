@@ -9,15 +9,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.Environment;
+import android.util.Base64;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
-import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
@@ -25,34 +21,22 @@ import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.annotation.Permission;
 
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.Marker;
-import com.google.maps.android.clustering.ClusterManager;
 
-import com.hemangkumar.capacitorgooglemaps.capacitorgooglemaps.R;
 import com.hemangkumar.capacitorgooglemaps.model.CustomMarker;
 import com.hemangkumar.capacitorgooglemaps.model.MarkerCategory;
-import com.hemangkumar.capacitorgooglemaps.utility.Events;
+import com.hemangkumar.capacitorgooglemaps.mapsutility.Events;
+import com.hemangkumar.capacitorgooglemaps.utils.BoundingRect;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Array;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -600,12 +584,13 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
         }
     }
 
-
     @Override
     public void resultForCallbackId(String callbackId, JSObject result) {
         PluginCall call = bridge.getSavedCall(callbackId);
         call.resolve(result);
     }
+
+
 
     @PluginMethod()
     public void addMarker(final PluginCall call) {
@@ -720,18 +705,30 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
 
     @PluginMethod(returnType = PluginMethod.RETURN_NONE)
     public void addMarkerCategory(final PluginCall call) {
-        final int id = call.getInt("id");
+        final int id = JSObjectDefaults.getIntegerSafe(call.getData(), "id", -1);
         final String title = call.getString("title");
-        final String pathToIcon = call.getString("pathToIcon");
+        final String encodedImage = call.getString("base64Data");
 
-        Bitmap bitmap = BitmapFactory.decodeFile(pathToIcon);
+        if(id == -1) {
+            call.reject("don't have id for category");
+        }
 
-        new MarkerCategory(id, title, bitmap);
+        byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
 
-        int k = 0;
+        // if will be added duplicate key id then
+        // By definition, the put command replaces
+        // the previous value associated with the
+        // given key in the map
+        new MarkerCategory(id, title, decodedByte);
 
+        call.resolve();
     }
 
+    /**
+     * method for fetching marker categories from
+     * existing asset folder
+     */
     private void initMarkerCategories() {
         // default marker icon for zero category
         new MarkerCategory(0, "default", null);
@@ -752,13 +749,15 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
         return getImagesFromAsset(MARKER_CATEGORY_DIRECTORY, context);
     }
 
-
+    // method for reading pictures and their names from folder
     private HashMap<String, Bitmap> getImagesFromAsset(String path, Context context) {
         HashMap<String, Bitmap> stringBitmapHashMap = new HashMap<>();
 
         AssetManager assetManager = context.getAssets();
 
-        // regex for pictures only (tank.png)
+        // regex for getting full names of picture
+        // (cool.tank.png) -> cool.tank and .png
+        // (cool.tank) -> cool.tank and {null}
         String textGroups = "(.+?)(\\.[^.]*$|$)";
         Pattern textPattern = Pattern.compile(textGroups);
 
