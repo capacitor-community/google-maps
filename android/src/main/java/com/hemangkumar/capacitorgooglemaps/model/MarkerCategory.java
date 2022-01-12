@@ -15,7 +15,7 @@ public class MarkerCategory {
     private String title;
     private Bitmap icon;
 
-    static private Map<Integer, MarkerCategory> markerCategories = new HashMap();
+    static private final Map<Integer, MarkerCategory> markerCategories = new HashMap();
 
     public int getId() {
         return id;
