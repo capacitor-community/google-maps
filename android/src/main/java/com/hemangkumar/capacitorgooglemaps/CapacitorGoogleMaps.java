@@ -4,6 +4,8 @@ package com.hemangkumar.capacitorgooglemaps;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -254,9 +256,6 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
         /*
          *  TODO: Check API key
          */
-        this.GOOGLE_MAPS_KEY = call.getString("key");
-
-
         devicePixelRatio = call.getFloat("devicePixelRatio");
         call.resolve();
     }
