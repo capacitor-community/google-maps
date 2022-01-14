@@ -50,7 +50,7 @@ public class OwnIconRenderer extends DefaultClusterRenderer<CustomMarker> {
 
         View multiProfile = activity.getLayoutInflater().inflate(R.layout.multi_profile, null);
         mClusterImageView = multiProfile.findViewById(R.id.image);
-        mClusterImageView.setImageResource(R.drawable.cluster);
+        mClusterImageView.setImageResource(R.drawable.cluster_icon);
         mClusterIconGenerator.setContentView(multiProfile);
         mClusterIconGenerator.setBackground(null);
 
@@ -61,6 +61,7 @@ public class OwnIconRenderer extends DefaultClusterRenderer<CustomMarker> {
         int padding = (int) context.getResources().getDimension(R.dimen.custom_profile_padding);
         mImageView.setPadding(padding, padding, padding, padding);
         mIconGenerator.setContentView(mImageView);
+        mIconGenerator.setBackground(null);
 
     }
 

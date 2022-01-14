@@ -35,7 +35,7 @@
         android:background="@android:color/transparent"
         android:paddingLeft="@dimen/custom_profile_padding"
         android:paddingRight="@dimen/custom_profile_padding"
-        android:textAppearance="@style/amu_Bubble.TextAppearance.Light"
-        android:textColor="#120330" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="#FFFFFF" />
 
 </FrameLayout>
