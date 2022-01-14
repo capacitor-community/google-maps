@@ -4,8 +4,6 @@ package com.hemangkumar.capacitorgooglemaps;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -37,6 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -70,6 +69,12 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     private String lastEventChainId;
     public List<MotionEvent> previousEvents = new ArrayList<>();
     private String delegateTouchEventsToMapId;
+
+
+
+
+
+
 
     /**
      *  This method should be called after we requested the WebView through notifyListeners("didRequestElementFromPoint").
@@ -734,10 +739,11 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
 
         // getting map of names of categories and icons of this
         HashMap<String, Bitmap> markerCategoriesNamesAndIcons = fetchMarkersCategoriesFilesFromAssets(getContext());
-
+        List<String> keys = new ArrayList<String>(markerCategoriesNamesAndIcons.keySet());
+        Collections.sort(keys);
         int i = 1;
         for (String nameOfCategory :
-                markerCategoriesNamesAndIcons.keySet()) {
+                keys) {
             new MarkerCategory(i, nameOfCategory, markerCategoriesNamesAndIcons.get(nameOfCategory));
             i++;
         }
@@ -813,6 +819,26 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
 
                 if (customMapView != null) {
                     customMapView.zoomOut();
+                    call.resolve();
+                } else {
+                    call.reject("map not found");
+                }
+            }
+        });
+    }
+
+    @PluginMethod
+    public void myLocationButtonClick(PluginCall call) {
+        final String mapId = call.getString("mapId");
+
+        getBridge().getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                CustomMapView customMapView = customMapViews.get(mapId);
+
+                if (customMapView != null) {
+//                    customMapView.zoomOut();
+
                     call.resolve();
                 } else {
                     call.reject("map not found");
