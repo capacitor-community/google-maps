@@ -710,4 +710,12 @@ public class CustomMapView implements OnMapReadyCallback,
         result.put("poi", poiResult);
         return result;
     }
+
+    public void zoomIn() {
+        this.googleMap.animateCamera(CameraUpdateFactory.zoomIn());
+    }
+
+    public void zoomOut() {
+        this.googleMap.animateCamera(CameraUpdateFactory.zoomOut());
+    }
 }

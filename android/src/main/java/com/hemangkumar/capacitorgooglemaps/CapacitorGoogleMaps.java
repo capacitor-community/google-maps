@@ -782,6 +782,45 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
         return stringBitmapHashMap;
     }
 
+
+    @PluginMethod
+    public void zoomInButtonClick(PluginCall call) {
+        final String mapId = call.getString("mapId");
+
+        getBridge().getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                CustomMapView customMapView = customMapViews.get(mapId);
+
+                if (customMapView != null) {
+                    customMapView.zoomIn();
+                    call.resolve();
+                } else {
+                    call.reject("map not found");
+                }
+            }
+        });
+    }
+
+    @PluginMethod
+    public void zoomOutButtonClick(PluginCall call) {
+        final String mapId = call.getString("mapId");
+
+        getBridge().getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                CustomMapView customMapView = customMapViews.get(mapId);
+
+                if (customMapView != null) {
+                    customMapView.zoomOut();
+                    call.resolve();
+                } else {
+                    call.reject("map not found");
+                }
+            }
+        });
+    }
+
 }
 
 
