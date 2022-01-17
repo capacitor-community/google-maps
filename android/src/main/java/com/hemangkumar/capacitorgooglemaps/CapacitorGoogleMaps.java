@@ -4,6 +4,7 @@ package com.hemangkumar.capacitorgooglemaps;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.IntentSender;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,6 +15,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
@@ -21,8 +24,17 @@ import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.annotation.Permission;
 
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.maps.model.CameraPosition;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.hemangkumar.capacitorgooglemaps.model.CustomMarker;
 import com.hemangkumar.capacitorgooglemaps.model.MarkerCategory;
 import com.hemangkumar.capacitorgooglemaps.mapsutility.Events;
@@ -69,11 +81,6 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     private String lastEventChainId;
     public List<MotionEvent> previousEvents = new ArrayList<>();
     private String delegateTouchEventsToMapId;
-
-
-
-
-
 
 
     /**
@@ -832,13 +839,14 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
         final String mapId = call.getString("mapId");
 
         getBridge().getActivity().runOnUiThread(new Runnable() {
+            @SuppressLint("ResourceType")
             @Override
             public void run() {
                 CustomMapView customMapView = customMapViews.get(mapId);
 
                 if (customMapView != null) {
-//                    customMapView.zoomOut();
-
+                    locationRequest();
+                    customMapView.locationButton.callOnClick();
                     call.resolve();
                 } else {
                     call.reject("map not found");
@@ -846,6 +854,55 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
             }
         });
     }
+
+    private void locationRequest() {
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest);
+
+        Task<LocationSettingsResponse> result =
+                LocationServices.getSettingsClient(getActivity()).checkLocationSettings(builder.build());
+
+
+
+        result.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
+            @Override
+            public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
+                try {
+                    LocationSettingsResponse response = task.getResult(ApiException.class);
+                    // All location settings are satisfied. The client can initialize location
+                    // requests here.
+                } catch (ApiException exception) {
+                    switch (exception.getStatusCode()) {
+                        case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                            // Location settings are not satisfied. But could be fixed by showing the
+                            // user a dialog.
+                            try {
+                                // Cast to a resolvable exception.
+                                ResolvableApiException resolvable = (ResolvableApiException) exception;
+                                // Show the dialog by calling startResolutionForResult(),
+                                // and check the result in onActivityResult().
+                                resolvable.startResolutionForResult(
+                                        getActivity(),
+                                        LocationRequest.PRIORITY_HIGH_ACCURACY);
+                            } catch (IntentSender.SendIntentException e) {
+                                // Ignore the error.
+                            } catch (ClassCastException e) {
+                                // Ignore, should be an impossible error.
+                            }
+                            break;
+                        case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                            // Location settings are not satisfied. However, we have no way to fix the
+                            // settings so we won't show the dialog.
+                            break;
+                    }
+                }
+            }
+        });
+    }
+
+
 
 }
 

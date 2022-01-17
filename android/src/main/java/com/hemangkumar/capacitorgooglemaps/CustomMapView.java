@@ -1,11 +1,15 @@
 package com.hemangkumar.capacitorgooglemaps;
 
+import static android.content.Context.LOCATION_SERVICE;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
@@ -66,6 +70,8 @@ public class CustomMapView implements OnMapReadyCallback,
 
     MapView mapView;
     private GoogleMap googleMap;
+
+    public View locationButton;
 
 
     // -- public fields
@@ -134,7 +140,7 @@ public class CustomMapView implements OnMapReadyCallback,
         return ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
-    @SuppressLint("MissingPermission")
+    @SuppressLint({"MissingPermission", "ResourceType"})
     @Override
     public void onMapReady(GoogleMap googleMap) {
         // populate `googleMap` variable for other methods to use
@@ -158,12 +164,15 @@ public class CustomMapView implements OnMapReadyCallback,
         googleMapUISettings.setIndoorLevelPickerEnabled(this.mapPreferences.controls.getBoolean(MapPreferencesControls.INDOOR_LEVEL_PICKER_KEY));
         googleMapUISettings.setMyLocationButtonEnabled(this.mapPreferences.controls.getBoolean(MapPreferencesControls.MY_LOCATION_BUTTON_KEY));
 
+
         // set appearance
         this.googleMap.setMapStyle(this.mapPreferences.appearance.style);
         this.googleMap.setBuildingsEnabled(this.mapPreferences.appearance.isBuildingsShown);
         this.googleMap.setIndoorEnabled(this.mapPreferences.appearance.isIndoorShown);
         if (hasPermission()) {
             this.googleMap.setMyLocationEnabled(this.mapPreferences.appearance.isMyLocationDotShown);
+            locationButton = mapView.findViewById(0x2);
+            locationButton.setVisibility(View.GONE);
         }
         this.googleMap.setTrafficEnabled(this.mapPreferences.appearance.isTrafficShown);
 
@@ -373,7 +382,7 @@ public class CustomMapView implements OnMapReadyCallback,
 
             // return controls
             resultControls.put(MapPreferencesControls.COMPASS_BUTTON_KEY, googleMapUISettings.isCompassEnabled());
-            // resultControls.put(MapPreferencesControls.INDOOR_LEVEL_PICKER_KEY, googleMapUISettings.isIndoorLevelPickerEnabled());
+            resultControls.put(MapPreferencesControls.INDOOR_LEVEL_PICKER_KEY, googleMapUISettings.isIndoorLevelPickerEnabled());
             resultControls.put(MapPreferencesControls.MAP_TOOLBAR_KEY, googleMapUISettings.isMapToolbarEnabled());
             resultControls.put(MapPreferencesControls.MY_LOCATION_BUTTON_KEY, googleMapUISettings.isMyLocationButtonEnabled());
             resultControls.put(MapPreferencesControls.ZOOM_BUTTONS_KEY, googleMapUISettings.isZoomControlsEnabled());
@@ -389,7 +398,6 @@ public class CustomMapView implements OnMapReadyCallback,
         }
         return null;
     }
-
 
 
     @Override
@@ -532,7 +540,6 @@ public class CustomMapView implements OnMapReadyCallback,
     }
 
 
-
     private static JSObject getResultForCluster(Cluster<CustomMarker> cluster, String mapId) {
         // initialize JSObjects to return
         JSObject result = new JSObject();
@@ -597,7 +604,7 @@ public class CustomMapView implements OnMapReadyCallback,
         Iterator<CustomMarker> iterator = this.mClusterManager.getAlgorithm().getItems().iterator();
         while (iterator.hasNext()) {
             CustomMarker customMarker = iterator.next();
-            if(customMarker.getMarkerId().equals(markerId)) {
+            if (customMarker.getMarkerId().equals(markerId)) {
                 customMarker.updateFromJSObject(newPreferences);
                 isUpdated = mClusterManager.updateItem(customMarker);
                 mClusterManager.cluster();
@@ -611,13 +618,12 @@ public class CustomMapView implements OnMapReadyCallback,
         Iterator<CustomMarker> iterator = this.mClusterManager.getAlgorithm().getItems().iterator();
         while (iterator.hasNext()) {
             CustomMarker customMarker = iterator.next();
-            if(customMarker.getMarkerId().equals(markerId)) {
+            if (customMarker.getMarkerId().equals(markerId)) {
                 mClusterManager.removeItem(customMarker);
                 mClusterManager.cluster();
             }
         }
     }
-
 
 
     public CameraPosition getCameraPosition() {
@@ -718,4 +724,24 @@ public class CustomMapView implements OnMapReadyCallback,
     public void zoomOut() {
         this.googleMap.animateCamera(CameraUpdateFactory.zoomOut());
     }
+
+//    public void getMyLocation() {
+//
+//        LocationManager mLocationManager = (LocationManager) this.context.getSystemService(LOCATION_SERVICE);
+//        if (ActivityCompat.checkSelfPermission(this.context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            // TODO: Consider calling
+//            //    ActivityCompat#requestPermissions
+//            // here to request the missing permissions, and then overriding
+//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//            //                                          int[] grantResults)
+//            // to handle the case where the user grants the permission. See the documentation
+//            // for ActivityCompat#requestPermissions for more details.
+//            return;
+//        }
+//
+////
+////        LatLng latLng = new LatLng(Double.parseDouble(getLatitude()), Double.parseDouble(getLongitude()));
+////        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 18);
+////        googleMap.animateCamera(cameraUpdate);
+//    }
 }

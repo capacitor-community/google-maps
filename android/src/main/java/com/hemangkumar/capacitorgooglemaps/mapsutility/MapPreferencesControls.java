@@ -13,11 +13,13 @@ public class MapPreferencesControls extends JSObjectDefaults {
 
     public MapPreferencesControls() {
         super(new HashMap<String, Object>(){{
-            put(COMPASS_BUTTON_KEY, Boolean.TRUE);
+            put(COMPASS_BUTTON_KEY, Boolean.FALSE);
             put(INDOOR_LEVEL_PICKER_KEY, Boolean.FALSE);
             put(MAP_TOOLBAR_KEY, Boolean.FALSE);
-            put(MY_LOCATION_BUTTON_KEY, Boolean.TRUE);
+            put(MY_LOCATION_BUTTON_KEY, Boolean.FALSE);
             put(ZOOM_BUTTONS_KEY, Boolean.FALSE);
         }});
     }
+
+
 }
