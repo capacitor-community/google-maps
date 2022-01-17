@@ -2,11 +2,21 @@
   <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.hemangkumar.capacitorgooglemaps.capacitorgooglemaps">
 
-    <application>
-      <!-- Google maps metadata -->
-      <meta-data
-          android:name="com.google.android.geo.API_KEY"
-          android:value="${mapsApiKey}"/>
-    </application>
+      <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+      <application>
+          <!-- Google maps metadata -->
+          <meta-data
+              android:name="com.google.android.geo.API_KEY"
+              android:value="AIzaSyChhpqvHkC4KDqoclEC8GN1tvPQMNklkA4" />
+      </application>
+
+      <!-- Permissions -->
+
+      <uses-permission android:name="android.permission.INTERNET" />
+
+      <!-- Geolocation API -->
+      <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+      <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+      <uses-feature android:name="android.hardware.location.gps" />
   </manifest>
   
