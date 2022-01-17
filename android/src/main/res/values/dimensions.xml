@@ -16,6 +16,6 @@
 -->
 
 <resources>
-    <dimen name="custom_profile_image">72dp</dimen>
+    <dimen name="custom_profile_image">64dp</dimen>
     <dimen name="custom_profile_padding">0dp</dimen>
 </resources>
