@@ -30,25 +30,27 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
     @objc func createMap(_ call: CAPPluginCall) {
 
         DispatchQueue.main.async {
-            let customMapView : CustomMapView = CustomMapView(customMapViewEvents: self);
+            let customMapView : CustomMapView = CustomMapView(customMapViewEvents: self)
 
             self.bridge?.saveCall(call)
-            customMapView.savedCallbackIdForCreate = call.callbackId;
-            
-            let boundingRect = call.getObject("boundingRect", JSObject());
-            customMapView.boundingRect.updateFromJSObject(boundingRect);
-            
-            let mapCameraPosition = call.getObject("cameraPosition", JSObject());
-            customMapView.mapCameraPosition.updateFromJSObject(mapCameraPosition);
+            customMapView.savedCallbackIdForCreate = call.callbackId
 
-            let preferences = call.getObject("preferences", JSObject());
-            customMapView.mapPreferences.updateFromJSObject(preferences);
+            let boundingRect = call.getObject("boundingRect", JSObject())
+            customMapView.boundingRect.updateFromJSObject(boundingRect)
 
-            self.bridge?.viewController?.view.addSubview(customMapView.view);
+            let mapCameraPosition = call.getObject("cameraPosition", JSObject())
+            customMapView.mapCameraPosition.updateFromJSObject(mapCameraPosition)
+
+            let preferences = call.getObject("preferences", JSObject())
+            customMapView.mapPreferences.updateFromJSObject(preferences)
+
+            self.bridge?.viewController?.view.addSubview(customMapView.view)
+            self.bridge?.viewController?.view.sendSubviewToBack(customMapView.view)
+            self.setupWebView()
 
             customMapView.GMapView.delegate = customMapView;
 
-            self.customMapViews[customMapView.id] = customMapView;
+            self.customMapViews[customMapView.id] = customMapView
         }
     }
 
@@ -198,6 +200,29 @@ private extension CapacitorGoogleMaps {
                 self?.addMarker(node: node.next, mapView: mapView)
             }
         }
+    }
+    
+    func setupWebView() {
+        self.webView?.isOpaque = false
+        self.webView?.backgroundColor = .clear
+        self.webView?.scrollView.backgroundColor = .clear
+        self.webView?.scrollView.isOpaque = false
+    }
+}
+
+extension WKWebView {
+    open override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        for view in subviews {
+            let convertedPoint = self.convert(point, to: view)
+            guard view is GMSMapView,
+                  let mapView = view.hitTest(convertedPoint, with: event),
+                  scrollView.layer.pixelColorAtPoint(point: point).cgColor.alpha == 0.0
+                    // Alternative condition - in case of issues with map touch, disable previous and enable next line
+                    //layer.pixelColorAtPoint(point: point) == mapView.layer.pixelColorAtPoint(point: convertedPoint)
+            else { continue }
+            return mapView
+        }
+        return super.hitTest(point, with: event)
     }
 }
 
