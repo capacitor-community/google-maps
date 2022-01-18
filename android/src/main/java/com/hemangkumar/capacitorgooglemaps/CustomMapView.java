@@ -26,9 +26,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.PointOfInterest;
 import com.google.maps.android.clustering.Cluster;
+import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 import com.hemangkumar.capacitorgooglemaps.model.CustomMarker;
 import com.hemangkumar.capacitorgooglemaps.model.OwnIconRenderer;
@@ -111,7 +113,7 @@ public class CustomMapView implements OnMapReadyCallback,
     String savedCallbackIdForDidEndMovingCamera;
 
     String savedCallbackIdForDidTapCluster;
-    Boolean preventDefaultForDidTapCluster = false;
+    Boolean preventDefaultForDidTapCluster = true;
     String savedCallbackIdForDidTapClusterInfoWindow;
 
 
@@ -231,7 +233,7 @@ public class CustomMapView implements OnMapReadyCallback,
                 this.googleMap.setOnMapLongClickListener(this);
                 savedCallbackIdForDidLongPressMap = callbackId;
             } else if (eventName.equals(Events.EVENT_DID_TAP_MARKER)) {
-                this.googleMap.setOnMarkerClickListener(this);
+                this.googleMap.setOnMarkerClickListener(mClusterManager);
                 savedCallbackIdForDidTapMarker = callbackId;
                 if (preventDefault == null) {
                     preventDefault = false;
@@ -523,6 +525,13 @@ public class CustomMapView implements OnMapReadyCallback,
 
     @Override
     public boolean onClusterClick(Cluster<CustomMarker> cluster) {
+        LatLngBounds.Builder builder = LatLngBounds.builder();
+        for (CustomMarker item : cluster.getItems()) {
+            builder.include(item.getPosition());
+        }
+        final LatLngBounds bounds = builder.build();
+        this.googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
+
         if (customMapViewEvents != null && savedCallbackIdForDidTapCluster != null) {
             JSObject result = getResultForCluster(cluster, this.id);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapCluster, result);
@@ -725,23 +734,4 @@ public class CustomMapView implements OnMapReadyCallback,
         this.googleMap.animateCamera(CameraUpdateFactory.zoomOut());
     }
 
-//    public void getMyLocation() {
-//
-//        LocationManager mLocationManager = (LocationManager) this.context.getSystemService(LOCATION_SERVICE);
-//        if (ActivityCompat.checkSelfPermission(this.context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            // TODO: Consider calling
-//            //    ActivityCompat#requestPermissions
-//            // here to request the missing permissions, and then overriding
-//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//            //                                          int[] grantResults)
-//            // to handle the case where the user grants the permission. See the documentation
-//            // for ActivityCompat#requestPermissions for more details.
-//            return;
-//        }
-//
-////
-////        LatLng latLng = new LatLng(Double.parseDouble(getLatitude()), Double.parseDouble(getLongitude()));
-////        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 18);
-////        googleMap.animateCamera(cameraUpdate);
-//    }
 }

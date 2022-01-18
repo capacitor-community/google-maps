@@ -100,7 +100,6 @@ public class OwnIconRenderer extends DefaultClusterRenderer<CustomMarker> {
     protected void onBeforeClusterRendered(@NonNull Cluster<CustomMarker> cluster, MarkerOptions markerOptions) {
         // Note: this method runs on the UI thread. Don't spend too much time in here (like in this example).
         markerOptions.icon(getClusterIcon(cluster));
-        markerOptions.zIndex(1);
     }
 
 
