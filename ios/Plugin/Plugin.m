@@ -21,4 +21,7 @@ CAP_PLUGIN(CapacitorGoogleMaps, "CapacitorGoogleMaps",
            CAP_PLUGIN_METHOD(unblockMapViews, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(getArrayOfHTMLElements, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(setArrayOfHTMLElements, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(zoomInButtonClick, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(zoomOutButtonClick, CAPPluginReturnPromise);
+           
 )

@@ -408,4 +408,39 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         call.resolve();
     }
     
+    
+    @objc func zoomInButtonClick(_ call: CAPPluginCall) {
+        let mapId: String = call.getString("mapId", "");
+        
+        DispatchQueue.main.async {
+            let customMapViewController: CustomMapViewController = self.customMapViewControllers[mapId]!;
+            
+            if(customMapViewController != nil) {
+                customMapViewController.zoomIn();
+                call.resolve();
+            } else {
+                call.reject("map not found");
+            }
+            
+            
+        }
+    }
+    
+    @objc func zoomOutButtonClick(_ call: CAPPluginCall) {
+        let mapId: String = call.getString("mapId", "");
+        
+        DispatchQueue.main.async {
+            let customMapViewController: CustomMapViewController = self.customMapViewControllers[mapId]!;
+            
+            if(customMapViewController != nil) {
+                customMapViewController.zoomOut();
+                call.resolve();
+            } else {
+                call.reject("map not found");
+            }
+            
+            
+        }
+    }
+    
 }

@@ -18,7 +18,7 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
     
     var id: String!;
     
-    var mapView: GMSMapView!
+    var mapView: GMSMapView!;
     
     
     
@@ -113,7 +113,7 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
         if (self.mapView == nil) {
             return;
         }
-
+            
         // set gestures
         self.mapView.settings.rotateGestures = self.mapPreferences.gestures.isRotateAllowed;
         self.mapView.settings.scrollGestures = self.mapPreferences.gestures.isScrollAllowed;
@@ -265,6 +265,13 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
     }
     
     
+    public func zoomIn() {
+        self.mapView.animate(toZoom: mapView.camera.zoom + 1);
+    }
+    
+    public func zoomOut() {
+        self.mapView.animate(toZoom: mapView.camera.zoom - 1);
+    }
 
 }
 
