@@ -46,7 +46,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
     
     @objc func createMap(_ call: CAPPluginCall) {
         
-        DispatchQueue.main.async {
+        DispatchQueue.main.sync{
             let customMapViewController : CustomMapViewController = CustomMapViewController(customMapViewEvents: self);
             
             self.bridge?.saveCall(call)
@@ -95,17 +95,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             // This allows us to overlay the MapView in HTML/CSS
             // subview[0] - is map
             self.bridge?.webView?.sendSubviewToBack(customMapViewController.view)
-            
-            
-            // Hide the background
-            self.webView?.isOpaque = false;
-            self.webView?.backgroundColor = .clear;
-            self.webView?.scrollView.backgroundColor = .clear;
-            self.webView?.scrollView.isOpaque = false;
-           
-            
- 
-            
+       
             // class for view that will receive touches and transmit them
             class OverlayView: UIView {
                 
@@ -166,6 +156,14 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
                 self.hasTopView = true
             }
             
+        }
+        
+        DispatchQueue.main.sync {
+        // Hide the background
+        self.webView?.isOpaque = false;
+        self.webView?.backgroundColor = .clear;
+        self.webView?.scrollView.backgroundColor = .clear;
+        self.webView?.scrollView.isOpaque = false;
         }
     }
     
