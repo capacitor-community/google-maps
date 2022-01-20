@@ -2,7 +2,7 @@ import UIKit
 import Capacitor
 import GoogleMaps
 
-class CustomMapView: UIViewController, GMSMapViewDelegate {
+class CustomMapView: UIViewController, GMSMapViewDelegate, CLLocationManagerDelegate {
     var customMapViewEvents: CustomMapViewEvents!;
 
     var id: String!;
@@ -57,6 +57,10 @@ class CustomMapView: UIViewController, GMSMapViewDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad();
+        
+        var locationManager : CLLocationManager = CLLocationManager()
+        locationManager.delegate = self
+        locationManager.requestAlwaysAuthorization()
         
         let frame = CGRect(x: self.boundingRect.x, y: self.boundingRect.y, width: self.boundingRect.width, height: self.boundingRect.height);
         

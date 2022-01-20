@@ -84,6 +84,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             
             
             self.bridge?.webView?.addSubview(customMapViewController.view)
+//            self.webView?.insertSubview(customMapViewController.view, at: 0)
             
             customMapViewController.mapView.delegate = customMapViewController;
             
@@ -97,9 +98,13 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             
             
             // Hide the background
-            self.bridge?.webView?.isOpaque = false;
-            self.bridge?.webView?.backgroundColor = UIColor.clear
+            self.webView?.isOpaque = false;
+            self.webView?.backgroundColor = .clear;
+            self.webView?.scrollView.backgroundColor = .clear;
+            self.webView?.scrollView.isOpaque = false;
+           
             
+ 
             
             // class for view that will receive touches and transmit them
             class OverlayView: UIView {
@@ -107,30 +112,30 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
                 public var mainClass: CapacitorGoogleMaps?;
                 
                 override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-                    
+
                     // if (count-1) is the top view, then hmtl layout is second and here must be (count-2)
                     let numberOfHTMLElementsOfView: Int = (mainClass?.bridge?.webView?.subviews.count)! - 2;
-                    
+
                     // make html view default off
                     mainClass?.bridge?.webView?.subviews[numberOfHTMLElementsOfView].isUserInteractionEnabled = false
-                    
+
                     // checking the hit in the elements
                     for boundingRect in mainClass?.arrayOfHTMLElements ?? [] {
                         // checking the hit in the element
-                        if(point.x > boundingRect.x &&
-                           point.x < (boundingRect.x + boundingRect.width) &&
-                           point.y > boundingRect.y &&
-                           point.y < (boundingRect.y + boundingRect.height)) {
+                        if(Bool(point.x > boundingRect.x) &&
+                           Bool(point.x < (boundingRect.x + boundingRect.width)) &&
+                           Bool(point.y > boundingRect.y) &&
+                           Bool(point.y < (boundingRect.y + boundingRect.height))) {
                             // touch point inside of html element
                             // then we make this subview is toucheable
                             mainClass?.bridge?.webView?.subviews[numberOfHTMLElementsOfView].isUserInteractionEnabled = true
                             return false
                         }
                     }
-                    
+
                     // if we here, than html view off
                     let arrayOfMaps = [CustomMapViewController]((mainClass?.customMapViewControllers.values)!)
-                    
+
                     for mapview in arrayOfMaps {
                         // checking if map exists in this point
                         if(point.x > mapview.boundingRect.x &&
@@ -143,7 +148,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
                         } else {
                             // if there is no mapView than we on html view
                         }
-                        
+
                     }
                     mainClass?.bridge?.webView?.subviews[numberOfHTMLElementsOfView].isUserInteractionEnabled = true
                     return false
