@@ -86,6 +86,8 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
         let renderer = GMUDefaultClusterRenderer(mapView: mapView, clusterIconGenerator: iconGenerator)
         mClusterManager = GMUClusterManager(map: mapView, algorithm: algorithm, renderer: renderer)
         
+        mMarkersList = [CustomMarker]();
+        
         // Register self to listen to GMSMapViewDelegate events.
         mClusterManager.setMapDelegate(self)
         
@@ -172,24 +174,40 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
     public func addMarker(_ customMarker: CustomMarker!) {
         // TO-DO: Implement setting of custom icon
         self.mClusterManager.add(customMarker);
+        self.mMarkersList.append(customMarker);
         self.mClusterManager.cluster();
     }
     
     public func addMarkers(_ markerArray: [CustomMarker]!) {
         self.mClusterManager.add(markerArray);
+        self.mMarkersList.append(contentsOf: markerArray);
         self.mClusterManager.cluster();
     }
     
     public func updateMarker(_ markerId: String, _ preferences:JSObject) -> Bool {
-        var isUpdated : Bool = false;
-        
-        
-        
-        return isUpdated;
+        for item in self.mMarkersList {
+            if(item.markerId == markerId) {
+                self.mClusterManager.remove(item);
+                item.updateFromJSObject(preferences: preferences);
+                self.mClusterManager.add(item);
+                self.mClusterManager.cluster();
+                return true;
+            }
+        }
+        return false;
     }
     
     public func removeMarker(_ markerId: String) {
-        
+        var index : Int = 0;
+        for item in self.mMarkersList {
+            if(item.markerId == markerId) {
+                self.mClusterManager.remove(item);
+                self.mMarkersList.remove(at: index);
+                self.mClusterManager.cluster();
+                return;
+            }
+            index += 1;
+        }
     }
     
     

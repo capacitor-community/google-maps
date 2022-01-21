@@ -19,8 +19,6 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
     
     var customMapViewControllers = [String : CustomMapViewController]();
     
-    var customMarkers = [String : CustomMarker]();
-    
     var hasTopView : Bool = false;
     
     var arrayOfHTMLElements = [BoundingRect]();
@@ -217,7 +215,9 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             let customMapViewController = self.customMapViewControllers[mapId];
             
             if (customMapViewController != nil) {
-                let markers = call.getArray("markers", []);
+                let markersObj : JSObject? = call.getObject("markers");
+                
+                let markers = markersObj?["arrayOfMarkers"] as? [Any] ?? [];
                 
                 var markerArray = [CustomMarker]();
                 for item in markers {
@@ -239,19 +239,49 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         }
     }
     
-    @objc func removeMarker(_ call: CAPPluginCall) {
-        let markerId: String = call.getString("markerId", "");
+    @objc func updateMarker(_ call: CAPPluginCall) {
+        let mapId: String = call.getString("mapId", "");
         
         DispatchQueue.main.async {
-            let customMarker = self.customMarkers[markerId];
+            // find what mapview marker belongs
+            let customMapViewController = self.customMapViewControllers[mapId];
             
-            if (customMarker != nil) {
+            if (customMapViewController != nil) {
+                let markerId: String = call.getString("markerId", "");
                 
-//                customMarker?.map = nil;
-//                self.customMarkers[markerId] = nil;
-                call.resolve();
+                // check if marker exists
+                
+                // get new preferences of existing marker
+                let preferences = call.getObject("preferences", JSObject());
+                
+                
+                // update marker on the map
+                let isUpdated =  customMapViewController?.updateMarker(markerId, preferences) ?? false;
+                if(!isUpdated) {
+                    call.reject("marker not updated");
+                } else {
+                    call.resolve();
+                }
             } else {
-                call.reject("marker not found");
+                call.reject("map not found");
+            }
+        }
+    }
+    
+    @objc func removeMarker(_ call: CAPPluginCall) {
+        let mapId: String = call.getString("mapId", "");
+        
+        DispatchQueue.main.async {
+            // find what mapview marker belongs
+            let customMapViewController = self.customMapViewControllers[mapId];
+            
+            if (customMapViewController != nil) {
+                let markerId: String = call.getString("markerId", "");
+                
+                // check if marker exists
+                customMapViewController?.removeMarker(markerId);
+            } else {
+                call.reject("map not found");
             }
         }
     }

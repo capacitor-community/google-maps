@@ -2,7 +2,12 @@ import Capacitor
 import GoogleMaps
 
 class CustomMarker: GMSMarker {
-    var id: String! = NSUUID().uuidString.lowercased();
+    private var id: String! = NSUUID().uuidString.lowercased()
+    var markerId: String {
+        get {
+            return self.id;
+        }
+    }
     
     public func updateFromJSObject(preferences: JSObject) {
         let position = preferences["position"] as? JSObject ?? JSObject();
@@ -22,14 +27,16 @@ class CustomMarker: GMSMarker {
         self.isDraggable = preferences["isDraggable"] as? Bool ?? false;
         
         let metadata: JSObject = preferences["metadata"] as? JSObject ?? JSObject();
+        
         self.userData = [
-            "markerId": self.id!,
+            "markerId": self.markerId,
             "metadata": metadata
         ] as? JSObject ?? JSObject();
     }
     
     public static func getResultForMarker(_ marker: GMSMarker) -> PluginCallResultData {
-        let tag: JSObject = marker.userData as! JSObject;
+        let markerObj = marker.userData as! GMSMarker;
+        let tag: JSObject = markerObj.userData  as! JSObject;
         
         return [
             "marker": [
