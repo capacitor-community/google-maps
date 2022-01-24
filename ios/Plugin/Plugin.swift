@@ -12,7 +12,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
     // --constants--
     let TAG_NUMBER_FOR_MAP_UIVIEW : Int = 10;
     let TAG_NUMBER_FOR_TOP_OVERLAY_UIVIEW : Int = 20;
-    let TAG_NUMBER_FOR_DEFAULT_WEBVIEW_SUBVIEW : Int = 1;
+    let TAG_NUMBER_FOR_DEFAULT_WEBVIEW_SUBVIEW_WITH_HTML_ELEMENTS : Int = 1;
     
     
     var GOOGLE_MAPS_KEY: String = "";
@@ -22,6 +22,53 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
     var hasTopView : Bool = false;
     
     var arrayOfHTMLElements = [BoundingRect]();
+    
+    
+    // class for view that will receive touches and transmit them
+    class OverlayView: UIView {
+        
+        public var mainClass: CapacitorGoogleMaps?;
+        
+        override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+
+            // make html view default off
+            mainClass?.bridge?.webView?.viewWithTag(mainClass!.TAG_NUMBER_FOR_DEFAULT_WEBVIEW_SUBVIEW_WITH_HTML_ELEMENTS)?.isUserInteractionEnabled = false;
+
+            // checking the hit in the elements
+            for boundingRect in mainClass?.arrayOfHTMLElements ?? [] {
+                // checking the hit in the element
+                if(Bool(point.x > boundingRect.x) &&
+                   Bool(point.x < (boundingRect.x + boundingRect.width)) &&
+                   Bool(point.y > boundingRect.y) &&
+                   Bool(point.y < (boundingRect.y + boundingRect.height))) {
+                    // touch point inside of html element
+                    // then we make this subview is toucheable
+                    mainClass?.bridge?.webView?.viewWithTag(mainClass!.TAG_NUMBER_FOR_DEFAULT_WEBVIEW_SUBVIEW_WITH_HTML_ELEMENTS)?.isUserInteractionEnabled = true
+                    return false
+                }
+            }
+
+            // if we here, than html view off
+            let arrayOfMaps = [CustomMapViewController]((mainClass?.customMapViewControllers.values)!)
+
+            for mapview in arrayOfMaps {
+                // checking if map exists in this point
+                if(point.x > mapview.boundingRect.x &&
+                   point.x < (mapview.boundingRect.x + mapview.boundingRect.width) &&
+                   point.y > mapview.boundingRect.y &&
+                   point.y < (mapview.boundingRect.y + mapview.boundingRect.height)) {
+                    // if mapview exist in this point than doing nothing
+                    // just go further
+                    return false
+                } else {
+                    // if there is no mapView than we on html view
+                }
+
+            }
+            mainClass?.bridge?.webView?.viewWithTag(mainClass!.TAG_NUMBER_FOR_DEFAULT_WEBVIEW_SUBVIEW_WITH_HTML_ELEMENTS)?.isUserInteractionEnabled = true
+            return false
+        }
+    }
     
     
     @objc func initialize(_ call: CAPPluginCall) {
@@ -60,6 +107,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             customMapViewController.mapPreferences.updateFromJSObject(preferences);
             
             
+            self.bridge?.webView?.subviews[0].tag = TAG_NUMBER_FOR_DEFAULT_WEBVIEW_SUBVIEW_WITH_HTML_ELEMENTS;
             customMapViewController.view.tag = self.TAG_NUMBER_FOR_MAP_UIVIEW;
             
             // elements on the top of the mapView
@@ -82,7 +130,6 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             
             
             self.bridge?.webView?.addSubview(customMapViewController.view)
-//            self.webView?.insertSubview(customMapViewController.view, at: 0)
             
             customMapViewController.mapView.delegate = customMapViewController;
             
@@ -94,54 +141,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             // subview[0] - is map
             self.bridge?.webView?.sendSubviewToBack(customMapViewController.view)
        
-            // class for view that will receive touches and transmit them
-            class OverlayView: UIView {
-                
-                public var mainClass: CapacitorGoogleMaps?;
-                
-                override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-
-                    // if (count-1) is the top view, then hmtl layout is second and here must be (count-2)
-                    let numberOfHTMLElementsOfView: Int = (mainClass?.bridge?.webView?.subviews.count)! - 2;
-
-                    // make html view default off
-                    mainClass?.bridge?.webView?.subviews[numberOfHTMLElementsOfView].isUserInteractionEnabled = false
-
-                    // checking the hit in the elements
-                    for boundingRect in mainClass?.arrayOfHTMLElements ?? [] {
-                        // checking the hit in the element
-                        if(Bool(point.x > boundingRect.x) &&
-                           Bool(point.x < (boundingRect.x + boundingRect.width)) &&
-                           Bool(point.y > boundingRect.y) &&
-                           Bool(point.y < (boundingRect.y + boundingRect.height))) {
-                            // touch point inside of html element
-                            // then we make this subview is toucheable
-                            mainClass?.bridge?.webView?.subviews[numberOfHTMLElementsOfView].isUserInteractionEnabled = true
-                            return false
-                        }
-                    }
-
-                    // if we here, than html view off
-                    let arrayOfMaps = [CustomMapViewController]((mainClass?.customMapViewControllers.values)!)
-
-                    for mapview in arrayOfMaps {
-                        // checking if map exists in this point
-                        if(point.x > mapview.boundingRect.x &&
-                           point.x < (mapview.boundingRect.x + mapview.boundingRect.width) &&
-                           point.y > mapview.boundingRect.y &&
-                           point.y < (mapview.boundingRect.y + mapview.boundingRect.height)) {
-                            // if mapview exist in this point than doing nothing
-                            // just go further
-                            return false
-                        } else {
-                            // if there is no mapView than we on html view
-                        }
-
-                    }
-                    mainClass?.bridge?.webView?.subviews[numberOfHTMLElementsOfView].isUserInteractionEnabled = true
-                    return false
-                }
-            }
+            
             
             if(self.hasTopView == false) {
                 let overlayView: OverlayView = OverlayView()
