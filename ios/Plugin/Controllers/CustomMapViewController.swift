@@ -80,11 +80,7 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad();
         
-        // Set up the cluster manager with default icon generator and renderer.
-        let iconGenerator = GMUDefaultClusterIconGenerator()
-        let algorithm = GMUNonHierarchicalDistanceBasedAlgorithm()
-        let renderer = GMUDefaultClusterRenderer(mapView: mapView, clusterIconGenerator: iconGenerator)
-        mClusterManager = GMUClusterManager(map: mapView, algorithm: algorithm, renderer: renderer)
+        setupClustering()
         
         mMarkersList = [CustomMarker]();
         
@@ -99,6 +95,16 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
             ]
         ]);
     }
+    
+    private func setupClustering() {
+        guard let mapView = self.mapView else { return }
+
+        let iconGenerator = CustomClusterIconGenerator()
+//      let renderer = MapClusterRenderer(mapView: mapView, clusterIconGenerator: iconGenerator)
+        let renderer = GMUDefaultClusterRenderer(mapView: mapView, clusterIconGenerator: iconGenerator)
+        let algorithm = GMUNonHierarchicalDistanceBasedAlgorithm()
+        self.mClusterManager = GMUClusterManager(map: mapView, algorithm: algorithm, renderer: renderer)
+        }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         print("CustomMapViewController getting touches and event")
