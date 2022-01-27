@@ -8,6 +8,7 @@
 import Capacitor
 import GoogleMaps
 import GoogleMapsUtils
+import UIKit
 
 let kClusterItemCount = 10000
 
@@ -19,6 +20,8 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
     var id: String!;
     
     var mapView: GMSMapView!;
+    
+    var locationButton : UIButton!;
     
     
     
@@ -141,6 +144,14 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
         self.mapView.isIndoorEnabled = self.mapPreferences.appearance.isIndoorShown;
         self.mapView.isMyLocationEnabled = self.mapPreferences.appearance.isMyLocationDotShown;
         self.mapView.isTrafficEnabled = self.mapPreferences.appearance.isTrafficShown;
+        
+        
+        // if we have location button then
+        // hide default button
+        if(self.mapView.isMyLocationEnabled == true) {
+        locationButton = getLocationButtonFromMapView();
+        locationButton.isHidden = true;
+        }
     }
     
     
@@ -295,6 +306,30 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
     
     public func zoomOut() {
         self.mapView.animate(toZoom: mapView.camera.zoom - 1);
+    }
+    
+    public func myLocationButtonClick() {
+        locationButton.sendActions(for: .touchUpInside);
+    }
+    
+    private func getLocationButtonFromMapView() -> UIButton {
+        for object in self.mapView.subviews {
+            if(String(describing: type(of: object)) == "GMSUISettingsPaddingView") {
+                for view in object.subviews {
+                    if(String(describing: type(of: view)) == "GMSUISettingsView") {
+                        for btn in view.subviews {
+                            if(String(describing: type(of: btn)) == "GMSx_MDCFloatingButton") {
+                                if btn is UIButton {
+                                    let button = btn as! UIButton;
+                                    return button;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return UIButton();
     }
 
 }

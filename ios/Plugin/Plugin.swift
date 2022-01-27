@@ -4,8 +4,6 @@ import GoogleMaps
 import UIKit
 
 
-
-
 @objc(CapacitorGoogleMaps)
 public class CapacitorGoogleMaps: CustomMapViewEvents {
     
@@ -163,6 +161,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         self.webView?.scrollView.backgroundColor = .clear;
         self.webView?.scrollView.isOpaque = false;
         }
+        
     }
     
     @objc func updateMap(_ call: CAPPluginCall) {
@@ -476,4 +475,77 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         }
     }
     
+    @objc func myLocationButtonClick(_ call: CAPPluginCall) {
+        let mapId: String = call.getString("mapId", "");
+        
+        DispatchQueue.main.async {
+            guard let customMapViewController: CustomMapViewController = self.customMapViewControllers[mapId]
+                else {
+                    call.reject("map not found");
+                    return
+                }
+            self.locationRequest();
+            customMapViewController.myLocationButtonClick();
+            call.resolve();
+            
+        }
+    }
+    
+    private func locationRequest() {
+        // this open app specific settings
+        func openSettings(alert: UIAlertAction!) {
+            if let url = URL.init(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            }
+        }
+        
+
+        
+        let status = CLLocationManager.authorizationStatus()
+            if status == .notDetermined || status == .denied{
+                
+                // present an alert indicating location authorization required
+                // and offer to take the user to Settings for the app via
+                // UIApplication -openUrl: and UIApplicationOpenSettingsURLString
+                DispatchQueue.main.async {
+                    let title :  String?;
+                    let message : String?;
+                    let titleOfSecondAction : String;
+                    if(CLLocationManager.locationServicesEnabled() != true) {
+                        title = "Location Services Off"
+                        message = "Turn on Location Services in Settings > Privacy to allow \"" + Bundle.appName() + "\" to determine your current location";
+                        titleOfSecondAction = "OK";
+                    } else {
+                        title = "GPS access is restricted. In order to Allow \"" + Bundle.appName() + "\" to Determine Your Location, please give GPS permissions to application";
+                        message = nil
+                        titleOfSecondAction = "Cancel";
+                    }
+                    
+                    
+                    let alert = UIAlertController(title: title,
+                                                  message: message,
+                                                  preferredStyle: .alert)
+                    
+                    alert.addAction(UIAlertAction(title: "Settings",
+                                                  style: UIAlertAction.Style.default,
+                                                  handler: openSettings))
+                                    
+                    alert.addAction(UIAlertAction(title: titleOfSecondAction, style: UIAlertAction.Style.default, handler: nil))
+                    self.bridge?.webView?.window?.rootViewController?.present(alert, animated: true, completion: nil)
+                }
+            }
+    }
+    
+    
+}
+
+extension Bundle {
+    static func appName() -> String {
+        guard let dictionary = Bundle.main.infoDictionary else {return ""}
+        if let appName : String = dictionary["CFBundleName"] as? String {
+            return appName
+        } else {
+            return ""
+        }
+    }
 }
