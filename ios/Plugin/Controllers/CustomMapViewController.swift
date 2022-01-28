@@ -46,6 +46,8 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
     
     var savedCallbackIdForDidTapMarker: String!;
     var preventDefaultForDidTapMarker: Bool = false;
+    
+    var savedCallbackIdForDidTapCluster: String!;
 
     var savedCallbackIdForDidTapMyLocationButton: String!;
     var preventDefaultForDidTapMyLocationButton: Bool = false;
@@ -170,6 +172,8 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
             case Events.EVENT_DID_TAP_MARKER:
                 savedCallbackIdForDidTapMarker = callbackId
                 preventDefaultForDidTapMarker = preventDefault ?? false;
+            case Events.EVENT_DID_TAP_CLUSTER:
+                savedCallbackIdForDidTapCluster = callbackId
             case Events.EVENT_DID_TAP_MY_LOCATION_BUTTON:
                 savedCallbackIdForDidTapMyLocationButton = callbackId;
                 preventDefaultForDidTapMyLocationButton = preventDefault ?? false;
@@ -261,9 +265,17 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
     internal func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
         
         mapView.animate(toLocation: marker.position)
-        if let _ = marker.userData as? GMUCluster {
-          mapView.animate(toZoom: mapView.camera.zoom + 1)
+        if let cluster = marker.userData as? GMUCluster {
+            var bounds : GMSCoordinateBounds = GMSCoordinateBounds()
+            for item in cluster.items {
+                bounds = bounds.includingCoordinate(item.position)
+            }
+            var update : GMSCameraUpdate = GMSCameraUpdate.fit(bounds);
+            mapView.moveCamera(update)
           NSLog("Did tap cluster")
+            if(customMapViewEvents != nil && savedCallbackIdForDidTapCluster != nil) {
+                customMapViewEvents.resultForCallbackId(callbackId: savedCallbackIdForDidTapCluster, result: nil);
+            }
           return true
         }
         NSLog("Did tap marker")

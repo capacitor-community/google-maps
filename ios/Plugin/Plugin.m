@@ -16,6 +16,7 @@ CAP_PLUGIN(CapacitorGoogleMaps, "CapacitorGoogleMaps",
            CAP_PLUGIN_METHOD(didTapMap, CAPPluginReturnCallback);
            CAP_PLUGIN_METHOD(didLongPressMap, CAPPluginReturnCallback);
            CAP_PLUGIN_METHOD(didTapMarker, CAPPluginReturnCallback);
+           CAP_PLUGIN_METHOD(didTapCluster, CAPPluginReturnCallback);
            CAP_PLUGIN_METHOD(didTapMyLocationButton, CAPPluginReturnCallback);
            CAP_PLUGIN_METHOD(didTapMyLocationDot, CAPPluginReturnCallback);
            CAP_PLUGIN_METHOD(blockMapViews, CAPPluginReturnPromise);

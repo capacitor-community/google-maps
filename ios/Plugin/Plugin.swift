@@ -309,6 +309,10 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         setCallbackIdForEvent(call: call, eventName: Events.EVENT_DID_TAP_MARKER);
     }
     
+    @objc func didTapCluster(_ call: CAPPluginCall) {
+        setCallbackIdForEvent(call: call, eventName: Events.EVENT_DID_TAP_CLUSTER);
+    }
+    
     @objc func didTapMyLocationButton(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: Events.EVENT_DID_TAP_MY_LOCATION_BUTTON);
     }
