@@ -9,22 +9,21 @@ class CustomMarker: GMSMarker {
         }
     }
     
+    var markerCategoryId : Int = 0;
+    
     public func updateFromJSObject(preferences: JSObject) {
         let position = preferences["position"] as? JSObject ?? JSObject();
         let latitude = position["latitude"] as? Double ?? 0.0;
         let longitude = position["longitude"] as? Double ?? 0.0;
-
         self.position = CLLocationCoordinate2D(latitude: latitude, longitude: longitude);
         
         self.title = preferences["title"] as? String ?? nil;
-        
         self.snippet = preferences["snippet"] as? String ?? nil;
-        
         self.opacity = preferences["opacity"] as? Float ?? 1.0;
-        
         self.isFlat = preferences["isFlat"] as? Bool ?? false;
-        
         self.isDraggable = preferences["isDraggable"] as? Bool ?? false;
+        self.markerCategoryId = preferences["category"] as? Int ?? 0;
+        
         
         let metadata: JSObject = preferences["metadata"] as? JSObject ?? JSObject();
         

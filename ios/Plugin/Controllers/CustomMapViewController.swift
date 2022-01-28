@@ -103,8 +103,8 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
         guard let mapView = self.mapView else { return }
 
         let iconGenerator = CustomClusterIconGenerator()
-//      let renderer = MapClusterRenderer(mapView: mapView, clusterIconGenerator: iconGenerator)
         let renderer = GMUDefaultClusterRenderer(mapView: mapView, clusterIconGenerator: iconGenerator)
+        renderer.delegate = self;
         let algorithm = GMUNonHierarchicalDistanceBasedAlgorithm()
         self.mClusterManager = GMUClusterManager(map: mapView, algorithm: algorithm, renderer: renderer)
         }
@@ -331,7 +331,18 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
         }
         return UIButton();
     }
+}
 
+
+extension CustomMapViewController: GMUClusterRendererDelegate {
+    func renderer(_ renderer: GMUClusterRenderer, willRenderMarker marker: GMSMarker) {
+            // if your marker is pointy you can change groundAnchor
+//            marker.groundAnchor = CGPoint(x: 0.5, y: 1)
+            if  let markerData = (marker.userData as? CustomMarker) {
+                let icon = MarkerCategory.markerCategories[markerData.markerCategoryId]?.getIcon ?? nil;
+                marker.icon = icon;
+            }
+        }
 }
 
 

@@ -11,6 +11,8 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
     let TAG_NUMBER_FOR_MAP_UIVIEW : Int = 10;
     let TAG_NUMBER_FOR_TOP_OVERLAY_UIVIEW : Int = 20;
     let TAG_NUMBER_FOR_DEFAULT_WEBVIEW_SUBVIEW_WITH_HTML_ELEMENTS : Int = 1;
+    let MARKER_CATEGORY_DIRECTORY : String = "marker-categories.bundle";
+    let SIZE_OF_MARKERS = CGSize(width: 64.0, height: 64.0)
     
     
     var GOOGLE_MAPS_KEY: String = "";
@@ -70,6 +72,8 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
     
     
     @objc func initialize(_ call: CAPPluginCall) {
+        
+        initMarkerCategories();
         
         self.GOOGLE_MAPS_KEY = call.getString("key", "")
         
@@ -536,6 +540,70 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             }
     }
     
+    @objc func addMarkerCategory(_ call: CAPPluginCall) {
+        let id : Int = call.getInt("id", -1);
+        let title : String = call.getString("title", "");
+        let encodedImage : String = call.getString("base64Data", "");
+        
+        if (id == -1 ) {
+            call.reject("dont have id for category");
+            return;
+        }
+        
+        var image : UIImage = UIImage();
+        if let decodedData = Data(base64Encoded: encodedImage, options: .ignoreUnknownCharacters) {
+            image = UIImage(data: decodedData)!
+            image = image.resized(to: SIZE_OF_MARKERS);
+        }
+        
+        MarkerCategory(id, title, image);
+        
+    }
+
+    
+    private func initMarkerCategories() {
+        // default marker icon for zero category
+        MarkerCategory(0, "default", nil);
+        
+        // getting map of names of categories and icons of this
+        var markerCategoriesNamesAndIcons = fetchMarkersCategoriesFilesFromAssets();
+        // sorting keys in alphabetical order for adding catetories in the same order
+        var arrayOfKeys = Array(markerCategoriesNamesAndIcons.keys.map{ $0 })
+        arrayOfKeys = arrayOfKeys.sorted(by: <)
+        
+        var i : Int = 1;
+        for nameOfCategory in arrayOfKeys {
+            MarkerCategory(i, nameOfCategory, markerCategoriesNamesAndIcons[nameOfCategory] as? UIImage ?? nil)
+            i += 1;
+        }
+        
+    }
+    
+    private func fetchMarkersCategoriesFilesFromAssets() -> [String : UIImage?] {
+        var returnArray = [String : UIImage?]();
+
+        let fm = FileManager.default
+         let listImageName = fm.getListFileNameInBundle(bundlePath: MARKER_CATEGORY_DIRECTORY)
+         for imgName in listImageName {
+             
+             let pattern = #"(.+?)(\.[^.]*$|$)"#
+             let regex = try! NSRegularExpression(pattern: pattern)
+             var result: [String] = [String]();
+             let stringRange = NSRange(location: 0, length: imgName.utf16.count)
+             if let firstMatch = regex.firstMatch(in: imgName, range: stringRange) {
+                 result = (1 ..< firstMatch.numberOfRanges).map { (imgName as NSString).substring(with: firstMatch.range(at: $0)) }
+             } else {
+                 result[0] = imgName;
+             }
+             
+             
+             
+             var image = fm.getImageInBundle(bundlePath: MARKER_CATEGORY_DIRECTORY + "/\(result[0])")
+             image = image?.resized(to: SIZE_OF_MARKERS)
+             returnArray[imgName] = image;
+         }
+        return returnArray;
+    }
     
 }
 
@@ -546,6 +614,44 @@ extension Bundle {
             return appName
         } else {
             return ""
+        }
+    }
+}
+
+
+extension FileManager {
+    func getListFileNameInBundle(bundlePath: String) -> [String] {
+
+        let fileManager = FileManager.default
+        let bundleURL = Bundle.main.bundleURL
+        let assetURL = bundleURL.appendingPathComponent(bundlePath)
+        do {
+            let contents = try fileManager.contentsOfDirectory(at: assetURL, includingPropertiesForKeys: [URLResourceKey.nameKey, URLResourceKey.isDirectoryKey], options: .skipsHiddenFiles)
+            return contents.map{$0.lastPathComponent}
+        }
+        catch {
+            return []
+        }
+    }
+
+    func getImageInBundle(bundlePath: String) -> UIImage? {
+        let bundleURL = Bundle.main.bundleURL
+        let assetURL = bundleURL.appendingPathComponent(bundlePath)
+        return UIImage.init(contentsOfFile: assetURL.relativePath)
+    }
+}
+
+extension UIImage {
+    public func resized(to target: CGSize) -> UIImage {
+        let ratio = min(
+            target.height / size.height, target.width / size.width
+        )
+        let new = CGSize(
+            width: size.width * ratio, height: size.height * ratio
+        )
+        let renderer = UIGraphicsImageRenderer(size: new)
+        return renderer.image { _ in
+            self.draw(in: CGRect(origin: .zero, size: new))
         }
     }
 }

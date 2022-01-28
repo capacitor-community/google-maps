@@ -25,4 +25,5 @@ CAP_PLUGIN(CapacitorGoogleMaps, "CapacitorGoogleMaps",
            CAP_PLUGIN_METHOD(zoomInButtonClick, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(zoomOutButtonClick, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(myLocationButtonClick, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(addMarkerCategory, CAPPluginReturnPromise);
 )

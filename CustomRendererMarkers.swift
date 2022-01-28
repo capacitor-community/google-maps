@@ -42,6 +42,7 @@ func markerWithPosition(position: CLLocationCoordinate2D, from: CLLocationCoordi
 
 func getCustomTitleItem(userData: AnyObject) -> UIImage {
   let item = userData as! CustomMarker
-  return item.icon!
+    return MarkerCategory.markerCategories[item.markerCategoryId]?.getIcon ?? item.icon!;
+//  return item.icon!
 }
 }
