@@ -107,6 +107,7 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
         let iconGenerator = CustomClusterIconGenerator()
         let renderer = GMUDefaultClusterRenderer(mapView: mapView, clusterIconGenerator: iconGenerator)
         renderer.delegate = self;
+        renderer.zIndex = 10;
         let algorithm = GMUNonHierarchicalDistanceBasedAlgorithm()
         self.mClusterManager = GMUClusterManager(map: mapView, algorithm: algorithm, renderer: renderer)
         }
@@ -353,6 +354,7 @@ extension CustomMapViewController: GMUClusterRendererDelegate {
             if  let markerData = (marker.userData as? CustomMarker) {
                 let icon = MarkerCategory.markerCategories[markerData.markerCategoryId]?.getIcon ?? nil;
                 marker.icon = icon;
+                marker.zIndex = 5;
             }
         }
 }
