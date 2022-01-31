@@ -338,7 +338,7 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
                             }
                         }
                     }
-                }
+                }	
             }
         }
         return UIButton();

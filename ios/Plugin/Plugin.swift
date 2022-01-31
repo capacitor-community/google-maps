@@ -609,6 +609,35 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         return returnArray;
     }
     
+    
+    @objc func hide(_ call: CAPPluginCall) {
+        let mapId: String = call.getString("mapId", "");
+        
+        DispatchQueue.main.async {
+            guard let customMapViewController: CustomMapViewController = self.customMapViewControllers[mapId]
+                else {
+                    call.reject("map not found");
+                    return
+                }
+            customMapViewController.mapView.isHidden = true;
+            call.resolve();
+        }
+    }
+    
+    @objc func show(_ call: CAPPluginCall) {
+        let mapId: String = call.getString("mapId", "");
+        
+        DispatchQueue.main.async {
+            guard let customMapViewController: CustomMapViewController = self.customMapViewControllers[mapId]
+                else {
+                    call.reject("map not found");
+                    return
+                }
+            customMapViewController.mapView.isHidden = false;
+            call.resolve();
+        }
+    }
+    
 }
 
 extension Bundle {
