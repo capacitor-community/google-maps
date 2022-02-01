@@ -31,6 +31,7 @@ export interface CapacitorGoogleMapsPlugin {
     isFlat?: boolean;
     iconUrl?: string;
     draggable?: boolean;
+    metadata?: object;
   }): Promise<any>;
 
   /** Removes a marker on the map */
