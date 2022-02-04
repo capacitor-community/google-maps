@@ -106,6 +106,51 @@ public class CustomMarker implements ClusterItem {
         return result;
     }
 
+    public static JSObject getResultForMarker(CustomMarker marker, String mapId) {
+
+        // initialize JSObjects to return
+        JSObject result = new JSObject();
+        JSObject positionResult = new JSObject();
+        JSObject markerResult = new JSObject();
+
+        // get map id
+        positionResult.put("mapId", mapId);
+
+        // get position values
+        positionResult.put("latitude", marker.getPosition().latitude);
+        positionResult.put("longitude", marker.getPosition().longitude);
+
+        // get marker specific values
+        markerResult.put("markerId", marker.getMarkerId());
+        markerResult.put("title", marker.getTitle());
+        markerResult.put("snippet", marker.getSnippet());
+        markerResult.put("opacity", marker.markerOptions.getAlpha());
+        markerResult.put("isFlat", marker.markerOptions.isFlat());
+        markerResult.put("isDraggable", marker.markerOptions.isDraggable());
+        markerResult.put("metadata", new JSObject());
+
+        JSObject tag = (JSObject) marker.tag;
+        if (tag != null) {
+            // get and set markerId to marker
+            String markerId = tag.getString("markerId");
+            markerResult.put("markerId", markerId);
+
+            // get and set metadata to marker
+            try {
+                JSObject metadata = tag.getJSObject("metadata", new JSObject());
+                markerResult.put("metadata", metadata);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // return result
+        result.put("position", positionResult);
+        result.put("marker", markerResult);
+
+        return result;
+    }
+
     public String getMarkerId() {
         return markerId;
     }
