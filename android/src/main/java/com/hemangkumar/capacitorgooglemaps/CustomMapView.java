@@ -115,6 +115,13 @@ public class CustomMapView implements OnMapReadyCallback,
 
     private boolean isHidden = false;
 
+    // values for unclustering animation bounding box
+    // with - bounding box width in pixels (px)
+    // height - bounding box height in pixels (px)
+    private int widthOfTheMapCameraAnimationUnclustering;
+    private int heightOfTheMapCameraAnimationUnclustering;
+
+
     public boolean isHidden() {
         return isHidden;
     }
@@ -300,6 +307,9 @@ public class CustomMapView implements OnMapReadyCallback,
         mapView.onCreate(null);
         mapView.onStart();
         mapView.getMapAsync(this);
+
+        widthOfTheMapCameraAnimationUnclustering = getScaledPixels(boundingRect.width) - (getScaledPixels(boundingRect.width) /5);
+        heightOfTheMapCameraAnimationUnclustering = getScaledPixels(boundingRect.height) - (getScaledPixels(boundingRect.height) /5);
     }
 
     @SuppressLint("MissingPermission")
@@ -527,7 +537,7 @@ public class CustomMapView implements OnMapReadyCallback,
             builder.include(item.getPosition());
         }
         final LatLngBounds bounds = builder.build();
-        this.googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
+        this.googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds,  widthOfTheMapCameraAnimationUnclustering, heightOfTheMapCameraAnimationUnclustering, 100));
 
 
 
