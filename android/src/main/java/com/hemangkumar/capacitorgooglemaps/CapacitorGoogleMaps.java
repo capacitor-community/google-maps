@@ -75,7 +75,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     private String GOOGLE_MAPS_KEY;
 
 
-    private final HashMap<String, CustomMapView> customMapViews = new HashMap<>();
+    public static final HashMap<String, CustomMapView> customMapViews = new HashMap<>();
     Float devicePixelRatio;
 
     private String lastEventChainId;

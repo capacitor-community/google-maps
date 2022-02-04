@@ -521,12 +521,15 @@ public class CustomMapView implements OnMapReadyCallback,
 
     @Override
     public boolean onClusterClick(Cluster<CustomMarker> cluster) {
+
         LatLngBounds.Builder builder = LatLngBounds.builder();
         for (CustomMarker item : cluster.getItems()) {
             builder.include(item.getPosition());
         }
         final LatLngBounds bounds = builder.build();
         this.googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
+
+
 
         if (customMapViewEvents != null && savedCallbackIdForDidTapCluster != null) {
             JSObject result = getResultForCluster(cluster, this.id);
@@ -560,6 +563,16 @@ public class CustomMapView implements OnMapReadyCallback,
         // return result
         result.put("position", positionResult);
 
+        CustomMapView mapView = CapacitorGoogleMaps.customMapViews.get(mapId);
+        if (mapView.googleMap.getMaxZoomLevel() == mapView.googleMap.getCameraPosition().zoom) {
+            JSObject markersData = new JSObject();
+            for (CustomMarker marker:
+                 cluster.getItems()) {
+                markersData.put(marker.getMarkerId(), CustomMarker.getResultForMarker(marker, mapId));
+
+            }
+            result.put("markersData", markersData);
+        }
         return result;
     }
 
