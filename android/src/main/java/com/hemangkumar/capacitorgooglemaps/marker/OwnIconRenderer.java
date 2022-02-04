@@ -28,6 +28,9 @@ import java.util.List;
 public class OwnIconRenderer extends DefaultClusterRenderer<CustomMarker> {
 
     // -- constants --
+    public static final int MIN_COUNT_ELEMENTS_IN_CLUSTER = 2;
+
+
     // cluster sizes must be equal buckets count
     private static final int[] CLUSTER_SIZES = { 64, 68, 72, 76, 80, 84, 88, 92 };
     private static final int[] BUCKETS =        { 5, 10, 15, 20, 25, 30, 35, 40 };
@@ -156,7 +159,7 @@ public class OwnIconRenderer extends DefaultClusterRenderer<CustomMarker> {
     @Override
     protected boolean shouldRenderAsCluster(Cluster cluster) {
         // Always render clusters.
-        return cluster.getSize() > 1;
+        return cluster.getSize() >= MIN_COUNT_ELEMENTS_IN_CLUSTER;
     }
 
 }
