@@ -35,8 +35,8 @@ import com.google.android.gms.maps.model.CameraPosition;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.hemangkumar.capacitorgooglemaps.model.CustomMarker;
-import com.hemangkumar.capacitorgooglemaps.model.MarkerCategory;
+import com.hemangkumar.capacitorgooglemaps.marker.CustomMarker;
+import com.hemangkumar.capacitorgooglemaps.marker.MarkerCategory;
 import com.hemangkumar.capacitorgooglemaps.mapsutility.Events;
 import com.hemangkumar.capacitorgooglemaps.utils.BoundingRect;
 
