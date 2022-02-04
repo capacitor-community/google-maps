@@ -21,18 +21,26 @@ import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
 import com.hemangkumar.capacitorgooglemaps.capacitorgooglemaps.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class OwnIconRenderer extends DefaultClusterRenderer<CustomMarker> {
 
+    // -- constants --
+    // cluster sizes must be equal buckets count
+    private static final int[] CLUSTER_SIZES = { 64, 68, 72, 76, 80, 84, 88, 92 };
+    private static final int[] BUCKETS =        { 5, 10, 15, 20, 25, 30, 35, 40 };
+
+
     // == fields ==
     private final IconGenerator mIconGenerator;
-    private final IconGenerator mClusterIconGenerator;
-    private final ImageView mClusterImageView;
     private final ImageView mImageView;
     private final int mDimension;
 
     private Context context;
 
+    private List<IconGenerator> mClusterIconGenerators = new ArrayList<>();
 
     // == constructor ==
     /**
@@ -45,15 +53,26 @@ public class OwnIconRenderer extends DefaultClusterRenderer<CustomMarker> {
         this.context = context;
 
         mIconGenerator = new IconGenerator(context);
-        mClusterIconGenerator = new IconGenerator(context);
 
+        final float scale = context.getResources().getDisplayMetrics().density;
 
-        View multiProfile = activity.getLayoutInflater().inflate(R.layout.multi_profile, null);
-        mClusterImageView = multiProfile.findViewById(R.id.image);
-        mClusterImageView.setImageResource(R.drawable.cluster_icon);
-        mClusterIconGenerator.setContentView(multiProfile);
-        mClusterIconGenerator.setBackground(null);
+        for (int i = 0; i < BUCKETS.length; i++) {
+            int dps = CLUSTER_SIZES[i];
+            int pixels = (int) (dps * scale + 0.5f);
 
+            View multiProfile = activity.getLayoutInflater().inflate(R.layout.multi_profile, null);
+            ImageView mClusterImageView = multiProfile.findViewById(R.id.image);
+            mClusterImageView.setImageResource(R.drawable.cluster_icon);
+
+            multiProfile.setLayoutParams(new ViewGroup.LayoutParams(pixels, pixels));
+
+            IconGenerator mClusterIconGenerator = new IconGenerator(context);
+
+            mClusterIconGenerator.setContentView(multiProfile);
+            mClusterIconGenerator.setBackground(null);
+
+            mClusterIconGenerators.add(mClusterIconGenerator);
+        }
 
         mImageView = new ImageView(context);
         mDimension = (int) context.getResources().getDimension(R.dimen.custom_profile_image);
@@ -91,7 +110,6 @@ public class OwnIconRenderer extends DefaultClusterRenderer<CustomMarker> {
 
 
         mImageView.setImageBitmap(customMarker.getMarkerCategory().getIcon());
-//        mImageView.setImageResource(ic);
         Bitmap icon = mIconGenerator.makeIcon();
         return BitmapDescriptorFactory.fromBitmap(icon);
     }
@@ -117,9 +135,22 @@ public class OwnIconRenderer extends DefaultClusterRenderer<CustomMarker> {
      * @return a BitmapDescriptor representing a cluster
      */
     private BitmapDescriptor getClusterIcon(Cluster<CustomMarker> cluster) {
-        //getting number of items in cluster
-        Bitmap icon = mClusterIconGenerator.makeIcon(String.valueOf(cluster.getSize()));
+        int index = getBucket(cluster.getSize());
+        Bitmap icon = mClusterIconGenerators.get(index).makeIcon(String.valueOf(cluster.getSize()));
         return BitmapDescriptorFactory.fromBitmap(icon);
+    }
+
+    /**
+     * Gets the "bucket" for a particular cluster. By default, uses the number of
+     * points within the
+     * cluster, bucketed to some set points.
+     */
+    private int getBucket(@NonNull int sizeOfCluster) {
+        int index = 0;
+        while ((index+1 < BUCKETS.length) && (BUCKETS[index+1] <= sizeOfCluster)) {
+            index++;
+        }
+        return index;
     }
 
     @Override
@@ -127,6 +158,5 @@ public class OwnIconRenderer extends DefaultClusterRenderer<CustomMarker> {
         // Always render clusters.
         return cluster.getSize() > 1;
     }
-
 
 }
