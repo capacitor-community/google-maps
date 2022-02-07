@@ -59,6 +59,9 @@ public class CustomMapView implements OnMapReadyCallback,
 //        ClusterManager.OnClusterItemInfoWindowClickListener<CustomMarker>
 {
 
+    // -- constants --
+    private final double EPSILON = 0.00001;
+
     // -- private fields --
     private final Context context;
     private final Activity activity;
@@ -531,34 +534,51 @@ public class CustomMapView implements OnMapReadyCallback,
 
     @Override
     public boolean onClusterClick(Cluster<CustomMarker> cluster) {
-
         LatLngBounds.Builder builder = LatLngBounds.builder();
         for (CustomMarker item : cluster.getItems()) {
             builder.include(item.getPosition());
         }
         final LatLngBounds bounds = builder.build();
-        this.googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds,  widthOfTheMapCameraAnimationUnclustering, heightOfTheMapCameraAnimationUnclustering, 100));
-
-
+        // if bounds very small than
+        boolean isGetMarkersData = unclusterCluster(bounds);;
 
         if (customMapViewEvents != null && savedCallbackIdForDidTapCluster != null) {
-            JSObject result = getResultForCluster(cluster, this.id);
+            JSObject result = getResultForCluster(cluster, this.id, isGetMarkersData);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapCluster, result);
         }
 
+
         return preventDefaultForDidTapCluster;
+    }
+
+    private boolean unclusterCluster(LatLngBounds bounds) {
+        // check if cluster can uncluster
+        if((Math.abs(bounds.northeast.latitude - bounds.southwest.latitude) > EPSILON) &&
+                (Math.abs(bounds.northeast.longitude - bounds.southwest.longitude) > EPSILON)) {
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds,
+                    widthOfTheMapCameraAnimationUnclustering,
+                    heightOfTheMapCameraAnimationUnclustering,
+                    100);
+            unclusterCluster(bounds);
+            return false;
+        } else {
+            // if all markers inside cluster is have same position
+            return true;
+        }
     }
 
     @Override
     public void onClusterInfoWindowClick(Cluster<CustomMarker> cluster) {
         if (customMapViewEvents != null && savedCallbackIdForDidTapClusterInfoWindow != null) {
-            JSObject result = getResultForCluster(cluster, this.id);
+            JSObject result = getResultForCluster(cluster, this.id, false);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapClusterInfoWindow, result);
         }
     }
 
 
-    private static JSObject getResultForCluster(Cluster<CustomMarker> cluster, String mapId) {
+    private static JSObject getResultForCluster(Cluster<CustomMarker> cluster,
+                                                String mapId,
+                                                boolean getMarkersData) {
         // initialize JSObjects to return
         JSObject result = new JSObject();
         JSObject positionResult = new JSObject();
@@ -573,8 +593,7 @@ public class CustomMapView implements OnMapReadyCallback,
         // return result
         result.put("position", positionResult);
 
-        CustomMapView mapView = CapacitorGoogleMaps.customMapViews.get(mapId);
-        if (mapView.googleMap.getMaxZoomLevel() == mapView.googleMap.getCameraPosition().zoom) {
+        if (getMarkersData) {
             JSObject markersData = new JSObject();
             for (CustomMarker marker:
                  cluster.getItems()) {
