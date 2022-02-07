@@ -540,10 +540,10 @@ public class CustomMapView implements OnMapReadyCallback,
         }
         final LatLngBounds bounds = builder.build();
         // if bounds very small than
-        boolean isGetMarkersData = unclusterCluster(bounds);;
+        boolean getMarkersData = unclusterCluster(bounds);
 
         if (customMapViewEvents != null && savedCallbackIdForDidTapCluster != null) {
-            JSObject result = getResultForCluster(cluster, this.id, isGetMarkersData);
+            JSObject result = getResultForCluster(cluster, this.id, getMarkersData);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapCluster, result);
         }
 
@@ -559,7 +559,7 @@ public class CustomMapView implements OnMapReadyCallback,
                     widthOfTheMapCameraAnimationUnclustering,
                     heightOfTheMapCameraAnimationUnclustering,
                     100);
-            unclusterCluster(bounds);
+            googleMap.animateCamera(cameraUpdate);
             return false;
         } else {
             // if all markers inside cluster is have same position
