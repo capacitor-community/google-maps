@@ -42,6 +42,7 @@ public class OwnIconRenderer extends DefaultClusterRenderer<CustomMarker> {
     private final int mDimension;
 
     private Context context;
+    private GoogleMap map;
 
     private List<IconGenerator> mClusterIconGenerators = new ArrayList<>();
 
@@ -54,6 +55,7 @@ public class OwnIconRenderer extends DefaultClusterRenderer<CustomMarker> {
                            ClusterManager<CustomMarker> clusterManager) {
         super(context, map, clusterManager);
         this.context = context;
+        this.map = map;
 
         mIconGenerator = new IconGenerator(context);
 
@@ -93,7 +95,6 @@ public class OwnIconRenderer extends DefaultClusterRenderer<CustomMarker> {
         // Draw a single marker - set the info window to show their name
         markerOptions
                 .icon(getItemIcon(customMarker))
-                .zIndex(0)
                 .title(customMarker.getTitle());
     }
 
@@ -120,7 +121,9 @@ public class OwnIconRenderer extends DefaultClusterRenderer<CustomMarker> {
     @Override
     protected void onBeforeClusterRendered(@NonNull Cluster<CustomMarker> cluster, MarkerOptions markerOptions) {
         // Note: this method runs on the UI thread. Don't spend too much time in here (like in this example).
-        markerOptions.icon(getClusterIcon(cluster));
+        markerOptions
+                .zIndex((int) map.getCameraPosition().zoom)
+                .icon(getClusterIcon(cluster));
     }
 
 

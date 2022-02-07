@@ -49,6 +49,8 @@ public class CustomMarker implements ClusterItem {
         this.markerOptions.draggable(isDraggable);
 
         this.markerCategoryId = markerCategoryId;
+
+        this.markerOptions.zIndex(21);
     }
 
 
