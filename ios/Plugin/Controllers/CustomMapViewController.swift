@@ -15,6 +15,9 @@ let kClusterItemCount = 10000
 
 class CustomMapViewController: UIViewController, GMSMapViewDelegate {
     
+    // -- constants --
+    private var EPSILON : Double = 0.00001;
+    
     var customMapViewEvents: CustomMapViewEvents!;
     
     var id: String!;
@@ -53,6 +56,10 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
     var preventDefaultForDidTapMyLocationButton: Bool = false;
 
     var savedCallbackIdForDidTapMyLocationDot: String!;
+    
+    
+    private var widthOfTheMapCameraAnimationUnclustering : Double = 0;
+    private var heightOfTheMapCameraAnimationUnclustering : Double = 0;
 
     // This allows you to initialise your custom UIViewController without a nib or bundle.
     convenience init(customMapViewEvents: CustomMapViewEvents) {
@@ -80,6 +87,10 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
         self.mapView = GMSMapView.map(withFrame: frame, camera: camera);
         
         self.view = mapView;
+        
+        
+        widthOfTheMapCameraAnimationUnclustering = boundingRect.width * 0.25;
+        heightOfTheMapCameraAnimationUnclustering = boundingRect.height * 0.125;
     }
     
     override func viewDidLoad() {
@@ -266,19 +277,25 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
     internal func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
         
         mapView.animate(toLocation: marker.position)
+        // check if was tapped cluster
         if let cluster = marker.userData as? GMUCluster {
             var bounds : GMSCoordinateBounds = GMSCoordinateBounds()
             for item in cluster.items {
                 bounds = bounds.includingCoordinate(item.position)
             }
-            var update : GMSCameraUpdate = GMSCameraUpdate.fit(bounds);
-            mapView.moveCamera(update)
+        var getMarkersData: Bool = unclusteringCluster(bounds);
+            
+            
           NSLog("Did tap cluster")
             if(customMapViewEvents != nil && savedCallbackIdForDidTapCluster != nil) {
+                //TODO
+//                let result: PluginCallResultData = CustomMarker.getResultForCluster(cluster, getMarkersData);
                 customMapViewEvents.resultForCallbackId(callbackId: savedCallbackIdForDidTapCluster, result: nil);
             }
           return true
         }
+        
+        // if not than was tapped marker
         NSLog("Did tap marker")
 //        return false
         
@@ -287,6 +304,28 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
             customMapViewEvents.resultForCallbackId(callbackId: savedCallbackIdForDidTapMarker, result: result);
         }
         return preventDefaultForDidTapMarker;
+    }
+    
+    private func unclusteringCluster(_ bounds: GMSCoordinateBounds) -> Bool {
+        // check if cluster can uncluster
+        if((fabs(bounds.northEast.latitude - bounds.southWest.latitude) > EPSILON) &&
+           (fabs(bounds.northEast.longitude - bounds.southWest.longitude) > EPSILON)) {
+            
+        
+            print("widthOfTheMapCameraAnimationUnclustering: \(widthOfTheMapCameraAnimationUnclustering)")
+            print("heightOfTheMapCameraAnimationUnclustering: \(heightOfTheMapCameraAnimationUnclustering)")
+            var update : GMSCameraUpdate = GMSCameraUpdate.fit(bounds, with: UIEdgeInsets.init(
+                top: heightOfTheMapCameraAnimationUnclustering,
+                left: widthOfTheMapCameraAnimationUnclustering/2,
+                bottom: heightOfTheMapCameraAnimationUnclustering/2,
+                right: widthOfTheMapCameraAnimationUnclustering))
+
+            mapView.animate(with: update)
+            return false;
+        } else {
+            // if all markers inside cluster is have same position
+            return true;
+        }
     }
 
     internal func mapView(_ mapView: GMSMapView, didTapMyLocation coordinate: CLLocationCoordinate2D) {
