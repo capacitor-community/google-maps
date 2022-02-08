@@ -30,15 +30,8 @@ class CustomClusterIconGenerator: GMUDefaultClusterIconGenerator {
     
     override func icon(forSize size: UInt) -> UIImage {
         let bucketIndex : Int = bucketIndex(forSize: Int(size));
-        var text : String;
+        var text : String = String(size);
         
-        // If size is smaller to first bucket size, use the size as is otherwise round it down to the
-        // nearest bucket to limit the number of cluster icons we need to generate.
-        if(size < UInt(truncating: buckets.first!) || size > UInt(truncating: buckets.last!)) {
-            text = String(size)
-        } else {
-            text = String(UInt(truncating: buckets[bucketIndex]))
-        }
         if(backgroundImages != nil) {
             let image : UIImage = backgroundImages[bucketIndex]
             return textToImage(drawText: text as NSString, inImage: image, font: UIFont.systemFont(ofSize: 14))
