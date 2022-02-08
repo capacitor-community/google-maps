@@ -275,29 +275,25 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
     }
 
     internal func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
-        
-        mapView.animate(toLocation: marker.position)
         // check if was tapped cluster
         if let cluster = marker.userData as? GMUCluster {
+            NSLog("Did tap cluster")
             var bounds : GMSCoordinateBounds = GMSCoordinateBounds()
             for item in cluster.items {
                 bounds = bounds.includingCoordinate(item.position)
             }
         var getMarkersData: Bool = unclusteringCluster(bounds);
             
-            
-          NSLog("Did tap cluster")
             if(customMapViewEvents != nil && savedCallbackIdForDidTapCluster != nil) {
-                //TODO
-//                let result: PluginCallResultData = CustomMarker.getResultForCluster(cluster, getMarkersData);
-                customMapViewEvents.resultForCallbackId(callbackId: savedCallbackIdForDidTapCluster, result: nil);
+                let result: PluginCallResultData =                CustomMapViewController.getResultForCluster(cluster, self.id, getMarkersData);
+                customMapViewEvents.resultForCallbackId(callbackId: savedCallbackIdForDidTapCluster, result: result);
             }
           return true
         }
         
         // if not than was tapped marker
         NSLog("Did tap marker")
-//        return false
+        mapView.animate(toLocation: marker.position)
         
         if (customMapViewEvents != nil && savedCallbackIdForDidTapMarker != nil) {
             let result: PluginCallResultData = CustomMarker.getResultForMarker(marker);
@@ -349,6 +345,35 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
                 "longitude": coordinate.longitude
             ]
         ]
+    }
+    
+    private static func getResultForCluster(_ cluster : GMUCluster, _ mapId : String, _ getMarkersData : Bool) -> PluginCallResultData {
+        let clusterObj : GMUCluster = cluster;
+        
+        
+        // initialize JSObjects to return
+        var result: JSObject = JSObject();
+        var positionResult = JSObject();
+
+        // get map id
+        positionResult = [
+            "mapId" : mapId,
+            "latitude" : clusterObj.position.latitude,
+            "longitude" : clusterObj.position.longitude,
+        ]
+
+        result["position"] = positionResult;
+        
+        if(getMarkersData) {
+            var markersData : JSObject = JSObject();
+            for item in cluster.items {
+                let marker = item as! CustomMarker;
+                markersData[marker.markerId] = CustomMarker.getJSONForClusterItem(item as! GMSMarker) as! JSObject;
+            }
+            result["markersData"] = markersData;
+        }
+
+        return result;
     }
     
     

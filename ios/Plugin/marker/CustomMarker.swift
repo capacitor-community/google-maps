@@ -3,7 +3,7 @@ import GoogleMaps
 
 class CustomMarker: GMSMarker {
     private var id: String! = NSUUID().uuidString.lowercased()
-    var markerId: String {
+    public var markerId: String {
         get {
             return self.id;
         }
@@ -52,5 +52,29 @@ class CustomMarker: GMSMarker {
                 "metadata": tag["metadata"] ?? JSObject()
             ]
         ];
+    }
+    
+    
+    public static func getJSONForClusterItem(_ item: GMSMarker) -> JSObject {
+        let markerObj = item as! GMSMarker;
+        let tag: JSObject = markerObj.userData  as! JSObject;
+        
+        var result = JSObject();
+
+        result = [
+            "markerId" : tag["markerId"] ?? "",
+            "title": item.title ?? "",
+            "snippet": item.snippet ?? "",
+            "opacity": item.opacity,
+            "isFlat": item.isFlat,
+            "isDraggable": item.isDraggable,
+            "position": [
+                "latitude": item.position.latitude,
+                "longitude": item.position.longitude
+            ],
+            "metadata": tag["metadata"] ?? JSObject()
+        ]
+
+        return result;
     }
 }
