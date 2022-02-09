@@ -186,6 +186,21 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         
     }
     
+    @objc func clearMap(_ call: CAPPluginCall) {
+        let mapId: String = call.getString("mapId")!;
+        
+        DispatchQueue.main.async {
+            let customMapViewController = self.customMapViewControllers[mapId];
+            
+            if (customMapViewController != nil) {
+                customMapViewController?.clear();
+            } else {
+                call.reject("map not found");
+            }
+        }
+        
+    }
+    
     @objc func addMarker(_ call: CAPPluginCall) {
         let mapId: String = call.getString("mapId", "");
         
