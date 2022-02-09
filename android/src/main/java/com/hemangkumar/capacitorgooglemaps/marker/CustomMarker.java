@@ -40,11 +40,14 @@ public class CustomMarker implements ClusterItem {
         final Boolean isDraggable = JSObjectDefaults.getBooleanSafe(preferences,"isDraggable", false);
         final Integer markerCategoryId = JSObjectDefaults.getIntegerSafe(preferences, "category", 0);
 
+        // if marker id setted than use it
         if(markerId != null)
             this.id = markerId;
 
+        this.markerCategoryId = markerCategoryId;
+
         this.setMetadata(JSObjectDefaults.getJSObjectSafe(preferences, "metadata", new JSObject()));
-        
+
         this.markerOptions.position(latLng);
         this.markerOptions.title(title);
         this.markerOptions.snippet(snippet);
@@ -52,7 +55,7 @@ public class CustomMarker implements ClusterItem {
         this.markerOptions.flat(isFlat);
         this.markerOptions.draggable(isDraggable);
 
-        this.markerCategoryId = markerCategoryId;
+
 
         this.markerOptions.zIndex(21);
     }
@@ -62,6 +65,8 @@ public class CustomMarker implements ClusterItem {
         JSObject tag = new JSObject();
         // set id to tag
         tag.put("id", this.id);
+        // set iconId to tag
+        tag.put("iconId", this.markerCategoryId);
         // then set metadata to tag
         tag.put("metadata", jsObject);
         // save in tag variable
@@ -82,12 +87,11 @@ public class CustomMarker implements ClusterItem {
         positionResult.put("longitude", marker.getPosition().longitude);
 
         // get marker specific values
-        markerResult.put("id", marker.getId());
-        markerResult.put("title", marker.getTitle());
-        markerResult.put("snippet", marker.getSnippet());
-        markerResult.put("opacity", marker.getAlpha());
-        markerResult.put("isFlat", marker.isFlat());
-        markerResult.put("isDraggable", marker.isDraggable());
+//        markerResult.put("title", marker.getTitle());
+//        markerResult.put("snippet", marker.getSnippet());
+//        markerResult.put("opacity", marker.getAlpha());
+//        markerResult.put("isFlat", marker.isFlat());
+//        markerResult.put("isDraggable", marker.isDraggable());
         markerResult.put("metadata", new JSObject());
 
         JSObject tag = (JSObject) marker.getTag();
@@ -95,6 +99,10 @@ public class CustomMarker implements ClusterItem {
             // get and set markerId to marker
             String markerId = tag.getString("id");
             markerResult.put("id", markerId);
+
+            // get and set iconId to marker
+            int iconId = JSObjectDefaults.getIntegerSafe(tag, "iconId", -1);
+            markerResult.put("iconId", iconId);
 
             // get and set metadata to marker
             try {
@@ -127,12 +135,11 @@ public class CustomMarker implements ClusterItem {
         positionResult.put("longitude", marker.getPosition().longitude);
 
         // get marker specific values
-        markerResult.put("id", marker.getId());
-        markerResult.put("title", marker.getTitle());
-        markerResult.put("snippet", marker.getSnippet());
-        markerResult.put("opacity", marker.markerOptions.getAlpha());
-        markerResult.put("isFlat", marker.markerOptions.isFlat());
-        markerResult.put("isDraggable", marker.markerOptions.isDraggable());
+//        markerResult.put("title", marker.getTitle());
+//        markerResult.put("snippet", marker.getSnippet());
+//        markerResult.put("opacity", marker.markerOptions.getAlpha());
+//        markerResult.put("isFlat", marker.markerOptions.isFlat());
+//        markerResult.put("isDraggable", marker.markerOptions.isDraggable());
         markerResult.put("metadata", new JSObject());
 
         JSObject tag = (JSObject) marker.tag;
@@ -140,6 +147,10 @@ public class CustomMarker implements ClusterItem {
             // get and set markerId to marker
             String markerId = tag.getString("id");
             markerResult.put("id", markerId);
+
+            // get and set iconId to marker
+            int iconId = JSObjectDefaults.getIntegerSafe(tag, "iconId", -1);
+            markerResult.put("iconId", iconId);
 
             // get and set metadata to marker
             try {
