@@ -28,7 +28,7 @@ Maps SDK for Android & iOS bring better performance and offline caching compared
 
 | Maintainer | GitHub | Mail |
 | -----------| -------| -------|
-| Tafel | [Tafelnl](https://github.com/tafelnl) |  |
+| Tafel | [tafelnl](https://github.com/tafelnl) |  |
 | Hemang Kumar | [hemangsk](https://github.com/hemangsk) | <a href="mailto:hemangsk@gmail.com">hemangsk@gmail.com</a> |
 
 ## Project Status
