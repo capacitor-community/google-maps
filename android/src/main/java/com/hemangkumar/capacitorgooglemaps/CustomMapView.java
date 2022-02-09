@@ -54,9 +54,9 @@ public class CustomMapView implements OnMapReadyCallback,
         GoogleMap.OnCameraMoveListener,
         GoogleMap.OnCameraIdleListener,
         ClusterManager.OnClusterClickListener<CustomMarker>,
-        ClusterManager.OnClusterInfoWindowClickListener<CustomMarker>
-//        ClusterManager.OnClusterItemClickListener<CustomMarker>,
-//        ClusterManager.OnClusterItemInfoWindowClickListener<CustomMarker>
+        ClusterManager.OnClusterInfoWindowClickListener<CustomMarker>,
+        ClusterManager.OnClusterItemClickListener<CustomMarker>,
+        ClusterManager.OnClusterItemInfoWindowClickListener<CustomMarker>
 {
 
     // -- constants --
@@ -114,6 +114,9 @@ public class CustomMapView implements OnMapReadyCallback,
     String savedCallbackIdForDidTapCluster;
     Boolean preventDefaultForDidTapCluster = true;
     String savedCallbackIdForDidTapClusterInfoWindow;
+
+    String savedCallbackIdForDidTapClusterItem;
+    String savedCallbackIdForDidTapClusterItemInfoWindow;
 
 
     private boolean isHidden = false;
@@ -245,6 +248,9 @@ public class CustomMapView implements OnMapReadyCallback,
                     preventDefault = false;
                 }
                 preventDefaultForDidTapMarker = preventDefault;
+            } else if(eventName.equals(Events.EVENT_DID_TAP_CLUSTER_ITEM_INFO_WINDOW)) {
+                this.mClusterManager.setOnClusterItemInfoWindowClickListener(this);
+                savedCallbackIdForDidTapClusterItemInfoWindow = callbackId;
             } else if (eventName.equals(Events.EVENT_DID_BEGIN_DRAGGING_MARKER)) {
                 this.googleMap.setOnMarkerDragListener(this);
                 savedCallbackIdForDidBeginDraggingMarker = callbackId;
@@ -264,6 +270,10 @@ public class CustomMapView implements OnMapReadyCallback,
             } else if (eventName.equals(Events.EVENT_DID_TAP_CLUSTER_INFO_WINDOW)) {
                 this.mClusterManager.setOnClusterInfoWindowClickListener(this);
                 savedCallbackIdForDidTapClusterInfoWindow = callbackId;
+            } else if (eventName.equals(Events.EVENT_DID_TAP_CLUSTER_ITEM)) {
+                this.mClusterManager.setOnClusterItemClickListener(this);
+                savedCallbackIdForDidTapClusterItem = callbackId;
+
             } else if (eventName.equals(Events.EVENT_DID_TAP_MY_LOCATION_BUTTON)) {
                 this.googleMap.setOnMyLocationButtonClickListener(this);
                 savedCallbackIdForDidTapMyLocationButton = callbackId;
@@ -476,11 +486,12 @@ public class CustomMapView implements OnMapReadyCallback,
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        if (customMapViewEvents != null && savedCallbackIdForDidTapMarker != null) {
-            JSObject result = CustomMarker.getResultForMarker(marker, this.id);
-            customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapMarker, result);
-        }
-        return preventDefaultForDidTapMarker;
+//        if (customMapViewEvents != null && savedCallbackIdForDidTapMarker != null) {
+//            JSObject result = CustomMarker.getResultForMarker(marker, this.id);
+//            customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapMarker, result);
+//        }
+//        return preventDefaultForDidTapMarker;
+        return true;
     }
 
     @Override
@@ -572,6 +583,24 @@ public class CustomMapView implements OnMapReadyCallback,
         if (customMapViewEvents != null && savedCallbackIdForDidTapClusterInfoWindow != null) {
             JSObject result = getResultForCluster(cluster, this.id, false);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapClusterInfoWindow, result);
+        }
+    }
+
+
+    @Override
+    public boolean onClusterItemClick(CustomMarker item) {
+        if (customMapViewEvents != null && savedCallbackIdForDidTapMarker != null) {
+            JSObject result = CustomMarker.getResultForMarker(item, this.id);
+            customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapMarker, result);
+        }
+        return preventDefaultForDidTapMarker;
+    }
+
+    @Override
+    public void onClusterItemInfoWindowClick(CustomMarker item) {
+        if (customMapViewEvents != null && savedCallbackIdForDidTapInfoWindow != null) {
+            JSObject result = CustomMarker.getResultForMarker(item, this.id);
+            customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapInfoWindow, result);
         }
     }
 

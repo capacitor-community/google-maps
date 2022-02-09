@@ -12,6 +12,8 @@ public abstract class Events {
     public static final String EVENT_DID_END_DRAGGING_MARKER = "didEndDraggingMarker";
     public static final String EVENT_DID_TAP_CLUSTER = "didTapCluster";
     public static final String EVENT_DID_TAP_CLUSTER_INFO_WINDOW = "didTapClusterInfoWindow";
+    public static final String EVENT_DID_TAP_CLUSTER_ITEM = "didTapClusterItem";
+    public static final String EVENT_DID_TAP_CLUSTER_ITEM_INFO_WINDOW = "didTapClusterItemInfoWindow";
     public static final String EVENT_DID_TAP_MY_LOCATION_BUTTON = "didTapMyLocationButton";
     public static final String EVENT_DID_TAP_MY_LOCATION_DOT = "didTapMyLocationDot";
     public static final String EVENT_DID_TAP_POI = "didTapPoi";

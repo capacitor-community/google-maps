@@ -542,6 +542,16 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     }
 
     @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
+    public void didTapClusterItem(final PluginCall call) {
+        setCallbackIdForEvent(call, Events.EVENT_DID_TAP_CLUSTER_ITEM);
+    }
+
+    @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
+    public void didTapClusterItemInfoWindow(final PluginCall call) {
+        setCallbackIdForEvent(call, Events.EVENT_DID_TAP_CLUSTER_ITEM_INFO_WINDOW);
+    }
+
+    @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
     public void didBeginDraggingMarker(final PluginCall call) {
         setCallbackIdForEvent(call, Events.EVENT_DID_BEGIN_DRAGGING_MARKER);
     }
@@ -630,7 +640,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
 
                     customMapView.addMarker(customMarker);
 
-                    call.resolve();
+                    call.resolve(CustomMarker.getResultForMarker(customMarker, mapId));
                 } else {
                     call.reject("map not found");
                 }
