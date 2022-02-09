@@ -248,14 +248,14 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
     
     internal func mapView(_ mapView: GMSMapView, didTapInfoWindowOf marker: GMSMarker) {
         if (customMapViewEvents != nil && savedCallbackIdForDidTapInfoWindow != nil) {
-            let result: PluginCallResultData = CustomMarker.getResultForMarker(marker);
+            let result: PluginCallResultData = CustomMarker.getResultForMarker(marker, self.id);
             customMapViewEvents.resultForCallbackId(callbackId: savedCallbackIdForDidTapInfoWindow, result: result);
         }
     }
 
     internal func mapView(_ mapView: GMSMapView, didCloseInfoWindowOf marker: GMSMarker) {
         if (customMapViewEvents != nil && savedCallbackIdForDidCloseInfoWindow != nil) {
-            let result: PluginCallResultData = CustomMarker.getResultForMarker(marker);
+            let result: PluginCallResultData = CustomMarker.getResultForMarker(marker, self.id);
             customMapViewEvents.resultForCallbackId(callbackId: savedCallbackIdForDidCloseInfoWindow, result: result);
         }
     }
@@ -296,7 +296,7 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
         mapView.animate(toLocation: marker.position)
         
         if (customMapViewEvents != nil && savedCallbackIdForDidTapMarker != nil) {
-            let result: PluginCallResultData = CustomMarker.getResultForMarker(marker);
+            let result: PluginCallResultData = CustomMarker.getResultForMarker(marker, self.id);
             customMapViewEvents.resultForCallbackId(callbackId: savedCallbackIdForDidTapMarker, result: result);
         }
         return preventDefaultForDidTapMarker;
@@ -368,7 +368,7 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
             var markersData : JSObject = JSObject();
             for item in cluster.items {
                 let marker = item as! CustomMarker;
-                markersData[marker.id] = CustomMarker.getResultForMarker(item as! GMSMarker) as! JSObject
+                markersData[marker.id] = CustomMarker.getResultForMarker((item as! GMSMarker), mapId) as! JSObject
             }
             result["markersData"] = markersData;
         }

@@ -34,34 +34,58 @@ class CustomMarker: GMSMarker {
         
         var userData = JSObject()
         userData["id"] = self.id
+        userData["iconId"] = self.markerCategoryId;
         userData["metadata"] = metadata
         
         self.userData = userData
     }
     
-    public static func getResultForMarker(_ marker: GMSMarker) -> PluginCallResultData {
+    public static func getResultForMarker(_ marker: GMSMarker, _ mapId: String) -> PluginCallResultData {
+        // check marker is marker from map or from clusterManager
         let markerObj : GMSMarker;
         if marker.userData is GMSMarker {
             markerObj = marker.userData as! GMSMarker;
         } else {
             markerObj = marker as! GMSMarker
         }
+        
         let tag: JSObject = markerObj.userData  as! JSObject;
         
+        print(mapId)
+        print(markerObj.position.latitude)
+        print(markerObj.position.longitude)
+        print(tag["metadata"] ?? JSObject())
+        print(tag["id"] ?? "")
+        print(tag["iconId"] ?? -1)
+        
+        
         return [
+            "position": [
+                "mapId": mapId ?? "",
+                "latitude": marker.position.latitude,
+                "longitude": marker.position.longitude,
+            ] as! JSObject,
             "marker": [
+                "metadata": tag["metadata"] ?? JSObject(),
                 "id": tag["id"] ?? "",
-                "title": marker.title ?? "",
-                "snippet": marker.snippet ?? "",
-                "opacity": marker.opacity,
-                "isFlat": marker.isFlat,
-                "isDraggable": marker.isDraggable,
-                "position": [
-                    "latitude": marker.position.latitude,
-                    "longitude": marker.position.longitude
-                ],
-                "metadata": tag["metadata"] ?? JSObject()
+                "iconId": tag["iconId"] ?? -1,
             ]
         ];
+        
+//        return [
+//            "marker": [
+//                "id": tag["id"] ?? "",
+//                "title": marker.title ?? "",
+//                "snippet": marker.snippet ?? "",
+//                "opacity": marker.opacity,
+//                "isFlat": marker.isFlat,
+//                "isDraggable": marker.isDraggable,
+//                "position": [
+//                    "latitude": marker.position.latitude,
+//                    "longitude": marker.position.longitude
+//                ],
+//                "metadata": tag["metadata"] ?? JSObject()
+//            ]
+//        ];
     }
 }

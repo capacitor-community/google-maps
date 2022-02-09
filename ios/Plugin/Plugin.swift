@@ -218,7 +218,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
                 // add new marker to the map
                 customMapViewController?.addMarker(marker);
                 
-                call.resolve(CustomMarker.getResultForMarker(marker));
+                call.resolve(CustomMarker.getResultForMarker(marker, mapId));
             } else {
                 call.reject("map not found");
             }
