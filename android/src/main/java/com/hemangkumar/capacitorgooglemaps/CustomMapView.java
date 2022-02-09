@@ -597,7 +597,7 @@ public class CustomMapView implements OnMapReadyCallback,
             JSObject markersData = new JSObject();
             for (CustomMarker marker:
                  cluster.getItems()) {
-                markersData.put(marker.getMarkerId(), CustomMarker.getResultForMarker(marker, mapId));
+                markersData.put(marker.getId(), CustomMarker.getResultForMarker(marker, mapId));
 
             }
             result.put("markersData", markersData);
@@ -651,7 +651,7 @@ public class CustomMapView implements OnMapReadyCallback,
         Iterator<CustomMarker> iterator = this.mClusterManager.getAlgorithm().getItems().iterator();
         while (iterator.hasNext()) {
             CustomMarker customMarker = iterator.next();
-            if (customMarker.getMarkerId().equals(markerId)) {
+            if (customMarker.getId().equals(markerId)) {
                 customMarker.updateFromJSObject(newPreferences);
                 isUpdated = mClusterManager.updateItem(customMarker);
                 mClusterManager.cluster();
@@ -665,7 +665,7 @@ public class CustomMapView implements OnMapReadyCallback,
         Iterator<CustomMarker> iterator = this.mClusterManager.getAlgorithm().getItems().iterator();
         while (iterator.hasNext()) {
             CustomMarker customMarker = iterator.next();
-            if (customMarker.getMarkerId().equals(markerId)) {
+            if (customMarker.getId().equals(markerId)) {
                 mClusterManager.removeItem(customMarker);
                 mClusterManager.cluster();
             }

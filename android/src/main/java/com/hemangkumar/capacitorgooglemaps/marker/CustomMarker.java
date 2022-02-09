@@ -19,7 +19,7 @@ public class CustomMarker implements ClusterItem {
     // generate id for the just added marker,
     // put this marker into a hashmap with the corresponding id,
     // so we can retrieve the marker by id later on
-    private String markerId = UUID.randomUUID().toString();
+    private String id = UUID.randomUUID().toString();
 
     private final MarkerOptions markerOptions = new MarkerOptions();
     private JSObject tag = new JSObject();
@@ -57,7 +57,7 @@ public class CustomMarker implements ClusterItem {
     private void setMetadata(@NonNull JSObject jsObject) {
         JSObject tag = new JSObject();
         // set id to tag
-        tag.put("markerId", this.markerId);
+        tag.put("id", this.id);
         // then set metadata to tag
         tag.put("metadata", jsObject);
         // save in tag variable
@@ -78,7 +78,7 @@ public class CustomMarker implements ClusterItem {
         positionResult.put("longitude", marker.getPosition().longitude);
 
         // get marker specific values
-        markerResult.put("markerId", marker.getId());
+        markerResult.put("id", marker.getId());
         markerResult.put("title", marker.getTitle());
         markerResult.put("snippet", marker.getSnippet());
         markerResult.put("opacity", marker.getAlpha());
@@ -89,8 +89,8 @@ public class CustomMarker implements ClusterItem {
         JSObject tag = (JSObject) marker.getTag();
         if (tag != null) {
             // get and set markerId to marker
-            String markerId = tag.getString("markerId");
-            markerResult.put("markerId", markerId);
+            String markerId = tag.getString("id");
+            markerResult.put("id", markerId);
 
             // get and set metadata to marker
             try {
@@ -123,7 +123,7 @@ public class CustomMarker implements ClusterItem {
         positionResult.put("longitude", marker.getPosition().longitude);
 
         // get marker specific values
-        markerResult.put("markerId", marker.getMarkerId());
+        markerResult.put("id", marker.getId());
         markerResult.put("title", marker.getTitle());
         markerResult.put("snippet", marker.getSnippet());
         markerResult.put("opacity", marker.markerOptions.getAlpha());
@@ -134,8 +134,8 @@ public class CustomMarker implements ClusterItem {
         JSObject tag = (JSObject) marker.tag;
         if (tag != null) {
             // get and set markerId to marker
-            String markerId = tag.getString("markerId");
-            markerResult.put("markerId", markerId);
+            String markerId = tag.getString("id");
+            markerResult.put("id", markerId);
 
             // get and set metadata to marker
             try {
@@ -153,8 +153,8 @@ public class CustomMarker implements ClusterItem {
         return result;
     }
 
-    public String getMarkerId() {
-        return markerId;
+    public String getId() {
+        return id;
     }
 
     @NonNull
@@ -184,12 +184,12 @@ public class CustomMarker implements ClusterItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CustomMarker that = (CustomMarker) o;
-        return markerId.equals(that.markerId);
+        return id.equals(that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(markerId);
+        return Objects.hash(id);
     }
 
 }
