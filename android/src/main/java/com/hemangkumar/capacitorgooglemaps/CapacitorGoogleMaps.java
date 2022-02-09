@@ -528,8 +528,8 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     }
 
     @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
-    public void didTapMarker(final PluginCall call) {
-        setCallbackIdForEvent(call, Events.EVENT_DID_TAP_MARKER);
+    public void didTapSingleMarker(final PluginCall call) {
+        setCallbackIdForEvent(call, Events.EVENT_DID_TAP_SINGLE_MARKER);
     }
 
     @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
@@ -542,8 +542,8 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     }
 
     @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
-    public void didTapClusterItem(final PluginCall call) {
-        setCallbackIdForEvent(call, Events.EVENT_DID_TAP_CLUSTER_ITEM);
+    public void didTapMarker(final PluginCall call) {
+        setCallbackIdForEvent(call, Events.EVENT_DID_TAP_MARKER);
     }
 
     @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)

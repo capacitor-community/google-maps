@@ -241,7 +241,7 @@ public class CustomMapView implements OnMapReadyCallback,
             } else if (eventName.equals(Events.EVENT_DID_LONG_PRESS_MAP)) {
                 this.googleMap.setOnMapLongClickListener(this);
                 savedCallbackIdForDidLongPressMap = callbackId;
-            } else if (eventName.equals(Events.EVENT_DID_TAP_MARKER)) {
+            } else if (eventName.equals(Events.EVENT_DID_TAP_SINGLE_MARKER)) {
                 this.googleMap.setOnMarkerClickListener(mClusterManager);
                 savedCallbackIdForDidTapMarker = callbackId;
                 if (preventDefault == null) {
@@ -270,7 +270,7 @@ public class CustomMapView implements OnMapReadyCallback,
             } else if (eventName.equals(Events.EVENT_DID_TAP_CLUSTER_INFO_WINDOW)) {
                 this.mClusterManager.setOnClusterInfoWindowClickListener(this);
                 savedCallbackIdForDidTapClusterInfoWindow = callbackId;
-            } else if (eventName.equals(Events.EVENT_DID_TAP_CLUSTER_ITEM)) {
+            } else if (eventName.equals(Events.EVENT_DID_TAP_MARKER)) {
                 this.mClusterManager.setOnClusterItemClickListener(this);
                 savedCallbackIdForDidTapClusterItem = callbackId;
 
