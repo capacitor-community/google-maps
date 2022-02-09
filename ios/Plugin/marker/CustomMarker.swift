@@ -51,17 +51,9 @@ class CustomMarker: GMSMarker {
         
         let tag: JSObject = markerObj.userData  as! JSObject;
         
-        print(mapId)
-        print(markerObj.position.latitude)
-        print(markerObj.position.longitude)
-        print(tag["metadata"] ?? JSObject())
-        print(tag["id"] ?? "")
-        print(tag["iconId"] ?? -1)
-        
-        
         return [
             "position": [
-                "mapId": mapId ?? "",
+                "mapId": mapId,
                 "latitude": marker.position.latitude,
                 "longitude": marker.position.longitude,
             ] as! JSObject,
