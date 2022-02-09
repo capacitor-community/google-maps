@@ -2,16 +2,21 @@ import Capacitor
 import GoogleMaps
 
 class CustomMarker: GMSMarker {
-    private var id: String! = NSUUID().uuidString.lowercased()
-    public var markerId: String {
+    private var markerId: String! = NSUUID().uuidString.lowercased()
+    public var id: String {
         get {
-            return self.id;
+            return self.markerId;
         }
     }
     
     var markerCategoryId : Int = 0;
     
     public func updateFromJSObject(preferences: JSObject) {
+        let markerId = preferences["id"] as? String ?? nil;
+        if(markerId != nil) {
+            self.markerId = markerId as! String;
+        }
+        
         let position = preferences["position"] as? JSObject ?? JSObject();
         let latitude = position["latitude"] as? Double ?? 0.0;
         let longitude = position["longitude"] as? Double ?? 0.0;
@@ -27,21 +32,27 @@ class CustomMarker: GMSMarker {
         
         let metadata: JSObject = preferences["metadata"] as? JSObject ?? JSObject();
         
-        self.userData = [
-            "markerId": self.markerId,
-            "metadata": metadata
-        ] as? JSObject ?? JSObject();
+        var userData = JSObject()
+        userData["id"] = self.id
+        userData["metadata"] = metadata
+        
+        self.userData = userData
     }
     
     public static func getResultForMarker(_ marker: GMSMarker) -> PluginCallResultData {
-        let markerObj = marker.userData as! GMSMarker;
+        let markerObj : GMSMarker;
+        if marker.userData is GMSMarker {
+            markerObj = marker.userData as! GMSMarker;
+        } else {
+            markerObj = marker as! GMSMarker
+        }
         let tag: JSObject = markerObj.userData  as! JSObject;
         
         return [
             "marker": [
-                "markerId": tag["markerId"] ?? nil,
-                "title": marker.title,
-                "snippet": marker.snippet,
+                "id": tag["id"] ?? "",
+                "title": marker.title ?? "",
+                "snippet": marker.snippet ?? "",
                 "opacity": marker.opacity,
                 "isFlat": marker.isFlat,
                 "isDraggable": marker.isDraggable,
@@ -52,29 +63,5 @@ class CustomMarker: GMSMarker {
                 "metadata": tag["metadata"] ?? JSObject()
             ]
         ];
-    }
-    
-    
-    public static func getJSONForClusterItem(_ item: GMSMarker) -> JSObject {
-        let markerObj = item as! GMSMarker;
-        let tag: JSObject = markerObj.userData  as! JSObject;
-        
-        var result = JSObject();
-
-        result = [
-            "markerId" : tag["markerId"] ?? "",
-            "title": item.title ?? "",
-            "snippet": item.snippet ?? "",
-            "opacity": item.opacity,
-            "isFlat": item.isFlat,
-            "isDraggable": item.isDraggable,
-            "position": [
-                "latitude": item.position.latitude,
-                "longitude": item.position.longitude
-            ],
-            "metadata": tag["metadata"] ?? JSObject()
-        ]
-
-        return result;
     }
 }

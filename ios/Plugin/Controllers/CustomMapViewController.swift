@@ -219,7 +219,7 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
     
     public func updateMarker(_ markerId: String, _ preferences:JSObject) -> Bool {
         for item in self.mMarkersList {
-            if(item.markerId == markerId) {
+            if(item.id == markerId) {
                 self.mClusterManager.remove(item);
                 item.updateFromJSObject(preferences: preferences);
                 self.mClusterManager.add(item);
@@ -233,7 +233,7 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
     public func removeMarker(_ markerId: String) {
         var index : Int = 0;
         for item in self.mMarkersList {
-            if(item.markerId == markerId) {
+            if(item.id == markerId) {
                 self.mClusterManager.remove(item);
                 self.mMarkersList.remove(at: index);
                 self.mClusterManager.cluster();
@@ -368,7 +368,7 @@ class CustomMapViewController: UIViewController, GMSMapViewDelegate {
             var markersData : JSObject = JSObject();
             for item in cluster.items {
                 let marker = item as! CustomMarker;
-                markersData[marker.markerId] = CustomMarker.getJSONForClusterItem(item as! GMSMarker) as! JSObject;
+                markersData[marker.id] = CustomMarker.getResultForMarker(item as! GMSMarker) as! JSObject
             }
             result["markersData"] = markersData;
         }
