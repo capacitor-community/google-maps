@@ -32,6 +32,7 @@ public class CustomMarker implements ClusterItem {
         final Double longitude = JSObjectDefaults.getDoubleSafe(position, "longitude", 0d);
         LatLng latLng = new LatLng(latitude, longitude);
 
+        final String markerId = preferences.getString("id", null);
         final String title = preferences.getString("title", "");
         final String snippet = preferences.getString("snippet", "");
         final Float opacity = JSObjectDefaults.getFloatSafe(preferences, "opacity", 1f);
@@ -39,8 +40,11 @@ public class CustomMarker implements ClusterItem {
         final Boolean isDraggable = JSObjectDefaults.getBooleanSafe(preferences,"isDraggable", false);
         final Integer markerCategoryId = JSObjectDefaults.getIntegerSafe(preferences, "category", 0);
 
-        this.setMetadata(JSObjectDefaults.getJSObjectSafe(preferences, "metadata", new JSObject()));
+        if(markerId != null)
+            this.id = markerId;
 
+        this.setMetadata(JSObjectDefaults.getJSObjectSafe(preferences, "metadata", new JSObject()));
+        
         this.markerOptions.position(latLng);
         this.markerOptions.title(title);
         this.markerOptions.snippet(snippet);
