@@ -16,7 +16,7 @@
   <a href="https://www.npmjs.com/package/@capacitor-community/capacitor-googlemaps-native"><img src="https://img.shields.io/npm/dw/@capacitor-community/gcapacitor-googlemaps-native?style=flat-square" /></a>
   <a href="https://www.npmjs.com/package/@capacitor-community/capacitor-googlemaps-native"><img src="https://img.shields.io/npm/v/@capacitor-community/capacitor-googlemaps-native?style=flat-square" /></a>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-"><img src="https://img.shields.io/badge/all_contributors-18-orange.svg?style=flat-square" /></a>
+<a href="#contributors-"><img src="https://img.shields.io/badge/all_contributors-19-orange.svg?style=flat-square" /></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
@@ -207,6 +207,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://jamilusalism.github.io/"><img src="https://avatars.githubusercontent.com/u/20730765?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jamilu Salisu</b></sub></a><br /><a href="https://github.com/capacitor-community/capacitor-googlemaps-native/commits?author=jamilusalism" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/rastafan"><img src="https://avatars.githubusercontent.com/u/7632849?v=4?s=100" width="100px;" alt=""/><br /><sub><b>rastafan</b></sub></a><br /><a href="https://github.com/capacitor-community/capacitor-googlemaps-native/commits?author=rastafan" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/va2ron1"><img src="https://avatars.githubusercontent.com/u/303179?v=4?s=100" width="100px;" alt=""/><br /><sub><b>va2ron1</b></sub></a><br /><a href="https://github.com/capacitor-community/capacitor-googlemaps-native/commits?author=va2ron1" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Loown"><img src="https://avatars.githubusercontent.com/u/51403036?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Loown</b></sub></a><br /><a href="https://github.com/capacitor-community/capacitor-googlemaps-native/commits?author=Loown" title="Code">💻</a></td>
   </tr>
 </table>
 
