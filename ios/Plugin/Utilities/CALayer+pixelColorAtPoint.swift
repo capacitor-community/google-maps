@@ -1,22 +1,17 @@
 extension CALayer {
-    func pixelColorAtPoint(point:CGPoint) -> UIColor {
-       let pixel = UnsafeMutablePointer<CUnsignedChar>.allocate(capacity: 4)
-       let colorSpace = CGColorSpaceCreateDeviceRGB()
-       let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
-       let context = CGContext(data: pixel, width: 1, height: 1, bitsPerComponent: 8, bytesPerRow: 4, space: colorSpace, bitmapInfo: bitmapInfo.rawValue)
-       var color: UIColor? = nil
+    func pixelColorAtPoint(point:CGPoint) -> Bool {
+        var pixel: [UInt8] = [0, 0, 0, 0]
+        let colourSpace = CGColorSpaceCreateDeviceRGB()
+        let alphaInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
+        let context = CGContext(data: &pixel, width: 1, height: 1, bitsPerComponent: 8, bytesPerRow: 4, space: colourSpace, bitmapInfo: alphaInfo.rawValue)
 
-       if let context = context {
-           context.translateBy(x: -point.x, y: -point.y)
-           render(in: context)
+        context?.translateBy(x: -point.x, y: -point.y)
 
-           color = UIColor(red: CGFloat(pixel[0])/255.0,
-                           green: CGFloat(pixel[1])/255.0,
-                           blue: CGFloat(pixel[2])/255.0,
-                           alpha: CGFloat(pixel[3])/255.0)
+        self.render(in: context!)
 
-           pixel.deallocate()
-       }
-        return color ?? .clear
+        return CGFloat(pixel[0]) == 0
+            && CGFloat(pixel[1]) == 0
+            && CGFloat(pixel[2]) == 0
+            && CGFloat(pixel[3]) == 0
    }
 }
