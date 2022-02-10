@@ -55,8 +55,6 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
 
             self.customWebView?.mapId = customMapView.id
 
-            CAPLog.print("⚡️  mapId \(customMapView.id)...")
-
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                 self.setupWebView()
             }
