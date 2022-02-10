@@ -30,21 +30,6 @@ Under the hood this package makes use of the native Maps SDK for Android and iOS
 | ------------ | --------------------------------------- | ---------------------------------------------------------- |
 | Hemang Kumar | [hemangsk](https://github.com/hemangsk) | <a href="mailto:hemangsk@gmail.com">hemangsk@gmail.com</a> |
 
-## Support Development
-
-If you like this plugin and use it on your projects, please consider donating to support the development. Thank you!
-
-<table>
-        <tr>
-                <td>
-                        <a href="https://paypal.me/HEMANGKUMAR"><img src="https://img.shields.io/badge/Paypal-Support%20via%20Paypal-blue?style=for-the-badge&logo=paypal"></a>
-                </td>
-                <td>
-                        <a href="https://www.buymeacoffee.com/hemang"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=hemang&button_colour=5F7FFF&font_colour=ffffff&font_family=Inter&outline_colour=000000&coffee_colour=FFDD00"></a>
-                </td>
-        </tr>
-</table>
-
 ## Getting Started
 
 ### Installation
