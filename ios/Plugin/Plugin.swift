@@ -11,10 +11,8 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
     var customMarkers = [String : CustomMarker]();
 
     var customWebView: CustomWKWebView?
-
+    
     @objc func initialize(_ call: CAPPluginCall) {
-        self.customWebView = self.bridge?.webView as? CustomWKWebView
-
         self.GOOGLE_MAPS_KEY = call.getString("key", "")
 
         if self.GOOGLE_MAPS_KEY.isEmpty {
@@ -23,13 +21,27 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         }
 
         GMSServices.provideAPIKey(self.GOOGLE_MAPS_KEY)
+        
+        self.customWebView = self.bridge?.webView as? CustomWKWebView
+        
+        DispatchQueue.main.async {
+            // remove all custom maps views from the main view
+            if let values = self.customWebView?.customMapViews.map({ $0.value }) {
+                CAPLog.print("mapId \(values)")
+                for mapView in values {
+                    (mapView as CustomMapView).view.removeFromSuperview()
+                }
+            }
+            // reset custom map views holder
+            self.customWebView?.customMapViews = [:]
+        }
+        
         call.resolve([
             "initialized": true
         ])
     }
 
     @objc func createMap(_ call: CAPPluginCall) {
-
         DispatchQueue.main.async {
             let customMapView : CustomMapView = CustomMapView(customMapViewEvents: self)
 
@@ -45,15 +57,8 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             let preferences = call.getObject("preferences", JSObject())
             customMapView.mapPreferences.updateFromJSObject(preferences)
 
-            let values = self.customWebView!.customMapViews.map { $0.value }
-            for mapView in values {
-                (mapView as CustomMapView).view.removeFromSuperview()
-            }
-
             self.bridge?.viewController?.view.addSubview(customMapView.view)
             self.bridge?.viewController?.view.sendSubviewToBack(customMapView.view)
-
-            self.customWebView?.mapId = customMapView.id
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                 self.setupWebView()
@@ -68,7 +73,6 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         let mapId: String = call.getString("mapId")!;
 
         DispatchQueue.main.async {
-            self.customWebView?.mapId = mapId
             let customMapView = self.customWebView?.customMapViews[mapId];
 
             if (customMapView != nil) {
@@ -171,7 +175,6 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         let callbackId = call.callbackId;
         guard let mapId = call.getString("mapId") else { return };
 
-        self.customWebView?.mapId = mapId
         let customMapView: CustomMapView = self.customWebView!.customMapViews[mapId]!;
 
         let preventDefault: Bool = call.getBool("preventDefault", false);
@@ -192,7 +195,6 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             call?.resolve();
         }
     }
-
 }
 
 private extension CapacitorGoogleMaps {
