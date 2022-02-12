@@ -1,6 +1,7 @@
 import Foundation
 import Capacitor
 import GoogleMaps
+import SDWebImage
 
 @objc(CapacitorGoogleMaps)
 public class CapacitorGoogleMaps: CustomMapViewEvents {
@@ -70,54 +71,41 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
     }
 
     @objc func addMarker(_ call: CAPPluginCall) {
-        let mapId: String = call.getString("mapId", "");
+        let mapId: String = call.getString("mapId", "")
 
         DispatchQueue.main.async {
-            let customMapView = self.customMapViews[mapId];
-
-            if (customMapView != nil) {
-                let preferences = call.getObject("preferences", JSObject());
-
-                let marker = CustomMarker();
-                marker.updateFromJSObject(preferences: preferences);
-
-                marker.map = customMapView?.GMapView;
-
-                self.customMarkers[marker.id] = marker;
-
-                call.resolve(CustomMarker.getResultForMarker(marker));
-            } else {
-                call.reject("map not found");
+            guard let customMapView = self.customMapViews[mapId] else {
+                call.reject("map not found")
+                return
             }
+            let preferences = call.getObject("preferences", JSObject())
+            let marker = CustomMarker()
+            marker.updateFromJSObject(preferences: preferences)
+            marker.map = customMapView.GMapView
+            self.customMarkers[marker.id] = marker
+            if let url = call.getObject("icon")?["url"] as? String {
+                self.imageCache.image(at: url) { image in
+                    marker.icon = image
+                }
+            }
+            
+            call.resolve(CustomMarker.getResultForMarker(marker))
         }
     }
     
     @objc func addMarkers(_ call: CAPPluginCall) {
-        let mapId: String = call.getString("mapId", "");
-
+        let mapId: String = call.getString("mapId", "")
+        
         DispatchQueue.main.async {
-            let customMapView = self.customMapViews[mapId];
-
-            if (customMapView != nil) {
-                let markers = call.getArray("markers", []);
-                
-                for item in markers {
-                    let markerObject = item as? JSObject ?? JSObject();
-
-                    let preferences = markerObject["preferences"] as? JSObject ?? JSObject();
-
-                    let marker = CustomMarker();
-                    marker.updateFromJSObject(preferences: preferences);
-
-                    marker.map = customMapView?.GMapView;
-
-                    self.customMarkers[marker.id] = marker;
-                }
-
-                call.resolve();
-            } else {
-                call.reject("map not found");
+            guard let customMapView = self.customMapViews[mapId] else {
+                call.reject("map not found")
+                return
             }
+            
+            let markers = List<JSValue>(elements: call.getArray("markers", []))
+            self.addMarker(node: markers.first, mapView: customMapView)
+            
+            call.resolve()
         }
     }
 
@@ -191,4 +179,30 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         }
     }
 
+}
+
+private extension CapacitorGoogleMaps {
+    func addMarker(node: Node<JSValue>?,
+                   mapView: CustomMapView) {
+        guard let node = node else { return }
+        let markerObject = node.value as? JSObject ?? JSObject();
+        let preferences = markerObject["preferences"] as? JSObject ?? JSObject();
+        
+        let marker = CustomMarker()
+        marker.updateFromJSObject(preferences: preferences)
+        marker.map = mapView.GMapView
+        self.customMarkers[marker.id] = marker
+        if let url = (markerObject["icon"] as? JSObject)?["url"] as? String {
+            imageCache.image(at: url) { [weak self] image in
+                marker.icon = image
+                self?.addMarker(node: node.next, mapView: mapView)
+            }
+        }
+    }
+}
+
+extension CapacitorGoogleMaps: ImageCachable {
+    var imageCache: ImageURLLoadable {
+        SDWebImageCache.shared
+    }
 }

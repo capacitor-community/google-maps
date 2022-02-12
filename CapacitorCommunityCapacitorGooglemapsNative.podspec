@@ -14,5 +14,6 @@ Pod::Spec.new do |s|
   s.ios.deployment_target  = '12.0'
   s.dependency 'Capacitor'
   s.dependency 'GoogleMaps'
+  s.dependency 'SDWebImage'
   s.static_framework = true
 end
