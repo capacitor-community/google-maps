@@ -48,6 +48,10 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             self.bridge?.viewController?.view.sendSubviewToBack(customMapView.view)
             self.setupWebView()
 
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                self.setupWebView()
+            }
+
             customMapView.GMapView.delegate = customMapView;
 
             self.customMapViews[customMapView.id] = customMapView
@@ -203,10 +207,15 @@ private extension CapacitorGoogleMaps {
     }
     
     func setupWebView() {
-        self.webView?.isOpaque = false
-        self.webView?.backgroundColor = .clear
-        self.webView?.scrollView.backgroundColor = .clear
-        self.webView?.scrollView.isOpaque = false
+        DispatchQueue.main.async {
+            self.webView?.isOpaque = false
+            self.webView?.backgroundColor = .clear
+            self.webView?.scrollView.backgroundColor = .clear
+            self.webView?.scrollView.isOpaque = false
+
+            let javascript = "document.documentElement.style.backgroundColor = 'transparent'"
+            self.webView!.evaluateJavaScript(javascript)
+        }
     }
 }
 
