@@ -6,7 +6,7 @@
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
   "scripts": {
-    "docgen": "docgen --api CapacitorGoogleMapsPlugin --output-readme API_REFERENCE.md",
+    "docgen": "docgen --api CapacitorGoogleMapsPlugin --output-readme ./docs/api.md",
     "build": "npm run clean && tsc",
     "clean": "rimraf ./dist",
     "watch": "tsc --watch",
