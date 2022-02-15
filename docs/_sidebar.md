@@ -1,6 +1,7 @@
 - About
 
   - [Should you use this plugin?](about/should-you-use-this-plugin.md)
+  - [Out of scope features](about/out-of-scope-features.md)
 
 - Getting started
 
