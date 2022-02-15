@@ -1,4 +1,6 @@
-- [Should you use this plugin?](should-you-use-this-plugin.md)
+- About
+
+  - [Should you use this plugin?](about/should-you-use-this-plugin.md)
 
 - Getting started
 
