@@ -57,8 +57,8 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             let preferences = call.getObject("preferences", JSObject())
             customMapView.mapPreferences.updateFromJSObject(preferences)
 
-            self.bridge?.viewController?.view.addSubview(customMapView.view)
-            self.bridge?.viewController?.view.sendSubviewToBack(customMapView.view)
+            self.customWebView?.scrollView.addSubview(customMapView.view)
+            self.customWebView?.scrollView.sendSubviewToBack(customMapView.view)
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                 self.setupWebView()
@@ -220,7 +220,7 @@ private extension CapacitorGoogleMaps {
         DispatchQueue.main.async {
             self.customWebView?.isOpaque = false
             self.customWebView?.backgroundColor = .clear
-            self.customWebView?.scrollView.backgroundColor = .clear
+            self.customWebView?.scrollView.backgroundColor = .white
             self.customWebView?.scrollView.isOpaque = false
 
             let javascript = "document.documentElement.style.backgroundColor = 'transparent'"
