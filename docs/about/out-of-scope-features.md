@@ -37,17 +37,16 @@ You can start using the Geocoding API by using the API url directly. An example:
 You could also use the offical JavaScript SDK like so:
 
 ```js
-geocoder.geocode({ address: "Some address" }, function (results, status) {
-  if (status == "OK") {
-    if (results[0]) {
-      console.log(results);
+geocoder
+  .geocode({ address: "Some address" })
+  .then((response) => {
+    if (response.results[0]) {
+      console.log(response.results);
     } else {
       console.log("No results found");
     }
-  } else {
-    alert("Geocode was not successful for the following reason: " + status);
-  }
-});
+  })
+  .catch((e) => console.error(e));
 ```
 
 <h3>Reverse geocoding</h3>
