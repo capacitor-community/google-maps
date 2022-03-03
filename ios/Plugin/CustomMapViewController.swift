@@ -12,7 +12,7 @@ class CustomWKWebView: WKWebView {
             let convertedPoint = self.convert(point, to: customMapView.GMapView)
             let mapView = customMapView.GMapView.hitTest(convertedPoint, with: event)
             
-            if (mapView != nil), view?.layer.pixelColorAtPoint(point: convertedPoint) == true{
+            if (mapView != nil), view?.layer.pixelColorAtPoint(point: point) == true{
                 return mapView
             }
         }
