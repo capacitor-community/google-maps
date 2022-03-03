@@ -220,8 +220,6 @@ private extension CapacitorGoogleMaps {
         DispatchQueue.main.async {
             self.customWebView?.isOpaque = false
             self.customWebView?.backgroundColor = .clear
-            self.customWebView?.scrollView.backgroundColor = .white
-            self.customWebView?.scrollView.isOpaque = false
 
             let javascript = "document.documentElement.style.backgroundColor = 'transparent'"
             self.customWebView?.evaluateJavaScript(javascript)
