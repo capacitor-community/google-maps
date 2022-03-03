@@ -11,8 +11,9 @@ class CustomWKWebView: WKWebView {
         for customMapView in values {
             let convertedPoint = self.convert(point, to: customMapView.GMapView)
             let mapView = customMapView.GMapView.hitTest(convertedPoint, with: event)
+            let contentView = scrollView.subviews[self.customMapViews.count]
             
-            if (mapView != nil), view?.layer.pixelColorAtPoint(point: point) == true{
+            if (mapView != nil), contentView.layer.pixelColorAtPoint(point: point) == true{
                 return mapView
             }
         }
