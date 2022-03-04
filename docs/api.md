@@ -9,9 +9,9 @@
 initialize(options: InitializeOptions) => Promise<void>
 ```
 
-| Param         | Type                                                            |
-| ------------- | --------------------------------------------------------------- |
-| **`options`** | <code><a href="#initializeoptions">InitializeOptions</a></code> |
+| Param         | Type                                                 |
+| ------------- | ---------------------------------------------------- |
+| **`options`** | <code>[InitializeOptions](#initializeoptions)</code> |
 
 ---
 
@@ -21,11 +21,11 @@ initialize(options: InitializeOptions) => Promise<void>
 createMap(options: CreateMapOptions) => Promise<CreateMapResult>
 ```
 
-| Param         | Type                                                          |
-| ------------- | ------------------------------------------------------------- |
-| **`options`** | <code><a href="#createmapoptions">CreateMapOptions</a></code> |
+| Param         | Type                                               |
+| ------------- | -------------------------------------------------- |
+| **`options`** | <code>[CreateMapOptions](#createmapoptions)</code> |
 
-**Returns:** <code>Promise&lt;<a href="#createmapresult">CreateMapResult</a>&gt;</code>
+**Returns:** <code>Promise&lt;[CreateMapResult](#createmapresult)&gt;</code>
 
 ---
 
@@ -35,11 +35,11 @@ createMap(options: CreateMapOptions) => Promise<CreateMapResult>
 updateMap(options: UpdateMapOptions) => Promise<UpdateMapResult>
 ```
 
-| Param         | Type                                                          |
-| ------------- | ------------------------------------------------------------- |
-| **`options`** | <code><a href="#updatemapoptions">UpdateMapOptions</a></code> |
+| Param         | Type                                               |
+| ------------- | -------------------------------------------------- |
+| **`options`** | <code>[UpdateMapOptions](#updatemapoptions)</code> |
 
-**Returns:** <code>Promise&lt;<a href="#updatemapresult">UpdateMapResult</a>&gt;</code>
+**Returns:** <code>Promise&lt;[UpdateMapResult](#updatemapresult)&gt;</code>
 
 ---
 
@@ -49,9 +49,9 @@ updateMap(options: UpdateMapOptions) => Promise<UpdateMapResult>
 removeMap(options: RemoveMapOptions) => Promise<void>
 ```
 
-| Param         | Type                                                          |
-| ------------- | ------------------------------------------------------------- |
-| **`options`** | <code><a href="#removemapoptions">RemoveMapOptions</a></code> |
+| Param         | Type                                               |
+| ------------- | -------------------------------------------------- |
+| **`options`** | <code>[RemoveMapOptions](#removemapoptions)</code> |
 
 ---
 
@@ -61,9 +61,9 @@ removeMap(options: RemoveMapOptions) => Promise<void>
 clearMap(options: ClearMapOptions) => Promise<void>
 ```
 
-| Param         | Type                                                        |
-| ------------- | ----------------------------------------------------------- |
-| **`options`** | <code><a href="#clearmapoptions">ClearMapOptions</a></code> |
+| Param         | Type                                             |
+| ------------- | ------------------------------------------------ |
+| **`options`** | <code>[ClearMapOptions](#clearmapoptions)</code> |
 
 ---
 
@@ -73,11 +73,11 @@ clearMap(options: ClearMapOptions) => Promise<void>
 moveCamera(options: MoveCameraOptions) => Promise<MoveCameraResult>
 ```
 
-| Param         | Type                                                            |
-| ------------- | --------------------------------------------------------------- |
-| **`options`** | <code><a href="#movecameraoptions">MoveCameraOptions</a></code> |
+| Param         | Type                                                 |
+| ------------- | ---------------------------------------------------- |
+| **`options`** | <code>[MoveCameraOptions](#movecameraoptions)</code> |
 
-**Returns:** <code>Promise&lt;<a href="#movecameraresult">MoveCameraResult</a>&gt;</code>
+**Returns:** <code>Promise&lt;[MoveCameraResult](#movecameraresult)&gt;</code>
 
 ---
 
@@ -87,11 +87,11 @@ moveCamera(options: MoveCameraOptions) => Promise<MoveCameraResult>
 addMarker(options: AddMarkerOptions) => Promise<AddMarkerResult>
 ```
 
-| Param         | Type                                                          |
-| ------------- | ------------------------------------------------------------- |
-| **`options`** | <code><a href="#addmarkeroptions">AddMarkerOptions</a></code> |
+| Param         | Type                                               |
+| ------------- | -------------------------------------------------- |
+| **`options`** | <code>[AddMarkerOptions](#addmarkeroptions)</code> |
 
-**Returns:** <code>Promise&lt;<a href="#addmarkerresult">AddMarkerResult</a>&gt;</code>
+**Returns:** <code>Promise&lt;[AddMarkerResult](#addmarkerresult)&gt;</code>
 
 ---
 
@@ -101,9 +101,9 @@ addMarker(options: AddMarkerOptions) => Promise<AddMarkerResult>
 removeMarker(options: RemoveMarkerOptions) => Promise<void>
 ```
 
-| Param         | Type                                                                |
-| ------------- | ------------------------------------------------------------------- |
-| **`options`** | <code><a href="#removemarkeroptions">RemoveMarkerOptions</a></code> |
+| Param         | Type                                                     |
+| ------------- | -------------------------------------------------------- |
+| **`options`** | <code>[RemoveMarkerOptions](#removemarkeroptions)</code> |
 
 ---
 
@@ -113,10 +113,10 @@ removeMarker(options: RemoveMarkerOptions) => Promise<void>
 didTapInfoWindow(options: DefaultEventOptions, callback: DidTapInfoWindowCallback) => Promise<CallbackID>
 ```
 
-| Param          | Type                                                                          |
-| -------------- | ----------------------------------------------------------------------------- |
-| **`options`**  | <code><a href="#defaulteventoptions">DefaultEventOptions</a></code>           |
-| **`callback`** | <code><a href="#didtapinfowindowcallback">DidTapInfoWindowCallback</a></code> |
+| Param          | Type                                                               |
+| -------------- | ------------------------------------------------------------------ |
+| **`options`**  | <code>[DefaultEventOptions](#defaulteventoptions)</code>           |
+| **`callback`** | <code>[DidTapInfoWindowCallback](#didtapinfowindowcallback)</code> |
 
 **Returns:** <code>Promise&lt;string&gt;</code>
 
@@ -128,10 +128,10 @@ didTapInfoWindow(options: DefaultEventOptions, callback: DidTapInfoWindowCallbac
 didCloseInfoWindow(options: DefaultEventOptions, callback: DidCloseInfoWindowCallback) => Promise<CallbackID>
 ```
 
-| Param          | Type                                                                              |
-| -------------- | --------------------------------------------------------------------------------- |
-| **`options`**  | <code><a href="#defaulteventoptions">DefaultEventOptions</a></code>               |
-| **`callback`** | <code><a href="#didcloseinfowindowcallback">DidCloseInfoWindowCallback</a></code> |
+| Param          | Type                                                                   |
+| -------------- | ---------------------------------------------------------------------- |
+| **`options`**  | <code>[DefaultEventOptions](#defaulteventoptions)</code>               |
+| **`callback`** | <code>[DidCloseInfoWindowCallback](#didcloseinfowindowcallback)</code> |
 
 **Returns:** <code>Promise&lt;string&gt;</code>
 
@@ -143,10 +143,10 @@ didCloseInfoWindow(options: DefaultEventOptions, callback: DidCloseInfoWindowCal
 didTapMap(options: DefaultEventOptions, callback: DidTapMapCallback) => Promise<CallbackID>
 ```
 
-| Param          | Type                                                                |
-| -------------- | ------------------------------------------------------------------- |
-| **`options`**  | <code><a href="#defaulteventoptions">DefaultEventOptions</a></code> |
-| **`callback`** | <code><a href="#didtapmapcallback">DidTapMapCallback</a></code>     |
+| Param          | Type                                                     |
+| -------------- | -------------------------------------------------------- |
+| **`options`**  | <code>[DefaultEventOptions](#defaulteventoptions)</code> |
+| **`callback`** | <code>[DidTapMapCallback](#didtapmapcallback)</code>     |
 
 **Returns:** <code>Promise&lt;string&gt;</code>
 
@@ -158,10 +158,10 @@ didTapMap(options: DefaultEventOptions, callback: DidTapMapCallback) => Promise<
 didLongPressMap(options: DefaultEventOptions, callback: DidLongPressMapCallback) => Promise<CallbackID>
 ```
 
-| Param          | Type                                                                        |
-| -------------- | --------------------------------------------------------------------------- |
-| **`options`**  | <code><a href="#defaulteventoptions">DefaultEventOptions</a></code>         |
-| **`callback`** | <code><a href="#didlongpressmapcallback">DidLongPressMapCallback</a></code> |
+| Param          | Type                                                             |
+| -------------- | ---------------------------------------------------------------- |
+| **`options`**  | <code>[DefaultEventOptions](#defaulteventoptions)</code>         |
+| **`callback`** | <code>[DidLongPressMapCallback](#didlongpressmapcallback)</code> |
 
 **Returns:** <code>Promise&lt;string&gt;</code>
 
@@ -173,10 +173,10 @@ didLongPressMap(options: DefaultEventOptions, callback: DidLongPressMapCallback)
 didTapMarker(options: DefaultEventWithPreventDefaultOptions, callback: DidTapMarkerCallback) => Promise<CallbackID>
 ```
 
-| Param          | Type                                                                                                    |
-| -------------- | ------------------------------------------------------------------------------------------------------- |
-| **`options`**  | <code><a href="#defaulteventwithpreventdefaultoptions">DefaultEventWithPreventDefaultOptions</a></code> |
-| **`callback`** | <code><a href="#didtapmarkercallback">DidTapMarkerCallback</a></code>                                   |
+| Param          | Type                                                                                         |
+| -------------- | -------------------------------------------------------------------------------------------- |
+| **`options`**  | <code>[DefaultEventWithPreventDefaultOptions](#defaulteventwithpreventdefaultoptions)</code> |
+| **`callback`** | <code>[DidTapMarkerCallback](#didtapmarkercallback)</code>                                   |
 
 **Returns:** <code>Promise&lt;string&gt;</code>
 
@@ -188,10 +188,10 @@ didTapMarker(options: DefaultEventWithPreventDefaultOptions, callback: DidTapMar
 didBeginDraggingMarker(options: DefaultEventOptions, callback: DidBeginDraggingMarkerCallback) => Promise<CallbackID>
 ```
 
-| Param          | Type                                                                                      |
-| -------------- | ----------------------------------------------------------------------------------------- |
-| **`options`**  | <code><a href="#defaulteventoptions">DefaultEventOptions</a></code>                       |
-| **`callback`** | <code><a href="#didbegindraggingmarkercallback">DidBeginDraggingMarkerCallback</a></code> |
+| Param          | Type                                                                           |
+| -------------- | ------------------------------------------------------------------------------ |
+| **`options`**  | <code>[DefaultEventOptions](#defaulteventoptions)</code>                       |
+| **`callback`** | <code>[DidBeginDraggingMarkerCallback](#didbegindraggingmarkercallback)</code> |
 
 **Returns:** <code>Promise&lt;string&gt;</code>
 
@@ -203,10 +203,10 @@ didBeginDraggingMarker(options: DefaultEventOptions, callback: DidBeginDraggingM
 didDragMarker(options: DefaultEventOptions, callback: DidDragMarkerCallback) => Promise<CallbackID>
 ```
 
-| Param          | Type                                                                    |
-| -------------- | ----------------------------------------------------------------------- |
-| **`options`**  | <code><a href="#defaulteventoptions">DefaultEventOptions</a></code>     |
-| **`callback`** | <code><a href="#diddragmarkercallback">DidDragMarkerCallback</a></code> |
+| Param          | Type                                                         |
+| -------------- | ------------------------------------------------------------ |
+| **`options`**  | <code>[DefaultEventOptions](#defaulteventoptions)</code>     |
+| **`callback`** | <code>[DidDragMarkerCallback](#diddragmarkercallback)</code> |
 
 **Returns:** <code>Promise&lt;string&gt;</code>
 
@@ -218,10 +218,10 @@ didDragMarker(options: DefaultEventOptions, callback: DidDragMarkerCallback) => 
 didEndDraggingMarker(options: DefaultEventOptions, callback: DidEndDraggingMarkerCallback) => Promise<CallbackID>
 ```
 
-| Param          | Type                                                                                  |
-| -------------- | ------------------------------------------------------------------------------------- |
-| **`options`**  | <code><a href="#defaulteventoptions">DefaultEventOptions</a></code>                   |
-| **`callback`** | <code><a href="#didenddraggingmarkercallback">DidEndDraggingMarkerCallback</a></code> |
+| Param          | Type                                                                       |
+| -------------- | -------------------------------------------------------------------------- |
+| **`options`**  | <code>[DefaultEventOptions](#defaulteventoptions)</code>                   |
+| **`callback`** | <code>[DidEndDraggingMarkerCallback](#didenddraggingmarkercallback)</code> |
 
 **Returns:** <code>Promise&lt;string&gt;</code>
 
@@ -233,10 +233,10 @@ didEndDraggingMarker(options: DefaultEventOptions, callback: DidEndDraggingMarke
 didTapMyLocationButton(options: DefaultEventWithPreventDefaultOptions, callback: DidTapMyLocationButtonCallback) => Promise<CallbackID>
 ```
 
-| Param          | Type                                                                                                    |
-| -------------- | ------------------------------------------------------------------------------------------------------- |
-| **`options`**  | <code><a href="#defaulteventwithpreventdefaultoptions">DefaultEventWithPreventDefaultOptions</a></code> |
-| **`callback`** | <code><a href="#didtapmylocationbuttoncallback">DidTapMyLocationButtonCallback</a></code>               |
+| Param          | Type                                                                                         |
+| -------------- | -------------------------------------------------------------------------------------------- |
+| **`options`**  | <code>[DefaultEventWithPreventDefaultOptions](#defaulteventwithpreventdefaultoptions)</code> |
+| **`callback`** | <code>[DidTapMyLocationButtonCallback](#didtapmylocationbuttoncallback)</code>               |
 
 **Returns:** <code>Promise&lt;string&gt;</code>
 
@@ -248,10 +248,10 @@ didTapMyLocationButton(options: DefaultEventWithPreventDefaultOptions, callback:
 didTapMyLocationDot(options: DefaultEventOptions, callback: DidTapMyLocationDotCallback) => Promise<CallbackID>
 ```
 
-| Param          | Type                                                                                |
-| -------------- | ----------------------------------------------------------------------------------- |
-| **`options`**  | <code><a href="#defaulteventoptions">DefaultEventOptions</a></code>                 |
-| **`callback`** | <code><a href="#didtapmylocationdotcallback">DidTapMyLocationDotCallback</a></code> |
+| Param          | Type                                                                     |
+| -------------- | ------------------------------------------------------------------------ |
+| **`options`**  | <code>[DefaultEventOptions](#defaulteventoptions)</code>                 |
+| **`callback`** | <code>[DidTapMyLocationDotCallback](#didtapmylocationdotcallback)</code> |
 
 **Returns:** <code>Promise&lt;string&gt;</code>
 
@@ -263,10 +263,10 @@ didTapMyLocationDot(options: DefaultEventOptions, callback: DidTapMyLocationDotC
 didTapPoi(options: DefaultEventOptions, callback: DidTapPoiCallback) => Promise<CallbackID>
 ```
 
-| Param          | Type                                                                |
-| -------------- | ------------------------------------------------------------------- |
-| **`options`**  | <code><a href="#defaulteventoptions">DefaultEventOptions</a></code> |
-| **`callback`** | <code><a href="#didtappoicallback">DidTapPoiCallback</a></code>     |
+| Param          | Type                                                     |
+| -------------- | -------------------------------------------------------- |
+| **`options`**  | <code>[DefaultEventOptions](#defaulteventoptions)</code> |
+| **`callback`** | <code>[DidTapPoiCallback](#didtappoicallback)</code>     |
 
 **Returns:** <code>Promise&lt;string&gt;</code>
 
@@ -278,10 +278,10 @@ didTapPoi(options: DefaultEventOptions, callback: DidTapPoiCallback) => Promise<
 didBeginMovingCamera(options: DefaultEventOptions, callback: DidBeginMovingCameraCallback) => Promise<CallbackID>
 ```
 
-| Param          | Type                                                                                  |
-| -------------- | ------------------------------------------------------------------------------------- |
-| **`options`**  | <code><a href="#defaulteventoptions">DefaultEventOptions</a></code>                   |
-| **`callback`** | <code><a href="#didbeginmovingcameracallback">DidBeginMovingCameraCallback</a></code> |
+| Param          | Type                                                                       |
+| -------------- | -------------------------------------------------------------------------- |
+| **`options`**  | <code>[DefaultEventOptions](#defaulteventoptions)</code>                   |
+| **`callback`** | <code>[DidBeginMovingCameraCallback](#didbeginmovingcameracallback)</code> |
 
 **Returns:** <code>Promise&lt;string&gt;</code>
 
@@ -293,10 +293,10 @@ didBeginMovingCamera(options: DefaultEventOptions, callback: DidBeginMovingCamer
 didMoveCamera(options: DefaultEventOptions, callback: DidMoveCameraCallback) => Promise<CallbackID>
 ```
 
-| Param          | Type                                                                    |
-| -------------- | ----------------------------------------------------------------------- |
-| **`options`**  | <code><a href="#defaulteventoptions">DefaultEventOptions</a></code>     |
-| **`callback`** | <code><a href="#didmovecameracallback">DidMoveCameraCallback</a></code> |
+| Param          | Type                                                         |
+| -------------- | ------------------------------------------------------------ |
+| **`options`**  | <code>[DefaultEventOptions](#defaulteventoptions)</code>     |
+| **`callback`** | <code>[DidMoveCameraCallback](#didmovecameracallback)</code> |
 
 **Returns:** <code>Promise&lt;string&gt;</code>
 
@@ -308,10 +308,10 @@ didMoveCamera(options: DefaultEventOptions, callback: DidMoveCameraCallback) => 
 didEndMovingCamera(options: DefaultEventOptions, callback: DidEndMovingCameraCallback) => Promise<CallbackID>
 ```
 
-| Param          | Type                                                                              |
-| -------------- | --------------------------------------------------------------------------------- |
-| **`options`**  | <code><a href="#defaulteventoptions">DefaultEventOptions</a></code>               |
-| **`callback`** | <code><a href="#didendmovingcameracallback">DidEndMovingCameraCallback</a></code> |
+| Param          | Type                                                                   |
+| -------------- | ---------------------------------------------------------------------- |
+| **`options`**  | <code>[DefaultEventOptions](#defaulteventoptions)</code>               |
+| **`callback`** | <code>[DidEndMovingCameraCallback](#didendmovingcameracallback)</code> |
 
 **Returns:** <code>Promise&lt;string&gt;</code>
 
@@ -326,9 +326,9 @@ elementFromPointResult(options: ElementFromPointResultOptions) => Promise<void>
 After `didRequestElementFromPoint` fires, this method is used to let the WebView know whether or not to delegate the touch event to a certain MapView.
 It is handled automatically and you should probably not use it.
 
-| Param         | Type                                                                                    |
-| ------------- | --------------------------------------------------------------------------------------- |
-| **`options`** | <code><a href="#elementfrompointresultoptions">ElementFromPointResultOptions</a></code> |
+| Param         | Type                                                                         |
+| ------------- | ---------------------------------------------------------------------------- |
+| **`options`** | <code>[ElementFromPointResultOptions](#elementfrompointresultoptions)</code> |
 
 ---
 
@@ -341,12 +341,12 @@ addListener(eventName: "didRequestElementFromPoint", listenerFunc: (result: DidR
 This listens for touch events on the WebView.
 It is handled automatically and you should probably not use it.
 
-| Param              | Type                                                                                                               |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------ |
-| **`eventName`**    | <code>'didRequestElementFromPoint'</code>                                                                          |
-| **`listenerFunc`** | <code>(result: <a href="#didrequestelementfrompointresult">DidRequestElementFromPointResult</a>) =&gt; void</code> |
+| Param              | Type                                                                                                    |
+| ------------------ | ------------------------------------------------------------------------------------------------------- |
+| **`eventName`**    | <code>'didRequestElementFromPoint'</code>                                                               |
+| **`listenerFunc`** | <code>(result: [DidRequestElementFromPointResult](#didrequestelementfrompointresult)) =&gt; void</code> |
 
-**Returns:** <code><a href="#pluginlistenerhandle">PluginListenerHandle</a></code>
+**Returns:** <code>[PluginListenerHandle](#pluginlistenerhandle)</code>
 
 ---
 
@@ -361,7 +361,7 @@ addListener(eventName: string, listenerFunc: (...args: any[]) => any) => Promise
 | **`eventName`**    | <code>string</code>                     |
 | **`listenerFunc`** | <code>(...args: any[]) =&gt; any</code> |
 
-**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt;</code>
+**Returns:** <code>Promise&lt;[PluginListenerHandle](#pluginlistenerhandle)&gt;</code>
 
 ---
 
@@ -384,17 +384,17 @@ removeAllListeners() => Promise<void>
 
 #### CreateMapResult
 
-| Prop            | Type                                            | Since |
-| --------------- | ----------------------------------------------- | ----- |
-| **`googleMap`** | <code><a href="#googlemap">GoogleMap</a></code> | 2.0.0 |
+| Prop            | Type                                 | Since |
+| --------------- | ------------------------------------ | ----- |
+| **`googleMap`** | <code>[GoogleMap](#googlemap)</code> | 2.0.0 |
 
 #### GoogleMap
 
-| Prop                 | Type                                                      | Description                                      | Since |
-| -------------------- | --------------------------------------------------------- | ------------------------------------------------ | ----- |
-| **`mapId`**          | <code>string</code>                                       | GUID representing the unique id of this map      | 2.0.0 |
-| **`cameraPosition`** | <code><a href="#cameraposition">CameraPosition</a></code> | See <a href="#cameraposition">CameraPosition</a> | 2.0.0 |
-| **`preferences`**    | <code><a href="#mappreferences">MapPreferences</a></code> | See <a href="#mappreferences">MapPreferences</a> | 2.0.0 |
+| Prop                 | Type                                           | Description                                 | Since |
+| -------------------- | ---------------------------------------------- | ------------------------------------------- | ----- |
+| **`mapId`**          | <code>string</code>                            | GUID representing the unique id of this map | 2.0.0 |
+| **`cameraPosition`** | <code>[CameraPosition](#cameraposition)</code> | See [CameraPosition](#cameraposition)       | 2.0.0 |
+| **`preferences`**    | <code>[MapPreferences](#mappreferences)</code> | See [MapPreferences](#mappreferences)       | 2.0.0 |
 
 #### CameraPosition
 
@@ -402,12 +402,12 @@ The map view is modeled as a camera looking down on a flat plane.
 The position of the camera (and hence the rendering of the map) is specified by the following properties: target (latitude/longitude location), bearing, tilt, and zoom.
 More information can be found here: https://developers.google.com/maps/documentation/android-sdk/views#the_camera_position
 
-| Prop          | Type                                      | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | Since |
-| ------------- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
-| **`target`**  | <code><a href="#latlng">LatLng</a></code> | The camera target is the location of the center of the map, specified as latitude and longitude co-ordinates.                                                                                                                                                                                                                                                                                                                                                                           | 2.0.0 |
-| **`bearing`** | <code>number</code>                       | The camera bearing is the direction in which a vertical line on the map points, measured in degrees clockwise from north. Someone driving a car often turns a road map to align it with their direction of travel, while hikers using a map and compass usually orient the map so that a vertical line is pointing north. The Maps API lets you change a map's alignment or bearing. For example, a bearing of 90 degrees results in a map where the upwards direction points due east. | 2.0.0 |
-| **`tilt`**    | <code>number</code>                       | The tilt defines the camera's position on an arc between directly over the map's center position and the surface of the Earth, measured in degrees from the nadir (the direction pointing directly below the camera). When you change the viewing angle, the map appears in perspective, with far-away features appearing smaller, and nearby features appearing larger.                                                                                                                | 2.0.0 |
-| **`zoom`**    | <code>number</code>                       | The zoom level of the camera determines the scale of the map. At larger zoom levels more detail can be seen on the screen, while at smaller zoom levels more of the world can be seen on the screen.                                                                                                                                                                                                                                                                                    | 2.0.0 |
+| Prop          | Type                           | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | Since |
+| ------------- | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
+| **`target`**  | <code>[LatLng](#latlng)</code> | The camera target is the location of the center of the map, specified as latitude and longitude co-ordinates.                                                                                                                                                                                                                                                                                                                                                                           | 2.0.0 |
+| **`bearing`** | <code>number</code>            | The camera bearing is the direction in which a vertical line on the map points, measured in degrees clockwise from north. Someone driving a car often turns a road map to align it with their direction of travel, while hikers using a map and compass usually orient the map so that a vertical line is pointing north. The Maps API lets you change a map's alignment or bearing. For example, a bearing of 90 degrees results in a map where the upwards direction points due east. | 2.0.0 |
+| **`tilt`**    | <code>number</code>            | The tilt defines the camera's position on an arc between directly over the map's center position and the surface of the Earth, measured in degrees from the nadir (the direction pointing directly below the camera). When you change the viewing angle, the map appears in perspective, with far-away features appearing smaller, and nearby features appearing larger.                                                                                                                | 2.0.0 |
+| **`zoom`**    | <code>number</code>            | The zoom level of the camera determines the scale of the map. At larger zoom levels more detail can be seen on the screen, while at smaller zoom levels more of the world can be seen on the screen.                                                                                                                                                                                                                                                                                    | 2.0.0 |
 
 #### LatLng
 
@@ -420,15 +420,15 @@ A data class representing a pair of latitude and longitude coordinates, stored a
 
 #### MapPreferences
 
-| Prop             | Type                                                    | Description                                    | Since |
-| ---------------- | ------------------------------------------------------- | ---------------------------------------------- | ----- |
-| **`gestures`**   | <code><a href="#mapgestures">MapGestures</a></code>     | See <a href="#mapgestures">MapGestures</a>     | 2.0.0 |
-| **`controls`**   | <code><a href="#mapcontrols">MapControls</a></code>     | See <a href="#mapcontrols">MapControls</a>     | 2.0.0 |
-| **`appearance`** | <code><a href="#mapappearance">MapAppearance</a></code> | See <a href="#mapappearance">MapAppearance</a> | 2.0.0 |
-| **`maxZoom`**    | <code>number</code>                                     |                                                |       |
-| **`minZoom`**    | <code>number</code>                                     |                                                |       |
-| **`padding`**    | <code>any</code>                                        |                                                |       |
-| **`liteMode`**   | <code>boolean</code>                                    |                                                |       |
+| Prop             | Type                                         | Description                         | Since |
+| ---------------- | -------------------------------------------- | ----------------------------------- | ----- |
+| **`gestures`**   | <code>[MapGestures](#mapgestures)</code>     | See [MapGestures](#mapgestures)     | 2.0.0 |
+| **`controls`**   | <code>[MapControls](#mapcontrols)</code>     | See [MapControls](#mapcontrols)     | 2.0.0 |
+| **`appearance`** | <code>[MapAppearance](#mapappearance)</code> | See [MapAppearance](#mapappearance) | 2.0.0 |
+| **`maxZoom`**    | <code>number</code>                          |                                     |       |
+| **`minZoom`**    | <code>number</code>                          |                                     |       |
+| **`padding`**    | <code>any</code>                             |                                     |       |
+| **`liteMode`**   | <code>boolean</code>                         |                                     |       |
 
 #### MapGestures
 
@@ -450,7 +450,7 @@ Aggregates all control parameters such as enabling the compass, my-location and 
 | ------------------------------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ | ----- |
 | **`isCompassButtonEnabled`**    | <code>boolean</code> | If `true`, the compass button is enabled. The compass is an icon on the map that indicates the direction of north on the map. If enabled, it is only shown when the camera is rotated away from its default orientation (bearing of 0). When a user taps the compass, the camera orients itself to its default orientation and fades away shortly after. If disabled, the compass will never be displayed. | <code>true</code>  | 2.0.0 |
 | **`isMapToolbarEnabled`**       | <code>boolean</code> | (Android only) If `true`, the Map Toolbar is enabled. If enabled, and the Map Toolbar can be shown in the current context, users will see a bar with various context-dependent actions, including 'open this map in the Google Maps app' and 'find directions to the highlighted marker in the Google Maps app'.                                                                                           | <code>false</code> | 2.0.0 |
-| **`isMyLocationButtonEnabled`** | <code>boolean</code> | If `true`, the my-location button is enabled. This is a button visible on the map that, when tapped by users, will center the map on the current user location. If the button is enabled, it is only shown when <a href="#mapappearance">`MapAppearance.isMyLocationDotShown</a> === true`.                                                                                                                | <code>true</code>  | 2.0.0 |
+| **`isMyLocationButtonEnabled`** | <code>boolean</code> | If `true`, the my-location button is enabled. This is a button visible on the map that, when tapped by users, will center the map on the current user location. If the button is enabled, it is only shown when [`MapAppearance.isMyLocationDotShown](#mapappearance) === true`.                                                                                                                           | <code>true</code>  | 2.0.0 |
 | **`isZoomButtonsEnabled`**      | <code>boolean</code> | (Android only) If `true`, the zoom controls are enabled. The zoom controls are a pair of buttons (one for zooming in, one for zooming out) that appear on the screen when enabled. When pressed, they cause the camera to zoom in (or out) by one zoom level. If disabled, the zoom controls are not shown.                                                                                                | <code>false</code> | 2.0.0 |
 
 #### MapAppearance
@@ -458,33 +458,33 @@ Aggregates all control parameters such as enabling the compass, my-location and 
 Aggregates all appearance parameters such as showing 3d building, indoor maps, the my-location (blue) dot and traffic.
 Additionally, it also holds parameters such as the type of map tiles and the overall styling of the base map.
 
-| Prop                       | Type                                        | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | Default                     | Since |
-| -------------------------- | ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- | ----- |
-| **`type`**                 | <code><a href="#maptype">MapType</a></code> | Controls the type of map tiles that should be displayed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | <code>MapType.Normal</code> | 2.0.0 |
-| **`style`**                | <code><a href="#json">JSON</a></code>       | Holds details about a style which can be applied to a map. When set to `null` the default styling will be used. With style options you can customize the presentation of the standard Google map styles, changing the visual display of features like roads, parks, and other points of interest. As well as changing the style of these features, you can also hide features entirely. This means that you can emphasize particular components of the map or make the map complement the content of your app. For more information check: https://developers.google.com/maps/documentation/ios-sdk/style-reference Or use the wizard for generating <a href="#json">JSON</a>: https://mapstyle.withgoogle.com/ | <code>null</code>           | 2.0.0 |
-| **`isBuildingsShown`**     | <code>boolean</code>                        | If `true`, 3D buildings will be shown where available.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | <code>true</code>           | 2.0.0 |
-| **`isIndoorShown`**        | <code>boolean</code>                        | If `true`, indoor maps are shown, where available. If this is set to false, caches for indoor data may be purged and any floor currently selected by the end-user may be reset.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | <code>true</code>           | 2.0.0 |
-| **`isMyLocationDotShown`** | <code>boolean</code>                        | If `true`, the my-location (blue) dot and accuracy circle are shown.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | <code>false</code>          | 2.0.0 |
-| **`isTrafficShown`**       | <code>boolean</code>                        | If `true`, the map draws traffic data, if available. This is subject to the availability of traffic data.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | <code>false</code>          | 2.0.0 |
+| Prop                       | Type                             | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | Default                     | Since |
+| -------------------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- | ----- |
+| **`type`**                 | <code>[MapType](#maptype)</code> | Controls the type of map tiles that should be displayed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | <code>MapType.Normal</code> | 2.0.0 |
+| **`style`**                | <code>[JSON](#json)</code>       | Holds details about a style which can be applied to a map. When set to `null` the default styling will be used. With style options you can customize the presentation of the standard Google map styles, changing the visual display of features like roads, parks, and other points of interest. As well as changing the style of these features, you can also hide features entirely. This means that you can emphasize particular components of the map or make the map complement the content of your app. For more information check: https://developers.google.com/maps/documentation/ios-sdk/style-reference Or use the wizard for generating [JSON](#json): https://mapstyle.withgoogle.com/ | <code>null</code>           | 2.0.0 |
+| **`isBuildingsShown`**     | <code>boolean</code>             | If `true`, 3D buildings will be shown where available.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | <code>true</code>           | 2.0.0 |
+| **`isIndoorShown`**        | <code>boolean</code>             | If `true`, indoor maps are shown, where available. If this is set to false, caches for indoor data may be purged and any floor currently selected by the end-user may be reset.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | <code>true</code>           | 2.0.0 |
+| **`isMyLocationDotShown`** | <code>boolean</code>             | If `true`, the my-location (blue) dot and accuracy circle are shown.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | <code>false</code>          | 2.0.0 |
+| **`isTrafficShown`**       | <code>boolean</code>             | If `true`, the map draws traffic data, if available. This is subject to the availability of traffic data.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | <code>false</code>          | 2.0.0 |
 
 #### JSON
 
-An intrinsic object that provides functions to convert JavaScript values to and from the JavaScript Object Notation (<a href="#json">JSON</a>) format.
+An intrinsic object that provides functions to convert JavaScript values to and from the JavaScript Object Notation ([JSON](#json)) format.
 
-| Method        | Signature                                                                                                      | Description                                                                                    |
-| ------------- | -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| **parse**     | (text: string, reviver?: (this: any, key: string, value: any) =&gt; any) =&gt; any                             | Converts a JavaScript Object Notation (<a href="#json">JSON</a>) string into an object.        |
-| **stringify** | (value: any, replacer?: (this: any, key: string, value: any) =&gt; any, space?: string \| number) =&gt; string | Converts a JavaScript value to a JavaScript Object Notation (<a href="#json">JSON</a>) string. |
-| **stringify** | (value: any, replacer?: (number \| string)[] \| null, space?: string \| number) =&gt; string                   | Converts a JavaScript value to a JavaScript Object Notation (<a href="#json">JSON</a>) string. |
+| Method        | Signature                                                                                                      | Description                                                                         |
+| ------------- | -------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| **parse**     | (text: string, reviver?: (this: any, key: string, value: any) =&gt; any) =&gt; any                             | Converts a JavaScript Object Notation ([JSON](#json)) string into an object.        |
+| **stringify** | (value: any, replacer?: (this: any, key: string, value: any) =&gt; any, space?: string \| number) =&gt; string | Converts a JavaScript value to a JavaScript Object Notation ([JSON](#json)) string. |
+| **stringify** | (value: any, replacer?: (number \| string)[] \| null, space?: string \| number) =&gt; string                   | Converts a JavaScript value to a JavaScript Object Notation ([JSON](#json)) string. |
 
 #### CreateMapOptions
 
-| Prop                 | Type                                                      | Description                                      | Since |
-| -------------------- | --------------------------------------------------------- | ------------------------------------------------ | ----- |
-| **`element`**        | <code>HTMLElement</code>                                  |                                                  | 2.0.0 |
-| **`boundingRect`**   | <code><a href="#boundingrect">BoundingRect</a></code>     |                                                  | 2.0.0 |
-| **`cameraPosition`** | <code><a href="#cameraposition">CameraPosition</a></code> | See <a href="#cameraposition">CameraPosition</a> | 2.0.0 |
-| **`preferences`**    | <code><a href="#mappreferences">MapPreferences</a></code> |                                                  | 2.0.0 |
+| Prop                 | Type                                           | Description                           | Since |
+| -------------------- | ---------------------------------------------- | ------------------------------------- | ----- |
+| **`element`**        | <code>HTMLElement</code>                       |                                       | 2.0.0 |
+| **`boundingRect`**   | <code>[BoundingRect](#boundingrect)</code>     |                                       | 2.0.0 |
+| **`cameraPosition`** | <code>[CameraPosition](#cameraposition)</code> | See [CameraPosition](#cameraposition) | 2.0.0 |
+| **`preferences`**    | <code>[MapPreferences](#mappreferences)</code> |                                       | 2.0.0 |
 
 #### BoundingRect
 
@@ -497,18 +497,18 @@ An intrinsic object that provides functions to convert JavaScript values to and 
 
 #### UpdateMapResult
 
-| Prop            | Type                                            | Since |
-| --------------- | ----------------------------------------------- | ----- |
-| **`googleMap`** | <code><a href="#googlemap">GoogleMap</a></code> | 2.0.0 |
+| Prop            | Type                                 | Since |
+| --------------- | ------------------------------------ | ----- |
+| **`googleMap`** | <code>[GoogleMap](#googlemap)</code> | 2.0.0 |
 
 #### UpdateMapOptions
 
-| Prop               | Type                                                      | Since |
-| ------------------ | --------------------------------------------------------- | ----- |
-| **`mapId`**        | <code>string</code>                                       | 2.0.0 |
-| **`element`**      | <code>HTMLElement</code>                                  | 2.0.0 |
-| **`boundingRect`** | <code><a href="#boundingrect">BoundingRect</a></code>     | 2.0.0 |
-| **`preferences`**  | <code><a href="#mappreferences">MapPreferences</a></code> | 2.0.0 |
+| Prop               | Type                                           | Since |
+| ------------------ | ---------------------------------------------- | ----- |
+| **`mapId`**        | <code>string</code>                            | 2.0.0 |
+| **`element`**      | <code>HTMLElement</code>                       | 2.0.0 |
+| **`boundingRect`** | <code>[BoundingRect](#boundingrect)</code>     | 2.0.0 |
+| **`preferences`**  | <code>[MapPreferences](#mappreferences)</code> | 2.0.0 |
 
 #### RemoveMapOptions
 
@@ -524,25 +524,25 @@ An intrinsic object that provides functions to convert JavaScript values to and 
 
 #### MoveCameraResult
 
-| Prop            | Type                                            | Since |
-| --------------- | ----------------------------------------------- | ----- |
-| **`googleMap`** | <code><a href="#googlemap">GoogleMap</a></code> | 2.0.0 |
+| Prop            | Type                                 | Since |
+| --------------- | ------------------------------------ | ----- |
+| **`googleMap`** | <code>[GoogleMap](#googlemap)</code> | 2.0.0 |
 
 #### MoveCameraOptions
 
-| Prop                                  | Type                                                      | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Default            | Since |
-| ------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------ | ----- |
-| **`mapId`**                           | <code>string</code>                                       | The identifier of the map to which this method should be applied.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |                    | 2.0.0 |
-| **`cameraPosition`**                  | <code><a href="#cameraposition">CameraPosition</a></code> | See <a href="#cameraposition">CameraPosition</a>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |                    | 2.0.0 |
-| **`duration`**                        | <code>number</code>                                       | The duration of the animation in milliseconds. If not specified, or equals or smaller than 0, the camera movement will be immediate                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | <code>0</code>     | 2.0.0 |
-| **`usePreviousCameraPositionAsBase`** | <code>boolean</code>                                      | By default the moveCamera method uses the current <a href="#cameraposition">CameraPosition</a> as the base. That means that if, for example, the <a href="#cameraposition">CameraPosition.target</a> is not specified, the current <a href="#cameraposition">CameraPosition.target</a> will be used. Among other things, this default behaviour allows you to set the zoom without moving the map. Or move the map without changing the current zoom. If instead of this default behaviour, the previous <a href="#cameraposition">CameraPosition</a> should be used as the base, this parameter should be set to `true`. But be cautious when using this. If the user made changes to the <a href="#cameraposition">CameraPosition</a> (e.g. by scrolling or zooming the map), those changes will be undone because it will be overwritten by the last explicitly set <a href="#cameraposition">CameraPosition</a>. The <a href="#cameraposition">CameraPosition</a> is only "explicitly set" with these methods: `createMap` and `moveCamera`. | <code>false</code> | 2.0.0 |
+| Prop                                  | Type                                           | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Default            | Since |
+| ------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ | ----- |
+| **`mapId`**                           | <code>string</code>                            | The identifier of the map to which this method should be applied.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |                    | 2.0.0 |
+| **`cameraPosition`**                  | <code>[CameraPosition](#cameraposition)</code> | See [CameraPosition](#cameraposition)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |                    | 2.0.0 |
+| **`duration`**                        | <code>number</code>                            | The duration of the animation in milliseconds. If not specified, or equals or smaller than 0, the camera movement will be immediate                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | <code>0</code>     | 2.0.0 |
+| **`usePreviousCameraPositionAsBase`** | <code>boolean</code>                           | By default the moveCamera method uses the current [CameraPosition](#cameraposition) as the base. That means that if, for example, the [CameraPosition.target](#cameraposition) is not specified, the current [CameraPosition.target](#cameraposition) will be used. Among other things, this default behaviour allows you to set the zoom without moving the map. Or move the map without changing the current zoom. If instead of this default behaviour, the previous [CameraPosition](#cameraposition) should be used as the base, this parameter should be set to `true`. But be cautious when using this. If the user made changes to the [CameraPosition](#cameraposition) (e.g. by scrolling or zooming the map), those changes will be undone because it will be overwritten by the last explicitly set [CameraPosition](#cameraposition). The [CameraPosition](#cameraposition) is only "explicitly set" with these methods: `createMap` and `moveCamera`. | <code>false</code> | 2.0.0 |
 
 #### AddMarkerResult
 
-| Prop           | Type                                      | Since |
-| -------------- | ----------------------------------------- | ----- |
-| **`marker`**   | <code><a href="#marker">Marker</a></code> | 2.0.0 |
-| **`position`** | <code><a href="#latlng">LatLng</a></code> | 2.0.0 |
+| Prop           | Type                           | Since |
+| -------------- | ------------------------------ | ----- |
+| **`marker`**   | <code>[Marker](#marker)</code> | 2.0.0 |
+| **`position`** | <code>[LatLng](#latlng)</code> | 2.0.0 |
 
 #### Marker
 
@@ -559,11 +559,11 @@ An intrinsic object that provides functions to convert JavaScript values to and 
 
 #### AddMarkerOptions
 
-| Prop              | Type                                                            | Since |
-| ----------------- | --------------------------------------------------------------- | ----- |
-| **`mapId`**       | <code>string</code>                                             | 2.0.0 |
-| **`preferences`** | <code><a href="#markerpreferences">MarkerPreferences</a></code> | 2.0.0 |
-| **`position`**    | <code><a href="#latlng">LatLng</a></code>                       | 2.0.0 |
+| Prop              | Type                                                 | Since |
+| ----------------- | ---------------------------------------------------- | ----- |
+| **`mapId`**       | <code>string</code>                                  | 2.0.0 |
+| **`preferences`** | <code>[MarkerPreferences](#markerpreferences)</code> | 2.0.0 |
+| **`position`**    | <code>[LatLng](#latlng)</code>                       | 2.0.0 |
 
 #### MarkerPreferences
 
@@ -591,29 +591,29 @@ An intrinsic object that provides functions to convert JavaScript values to and 
 
 #### DidTapInfoWindowResult
 
-| Prop           | Type                                      |
-| -------------- | ----------------------------------------- |
-| **`position`** | <code><a href="#latlng">LatLng</a></code> |
-| **`marker`**   | <code><a href="#marker">Marker</a></code> |
+| Prop           | Type                           |
+| -------------- | ------------------------------ |
+| **`position`** | <code>[LatLng](#latlng)</code> |
+| **`marker`**   | <code>[Marker](#marker)</code> |
 
 #### DidCloseInfoWindowResult
 
-| Prop           | Type                                      |
-| -------------- | ----------------------------------------- |
-| **`position`** | <code><a href="#latlng">LatLng</a></code> |
-| **`marker`**   | <code><a href="#marker">Marker</a></code> |
+| Prop           | Type                           |
+| -------------- | ------------------------------ |
+| **`position`** | <code>[LatLng](#latlng)</code> |
+| **`marker`**   | <code>[Marker](#marker)</code> |
 
 #### DidTapMapResult
 
-| Prop           | Type                                      |
-| -------------- | ----------------------------------------- |
-| **`position`** | <code><a href="#latlng">LatLng</a></code> |
+| Prop           | Type                           |
+| -------------- | ------------------------------ |
+| **`position`** | <code>[LatLng](#latlng)</code> |
 
 #### DidLongPressMapResult
 
-| Prop           | Type                                      |
-| -------------- | ----------------------------------------- |
-| **`position`** | <code><a href="#latlng">LatLng</a></code> |
+| Prop           | Type                           |
+| -------------- | ------------------------------ |
+| **`position`** | <code>[LatLng](#latlng)</code> |
 
 #### DefaultEventWithPreventDefaultOptions
 
@@ -624,83 +624,83 @@ An intrinsic object that provides functions to convert JavaScript values to and 
 
 #### DidTapMarkerResult
 
-| Prop           | Type                                      |
-| -------------- | ----------------------------------------- |
-| **`position`** | <code><a href="#latlng">LatLng</a></code> |
-| **`marker`**   | <code><a href="#marker">Marker</a></code> |
+| Prop           | Type                           |
+| -------------- | ------------------------------ |
+| **`position`** | <code>[LatLng](#latlng)</code> |
+| **`marker`**   | <code>[Marker](#marker)</code> |
 
 #### DidBeginDraggingMarkerResult
 
-| Prop           | Type                                      |
-| -------------- | ----------------------------------------- |
-| **`position`** | <code><a href="#latlng">LatLng</a></code> |
-| **`marker`**   | <code><a href="#marker">Marker</a></code> |
+| Prop           | Type                           |
+| -------------- | ------------------------------ |
+| **`position`** | <code>[LatLng](#latlng)</code> |
+| **`marker`**   | <code>[Marker](#marker)</code> |
 
 #### DidDragMarkerResult
 
-| Prop           | Type                                      |
-| -------------- | ----------------------------------------- |
-| **`position`** | <code><a href="#latlng">LatLng</a></code> |
-| **`marker`**   | <code><a href="#marker">Marker</a></code> |
+| Prop           | Type                           |
+| -------------- | ------------------------------ |
+| **`position`** | <code>[LatLng](#latlng)</code> |
+| **`marker`**   | <code>[Marker](#marker)</code> |
 
 #### DidEndDraggingMarkerResult
 
-| Prop           | Type                                      |
-| -------------- | ----------------------------------------- |
-| **`position`** | <code><a href="#latlng">LatLng</a></code> |
-| **`marker`**   | <code><a href="#marker">Marker</a></code> |
+| Prop           | Type                           |
+| -------------- | ------------------------------ |
+| **`position`** | <code>[LatLng](#latlng)</code> |
+| **`marker`**   | <code>[Marker](#marker)</code> |
 
 #### DidTapMyLocationDotResult
 
-| Prop           | Type                                      |
-| -------------- | ----------------------------------------- |
-| **`position`** | <code><a href="#latlng">LatLng</a></code> |
+| Prop           | Type                           |
+| -------------- | ------------------------------ |
+| **`position`** | <code>[LatLng](#latlng)</code> |
 
 #### DidTapPoiResult
 
-| Prop           | Type                                                        |
-| -------------- | ----------------------------------------------------------- |
-| **`position`** | <code><a href="#latlng">LatLng</a></code>                   |
-| **`poi`**      | <code><a href="#pointofinterest">PointOfInterest</a></code> |
+| Prop           | Type                                             |
+| -------------- | ------------------------------------------------ |
+| **`position`** | <code>[LatLng](#latlng)</code>                   |
+| **`poi`**      | <code>[PointOfInterest](#pointofinterest)</code> |
 
 #### PointOfInterest
 
-| Prop          | Type                                      | Description                                                                                                                                               | Since |
-| ------------- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
-| **`name`**    | <code><a href="#string">String</a></code> | The name of the POI.                                                                                                                                      | 2.0.0 |
-| **`placeId`** | <code><a href="#string">String</a></code> | The placeId of the POI. Read more about what you can use a placeId for here: https://developers.google.com/maps/documentation/places/web-service/place-id | 2.0.0 |
+| Prop          | Type                           | Description                                                                                                                                               | Since |
+| ------------- | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
+| **`name`**    | <code>[String](#string)</code> | The name of the POI.                                                                                                                                      | 2.0.0 |
+| **`placeId`** | <code>[String](#string)</code> | The placeId of the POI. Read more about what you can use a placeId for here: https://developers.google.com/maps/documentation/places/web-service/place-id | 2.0.0 |
 
 #### String
 
 Allows manipulation and formatting of text strings and determination and location of substrings within strings.
 
-| Prop         | Type                | Description                                                  |
-| ------------ | ------------------- | ------------------------------------------------------------ |
-| **`length`** | <code>number</code> | Returns the length of a <a href="#string">String</a> object. |
+| Prop         | Type                | Description                                       |
+| ------------ | ------------------- | ------------------------------------------------- |
+| **`length`** | <code>number</code> | Returns the length of a [String](#string) object. |
 
-| Method                | Signature                                                                                                                      | Description                                                                                                                                   |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| **toString**          | () =&gt; string                                                                                                                | Returns a string representation of a string.                                                                                                  |
-| **charAt**            | (pos: number) =&gt; string                                                                                                     | Returns the character at the specified index.                                                                                                 |
-| **charCodeAt**        | (index: number) =&gt; number                                                                                                   | Returns the Unicode value of the character at the specified location.                                                                         |
-| **concat**            | (...strings: string[]) =&gt; string                                                                                            | Returns a string that contains the concatenation of two or more strings.                                                                      |
-| **indexOf**           | (searchString: string, position?: number) =&gt; number                                                                         | Returns the position of the first occurrence of a substring.                                                                                  |
-| **lastIndexOf**       | (searchString: string, position?: number) =&gt; number                                                                         | Returns the last occurrence of a substring in the string.                                                                                     |
-| **localeCompare**     | (that: string) =&gt; number                                                                                                    | Determines whether two strings are equivalent in the current locale.                                                                          |
-| **match**             | (regexp: string \| <a href="#regexp">RegExp</a>) =&gt; <a href="#regexpmatcharray">RegExpMatchArray</a> \| null                | Matches a string with a regular expression, and returns an array containing the results of that search.                                       |
-| **replace**           | (searchValue: string \| <a href="#regexp">RegExp</a>, replaceValue: string) =&gt; string                                       | Replaces text in a string, using a regular expression or search string.                                                                       |
-| **replace**           | (searchValue: string \| <a href="#regexp">RegExp</a>, replacer: (substring: string, ...args: any[]) =&gt; string) =&gt; string | Replaces text in a string, using a regular expression or search string.                                                                       |
-| **search**            | (regexp: string \| <a href="#regexp">RegExp</a>) =&gt; number                                                                  | Finds the first substring match in a regular expression search.                                                                               |
-| **slice**             | (start?: number, end?: number) =&gt; string                                                                                    | Returns a section of a string.                                                                                                                |
-| **split**             | (separator: string \| <a href="#regexp">RegExp</a>, limit?: number) =&gt; string[]                                             | Split a string into substrings using the specified separator and return them as an array.                                                     |
-| **substring**         | (start: number, end?: number) =&gt; string                                                                                     | Returns the substring at the specified location within a <a href="#string">String</a> object.                                                 |
-| **toLowerCase**       | () =&gt; string                                                                                                                | Converts all the alphabetic characters in a string to lowercase.                                                                              |
-| **toLocaleLowerCase** | (locales?: string \| string[]) =&gt; string                                                                                    | Converts all alphabetic characters to lowercase, taking into account the host environment's current locale.                                   |
-| **toUpperCase**       | () =&gt; string                                                                                                                | Converts all the alphabetic characters in a string to uppercase.                                                                              |
-| **toLocaleUpperCase** | (locales?: string \| string[]) =&gt; string                                                                                    | Returns a string where all alphabetic characters have been converted to uppercase, taking into account the host environment's current locale. |
-| **trim**              | () =&gt; string                                                                                                                | Removes the leading and trailing white space and line terminator characters from a string.                                                    |
-| **substr**            | (from: number, length?: number) =&gt; string                                                                                   | Gets a substring beginning at the specified location and having the specified length.                                                         |
-| **valueOf**           | () =&gt; string                                                                                                                | Returns the primitive value of the specified object.                                                                                          |
+| Method                | Signature                                                                                                           | Description                                                                                                                                   |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| **toString**          | () =&gt; string                                                                                                     | Returns a string representation of a string.                                                                                                  |
+| **charAt**            | (pos: number) =&gt; string                                                                                          | Returns the character at the specified index.                                                                                                 |
+| **charCodeAt**        | (index: number) =&gt; number                                                                                        | Returns the Unicode value of the character at the specified location.                                                                         |
+| **concat**            | (...strings: string[]) =&gt; string                                                                                 | Returns a string that contains the concatenation of two or more strings.                                                                      |
+| **indexOf**           | (searchString: string, position?: number) =&gt; number                                                              | Returns the position of the first occurrence of a substring.                                                                                  |
+| **lastIndexOf**       | (searchString: string, position?: number) =&gt; number                                                              | Returns the last occurrence of a substring in the string.                                                                                     |
+| **localeCompare**     | (that: string) =&gt; number                                                                                         | Determines whether two strings are equivalent in the current locale.                                                                          |
+| **match**             | (regexp: string \| [RegExp](#regexp)) =&gt; [RegExpMatchArray](#regexpmatcharray) \| null                           | Matches a string with a regular expression, and returns an array containing the results of that search.                                       |
+| **replace**           | (searchValue: string \| [RegExp](#regexp), replaceValue: string) =&gt; string                                       | Replaces text in a string, using a regular expression or search string.                                                                       |
+| **replace**           | (searchValue: string \| [RegExp](#regexp), replacer: (substring: string, ...args: any[]) =&gt; string) =&gt; string | Replaces text in a string, using a regular expression or search string.                                                                       |
+| **search**            | (regexp: string \| [RegExp](#regexp)) =&gt; number                                                                  | Finds the first substring match in a regular expression search.                                                                               |
+| **slice**             | (start?: number, end?: number) =&gt; string                                                                         | Returns a section of a string.                                                                                                                |
+| **split**             | (separator: string \| [RegExp](#regexp), limit?: number) =&gt; string[]                                             | Split a string into substrings using the specified separator and return them as an array.                                                     |
+| **substring**         | (start: number, end?: number) =&gt; string                                                                          | Returns the substring at the specified location within a [String](#string) object.                                                            |
+| **toLowerCase**       | () =&gt; string                                                                                                     | Converts all the alphabetic characters in a string to lowercase.                                                                              |
+| **toLocaleLowerCase** | (locales?: string \| string[]) =&gt; string                                                                         | Converts all alphabetic characters to lowercase, taking into account the host environment's current locale.                                   |
+| **toUpperCase**       | () =&gt; string                                                                                                     | Converts all the alphabetic characters in a string to uppercase.                                                                              |
+| **toLocaleUpperCase** | (locales?: string \| string[]) =&gt; string                                                                         | Returns a string where all alphabetic characters have been converted to uppercase, taking into account the host environment's current locale. |
+| **trim**              | () =&gt; string                                                                                                     | Removes the leading and trailing white space and line terminator characters from a string.                                                    |
+| **substr**            | (from: number, length?: number) =&gt; string                                                                        | Gets a substring beginning at the specified location and having the specified length.                                                         |
+| **valueOf**           | () =&gt; string                                                                                                     | Returns the primitive value of the specified object.                                                                                          |
 
 #### RegExpMatchArray
 
@@ -719,11 +719,11 @@ Allows manipulation and formatting of text strings and determination and locatio
 | **`multiline`**  | <code>boolean</code> | Returns a Boolean value indicating the state of the multiline flag (m) used with a regular expression. Default is false. Read-only.                                  |
 | **`lastIndex`**  | <code>number</code>  |                                                                                                                                                                      |
 
-| Method      | Signature                                                                     | Description                                                                                                                   |
-| ----------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| **exec**    | (string: string) =&gt; <a href="#regexpexecarray">RegExpExecArray</a> \| null | Executes a search on a string using a regular expression pattern, and returns an array containing the results of that search. |
-| **test**    | (string: string) =&gt; boolean                                                | Returns a Boolean value that indicates whether or not a pattern exists in a searched string.                                  |
-| **compile** | () =&gt; this                                                                 |                                                                                                                               |
+| Method      | Signature                                                          | Description                                                                                                                   |
+| ----------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| **exec**    | (string: string) =&gt; [RegExpExecArray](#regexpexecarray) \| null | Executes a search on a string using a regular expression pattern, and returns an array containing the results of that search. |
+| **test**    | (string: string) =&gt; boolean                                     | Returns a Boolean value that indicates whether or not a pattern exists in a searched string.                                  |
+| **compile** | () =&gt; this                                                      |                                                                                                                               |
 
 #### RegExpExecArray
 
@@ -734,15 +734,15 @@ Allows manipulation and formatting of text strings and determination and locatio
 
 #### DidBeginMovingCameraResult
 
-| Prop         | Type                                                                  |
-| ------------ | --------------------------------------------------------------------- |
-| **`reason`** | <code><a href="#cameramovementreason">CameraMovementReason</a></code> |
+| Prop         | Type                                                       |
+| ------------ | ---------------------------------------------------------- |
+| **`reason`** | <code>[CameraMovementReason](#cameramovementreason)</code> |
 
 #### DidEndMovingCameraResult
 
-| Prop                 | Type                                                      |
-| -------------------- | --------------------------------------------------------- |
-| **`cameraPosition`** | <code><a href="#cameraposition">CameraPosition</a></code> |
+| Prop                 | Type                                           |
+| -------------------- | ---------------------------------------------- |
+| **`cameraPosition`** | <code>[CameraPosition](#cameraposition)</code> |
 
 #### ElementFromPointResultOptions
 
@@ -769,7 +769,7 @@ Allows manipulation and formatting of text strings and determination and locatio
 
 #### DidTapInfoWindowCallback
 
-<code>(result: <a href="#didtapinfowindowresult">DidTapInfoWindowResult</a>, err?: any): void</code>
+<code>(result: [DidTapInfoWindowResult](#didtapinfowindowresult), err?: any): void</code>
 
 #### CallbackID
 
@@ -777,31 +777,31 @@ Allows manipulation and formatting of text strings and determination and locatio
 
 #### DidCloseInfoWindowCallback
 
-<code>(result: <a href="#didcloseinfowindowresult">DidCloseInfoWindowResult</a>, err?: any): void</code>
+<code>(result: [DidCloseInfoWindowResult](#didcloseinfowindowresult), err?: any): void</code>
 
 #### DidTapMapCallback
 
-<code>(result: <a href="#didtapmapresult">DidTapMapResult</a>, err?: any): void</code>
+<code>(result: [DidTapMapResult](#didtapmapresult), err?: any): void</code>
 
 #### DidLongPressMapCallback
 
-<code>(result: <a href="#didlongpressmapresult">DidLongPressMapResult</a>, err?: any): void</code>
+<code>(result: [DidLongPressMapResult](#didlongpressmapresult), err?: any): void</code>
 
 #### DidTapMarkerCallback
 
-<code>(result: <a href="#didtapmarkerresult">DidTapMarkerResult</a>, err?: any): void</code>
+<code>(result: [DidTapMarkerResult](#didtapmarkerresult), err?: any): void</code>
 
 #### DidBeginDraggingMarkerCallback
 
-<code>(result: <a href="#didbegindraggingmarkerresult">DidBeginDraggingMarkerResult</a>, err?: any): void</code>
+<code>(result: [DidBeginDraggingMarkerResult](#didbegindraggingmarkerresult), err?: any): void</code>
 
 #### DidDragMarkerCallback
 
-<code>(result: <a href="#diddragmarkerresult">DidDragMarkerResult</a>, err?: any): void</code>
+<code>(result: [DidDragMarkerResult](#diddragmarkerresult), err?: any): void</code>
 
 #### DidEndDraggingMarkerCallback
 
-<code>(result: <a href="#didenddraggingmarkerresult">DidEndDraggingMarkerResult</a>, err?: any): void</code>
+<code>(result: [DidEndDraggingMarkerResult](#didenddraggingmarkerresult), err?: any): void</code>
 
 #### DidTapMyLocationButtonCallback
 
@@ -809,15 +809,15 @@ Allows manipulation and formatting of text strings and determination and locatio
 
 #### DidTapMyLocationDotCallback
 
-<code>(result: <a href="#didtapmylocationdotresult">DidTapMyLocationDotResult</a>, err?: any): void</code>
+<code>(result: [DidTapMyLocationDotResult](#didtapmylocationdotresult), err?: any): void</code>
 
 #### DidTapPoiCallback
 
-<code>(result: <a href="#didtappoiresult">DidTapPoiResult</a>, err?: any): void</code>
+<code>(result: [DidTapPoiResult](#didtappoiresult), err?: any): void</code>
 
 #### DidBeginMovingCameraCallback
 
-<code>(result: <a href="#didbeginmovingcameraresult">DidBeginMovingCameraResult</a>, err?: any): void</code>
+<code>(result: [DidBeginMovingCameraResult](#didbeginmovingcameraresult), err?: any): void</code>
 
 #### DidMoveCameraCallback
 
@@ -825,7 +825,7 @@ Allows manipulation and formatting of text strings and determination and locatio
 
 #### DidEndMovingCameraCallback
 
-<code>(result: <a href="#didendmovingcameraresult">DidEndMovingCameraResult</a>, err?: any): void</code>
+<code>(result: [DidEndMovingCameraResult](#didendmovingcameraresult), err?: any): void</code>
 
 ### Enums
 
