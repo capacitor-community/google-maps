@@ -58,6 +58,12 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             customMapView.mapPreferences.updateFromJSObject(preferences)
 
             self.customWebView?.scrollView.addSubview(customMapView.view)
+
+            if (customMapView.GMapView == nil) {
+                call.reject("Map could not be created. Did you forget to update the class in Main.storyboard? If you do not know what that is, please read the documentation.")
+                return
+            }
+
             self.customWebView?.scrollView.sendSubviewToBack(customMapView.view)
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
@@ -70,19 +76,18 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
     }
 
     @objc func updateMap(_ call: CAPPluginCall) {
-        let mapId: String = call.getString("mapId")!;
+        let mapId: String = call.getString("mapId", "")
 
         DispatchQueue.main.async {
-            let customMapView = self.customWebView?.customMapViews[mapId];
-
-            if (customMapView != nil) {
-                let preferences = call.getObject("preferences", JSObject());
-                customMapView?.mapPreferences.updateFromJSObject(preferences);
-
-                customMapView?.invalidateMap();
-            } else {
-                call.reject("map not found");
+            guard let customMapView = self.customWebView?.customMapViews[mapId] else {
+                call.reject("map not found")
+                return
             }
+
+            let preferences = call.getObject("preferences", JSObject());
+            customMapView.mapPreferences.updateFromJSObject(preferences);
+
+            customMapView.invalidateMap();
         }
 
     }
@@ -171,11 +176,15 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
     }
 
     func setCallbackIdForEvent(call: CAPPluginCall, eventName: String) {
+        let mapId: String = call.getString("mapId", "")
+
+        guard let customMapView = self.customWebView?.customMapViews[mapId] else {
+            call.reject("map not found")
+            return
+        }
+
         call.keepAlive = true;
         let callbackId = call.callbackId;
-        guard let mapId = call.getString("mapId") else { return };
-
-        let customMapView: CustomMapView = self.customWebView!.customMapViews[mapId]!;
 
         let preventDefault: Bool = call.getBool("preventDefault", false);
         customMapView.setCallbackIdForEvent(callbackId: callbackId, eventName: eventName, preventDefault: preventDefault);
