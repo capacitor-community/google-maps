@@ -37,8 +37,13 @@ export interface MarkerPreferences {
    */
   isDraggable?: boolean;
   /**
-   * Controls whether this marker can be dragged interactively.
-   * When a marker is draggable, it can be moved by the user by long pressing on the marker.
+   * Specifies the anchor to be at a particular point in the marker image.
+   *
+   * The anchor specifies the point in the icon image that is anchored to the marker's position on the Earth's surface.
+   *
+   * The anchor point is specified in the continuous space [0.0, 1.0] x [0.0, 1.0], where (0, 0) is the top-left corner of the image, and (1, 1) is the bottom-right corner.
+   *
+   * Read more about it here: https://developers.google.com/android/reference/com/google/android/gms/maps/model/MarkerOptions#anchor(float,%20float)
    *
    * @default { x: 0.5, y: 1 }
    * @since 2.0.0
