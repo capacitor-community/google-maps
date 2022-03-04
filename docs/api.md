@@ -350,6 +350,29 @@ It is handled automatically and you should probably not use it.
 
 ---
 
+### addListener(string, ...)
+
+```typescript
+addListener(eventName: string, listenerFunc: (...args: any[]) => any) => Promise<PluginListenerHandle>
+```
+
+| Param              | Type                                    |
+| ------------------ | --------------------------------------- |
+| **`eventName`**    | <code>string</code>                     |
+| **`listenerFunc`** | <code>(...args: any[]) =&gt; any</code> |
+
+**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt;</code>
+
+---
+
+### removeAllListeners()
+
+```typescript
+removeAllListeners() => Promise<void>
+```
+
+---
+
 ### Interfaces
 
 #### InitializeOptions
