@@ -37,6 +37,14 @@ export interface MarkerPreferences {
    */
   isDraggable?: boolean;
   /**
+   * Controls whether this marker can be dragged interactively.
+   * When a marker is draggable, it can be moved by the user by long pressing on the marker.
+   *
+   * @default { x: 0.5, y: 1 }
+   * @since 2.0.0
+   */
+  anchor?: { x: number; y: number };
+  /**
    * You can use this property to associate an arbitrary object with this overlay.
    * The Google Maps SDK neither reads nor writes this property.
    * Note that metadata should not hold any strong references to any Maps objects,
