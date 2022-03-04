@@ -349,7 +349,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
                 if (customMapView != null) {
                     final MapCameraPosition mapCameraPosition = customMapView.mapCameraPosition;
 
-                    currentCameraPosition = null;
+                    CameraPosition currentCameraPosition = null;
 
                     Boolean useCurrentCameraPositionAsBase = call.getBoolean("useCurrentCameraPositionAsBase", true);
 
