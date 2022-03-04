@@ -110,15 +110,8 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
                 return
             }
             let preferences = call.getObject("preferences", JSObject())
-            let marker = CustomMarker()
-            marker.updateFromJSObject(preferences: preferences)
-            marker.map = customMapView.GMapView
-            self.customMarkers[marker.id] = marker
-            if let url = call.getObject("icon")?["url"] as? String {
-                self.imageCache.image(at: url) { image in
-                    marker.icon = image
-                }
-            }
+            
+            let marker = self.addMarker(preferences, customMapView: customMapView)
             
             call.resolve(CustomMarker.getResultForMarker(marker))
         }
@@ -134,7 +127,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             }
             
             let markers = List<JSValue>(elements: call.getArray("markers", []))
-            self.addMarker(node: markers.first, mapView: customMapView)
+            self.addMarker(node: markers.first, customMapView: customMapView)
             
             call.resolve()
         }
@@ -213,22 +206,36 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
 }
 
 private extension CapacitorGoogleMaps {
-    func addMarker(node: Node<JSValue>?,
-                   mapView: CustomMapView) {
-        guard let node = node else { return }
-        let markerObject = node.value as? JSObject ?? JSObject();
-        let preferences = markerObject["preferences"] as? JSObject ?? JSObject();
-        
+    func addMarker(_ preferences: JSObject, customMapView: CustomMapView) -> GMSMarker {
         let marker = CustomMarker()
+        
         marker.updateFromJSObject(preferences: preferences)
-        marker.map = mapView.GMapView
+        marker.map = customMapView.GMapView
+        
         self.customMarkers[marker.id] = marker
-        if let url = (markerObject["icon"] as? JSObject)?["url"] as? String {
-            imageCache.image(at: url) { [weak self] image in
-                marker.icon = image
-                self?.addMarker(node: node.next, mapView: mapView)
+        
+        if let icon = preferences["icon"] as? JSObject {
+            if let url = icon["url"] as? String {
+                let resizeWidth = icon["width"] as? Int ?? 30
+                let resizeHeight = icon["height"] as? Int ?? 30
+                self.imageCache.image(at: url, resizeWidth: resizeWidth, resizeHeight: resizeHeight) { image in
+                    marker.icon = image
+                }
             }
         }
+        
+        return marker
+    }
+    
+    func addMarker(node: Node<JSValue>?,
+                   customMapView: CustomMapView) {
+        guard let node = node else { return }
+        let markerObject = node.value as? JSObject ?? JSObject()
+        let preferences = markerObject["preferences"] as? JSObject ?? JSObject()
+        
+        self.addMarker(preferences, customMapView: customMapView)
+        
+        self.addMarker(node: node.next, customMapView: customMapView)
     }
 }
 
