@@ -185,7 +185,9 @@ private extension CapacitorGoogleMaps {
         
         if let icon = preferences["icon"] as? JSObject {
             if let url = icon["url"] as? String {
-                self.imageCache.image(at: url) { image in
+                let resizeWidth = icon["width"] as? Int ?? 30
+                let resizeHeight = icon["height"] as? Int ?? 30
+                self.imageCache.image(at: url, resizeWidth: resizeWidth, resizeHeight: resizeHeight) { image in
                     marker.icon = image
                 }
             }

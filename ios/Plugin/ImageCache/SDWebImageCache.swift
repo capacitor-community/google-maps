@@ -1,10 +1,5 @@
 import SDWebImage
 
-private enum Constants {
-    static let resizeWidth = 30
-    static let resizeHeight = 30
-}
-
 final class SDWebImageCache: ImageURLLoadable {
     static let shared: ImageURLLoadable = SDWebImageCache()
 
@@ -15,16 +10,14 @@ final class SDWebImageCache: ImageURLLoadable {
         cache.config.maxDiskAge = 7 * 24 * 60 * 60
     }
 
-    func image(at urlString: String, completion: @escaping VoidReturnClosure<UIImage?>) {
+    func image(at urlString: String, resizeWidth: Int, resizeHeight: Int, completion: @escaping VoidReturnClosure<UIImage?>) {
         downloadManager.loadImage(with: URL(string: urlString), options: [], progress: nil) { image,_,_,_,_,_ in
-            completion(image?.resize(targetSize: CGSize(width: Constants.resizeWidth,
-                                                        height: Constants.resizeHeight)))
+            completion(image?.resize(targetSize: CGSize(width: resizeWidth,
+                                                        height: resizeHeight)))
         }
     }
 
     func clear(completion: @escaping NoArgsClosure) {
         cache.clearDisk(onCompletion: completion)
     }
-
-
 }
