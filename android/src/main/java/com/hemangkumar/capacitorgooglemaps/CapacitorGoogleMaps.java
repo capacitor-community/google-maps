@@ -349,15 +349,15 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
                 if (customMapView != null) {
                     final MapCameraPosition mapCameraPosition = customMapView.mapCameraPosition;
 
-                    CameraPosition previousCameraPosition = null;
-                    Boolean usePreviousCameraPositionAsBase = call.getBoolean("usePreviousCameraPositionAsBase", false);
-                    if (usePreviousCameraPositionAsBase == null || !usePreviousCameraPositionAsBase) {
-                        // if we should not use the previous one,
-                        // use the current one
-                        previousCameraPosition = customMapView.getCameraPosition();
+                    currentCameraPosition = null;
+
+                    Boolean useCurrentCameraPositionAsBase = call.getBoolean("useCurrentCameraPositionAsBase", true);
+
+                    if (useCurrentCameraPositionAsBase != null && useCurrentCameraPositionAsBase) {
+                        currentCameraPosition = customMapView.getCameraPosition();
                     }
 
-                    mapCameraPosition.updateFromJSObject(call.getObject("cameraPosition"), previousCameraPosition);
+                    mapCameraPosition.updateFromJSObject(call.getObject("cameraPosition"), currentCameraPosition);
 
                     Integer duration = call.getInt("duration", 0);
 
