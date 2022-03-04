@@ -60,7 +60,7 @@ class CustomMapView: UIViewController, GMSMapViewDelegate {
         
         let frame = CGRect(x: self.boundingRect.x, y: self.boundingRect.y, width: self.boundingRect.width, height: self.boundingRect.height);
         
-        let camera = GMSCameraPosition.camera(withLatitude: self.mapCameraPosition.latitude, longitude: self.mapCameraPosition.longitude, zoom: self.mapCameraPosition.zoom, bearing: self.mapCameraPosition.bearing, viewingAngle: self.mapCameraPosition.tilt);
+        let camera = self.mapCameraPosition.getCameraPosition();
         
         self.GMapView = GMSMapView.map(withFrame: frame, camera: camera);
         
@@ -99,6 +99,32 @@ class CustomMapView: UIViewController, GMSMapViewDelegate {
         self.GMapView.isIndoorEnabled = self.mapPreferences.appearance.isIndoorShown;
         self.GMapView.isMyLocationEnabled = self.mapPreferences.appearance.isMyLocationDotShown;
         self.GMapView.isTrafficEnabled = self.mapPreferences.appearance.isTrafficShown;
+    }
+    
+    public func getCameraPosition() -> GMSCameraPosition? {
+        if (self.GMapView != nil) {
+            return self.GMapView.camera;
+        }
+        return nil;
+    }
+    
+    public func moveCamera(_ duration: Int?) {
+        
+        let camera = self.mapCameraPosition.getCameraPosition()
+        
+        if (duration == nil || duration == 0) {
+            self.GMapView.camera = camera
+        } else {
+            let durationFloat: Float = Float(duration ?? 1000) / 1000
+            
+            CATransaction.begin()
+            CATransaction.setValue(durationFloat, forKey: kCATransactionAnimationDuration)
+            CATransaction.setCompletionBlock({
+             // Transaction completed
+            })
+            self.GMapView.animate(to: camera)
+            CATransaction.commit()
+        }
     }
 
     public func setCallbackIdForEvent(callbackId: String!, eventName: String!, preventDefault: Bool!) {
