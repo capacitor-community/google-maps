@@ -39,7 +39,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             customMapView.boundingRect.updateFromJSObject(boundingRect);
             
             let mapCameraPosition = call.getObject("cameraPosition", JSObject());
-            customMapView.mapCameraPosition.updateFromJSObject(mapCameraPosition);
+            customMapView.mapCameraPosition.updateFromJSObject(mapCameraPosition, baseCameraPosition: nil);
 
             let preferences = call.getObject("preferences", JSObject());
             customMapView.mapPreferences.updateFromJSObject(preferences);
@@ -68,6 +68,37 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             }
         }
 
+    }
+
+    @objc func moveCamera(_ call: CAPPluginCall) {
+        let mapId: String = call.getString("mapId", "")
+
+        DispatchQueue.main.async {
+            guard let customMapView = self.customMapViews[mapId] else {
+                call.reject("map not found")
+                return
+            }
+
+            let mapCameraPosition = customMapView.mapCameraPosition
+            
+            var currentCameraPosition: GMSCameraPosition?;
+            
+            let useCurrentCameraPositionAsBase = call.getBool("useCurrentCameraPositionAsBase", true)
+            
+            if (useCurrentCameraPositionAsBase) {
+                currentCameraPosition = customMapView.getCameraPosition()
+            }
+            
+            let cameraPosition = call.getObject("cameraPosition", JSObject())
+            mapCameraPosition.updateFromJSObject(cameraPosition, baseCameraPosition: currentCameraPosition)
+            
+            let duration = call.getInt("duration", 0)
+            
+            customMapView.moveCamera(duration)
+            
+            // @TODO: return map result
+            call.resolve()
+        }
     }
 
     @objc func addMarker(_ call: CAPPluginCall) {

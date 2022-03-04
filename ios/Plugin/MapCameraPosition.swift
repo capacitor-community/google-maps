@@ -1,4 +1,5 @@
 import Capacitor
+import GoogleMaps
 
 class MapCameraPosition {
     public static let TARGET_KEY: String! = "target";
@@ -28,13 +29,53 @@ class MapCameraPosition {
         self.tilt = MapCameraPosition.TILT_DEFAULT;
         self.zoom = MapCameraPosition.ZOOM_DEFAULT;
     }
+    
+    func getCameraPosition() -> GMSCameraPosition {
+        return GMSCameraPosition.camera(
+            withLatitude: self.latitude,
+            longitude: self.longitude,
+            zoom: self.zoom,
+            bearing: self.bearing,
+            viewingAngle: self.tilt
+        )
+    }
 
-    func updateFromJSObject(_ object: JSObject) {
+    func updateFromJSObject(_ object: JSObject, baseCameraPosition: GMSCameraPosition?) {
         let target: JSObject = object[MapCameraPosition.TARGET_KEY] as? JSObject ?? MapCameraPosition.TARGET_DEFAULT;
-        self.latitude = target[MapCameraPosition.LATITUDE_KEY] as? Double ?? MapCameraPosition.LATITUDE_DEFAULT;
-        self.longitude = target[MapCameraPosition.LONGITUDE_KEY] as? Double ?? MapCameraPosition.LONGITUDE_DEFAULT;
-        self.bearing = object[MapCameraPosition.BEARING_KEY] as? Double ?? MapCameraPosition.BEARING_DEFAULT;
-        self.tilt = object[MapCameraPosition.TILT_KEY] as? Double ?? MapCameraPosition.TILT_DEFAULT;
-        self.zoom = object[MapCameraPosition.ZOOM_KEY] as? Float ?? MapCameraPosition.ZOOM_DEFAULT;
+        
+        var latitude = baseCameraPosition?.target.latitude ?? MapCameraPosition.LATITUDE_DEFAULT
+        if (target[MapCameraPosition.LATITUDE_KEY] != nil) {
+            // TODO: validate latitude
+            latitude = target[MapCameraPosition.LATITUDE_KEY] as? Double ?? latitude
+        }
+        self.latitude = latitude;
+        
+        var longitude = baseCameraPosition?.target.longitude ?? MapCameraPosition.LONGITUDE_DEFAULT
+        if (target[MapCameraPosition.LONGITUDE_KEY] != nil) {
+            // TODO: validate longitude
+            longitude = target[MapCameraPosition.LONGITUDE_KEY] as? Double ?? longitude
+        }
+        self.longitude = longitude;
+        
+        var bearing = baseCameraPosition?.bearing ?? MapCameraPosition.BEARING_DEFAULT
+        if (object[MapCameraPosition.BEARING_KEY] != nil) {
+            // TODO: validate bearing
+            bearing = object[MapCameraPosition.BEARING_KEY] as? Double ?? bearing
+        }
+        self.bearing = bearing;
+        
+        var tilt = baseCameraPosition?.viewingAngle ?? MapCameraPosition.TILT_DEFAULT
+        if (object[MapCameraPosition.TILT_KEY] != nil) {
+            // TODO: validate tilt
+            tilt = object[MapCameraPosition.TILT_KEY] as? Double ?? tilt
+        }
+        self.tilt = tilt;
+        
+        var zoom = baseCameraPosition?.zoom ?? MapCameraPosition.ZOOM_DEFAULT
+        if (object[MapCameraPosition.ZOOM_KEY] != nil) {
+            // TODO: validate zoom
+            zoom = object[MapCameraPosition.ZOOM_KEY] as? Float ?? zoom
+        }
+        self.zoom = zoom;
     }
 }
