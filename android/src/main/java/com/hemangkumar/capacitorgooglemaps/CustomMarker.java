@@ -33,6 +33,10 @@ public class CustomMarker {
         final Boolean isFlat = JSObjectDefaults.getBooleanSafe(preferences,"isFlat", false);
         final Boolean isDraggable = JSObjectDefaults.getBooleanSafe(preferences,"isDraggable", false);
 
+        final JSObject anchor = JSObjectDefaults.getJSObjectSafe(preferences, "anchor", new JSObject());
+        final Float anchorX = JSObjectDefaults.getFloatSafe(anchor, "x", 0.5f);
+        final Float anchorY = JSObjectDefaults.getFloatSafe(anchor, "y", 1f);
+
         this.setMetadata(JSObjectDefaults.getJSObjectSafe(preferences, "metadata", new JSObject()));
 
         this.markerOptions.position(latLng);
@@ -41,6 +45,7 @@ public class CustomMarker {
         this.markerOptions.alpha(opacity);
         this.markerOptions.flat(isFlat);
         this.markerOptions.draggable(isDraggable);
+        this.markerOptions.anchor(anchorX, anchorY);
     }
 
     public Marker addToMap(GoogleMap googleMap) {
@@ -53,6 +58,11 @@ public class CustomMarker {
         JSObject tag = new JSObject();
         // set id to tag
         tag.put("markerId", this.markerId);
+        // set anchor to tag (because it cannot be retrieved from a marker instance)
+        JSObject anchorResult = new JSObject();
+        anchorResult.put("x", this.markerOptions.getAnchorU());
+        anchorResult.put("y", this.markerOptions.getAnchorV());
+        tag.put("anchor", anchorResult);
         // then set metadata to tag
         tag.put("metadata", jsObject);
         // save in tag variable
@@ -91,6 +101,14 @@ public class CustomMarker {
             try {
                 JSObject metadata = tag.getJSObject("metadata", new JSObject());
                 markerResult.put("metadata", metadata);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                // get anchor values
+                JSObject anchorResult = tag.getJSObject("anchor", new JSObject());
+                markerResult.put("anchor", anchorResult);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

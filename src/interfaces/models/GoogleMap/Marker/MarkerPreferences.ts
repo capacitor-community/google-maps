@@ -37,6 +37,19 @@ export interface MarkerPreferences {
    */
   isDraggable?: boolean;
   /**
+   * Specifies the anchor to be at a particular point in the marker image.
+   *
+   * The anchor specifies the point in the icon image that is anchored to the marker's position on the Earth's surface.
+   *
+   * The anchor point is specified in the continuous space [0.0, 1.0] x [0.0, 1.0], where (0, 0) is the top-left corner of the image, and (1, 1) is the bottom-right corner.
+   *
+   * Read more about it here: https://developers.google.com/android/reference/com/google/android/gms/maps/model/MarkerOptions#anchor(float,%20float)
+   *
+   * @default { x: 0.5, y: 1 }
+   * @since 2.0.0
+   */
+  anchor?: { x: number; y: number };
+  /**
    * You can use this property to associate an arbitrary object with this overlay.
    * The Google Maps SDK neither reads nor writes this property.
    * Note that metadata should not hold any strong references to any Maps objects,

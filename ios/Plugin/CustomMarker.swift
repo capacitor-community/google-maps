@@ -20,6 +20,11 @@ class CustomMarker: GMSMarker {
         self.isFlat = preferences["isFlat"] as? Bool ?? false;
         
         self.isDraggable = preferences["isDraggable"] as? Bool ?? false;
+
+        let anchor = preferences["anchor"] as? JSObject ?? JSObject();
+        let anchorX = anchor["x"] as? Double ?? 0.5;
+        let anchorY = anchor["y"] as? Double ?? 1.0;
+        self.groundAnchor = CGPoint.init(x: anchorX, y: anchorY);
         
         let metadata: JSObject = preferences["metadata"] as? JSObject ?? JSObject();
         self.userData = [
@@ -42,6 +47,10 @@ class CustomMarker: GMSMarker {
                 "position": [
                     "latitude": marker.position.latitude,
                     "longitude": marker.position.longitude
+                ],
+                "anchor": [
+                    "x": marker.groundAnchor.x,
+                    "y": marker.groundAnchor.y
                 ],
                 "metadata": tag["metadata"] ?? JSObject()
             ]
