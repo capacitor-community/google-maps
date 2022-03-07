@@ -38,8 +38,6 @@ public class CustomMarker {
         final Float anchorX = JSObjectDefaults.getFloatSafe(anchor, "x", 0.5f);
         final Float anchorY = JSObjectDefaults.getFloatSafe(anchor, "y", 1f);
 
-        this.setMetadata(JSObjectDefaults.getJSObjectSafe(preferences, "metadata", new JSObject()));
-
         this.markerOptions.position(latLng);
         this.markerOptions.title(title);
         this.markerOptions.snippet(snippet);
@@ -48,6 +46,8 @@ public class CustomMarker {
         this.markerOptions.draggable(isDraggable);
         this.markerOptions.zIndex(zIndex);
         this.markerOptions.anchor(anchorX, anchorY);
+
+        this.setMetadata(JSObjectDefaults.getJSObjectSafe(preferences, "metadata", new JSObject()));
     }
 
     public Marker addToMap(GoogleMap googleMap) {
