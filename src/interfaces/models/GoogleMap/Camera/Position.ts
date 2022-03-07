@@ -11,7 +11,7 @@ export interface CameraPosition {
    *
    * @since 2.0.0
    */
-  target: LatLng;
+  target?: LatLng;
   /**
    * The camera bearing is the direction in which a vertical line on the map points, measured in degrees clockwise from north.
    * Someone driving a car often turns a road map to align it with their direction of travel, while hikers using a map and compass usually orient the map so that a vertical line is pointing north.
@@ -20,14 +20,14 @@ export interface CameraPosition {
    *
    * @since 2.0.0
    */
-  bearing: number;
+  bearing?: number;
   /**
    * The tilt defines the camera's position on an arc between directly over the map's center position and the surface of the Earth, measured in degrees from the nadir (the direction pointing directly below the camera).
    * When you change the viewing angle, the map appears in perspective, with far-away features appearing smaller, and nearby features appearing larger.
    *
    * @since 2.0.0
    */
-  tilt: number;
+  tilt?: number;
   /**
    * The zoom level of the camera determines the scale of the map.
    * At larger zoom levels more detail can be seen on the screen,
@@ -35,5 +35,5 @@ export interface CameraPosition {
    *
    * @since 2.0.0
    */
-  zoom: number;
+  zoom?: number;
 }

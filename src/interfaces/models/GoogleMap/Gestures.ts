@@ -12,7 +12,7 @@ export interface MapGestures {
    * @default true
    * @since 2.0.0
    */
-  isRotateAllowed: boolean;
+  isRotateAllowed?: boolean;
   /**
    * If `true`, scroll gestures are allowed.
    * If enabled, users can swipe to pan the camera.
@@ -22,7 +22,7 @@ export interface MapGestures {
    * @default true
    * @since 2.0.0
    */
-  isScrollAllowed: boolean;
+  isScrollAllowed?: boolean;
   /**
    * If `true`, scroll gestures can take place at the same time as a zoom or rotate gesture.
    * If enabled, users can scroll the map while rotating or zooming the map.
@@ -33,7 +33,7 @@ export interface MapGestures {
    * @default true
    * @since 2.0.0
    */
-  isScrollAllowedDuringRotateOrZoom: boolean;
+  isScrollAllowedDuringRotateOrZoom?: boolean;
   /**
    * If `true`, tilt gestures are allowed.
    * If enabled, users can use a two-finger vertical down swipe to tilt the camera.
@@ -44,7 +44,7 @@ export interface MapGestures {
    * @default true
    * @since 2.0.0
    */
-  isTiltAllowed: boolean;
+  isTiltAllowed?: boolean;
   /**
    * If `true`, zoom gestures are allowed.
    * If enabled, users can either double tap/two-finger tap or pinch to zoom the camera.
@@ -55,5 +55,5 @@ export interface MapGestures {
    * @default true
    * @since 2.0.0
    */
-  isZoomAllowed: boolean;
+  isZoomAllowed?: boolean;
 }

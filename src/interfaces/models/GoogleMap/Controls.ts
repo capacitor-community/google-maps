@@ -12,7 +12,7 @@ export interface MapControls {
    * @default true
    * @since 2.0.0
    */
-  isCompassButtonEnabled: boolean;
+  isCompassButtonEnabled?: boolean;
   // TODO:
   // /**
   //  * If `true`, the indoor level picker is enabled.
@@ -30,7 +30,7 @@ export interface MapControls {
    * @default false
    * @since 2.0.0
    */
-  isMapToolbarEnabled: boolean;
+  isMapToolbarEnabled?: boolean;
   /**
    * If `true`, the my-location button is enabled.
    * This is a button visible on the map that, when tapped by users, will center the map on the current user location.
@@ -39,7 +39,7 @@ export interface MapControls {
    * @default true
    * @since 2.0.0
    */
-  isMyLocationButtonEnabled: boolean;
+  isMyLocationButtonEnabled?: boolean;
   /**
    * (Android only)
    * If `true`, the zoom controls are enabled.
@@ -50,5 +50,5 @@ export interface MapControls {
    * @default false
    * @since 2.0.0
    */
-  isZoomButtonsEnabled: boolean;
+  isZoomButtonsEnabled?: boolean;
 }

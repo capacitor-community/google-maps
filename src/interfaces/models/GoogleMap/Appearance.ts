@@ -42,7 +42,7 @@ export interface MapAppearance {
    * @default MapType.Normal
    * @since 2.0.0
    */
-  type: MapType;
+  type?: MapType;
   /**
    * Holds details about a style which can be applied to a map.
    * When set to `null` the default styling will be used.
@@ -55,14 +55,14 @@ export interface MapAppearance {
    * @default null
    * @since 2.0.0
    */
-  style: JSON | null;
+  style?: JSON | null;
   /**
    * If `true`, 3D buildings will be shown where available.
    *
    * @default true
    * @since 2.0.0
    */
-  isBuildingsShown: boolean;
+  isBuildingsShown?: boolean;
   /**
    * If `true`, indoor maps are shown, where available.
    * If this is set to false, caches for indoor data may be purged and any floor currently selected by the end-user may be reset.
@@ -70,14 +70,14 @@ export interface MapAppearance {
    * @default true
    * @since 2.0.0
    */
-  isIndoorShown: boolean;
+  isIndoorShown?: boolean;
   /**
    * If `true`, the my-location (blue) dot and accuracy circle are shown.
    *
    * @default false
    * @since 2.0.0
    */
-  isMyLocationDotShown: boolean;
+  isMyLocationDotShown?: boolean;
   /**
    * If `true`, the map draws traffic data, if available.
    * This is subject to the availability of traffic data.
@@ -85,5 +85,5 @@ export interface MapAppearance {
    * @default false
    * @since 2.0.0
    */
-  isTrafficShown: boolean;
+  isTrafficShown?: boolean;
 }
