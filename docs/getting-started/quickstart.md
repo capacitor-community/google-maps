@@ -112,5 +112,5 @@ const initializeMap = async () => {
 As the previous example shows, it is really easy to integrate the Maps SDK into your app. But, of course, there are many more possibilities.
 
 - Read the Guides to learn more about the plugin.
-- Refer to the [API Reference](api?id=api-reference-🔌) to see all available methods the plugin offers.
+- Refer to the [API Reference](api.md#api-reference-🔌) to see all available methods the plugin offers.
 - Take a look at some examples [here](https://github.com/DutchConcepts/capacitor-google-maps-examples).

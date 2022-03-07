@@ -1,6 +1,6 @@
 <p align="center"><br><img src="https://user-images.githubusercontent.com/236501/85893648-1c92e880-b7a8-11ea-926d-95355b8175c7.png" width="128" height="128" /></p>
 
-<h3 align="center">Google Maps</h3>
+<h3 id="home" align="center">Google Maps</h3>
 <p align="center"><strong><code>@capacitor-community/capacitor-googlemaps-native</code></strong></p>
 <p align="center">Capacitor Plugin using native Google Maps SDK for Android and iOS.</p>
 <p align="center">
@@ -23,7 +23,7 @@
 
 Under the hood this package makes use of the native Maps SDK for Android and iOS. The native Maps SDK has much better performance than the JS equivalent. It also adds support for offline caching. On top of that it ("Dynamic Maps") is completely free to use (as of February 2022) ([native pricing](https://developers.google.com/maps/billing-and-pricing/pricing)), in contrary to the JS SDK ([JS pricing](https://developers.google.com/maps/documentation/javascript/usage-and-billing#new-payg)).
 
-See if this plugin is a good fit for your use case in [this section](should-you-use-this-plugin.md).
+See if this plugin is a good fit for your use case in [this section](about/should-you-use-this-plugin.md).
 
 ## Maintainers
 

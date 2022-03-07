@@ -12,7 +12,7 @@ If your app revolves mainly around a Map, like for example Uber or Lime, this pl
 
 <h3>... you have one or a few Maps in your app that need a performance boost</h3>
 
-If your app utilizes a one or a few Map instances that can remain at its fixed position on the page (see [Limitations](/?id=limitations)) that need a performance boost (because for example a lot of markers are being rendered) than this plugin is probably a good fit.
+If your app utilizes a one or a few Map instances that can remain at its fixed position on the page (see [Limitations](/#limitations)) that need a performance boost (because for example a lot of markers are being rendered) than this plugin is probably a good fit.
 
 <h2>This plugin likely is <i>not</i> a good fit for you if ...</h2>
 

@@ -6,7 +6,7 @@ The Map instances are rendered behind the WebView. Because of this, it should be
 
 This plugin takes care of making the native WebView and the `<html>` transparent\*. You will have to take care of the rest (the `div`'s and other HTMLElements overlaying the Map). This is a deliberate choice, because this plugin could impossibly take care of all the different project setups and an infinite number of different CSS possibilities.
 
-> \* The `<html>` element is made transparent by adding `background: 'transparent';` to the `style=""` attribute. So in theory it is possible that this is overwritten by some CSS property in your setup.
+!> \* The `<html>` element is made transparent by adding `background: 'transparent';` to the `style=""` attribute. So in theory it is possible that this is overwritten by some CSS property in your setup.
 
 ## Debugging
 
