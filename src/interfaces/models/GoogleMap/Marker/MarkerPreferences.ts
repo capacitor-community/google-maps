@@ -37,6 +37,17 @@ export interface MarkerPreferences {
    */
   isDraggable?: boolean;
   /**
+   * The z-index specifies the stack order of this marker, relative to other markers on the map.
+   * A marker with a high z-index is drawn on top of markers with lower z-indexes.
+   * Markers are always drawn above tile layers and other non-marker overlays (ground overlays,
+   * polylines, polygons, and other shapes) regardless of the z-index of the other overlays.
+   * Markers are effectively considered to be in a separate z-index group compared to other overlays.
+   *
+   * @default 0
+   * @since 2.0.0
+   */
+  zIndex?: number;
+  /**
    * Specifies the anchor to be at a particular point in the marker image.
    *
    * The anchor specifies the point in the icon image that is anchored to the marker's position on the Earth's surface.

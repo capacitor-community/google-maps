@@ -20,6 +20,8 @@ class CustomMarker: GMSMarker {
         self.isFlat = preferences["isFlat"] as? Bool ?? false;
         
         self.isDraggable = preferences["isDraggable"] as? Bool ?? false;
+        
+        self.zIndex = Int32.init(preferences["zIndex"] as? Int ?? 0);
 
         let anchor = preferences["anchor"] as? JSObject ?? JSObject();
         let anchorX = anchor["x"] as? Double ?? 0.5;
@@ -44,6 +46,7 @@ class CustomMarker: GMSMarker {
                 "opacity": marker.opacity,
                 "isFlat": marker.isFlat,
                 "isDraggable": marker.isDraggable,
+                "zIndex": marker.zIndex,
                 "position": [
                     "latitude": marker.position.latitude,
                     "longitude": marker.position.longitude

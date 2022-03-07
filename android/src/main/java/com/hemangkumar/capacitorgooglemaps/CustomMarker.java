@@ -32,6 +32,7 @@ public class CustomMarker {
         final Float opacity = JSObjectDefaults.getFloatSafe(preferences, "opacity", 1f);
         final Boolean isFlat = JSObjectDefaults.getBooleanSafe(preferences,"isFlat", false);
         final Boolean isDraggable = JSObjectDefaults.getBooleanSafe(preferences,"isDraggable", false);
+        final Integer zIndex = JSObjectDefaults.getIntegerSafe(preferences,"zIndex", 0);
 
         final JSObject anchor = JSObjectDefaults.getJSObjectSafe(preferences, "anchor", new JSObject());
         final Float anchorX = JSObjectDefaults.getFloatSafe(anchor, "x", 0.5f);
@@ -45,6 +46,7 @@ public class CustomMarker {
         this.markerOptions.alpha(opacity);
         this.markerOptions.flat(isFlat);
         this.markerOptions.draggable(isDraggable);
+        this.markerOptions.zIndex(zIndex);
         this.markerOptions.anchor(anchorX, anchorY);
     }
 
@@ -89,6 +91,7 @@ public class CustomMarker {
         markerResult.put("opacity", marker.getAlpha());
         markerResult.put("isFlat", marker.isFlat());
         markerResult.put("isDraggable", marker.isDraggable());
+        markerResult.put("zIndex", marker.getZIndex());
         markerResult.put("metadata", new JSObject());
 
         JSObject tag = (JSObject) marker.getTag();

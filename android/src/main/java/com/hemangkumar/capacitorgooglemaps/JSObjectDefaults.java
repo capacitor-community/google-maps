@@ -102,6 +102,15 @@ public abstract class JSObjectDefaults {
     }
 
     @NonNull
+    public static Integer getIntegerSafe(JSObject jsObject, @NonNull String name, @NonNull Integer defaultValue) {
+        Integer returnedInteger = jsObject.getInteger(name);
+        if (returnedInteger != null) {
+            return returnedInteger;
+        }
+        return defaultValue;
+    }
+
+    @NonNull
     public static Boolean getBooleanSafe(JSObject jsObject, @NonNull String name, @NonNull Boolean defaultValue) {
         Boolean returnedBoolean = jsObject.getBoolean(name, false);
         if (returnedBoolean != null) {
