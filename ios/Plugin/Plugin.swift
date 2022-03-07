@@ -8,12 +8,11 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
 
     var GOOGLE_MAPS_KEY: String = "";
 
-    var customMapViews = [String : CustomMapView]();
-
     var customMarkers = [String : CustomMarker]();
 
-    @objc func initialize(_ call: CAPPluginCall) {
+    var customWebView: CustomWKWebView?
 
+    @objc func initialize(_ call: CAPPluginCall) {
         self.GOOGLE_MAPS_KEY = call.getString("key", "")
 
         if self.GOOGLE_MAPS_KEY.isEmpty {
@@ -22,50 +21,73 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         }
 
         GMSServices.provideAPIKey(self.GOOGLE_MAPS_KEY)
+
+        self.customWebView = self.bridge?.webView as? CustomWKWebView
+
+        DispatchQueue.main.async {
+            // remove all custom maps views from the main view
+            if let values = self.customWebView?.customMapViews.map({ $0.value }) {
+                CAPLog.print("mapId \(values)")
+                for mapView in values {
+                    (mapView as CustomMapView).view.removeFromSuperview()
+                }
+            }
+            // reset custom map views holder
+            self.customWebView?.customMapViews = [:]
+        }
+
         call.resolve([
             "initialized": true
         ])
     }
 
     @objc func createMap(_ call: CAPPluginCall) {
-
         DispatchQueue.main.async {
-            let customMapView : CustomMapView = CustomMapView(customMapViewEvents: self);
+            let customMapView : CustomMapView = CustomMapView(customMapViewEvents: self)
 
             self.bridge?.saveCall(call)
-            customMapView.savedCallbackIdForCreate = call.callbackId;
-            
-            let boundingRect = call.getObject("boundingRect", JSObject());
-            customMapView.boundingRect.updateFromJSObject(boundingRect);
-            
-            let mapCameraPosition = call.getObject("cameraPosition", JSObject());
-            customMapView.mapCameraPosition.updateFromJSObject(mapCameraPosition, baseCameraPosition: nil);
+            customMapView.savedCallbackIdForCreate = call.callbackId
 
-            let preferences = call.getObject("preferences", JSObject());
-            customMapView.mapPreferences.updateFromJSObject(preferences);
+            let boundingRect = call.getObject("boundingRect", JSObject())
+            customMapView.boundingRect.updateFromJSObject(boundingRect)
 
-            self.bridge?.viewController?.view.addSubview(customMapView.view);
+            let mapCameraPosition = call.getObject("cameraPosition", JSObject())
+            customMapView.mapCameraPosition.updateFromJSObject(mapCameraPosition, baseCameraPosition: nil)
+
+            let preferences = call.getObject("preferences", JSObject())
+            customMapView.mapPreferences.updateFromJSObject(preferences)
+
+            self.customWebView?.scrollView.addSubview(customMapView.view)
+
+            if (customMapView.GMapView == nil) {
+                call.reject("Map could not be created. Did you forget to update the class in Main.storyboard? If you do not know what that is, please read the documentation.")
+                return
+            }
+
+            self.customWebView?.scrollView.sendSubviewToBack(customMapView.view)
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                self.setupWebView()
+            }
 
             customMapView.GMapView.delegate = customMapView;
-
-            self.customMapViews[customMapView.id] = customMapView;
+            self.customWebView?.customMapViews[customMapView.id] = customMapView
         }
     }
 
     @objc func updateMap(_ call: CAPPluginCall) {
-        let mapId: String = call.getString("mapId")!;
+        let mapId: String = call.getString("mapId", "")
 
         DispatchQueue.main.async {
-            let customMapView = self.customMapViews[mapId];
-
-            if (customMapView != nil) {
-                let preferences = call.getObject("preferences", JSObject());
-                customMapView?.mapPreferences.updateFromJSObject(preferences);
-
-                customMapView?.invalidateMap();
-            } else {
-                call.reject("map not found");
+            guard let customMapView = self.customWebView?.customMapViews[mapId] else {
+                call.reject("map not found")
+                return
             }
+
+            let preferences = call.getObject("preferences", JSObject());
+            customMapView.mapPreferences.updateFromJSObject(preferences);
+
+            customMapView.invalidateMap();
         }
 
     }
@@ -74,28 +96,28 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         let mapId: String = call.getString("mapId", "")
 
         DispatchQueue.main.async {
-            guard let customMapView = self.customMapViews[mapId] else {
+            guard let customMapView = self.customWebView?.customMapViews[mapId] else {
                 call.reject("map not found")
                 return
             }
 
             let mapCameraPosition = customMapView.mapCameraPosition
-            
+
             var currentCameraPosition: GMSCameraPosition?;
-            
+
             let useCurrentCameraPositionAsBase = call.getBool("useCurrentCameraPositionAsBase", true)
-            
+
             if (useCurrentCameraPositionAsBase) {
                 currentCameraPosition = customMapView.getCameraPosition()
             }
-            
+
             let cameraPosition = call.getObject("cameraPosition", JSObject())
             mapCameraPosition.updateFromJSObject(cameraPosition, baseCameraPosition: currentCameraPosition)
-            
+
             let duration = call.getInt("duration", 0)
-            
+
             customMapView.moveCamera(duration)
-            
+
             // @TODO: return map result
             call.resolve()
         }
@@ -105,30 +127,30 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         let mapId: String = call.getString("mapId", "")
 
         DispatchQueue.main.async {
-            guard let customMapView = self.customMapViews[mapId] else {
+            guard let customMapView = self.customWebView?.customMapViews[mapId] else {
                 call.reject("map not found")
                 return
             }
             let preferences = call.getObject("preferences", JSObject())
-            
+
             let marker = self.addMarker(preferences, customMapView: customMapView)
-            
+
             call.resolve(CustomMarker.getResultForMarker(marker))
         }
     }
-    
+
     @objc func addMarkers(_ call: CAPPluginCall) {
         let mapId: String = call.getString("mapId", "")
-        
+
         DispatchQueue.main.async {
-            guard let customMapView = self.customMapViews[mapId] else {
+            guard let customMapView = self.customWebView?.customMapViews[mapId] else {
                 call.reject("map not found")
                 return
             }
-            
+
             let markers = List<JSValue>(elements: call.getArray("markers", []))
             self.addMarker(node: markers.first, customMapView: customMapView)
-            
+
             call.resolve()
         }
     }
@@ -178,11 +200,15 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
     }
 
     func setCallbackIdForEvent(call: CAPPluginCall, eventName: String) {
+        let mapId: String = call.getString("mapId", "")
+
+        guard let customMapView = self.customWebView?.customMapViews[mapId] else {
+            call.reject("map not found")
+            return
+        }
+
         call.keepAlive = true;
         let callbackId = call.callbackId;
-        guard let mapId = call.getString("mapId") else { return };
-
-        let customMapView: CustomMapView = customMapViews[mapId]!;
 
         let preventDefault: Bool = call.getBool("preventDefault", false);
         customMapView.setCallbackIdForEvent(callbackId: callbackId, eventName: eventName, preventDefault: preventDefault);
@@ -202,18 +228,17 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             call?.resolve();
         }
     }
-
 }
 
 private extension CapacitorGoogleMaps {
     func addMarker(_ preferences: JSObject, customMapView: CustomMapView) -> GMSMarker {
         let marker = CustomMarker()
-        
+
         marker.updateFromJSObject(preferences: preferences)
         marker.map = customMapView.GMapView
-        
+
         self.customMarkers[marker.id] = marker
-        
+
         if let icon = preferences["icon"] as? JSObject {
             if let url = icon["url"] as? String {
                 let resizeWidth = icon["width"] as? Int ?? 30
@@ -223,19 +248,29 @@ private extension CapacitorGoogleMaps {
                 }
             }
         }
-        
+
         return marker
     }
-    
+
     func addMarker(node: Node<JSValue>?,
                    customMapView: CustomMapView) {
         guard let node = node else { return }
         let markerObject = node.value as? JSObject ?? JSObject()
         let preferences = markerObject["preferences"] as? JSObject ?? JSObject()
-        
+
         self.addMarker(preferences, customMapView: customMapView)
-        
+
         self.addMarker(node: node.next, customMapView: customMapView)
+    }
+
+    func setupWebView() {
+        DispatchQueue.main.async {
+            self.customWebView?.isOpaque = false
+            self.customWebView?.backgroundColor = .clear
+
+            let javascript = "document.documentElement.style.backgroundColor = 'transparent'"
+            self.customWebView?.evaluateJavaScript(javascript)
+        }
     }
 }
 
