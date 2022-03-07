@@ -393,8 +393,8 @@ removeAllListeners() => Promise<void>
 | Prop                 | Type                                           | Description                                 | Since |
 | -------------------- | ---------------------------------------------- | ------------------------------------------- | ----- |
 | **`mapId`**          | <code>string</code>                            | GUID representing the unique id of this map | 2.0.0 |
-| **`cameraPosition`** | <code>[CameraPosition](#cameraposition)</code> | See [CameraPosition](#cameraposition)       | 2.0.0 |
-| **`preferences`**    | <code>[MapPreferences](#mappreferences)</code> | See [MapPreferences](#mappreferences)       | 2.0.0 |
+| **`cameraPosition`** | <code>[CameraPosition](#cameraposition)</code> |                                             | 2.0.0 |
+| **`preferences`**    | <code>[MapPreferences](#mappreferences)</code> |                                             | 2.0.0 |
 
 #### CameraPosition
 
@@ -420,15 +420,15 @@ A data class representing a pair of latitude and longitude coordinates, stored a
 
 #### MapPreferences
 
-| Prop             | Type                                         | Description                         | Since |
-| ---------------- | -------------------------------------------- | ----------------------------------- | ----- |
-| **`gestures`**   | <code>[MapGestures](#mapgestures)</code>     | See [MapGestures](#mapgestures)     | 2.0.0 |
-| **`controls`**   | <code>[MapControls](#mapcontrols)</code>     | See [MapControls](#mapcontrols)     | 2.0.0 |
-| **`appearance`** | <code>[MapAppearance](#mapappearance)</code> | See [MapAppearance](#mapappearance) | 2.0.0 |
-| **`maxZoom`**    | <code>number</code>                          |                                     |       |
-| **`minZoom`**    | <code>number</code>                          |                                     |       |
-| **`padding`**    | <code>any</code>                             |                                     |       |
-| **`liteMode`**   | <code>boolean</code>                         |                                     |       |
+| Prop             | Type                                         | Since |
+| ---------------- | -------------------------------------------- | ----- |
+| **`gestures`**   | <code>[MapGestures](#mapgestures)</code>     | 2.0.0 |
+| **`controls`**   | <code>[MapControls](#mapcontrols)</code>     | 2.0.0 |
+| **`appearance`** | <code>[MapAppearance](#mapappearance)</code> | 2.0.0 |
+| **`maxZoom`**    | <code>number</code>                          |       |
+| **`minZoom`**    | <code>number</code>                          |       |
+| **`padding`**    | <code>any</code>                             |       |
+| **`liteMode`**   | <code>boolean</code>                         |       |
 
 #### MapGestures
 
@@ -479,12 +479,12 @@ An intrinsic object that provides functions to convert JavaScript values to and 
 
 #### CreateMapOptions
 
-| Prop                 | Type                                           | Description                           | Since |
-| -------------------- | ---------------------------------------------- | ------------------------------------- | ----- |
-| **`element`**        | <code>HTMLElement</code>                       |                                       | 2.0.0 |
-| **`boundingRect`**   | <code>[BoundingRect](#boundingrect)</code>     |                                       | 2.0.0 |
-| **`cameraPosition`** | <code>[CameraPosition](#cameraposition)</code> | See [CameraPosition](#cameraposition) | 2.0.0 |
-| **`preferences`**    | <code>[MapPreferences](#mappreferences)</code> |                                       | 2.0.0 |
+| Prop                 | Type                                           | Since |
+| -------------------- | ---------------------------------------------- | ----- |
+| **`element`**        | <code>HTMLElement</code>                       | 2.0.0 |
+| **`boundingRect`**   | <code>[BoundingRect](#boundingrect)</code>     | 2.0.0 |
+| **`cameraPosition`** | <code>[CameraPosition](#cameraposition)</code> | 2.0.0 |
+| **`preferences`**    | <code>[MapPreferences](#mappreferences)</code> | 2.0.0 |
 
 #### BoundingRect
 
@@ -533,7 +533,7 @@ An intrinsic object that provides functions to convert JavaScript values to and 
 | Prop                                  | Type                                           | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Default            | Since |
 | ------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ | ----- |
 | **`mapId`**                           | <code>string</code>                            | The identifier of the map to which this method should be applied.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |                    | 2.0.0 |
-| **`cameraPosition`**                  | <code>[CameraPosition](#cameraposition)</code> | See [CameraPosition](#cameraposition)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |                    | 2.0.0 |
+| **`cameraPosition`**                  | <code>[CameraPosition](#cameraposition)</code> |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |                    | 2.0.0 |
 | **`duration`**                        | <code>number</code>                            | The duration of the animation in milliseconds. If not specified, or equals or smaller than 0, the camera movement will be immediate                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | <code>0</code>     | 2.0.0 |
 | **`usePreviousCameraPositionAsBase`** | <code>boolean</code>                           | By default the moveCamera method uses the current [CameraPosition](#cameraposition) as the base. That means that if, for example, the [CameraPosition.target](#cameraposition) is not specified, the current [CameraPosition.target](#cameraposition) will be used. Among other things, this default behaviour allows you to set the zoom without moving the map. Or move the map without changing the current zoom. If instead of this default behaviour, the previous [CameraPosition](#cameraposition) should be used as the base, this parameter should be set to `true`. But be cautious when using this. If the user made changes to the [CameraPosition](#cameraposition) (e.g. by scrolling or zooming the map), those changes will be undone because it will be overwritten by the last explicitly set [CameraPosition](#cameraposition). The [CameraPosition](#cameraposition) is only "explicitly set" with these methods: `createMap` and `moveCamera`. | <code>false</code> | 2.0.0 |
 
