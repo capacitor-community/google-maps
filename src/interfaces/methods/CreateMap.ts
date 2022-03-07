@@ -15,8 +15,6 @@ export interface CreateMapOptions {
    */
   boundingRect?: BoundingRect;
   /**
-   * See CameraPosition
-   *
    * @since 2.0.0
    */
   cameraPosition: CameraPosition;

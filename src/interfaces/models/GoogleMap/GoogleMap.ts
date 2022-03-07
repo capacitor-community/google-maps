@@ -8,14 +8,10 @@ export interface GoogleMap {
    */
   mapId: string;
   /**
-   * See CameraPosition
-   *
    * @since 2.0.0
    */
   cameraPosition: CameraPosition;
   /**
-   * See MapPreferences
-   *
    * @since 2.0.0
    */
   preferences: MapPreferences;

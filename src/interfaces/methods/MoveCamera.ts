@@ -8,8 +8,6 @@ export interface MoveCameraOptions {
    */
   mapId: string;
   /**
-   * See CameraPosition
-   *
    * @since 2.0.0
    */
   cameraPosition: CameraPosition;
