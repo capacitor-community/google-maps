@@ -96,7 +96,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         let mapId: String = call.getString("mapId", "")
 
         DispatchQueue.main.async {
-            guard let customMapView = self.customMapViews[mapId] else {
+            guard let customMapView = self.customWebView?.customMapViews[mapId] else {
                 call.reject("map not found")
                 return
             }
