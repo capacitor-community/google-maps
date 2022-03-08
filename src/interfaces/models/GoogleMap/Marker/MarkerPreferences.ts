@@ -69,5 +69,5 @@ export interface MarkerPreferences {
    * @default {}
    * @since 2.0.0
    */
-  metadata?: object;
+  metadata?: { [key: string]: any };
 }
