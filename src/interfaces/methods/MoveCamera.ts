@@ -1,4 +1,4 @@
-import { CameraPosition, GoogleMap } from "./../../definitions";
+import { CameraPosition } from "./../../definitions";
 
 export interface MoveCameraOptions {
   /**
