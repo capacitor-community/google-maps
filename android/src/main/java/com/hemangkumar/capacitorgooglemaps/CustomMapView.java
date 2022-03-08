@@ -208,19 +208,19 @@ public class CustomMapView
     }
 
     @Override
-    public void onMyLocationClick(@NonNull Location location) {
-        if (customMapViewEvents != null && savedCallbackIdForDidTapMyLocationDot != null) {
-            JSObject result = getResultForPosition(location);
-            customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapMyLocationDot, result);
-        }
-    }
-
-    @Override
     public boolean onMyLocationButtonClick() {
         if (customMapViewEvents != null && savedCallbackIdForDidTapMyLocationButton != null) {
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapMyLocationButton, null);
         }
         return preventDefaultForDidTapMyLocationButton;
+    }
+
+    @Override
+    public void onMyLocationClick(@NonNull Location location) {
+        if (customMapViewEvents != null && savedCallbackIdForDidTapMyLocationDot != null) {
+            JSObject result = getResultForPosition(location);
+            customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapMyLocationDot, result);
+        }
     }
 
     @Override

@@ -16,6 +16,13 @@ CAP_PLUGIN(CapacitorGoogleMaps, "CapacitorGoogleMaps",
            CAP_PLUGIN_METHOD(didTapMap, CAPPluginReturnCallback);
            CAP_PLUGIN_METHOD(didLongPressMap, CAPPluginReturnCallback);
            CAP_PLUGIN_METHOD(didTapMarker, CAPPluginReturnCallback);
+           CAP_PLUGIN_METHOD(didBeginDraggingMarker, CAPPluginReturnCallback);
+           CAP_PLUGIN_METHOD(didDragMarker, CAPPluginReturnCallback);
+           CAP_PLUGIN_METHOD(didEndDraggingMarker, CAPPluginReturnCallback);
            CAP_PLUGIN_METHOD(didTapMyLocationButton, CAPPluginReturnCallback);
            CAP_PLUGIN_METHOD(didTapMyLocationDot, CAPPluginReturnCallback);
+           CAP_PLUGIN_METHOD(didTapPoi, CAPPluginReturnCallback);
+           CAP_PLUGIN_METHOD(didBeginMovingCamera, CAPPluginReturnCallback);
+           CAP_PLUGIN_METHOD(didMoveCamera, CAPPluginReturnCallback);
+           CAP_PLUGIN_METHOD(didEndMovingCamera, CAPPluginReturnCallback);
 )

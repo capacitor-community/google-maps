@@ -208,17 +208,45 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
     @objc func didLongPressMap(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_LONG_PRESS_MAP);
     }
-
+    
     @objc func didTapMarker(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_TAP_MARKER);
     }
-
+    
+    @objc func didBeginDraggingMarker(_ call: CAPPluginCall) {
+        setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_BEGIN_DRAGGING_MARKER);
+    }
+    
+    @objc func didDragMarker(_ call: CAPPluginCall) {
+        setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_DRAG_MARKER);
+    }
+    
+    @objc func didEndDraggingMarker(_ call: CAPPluginCall) {
+        setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_END_DRAGGING_MARKER);
+    }
+    
     @objc func didTapMyLocationButton(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_TAP_MY_LOCATION_BUTTON);
     }
 
     @objc func didTapMyLocationDot(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_TAP_MY_LOCATION_DOT);
+    }
+    
+    @objc func didTapPoi(_ call: CAPPluginCall) {
+        setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_TAP_POI);
+    }
+    
+    @objc func didBeginMovingCamera(_ call: CAPPluginCall) {
+        setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_BEGIN_MOVING_CAMERA);
+    }
+    
+    @objc func didMoveCamera(_ call: CAPPluginCall) {
+        setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_MOVE_CAMERA);
+    }
+    
+    @objc func didEndMovingCamera(_ call: CAPPluginCall) {
+        setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_END_MOVING_CAMERA);
     }
 
     func setCallbackIdForEvent(call: CAPPluginCall, eventName: String) {

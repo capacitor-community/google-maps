@@ -22,18 +22,37 @@ class CustomMapView: UIViewController, GMSMapViewDelegate {
     var savedCallbackIdForDidTapMarker: String!;
     var preventDefaultForDidTapMarker: Bool = false;
 
+    var savedCallbackIdForDidBeginDraggingMarker: String!;
+
+    var savedCallbackIdForDidDragMarker: String!;
+
+    var savedCallbackIdForDidEndDraggingMarker: String!;
+
     var savedCallbackIdForDidTapMyLocationButton: String!;
     var preventDefaultForDidTapMyLocationButton: Bool = false;
 
     var savedCallbackIdForDidTapMyLocationDot: String!;
+
+    var savedCallbackIdForDidTapPoi: String!;
+
+    var savedCallbackIdForDidBeginMovingCamera: String!;
+    var savedCallbackIdForDidMoveCamera: String!;
+    var savedCallbackIdForDidEndMovingCamera: String!;
 
     static var EVENT_DID_TAP_INFO_WINDOW: String = "didTapInfoWindow";
     static var EVENT_DID_CLOSE_INFO_WINDOW: String = "didCloseInfoWindow";
     static var EVENT_DID_TAP_MAP: String = "didTapMap";
     static var EVENT_DID_LONG_PRESS_MAP: String = "didLongPressMap";
     static var EVENT_DID_TAP_MARKER: String = "didTapMarker";
+    static var EVENT_DID_BEGIN_DRAGGING_MARKER: String = "didBeginDraggingMarker";
+    static var EVENT_DID_DRAG_MARKER: String = "didDragMarker";
+    static var EVENT_DID_END_DRAGGING_MARKER: String = "didEndDraggingMarker";
     static var EVENT_DID_TAP_MY_LOCATION_BUTTON: String = "didTapMyLocationButton";
     static var EVENT_DID_TAP_MY_LOCATION_DOT: String = "didTapMyLocationDot";
+    static var EVENT_DID_TAP_POI: String = "didTapPoi";
+    static var EVENT_DID_BEGIN_MOVING_CAMERA: String = "didBeginMovingCamera";
+    static var EVENT_DID_MOVE_CAMERA: String = "didMoveCamera";
+    static var EVENT_DID_END_MOVING_CAMERA: String = "didEndMovingCamera";
 
     var boundingRect = BoundingRect();
     var mapCameraPosition = MapCameraPosition();
@@ -137,11 +156,25 @@ class CustomMapView: UIViewController, GMSMapViewDelegate {
             } else if (eventName == CustomMapView.EVENT_DID_TAP_MARKER) {
                 savedCallbackIdForDidTapMarker = callbackId;
                 preventDefaultForDidTapMarker = preventDefault ?? false;
+            } else if (eventName == CustomMapView.EVENT_DID_BEGIN_DRAGGING_MARKER) {
+                savedCallbackIdForDidBeginDraggingMarker = callbackId
+            } else if (eventName == CustomMapView.EVENT_DID_DRAG_MARKER) {
+                savedCallbackIdForDidDragMarker = callbackId
+            } else if (eventName == CustomMapView.EVENT_DID_END_DRAGGING_MARKER) {
+                savedCallbackIdForDidEndDraggingMarker = callbackId
             } else if (eventName == CustomMapView.EVENT_DID_TAP_MY_LOCATION_BUTTON) {
                 savedCallbackIdForDidTapMyLocationButton = callbackId;
                 preventDefaultForDidTapMyLocationButton = preventDefault ?? false;
             } else if (eventName == CustomMapView.EVENT_DID_TAP_MY_LOCATION_DOT) {
                 savedCallbackIdForDidTapMyLocationDot = callbackId
+            } else if (eventName == CustomMapView.EVENT_DID_TAP_POI) {
+                savedCallbackIdForDidTapPoi = callbackId
+            } else if (eventName == CustomMapView.EVENT_DID_BEGIN_MOVING_CAMERA) {
+                savedCallbackIdForDidBeginMovingCamera = callbackId
+            } else if (eventName == CustomMapView.EVENT_DID_MOVE_CAMERA) {
+                savedCallbackIdForDidMoveCamera = callbackId
+            } else if (eventName == CustomMapView.EVENT_DID_END_MOVING_CAMERA) {
+                savedCallbackIdForDidEndMovingCamera = callbackId
             }
         }
     }
@@ -181,6 +214,34 @@ class CustomMapView: UIViewController, GMSMapViewDelegate {
         }
         return preventDefaultForDidTapMarker;
     }
+    
+    internal func mapView(_ mapView: GMSMapView, didBeginDragging marker: GMSMarker) {
+        if (customMapViewEvents != nil && savedCallbackIdForDidBeginDraggingMarker != nil) {
+            let result: PluginCallResultData = CustomMarker.getResultForMarker(marker, mapId: self.id);
+            customMapViewEvents.resultForCallbackId(callbackId: savedCallbackIdForDidBeginDraggingMarker, result: result);
+        }
+    }
+    
+    internal func mapView(_ mapView: GMSMapView, didDrag marker: GMSMarker) {
+        if (customMapViewEvents != nil && savedCallbackIdForDidDragMarker != nil) {
+            let result: PluginCallResultData = CustomMarker.getResultForMarker(marker, mapId: self.id);
+            customMapViewEvents.resultForCallbackId(callbackId: savedCallbackIdForDidDragMarker, result: result);
+        }
+    }
+    
+    internal func mapView(_ mapView: GMSMapView, didEndDragging marker: GMSMarker) {
+        if (customMapViewEvents != nil && savedCallbackIdForDidEndDraggingMarker != nil) {
+            let result: PluginCallResultData = CustomMarker.getResultForMarker(marker, mapId: self.id);
+            customMapViewEvents.resultForCallbackId(callbackId: savedCallbackIdForDidEndDraggingMarker, result: result);
+        }
+    }
+    
+    internal func didTapMyLocationButton(for mapView: GMSMapView) -> Bool {
+        if (customMapViewEvents != nil && savedCallbackIdForDidTapMyLocationButton != nil) {
+            customMapViewEvents.resultForCallbackId(callbackId: savedCallbackIdForDidTapMyLocationButton, result: nil);
+        }
+        return preventDefaultForDidTapMyLocationButton;
+    }
 
     internal func mapView(_ mapView: GMSMapView, didTapMyLocation coordinate: CLLocationCoordinate2D) {
         if (customMapViewEvents != nil && savedCallbackIdForDidTapMyLocationDot != nil) {
@@ -188,12 +249,51 @@ class CustomMapView: UIViewController, GMSMapViewDelegate {
             customMapViewEvents.resultForCallbackId(callbackId: savedCallbackIdForDidTapMyLocationDot, result: result);
         }
     }
-
-    internal func didTapMyLocationButton(for mapView: GMSMapView) -> Bool {
-        if (customMapViewEvents != nil && savedCallbackIdForDidTapMyLocationButton != nil) {
-            customMapViewEvents.resultForCallbackId(callbackId: savedCallbackIdForDidTapMyLocationButton, result: nil);
+    
+    internal func mapView(_ mapView: GMSMapView, didTapPOIWithPlaceID placeID: String, name: String, location: CLLocationCoordinate2D) {
+        if (customMapViewEvents != nil && savedCallbackIdForDidTapPoi != nil) {
+            let result: PluginCallResultData = [
+                "poi": [
+                    "position": [
+                        "latitude": location.latitude,
+                        "longitude": location.longitude
+                    ],
+                    "name": name,
+                    "placeId": placeID
+                ]
+            ];
+            customMapViewEvents.resultForCallbackId(callbackId: savedCallbackIdForDidTapPoi, result: result);
         }
-        return preventDefaultForDidTapMyLocationButton;
+    }
+    
+    internal func mapView(_ mapView: GMSMapView, willMove gesture: Bool) {
+        if (customMapViewEvents != nil && savedCallbackIdForDidBeginMovingCamera != nil) {
+            var reason: Int = 2;
+            if (gesture) {
+                // Camera motion initiated in response to user gestures on the map.
+                // For example: pan, tilt, pinch to zoom, or rotate.
+                reason = 1;
+            }
+            let result: PluginCallResultData = [
+                "reason": reason
+            ];
+            customMapViewEvents.resultForCallbackId(callbackId: savedCallbackIdForDidBeginMovingCamera, result: result);
+        }
+    }
+    
+    internal func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
+        if (customMapViewEvents != nil && savedCallbackIdForDidMoveCamera != nil) {
+            customMapViewEvents.resultForCallbackId(callbackId: savedCallbackIdForDidMoveCamera, result: nil);
+        }
+    }
+    
+    internal func mapView(_ mapView: GMSMapView, idleAt position: GMSCameraPosition) {
+        if (customMapViewEvents != nil && savedCallbackIdForDidEndMovingCamera != nil) {
+            let result: PluginCallResultData = [
+                "cameraPosition": self.mapCameraPosition.getJSObject(self.getCameraPosition() ?? GMSCameraPosition())
+            ];
+            customMapViewEvents.resultForCallbackId(callbackId: savedCallbackIdForDidEndMovingCamera, result: result);
+        }
     }
     
     private func getResultForMap() -> PluginCallResultData {
