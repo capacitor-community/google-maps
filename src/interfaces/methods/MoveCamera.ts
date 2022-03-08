@@ -18,7 +18,7 @@ export interface MoveCameraOptions {
    * @default 0
    * @since 2.0.0
    */
-  duration: number;
+  duration?: number;
   /**
    * By default the moveCamera method uses the current CameraPosition as the base.
    * That means that if, for example, the CameraPosition.target is not specified,
@@ -35,5 +35,5 @@ export interface MoveCameraOptions {
    * @default true
    * @since 2.0.0
    */
-  useCurrentCameraPositionAsBase: boolean;
+  useCurrentCameraPositionAsBase?: boolean;
 }
