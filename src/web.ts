@@ -11,7 +11,6 @@ import {
   RemoveMapOptions,
   ClearMapOptions,
   MoveCameraOptions,
-  MoveCameraResult,
   ElementFromPointResultOptions,
   AddMarkerOptions,
   AddMarkerResult,
@@ -34,8 +33,10 @@ import {
   DefaultEventWithPreventDefaultOptions,
 } from "./definitions";
 
-export class CapacitorGoogleMapsWeb extends WebPlugin
-  implements CapacitorGoogleMapsPlugin {
+export class CapacitorGoogleMapsWeb
+  extends WebPlugin
+  implements CapacitorGoogleMapsPlugin
+{
   constructor() {
     super({
       name: "CapacitorGoogleMaps",
@@ -63,7 +64,7 @@ export class CapacitorGoogleMapsWeb extends WebPlugin
     throw this.unimplemented("Not implemented on web.");
   }
 
-  async moveCamera(_options: MoveCameraOptions): Promise<MoveCameraResult> {
+  async moveCamera(_options: MoveCameraOptions): Promise<void> {
     throw this.unimplemented("Not implemented on web.");
   }
 

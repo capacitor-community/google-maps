@@ -1,7 +1,6 @@
-import { LatLng, PointOfInterest } from "./../../definitions";
+import { PointOfInterest } from "./../../definitions";
 
 export interface DidTapPoiResult {
-  position: LatLng;
   poi: PointOfInterest;
 }
 

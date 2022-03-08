@@ -4,11 +4,14 @@ import GoogleMaps
 class CustomMarker: GMSMarker {
     var id: String! = NSUUID().uuidString.lowercased();
     
-    public func updateFromJSObject(preferences: JSObject) {
-        let position = preferences["position"] as? JSObject ?? JSObject();
+    public func updateFromJSObject(_ markerData: JSObject) {
+        let position = markerData["position"] as? JSObject ?? JSObject();
+        
         let latitude = position["latitude"] as? Double ?? 0.0;
         let longitude = position["longitude"] as? Double ?? 0.0;
-
+        
+        let preferences = markerData["preferences"] as? JSObject ?? JSObject();
+        
         self.position = CLLocationCoordinate2D(latitude: latitude, longitude: longitude);
         
         self.title = preferences["title"] as? String ?? nil;
@@ -35,27 +38,30 @@ class CustomMarker: GMSMarker {
         ] as? JSObject ?? JSObject();
     }
     
-    public static func getResultForMarker(_ marker: GMSMarker) -> PluginCallResultData {
+    public static func getResultForMarker(_ marker: GMSMarker, mapId: String) -> PluginCallResultData {
         let tag: JSObject = marker.userData as! JSObject;
         
         return [
             "marker": [
+                "mapId": mapId,
                 "markerId": tag["markerId"] ?? nil,
-                "title": marker.title,
-                "snippet": marker.snippet,
-                "opacity": marker.opacity,
-                "isFlat": marker.isFlat,
-                "isDraggable": marker.isDraggable,
-                "zIndex": marker.zIndex,
                 "position": [
                     "latitude": marker.position.latitude,
                     "longitude": marker.position.longitude
                 ],
-                "anchor": [
-                    "x": marker.groundAnchor.x,
-                    "y": marker.groundAnchor.y
-                ],
-                "metadata": tag["metadata"] ?? JSObject()
+                "preferences": [
+                    "title": marker.title,
+                    "snippet": marker.snippet,
+                    "opacity": marker.opacity,
+                    "isFlat": marker.isFlat,
+                    "isDraggable": marker.isDraggable,
+                    "zIndex": marker.zIndex,
+                    "anchor": [
+                        "x": marker.groundAnchor.x,
+                        "y": marker.groundAnchor.y
+                    ],
+                    "metadata": tag["metadata"] ?? JSObject()
+                ]
             ]
         ];
     }

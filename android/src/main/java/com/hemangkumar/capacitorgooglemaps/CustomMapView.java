@@ -414,7 +414,7 @@ public class CustomMapView
         return null;
     }
 
-    public JSObject moveCamera(Integer duration) {
+    public void moveCamera(Integer duration) {
         CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(this.mapCameraPosition.cameraPosition);
 
         if (duration == null || duration <= 0) {
@@ -422,8 +422,6 @@ public class CustomMapView
         } else {
             googleMap.animateCamera(cameraUpdate, duration, null);
         }
-
-        return getResultForMap();
     }
 
     private int getScaledPixels(float pixels) {
@@ -537,7 +535,6 @@ public class CustomMapView
     }
 
     private JSObject getResultForPosition(Location location) {
-
         // initialize JSObjects to return
         JSObject result = new JSObject();
         JSObject positionResult = new JSObject();
@@ -552,7 +549,6 @@ public class CustomMapView
     }
 
     private JSObject getResultForPosition(LatLng latLng) {
-
         // initialize JSObjects to return
         JSObject result = new JSObject();
         JSObject positionResult = new JSObject();
@@ -569,8 +565,11 @@ public class CustomMapView
     private JSObject getResultForPoi(PointOfInterest pointOfInterest) {
         // initialize JSObjects to return
         JSObject result = new JSObject();
-        JSObject positionResult = new JSObject();
         JSObject poiResult = new JSObject();
+        JSObject positionResult = new JSObject();
+
+        result.put("poi", poiResult);
+        poiResult.put("position", positionResult);
 
         // get position values
         positionResult.put("latitude", pointOfInterest.latLng.latitude);
@@ -581,8 +580,6 @@ public class CustomMapView
         poiResult.put("placeId", pointOfInterest.placeId);
 
         // return result
-        result.put("position", positionResult);
-        result.put("poi", poiResult);
         return result;
     }
 }

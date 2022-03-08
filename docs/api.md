@@ -70,14 +70,12 @@ clearMap(options: ClearMapOptions) => Promise<void>
 ### moveCamera(...)
 
 ```typescript
-moveCamera(options: MoveCameraOptions) => Promise<MoveCameraResult>
+moveCamera(options: MoveCameraOptions) => Promise<void>
 ```
 
 | Param         | Type                                                 |
 | ------------- | ---------------------------------------------------- |
 | **`options`** | <code>[MoveCameraOptions](#movecameraoptions)</code> |
-
-**Returns:** <code>Promise&lt;[MoveCameraResult](#movecameraresult)&gt;</code>
 
 ---
 
@@ -458,24 +456,14 @@ Aggregates all control parameters such as enabling the compass, my-location and 
 Aggregates all appearance parameters such as showing 3d building, indoor maps, the my-location (blue) dot and traffic.
 Additionally, it also holds parameters such as the type of map tiles and the overall styling of the base map.
 
-| Prop                       | Type                             | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | Default                     | Since |
-| -------------------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- | ----- |
-| **`type`**                 | <code>[MapType](#maptype)</code> | Controls the type of map tiles that should be displayed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | <code>MapType.Normal</code> | 2.0.0 |
-| **`style`**                | <code>[JSON](#json)</code>       | Holds details about a style which can be applied to a map. When set to `null` the default styling will be used. With style options you can customize the presentation of the standard Google map styles, changing the visual display of features like roads, parks, and other points of interest. As well as changing the style of these features, you can also hide features entirely. This means that you can emphasize particular components of the map or make the map complement the content of your app. For more information check: https://developers.google.com/maps/documentation/ios-sdk/style-reference Or use the wizard for generating [JSON](#json): https://mapstyle.withgoogle.com/ | <code>null</code>           | 2.0.0 |
-| **`isBuildingsShown`**     | <code>boolean</code>             | If `true`, 3D buildings will be shown where available.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | <code>true</code>           | 2.0.0 |
-| **`isIndoorShown`**        | <code>boolean</code>             | If `true`, indoor maps are shown, where available. If this is set to false, caches for indoor data may be purged and any floor currently selected by the end-user may be reset.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | <code>true</code>           | 2.0.0 |
-| **`isMyLocationDotShown`** | <code>boolean</code>             | If `true`, the my-location (blue) dot and accuracy circle are shown.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | <code>false</code>          | 2.0.0 |
-| **`isTrafficShown`**       | <code>boolean</code>             | If `true`, the map draws traffic data, if available. This is subject to the availability of traffic data.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | <code>false</code>          | 2.0.0 |
-
-#### JSON
-
-An intrinsic object that provides functions to convert JavaScript values to and from the JavaScript Object Notation ([JSON](#json)) format.
-
-| Method        | Signature                                                                                                      | Description                                                                         |
-| ------------- | -------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| **parse**     | (text: string, reviver?: (this: any, key: string, value: any) =&gt; any) =&gt; any                             | Converts a JavaScript Object Notation ([JSON](#json)) string into an object.        |
-| **stringify** | (value: any, replacer?: (this: any, key: string, value: any) =&gt; any, space?: string \| number) =&gt; string | Converts a JavaScript value to a JavaScript Object Notation ([JSON](#json)) string. |
-| **stringify** | (value: any, replacer?: (number \| string)[] \| null, space?: string \| number) =&gt; string                   | Converts a JavaScript value to a JavaScript Object Notation ([JSON](#json)) string. |
+| Prop                       | Type                             | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | Default                     | Since |
+| -------------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- | ----- |
+| **`type`**                 | <code>[MapType](#maptype)</code> | Controls the type of map tiles that should be displayed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | <code>MapType.Normal</code> | 2.0.0 |
+| **`style`**                | <code>string</code>              | Holds details about a style which can be applied to a map. When set to `null` the default styling will be used. With style options you can customize the presentation of the standard Google map styles, changing the visual display of features like roads, parks, and other points of interest. As well as changing the style of these features, you can also hide features entirely. This means that you can emphasize particular components of the map or make the map complement the content of your app. For more information check: https://developers.google.com/maps/documentation/ios-sdk/style-reference Or use the wizard for generating JSON: https://mapstyle.withgoogle.com/ | <code>null</code>           | 2.0.0 |
+| **`isBuildingsShown`**     | <code>boolean</code>             | If `true`, 3D buildings will be shown where available.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | <code>true</code>           | 2.0.0 |
+| **`isIndoorShown`**        | <code>boolean</code>             | If `true`, indoor maps are shown, where available. If this is set to false, caches for indoor data may be purged and any floor currently selected by the end-user may be reset.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | <code>true</code>           | 2.0.0 |
+| **`isMyLocationDotShown`** | <code>boolean</code>             | If `true`, the my-location (blue) dot and accuracy circle are shown.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | <code>false</code>          | 2.0.0 |
+| **`isTrafficShown`**       | <code>boolean</code>             | If `true`, the map draws traffic data, if available. This is subject to the availability of traffic data.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | <code>false</code>          | 2.0.0 |
 
 #### CreateMapOptions
 
@@ -522,48 +510,29 @@ An intrinsic object that provides functions to convert JavaScript values to and 
 | ----------- | ------------------- | ----- |
 | **`mapId`** | <code>string</code> | 2.0.0 |
 
-#### MoveCameraResult
-
-| Prop            | Type                                 | Since |
-| --------------- | ------------------------------------ | ----- |
-| **`googleMap`** | <code>[GoogleMap](#googlemap)</code> | 2.0.0 |
-
 #### MoveCameraOptions
 
-| Prop                                  | Type                                           | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Default            | Since |
-| ------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ | ----- |
-| **`mapId`**                           | <code>string</code>                            | The identifier of the map to which this method should be applied.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |                    | 2.0.0 |
-| **`cameraPosition`**                  | <code>[CameraPosition](#cameraposition)</code> |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |                    | 2.0.0 |
-| **`duration`**                        | <code>number</code>                            | The duration of the animation in milliseconds. If not specified, or equals or smaller than 0, the camera movement will be immediate                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | <code>0</code>     | 2.0.0 |
-| **`usePreviousCameraPositionAsBase`** | <code>boolean</code>                           | By default the moveCamera method uses the current [CameraPosition](#cameraposition) as the base. That means that if, for example, the [CameraPosition.target](#cameraposition) is not specified, the current [CameraPosition.target](#cameraposition) will be used. Among other things, this default behaviour allows you to set the zoom without moving the map. Or move the map without changing the current zoom. If instead of this default behaviour, the previous [CameraPosition](#cameraposition) should be used as the base, this parameter should be set to `true`. But be cautious when using this. If the user made changes to the [CameraPosition](#cameraposition) (e.g. by scrolling or zooming the map), those changes will be undone because it will be overwritten by the last explicitly set [CameraPosition](#cameraposition). The [CameraPosition](#cameraposition) is only "explicitly set" with these methods: `createMap` and `moveCamera`. | <code>false</code> | 2.0.0 |
+| Prop                                 | Type                                           | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Default           | Since |
+| ------------------------------------ | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------- | ----- |
+| **`mapId`**                          | <code>string</code>                            | The identifier of the map to which this method should be applied.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |                   | 2.0.0 |
+| **`cameraPosition`**                 | <code>[CameraPosition](#cameraposition)</code> |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |                   | 2.0.0 |
+| **`duration`**                       | <code>number</code>                            | The duration of the animation in milliseconds. If not specified, or equals or smaller than 0, the camera movement will be immediate                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | <code>0</code>    | 2.0.0 |
+| **`useCurrentCameraPositionAsBase`** | <code>boolean</code>                           | By default the moveCamera method uses the current [CameraPosition](#cameraposition) as the base. That means that if, for example, the [CameraPosition.target](#cameraposition) is not specified, the current [CameraPosition.target](#cameraposition) will be used. Among other things, this default behaviour allows you to set the zoom without moving the map. Or move the map without changing the current zoom. If instead of this default behaviour, the previous [CameraPosition](#cameraposition) (the one you gave the previous time you called `moveCamera` or `createMap`) should be used as the base, this parameter should be set to `false`. But be cautious when using this. If the user made changes to the [CameraPosition](#cameraposition) (e.g. by scrolling or zooming the map), those changes will be undone because it will be overwritten by the last explicitly set [CameraPosition](#cameraposition). The [CameraPosition](#cameraposition) is only "explicitly set" with these methods: `createMap` and `moveCamera`. | <code>true</code> | 2.0.0 |
 
 #### AddMarkerResult
 
-| Prop           | Type                           | Since |
-| -------------- | ------------------------------ | ----- |
-| **`marker`**   | <code>[Marker](#marker)</code> | 2.0.0 |
-| **`position`** | <code>[LatLng](#latlng)</code> | 2.0.0 |
+| Prop         | Type                           | Since |
+| ------------ | ------------------------------ | ----- |
+| **`marker`** | <code>[Marker](#marker)</code> | 2.0.0 |
 
 #### Marker
 
-| Prop              | Type                 | Description                                                                                                                                                                                                                                                                                               | Since |
-| ----------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
-| **`mapId`**       | <code>string</code>  | GUID representing the map this marker is part of                                                                                                                                                                                                                                                          | 2.0.0 |
-| **`markerId`**    | <code>string</code>  | GUID representing the unique id of this marker                                                                                                                                                                                                                                                            | 2.0.0 |
-| **`title`**       | <code>string</code>  | A text string that's displayed in an info window when the user taps the marker. You can change this value at any time.                                                                                                                                                                                    | 2.0.0 |
-| **`snippet`**     | <code>string</code>  | Additional text that's displayed below the title. You can change this value at any time.                                                                                                                                                                                                                  | 2.0.0 |
-| **`opacity`**     | <code>number</code>  | This is a value from 0 to 1, where 0 means the marker is completely transparent and 1 means the marker is completely opaque.                                                                                                                                                                              | 2.0.0 |
-| **`isFlat`**      | <code>boolean</code> | Controls whether this marker should be flat against the Earth's surface (`true`) or a billboard facing the camera (`false`).                                                                                                                                                                              | 2.0.0 |
-| **`isDraggable`** | <code>boolean</code> | Controls whether this marker can be dragged interactively. When a marker is draggable, it can be moved by the user by long pressing on the marker.                                                                                                                                                        | 2.0.0 |
-| **`metadata`**    | <code>object</code>  | You can use this property to associate an arbitrary object with this overlay. The Google Maps SDK neither reads nor writes this property. Note that metadata should not hold any strong references to any Maps objects, otherwise a retain cycle may be created (preventing objects from being released). | 2.0.0 |
-
-#### AddMarkerOptions
-
-| Prop              | Type                                                 | Since |
-| ----------------- | ---------------------------------------------------- | ----- |
-| **`mapId`**       | <code>string</code>                                  | 2.0.0 |
-| **`preferences`** | <code>[MarkerPreferences](#markerpreferences)</code> | 2.0.0 |
-| **`position`**    | <code>[LatLng](#latlng)</code>                       | 2.0.0 |
+| Prop              | Type                                                 | Description                                      | Since |
+| ----------------- | ---------------------------------------------------- | ------------------------------------------------ | ----- |
+| **`mapId`**       | <code>string</code>                                  | GUID representing the map this marker is part of | 2.0.0 |
+| **`markerId`**    | <code>string</code>                                  | GUID representing the unique id of this marker   | 2.0.0 |
+| **`position`**    | <code>[LatLng](#latlng)</code>                       |                                                  | 2.0.0 |
+| **`preferences`** | <code>[MarkerPreferences](#markerpreferences)</code> |                                                  | 2.0.0 |
 
 #### MarkerPreferences
 
@@ -577,6 +546,14 @@ An intrinsic object that provides functions to convert JavaScript values to and 
 | **`zIndex`**      | <code>number</code>                    | The z-index specifies the stack order of this marker, relative to other markers on the map. A marker with a high z-index is drawn on top of markers with lower z-indexes. Markers are always drawn above tile layers and other non-marker overlays (ground overlays, polylines, polygons, and other shapes) regardless of the z-index of the other overlays. Markers are effectively considered to be in a separate z-index group compared to other overlays.                                                    | <code>0</code>                | 2.0.0 |
 | **`anchor`**      | <code>{ x: number; y: number; }</code> | Specifies the anchor to be at a particular point in the marker image. The anchor specifies the point in the icon image that is anchored to the marker's position on the Earth's surface. The anchor point is specified in the continuous space [0.0, 1.0] x [0.0, 1.0], where (0, 0) is the top-left corner of the image, and (1, 1) is the bottom-right corner. Read more about it here: https://developers.google.com/android/reference/com/google/android/gms/maps/model/MarkerOptions#anchor(float,%20float) | <code>{ x: 0.5, y: 1 }</code> | 2.0.0 |
 | **`metadata`**    | <code>object</code>                    | You can use this property to associate an arbitrary object with this overlay. The Google Maps SDK neither reads nor writes this property. Note that metadata should not hold any strong references to any Maps objects, otherwise a retain cycle may be created (preventing objects from being released).                                                                                                                                                                                                        | <code>{}</code>               | 2.0.0 |
+
+#### AddMarkerOptions
+
+| Prop              | Type                                                 | Since |
+| ----------------- | ---------------------------------------------------- | ----- |
+| **`mapId`**       | <code>string</code>                                  | 2.0.0 |
+| **`position`**    | <code>[LatLng](#latlng)</code>                       | 2.0.0 |
+| **`preferences`** | <code>[MarkerPreferences](#markerpreferences)</code> | 2.0.0 |
 
 #### RemoveMarkerOptions
 
@@ -593,17 +570,15 @@ An intrinsic object that provides functions to convert JavaScript values to and 
 
 #### DidTapInfoWindowResult
 
-| Prop           | Type                           |
-| -------------- | ------------------------------ |
-| **`position`** | <code>[LatLng](#latlng)</code> |
-| **`marker`**   | <code>[Marker](#marker)</code> |
+| Prop         | Type                           |
+| ------------ | ------------------------------ |
+| **`marker`** | <code>[Marker](#marker)</code> |
 
 #### DidCloseInfoWindowResult
 
-| Prop           | Type                           |
-| -------------- | ------------------------------ |
-| **`position`** | <code>[LatLng](#latlng)</code> |
-| **`marker`**   | <code>[Marker](#marker)</code> |
+| Prop         | Type                           |
+| ------------ | ------------------------------ |
+| **`marker`** | <code>[Marker](#marker)</code> |
 
 #### DidTapMapResult
 
@@ -626,31 +601,27 @@ An intrinsic object that provides functions to convert JavaScript values to and 
 
 #### DidTapMarkerResult
 
-| Prop           | Type                           |
-| -------------- | ------------------------------ |
-| **`position`** | <code>[LatLng](#latlng)</code> |
-| **`marker`**   | <code>[Marker](#marker)</code> |
+| Prop         | Type                           |
+| ------------ | ------------------------------ |
+| **`marker`** | <code>[Marker](#marker)</code> |
 
 #### DidBeginDraggingMarkerResult
 
-| Prop           | Type                           |
-| -------------- | ------------------------------ |
-| **`position`** | <code>[LatLng](#latlng)</code> |
-| **`marker`**   | <code>[Marker](#marker)</code> |
+| Prop         | Type                           |
+| ------------ | ------------------------------ |
+| **`marker`** | <code>[Marker](#marker)</code> |
 
 #### DidDragMarkerResult
 
-| Prop           | Type                           |
-| -------------- | ------------------------------ |
-| **`position`** | <code>[LatLng](#latlng)</code> |
-| **`marker`**   | <code>[Marker](#marker)</code> |
+| Prop         | Type                           |
+| ------------ | ------------------------------ |
+| **`marker`** | <code>[Marker](#marker)</code> |
 
 #### DidEndDraggingMarkerResult
 
-| Prop           | Type                           |
-| -------------- | ------------------------------ |
-| **`position`** | <code>[LatLng](#latlng)</code> |
-| **`marker`**   | <code>[Marker](#marker)</code> |
+| Prop         | Type                           |
+| ------------ | ------------------------------ |
+| **`marker`** | <code>[Marker](#marker)</code> |
 
 #### DidTapMyLocationDotResult
 
@@ -660,17 +631,17 @@ An intrinsic object that provides functions to convert JavaScript values to and 
 
 #### DidTapPoiResult
 
-| Prop           | Type                                             |
-| -------------- | ------------------------------------------------ |
-| **`position`** | <code>[LatLng](#latlng)</code>                   |
-| **`poi`**      | <code>[PointOfInterest](#pointofinterest)</code> |
+| Prop      | Type                                             |
+| --------- | ------------------------------------------------ |
+| **`poi`** | <code>[PointOfInterest](#pointofinterest)</code> |
 
 #### PointOfInterest
 
-| Prop          | Type                           | Description                                                                                                                                               | Since |
-| ------------- | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
-| **`name`**    | <code>[String](#string)</code> | The name of the POI.                                                                                                                                      | 2.0.0 |
-| **`placeId`** | <code>[String](#string)</code> | The placeId of the POI. Read more about what you can use a placeId for here: https://developers.google.com/maps/documentation/places/web-service/place-id | 2.0.0 |
+| Prop           | Type                           | Description                                                                                                                                               | Since |
+| -------------- | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
+| **`name`**     | <code>[String](#string)</code> | The name of the POI.                                                                                                                                      | 2.0.0 |
+| **`placeId`**  | <code>[String](#string)</code> | The placeId of the POI. Read more about what you can use a placeId for here: https://developers.google.com/maps/documentation/places/web-service/place-id | 2.0.0 |
+| **`position`** | <code>[LatLng](#latlng)</code> |                                                                                                                                                           | 2.0.0 |
 
 #### String
 

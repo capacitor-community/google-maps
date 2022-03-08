@@ -55,7 +55,7 @@ export interface MapAppearance {
    * @default null
    * @since 2.0.0
    */
-  style?: JSON | null;
+  style?: string | null;
   /**
    * If `true`, 3D buildings will be shown where available.
    *

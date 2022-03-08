@@ -78,4 +78,16 @@ class MapCameraPosition {
         }
         self.zoom = zoom;
     }
+    
+    func getJSObject(_ cameraPosition: GMSCameraPosition) -> JSObject {
+        return [
+            MapCameraPosition.TARGET_KEY: [
+                MapCameraPosition.LATITUDE_KEY: cameraPosition.target.latitude,
+                MapCameraPosition.LONGITUDE_KEY: cameraPosition.target.longitude
+            ],
+            MapCameraPosition.BEARING_KEY: cameraPosition.bearing,
+            MapCameraPosition.TILT_KEY: cameraPosition.viewingAngle,
+            MapCameraPosition.ZOOM_KEY: cameraPosition.zoom
+        ]
+    }
 }

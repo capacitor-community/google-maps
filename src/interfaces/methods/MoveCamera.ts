@@ -25,22 +25,15 @@ export interface MoveCameraOptions {
    * the current CameraPosition.target will be used.
    * Among other things, this default behaviour allows you to set the zoom without moving the map.
    * Or move the map without changing the current zoom.
-   * If instead of this default behaviour, the previous CameraPosition should be used as the base,
-   * this parameter should be set to `true`.
+   * If instead of this default behaviour, the previous CameraPosition (the one you gave the previous
+   * time you called `moveCamera` or `createMap`) should be used as the base, this parameter should be set to `false`.
    * But be cautious when using this.
    * If the user made changes to the CameraPosition (e.g. by scrolling or zooming the map),
    * those changes will be undone because it will be overwritten by the last explicitly set CameraPosition.
    * The CameraPosition is only "explicitly set" with these methods: `createMap` and `moveCamera`.
    *
-   * @default false
+   * @default true
    * @since 2.0.0
    */
-  usePreviousCameraPositionAsBase: boolean;
-}
-
-export interface MoveCameraResult {
-  /**
-   * @since 2.0.0
-   */
-  googleMap: GoogleMap;
+  useCurrentCameraPositionAsBase: boolean;
 }

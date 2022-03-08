@@ -1,4 +1,5 @@
 import Capacitor
+import GoogleMaps
 
 class MapPreferencesGestures {
     public static let ROTATE_ALLOWED_KEY: String! = "isRotateAllowed"
@@ -63,5 +64,15 @@ class MapPreferencesGestures {
         self.isScrollAllowedDuringRotateOrZoom = object[MapPreferencesGestures.SCROLL_ALLOWED_DURING_ROTATE_OR_ZOOM_KEY] as? Bool;
         self.isScrollAllowed = object[MapPreferencesGestures.TILT_ALLOWED_KEY] as? Bool;
         self.isScrollAllowed = object[MapPreferencesGestures.ZOOM_ALLOWED_KEY] as? Bool;
+    }
+    
+    func getJSObject(_ mapView: GMSMapView) -> JSObject {
+        return [
+            MapPreferencesGestures.ROTATE_ALLOWED_KEY: mapView.settings.rotateGestures,
+            MapPreferencesGestures.SCROLL_ALLOWED_KEY: mapView.settings.scrollGestures,
+            MapPreferencesGestures.SCROLL_ALLOWED_DURING_ROTATE_OR_ZOOM_KEY:                     mapView.settings.allowScrollGesturesDuringRotateOrZoom,
+            MapPreferencesGestures.TILT_ALLOWED_KEY: mapView.settings.tiltGestures,
+            MapPreferencesGestures.ZOOM_ALLOWED_KEY: mapView.settings.zoomGestures
+        ]
     }
 }

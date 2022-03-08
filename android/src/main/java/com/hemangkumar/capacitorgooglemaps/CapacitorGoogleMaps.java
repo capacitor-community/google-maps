@@ -361,10 +361,9 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
 
                     Integer duration = call.getInt("duration", 0);
 
-                    // @TODO: add move listeners for movement
-                    JSObject result = customMapView.moveCamera(duration);
+                    customMapView.moveCamera(duration);
 
-                    call.resolve(result);
+                    call.resolve();
                 } else {
                     call.reject("map not found");
                 }
@@ -483,10 +482,8 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
                 CustomMapView customMapView = customMapViews.get(mapId);
 
                 if (customMapView != null) {
-                    JSObject preferences = JSObjectDefaults.getJSObjectSafe(call, "preferences", new JSObject());
-
                     CustomMarker customMarker = new CustomMarker();
-                    customMarker.updateFromJSObject(preferences);
+                    customMarker.updateFromJSObject(call.getData());
 
                     Marker marker = customMapView.addMarker(customMarker);
 

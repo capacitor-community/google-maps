@@ -8,11 +8,11 @@ export interface AddMarkerOptions {
   /**
    * @since 2.0.0
    */
-  preferences?: MarkerPreferences;
+  position: LatLng;
   /**
    * @since 2.0.0
    */
-  position: LatLng;
+  preferences?: MarkerPreferences;
 }
 
 export interface AddMarkerResult {
@@ -20,8 +20,4 @@ export interface AddMarkerResult {
    * @since 2.0.0
    */
   marker: Marker;
-  /**
-   * @since 2.0.0
-   */
-  position: LatLng;
 }

@@ -74,7 +74,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             self.customWebView?.customMapViews[customMapView.id] = customMapView
         }
     }
-
+    
     @objc func updateMap(_ call: CAPPluginCall) {
         let mapId: String = call.getString("mapId", "")
 
@@ -83,11 +83,29 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
                 call.reject("map not found")
                 return
             }
-
+            
             let preferences = call.getObject("preferences", JSObject());
             customMapView.mapPreferences.updateFromJSObject(preferences);
+            
+            let result = customMapView.invalidateMap()
+            
+            call.resolve(result)
+        }
 
-            customMapView.invalidateMap();
+    }
+    
+    @objc func getMap(_ call: CAPPluginCall) {
+        let mapId: String = call.getString("mapId", "")
+
+        DispatchQueue.main.async {
+            guard let customMapView = self.customWebView?.customMapViews[mapId] else {
+                call.reject("map not found")
+                return
+            }
+            
+            let result = customMapView.getMap()
+            
+            call.resolve(result)
         }
 
     }
@@ -118,7 +136,6 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
 
             customMapView.moveCamera(duration)
 
-            // @TODO: return map result
             call.resolve()
         }
     }
@@ -131,11 +148,16 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
                 call.reject("map not found")
                 return
             }
+
+            let position = call.getObject("position", JSObject())
             let preferences = call.getObject("preferences", JSObject())
 
-            let marker = self.addMarker(preferences, customMapView: customMapView)
+            let marker = self.addMarker([
+                "position": position,
+                "preferences": preferences
+            ], customMapView: customMapView)
 
-            call.resolve(CustomMarker.getResultForMarker(marker))
+            call.resolve(CustomMarker.getResultForMarker(marker, mapId: mapId))
         }
     }
 
@@ -231,13 +253,15 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
 }
 
 private extension CapacitorGoogleMaps {
-    func addMarker(_ preferences: JSObject, customMapView: CustomMapView) -> GMSMarker {
+    func addMarker(_ markerData: JSObject, customMapView: CustomMapView) -> GMSMarker {
         let marker = CustomMarker()
 
-        marker.updateFromJSObject(preferences: preferences)
+        marker.updateFromJSObject(markerData)
         marker.map = customMapView.GMapView
 
         self.customMarkers[marker.id] = marker
+
+        let preferences = markerData["preferences"] as? JSObject ?? JSObject()
 
         if let icon = preferences["icon"] as? JSObject {
             if let url = icon["url"] as? String {
@@ -255,10 +279,9 @@ private extension CapacitorGoogleMaps {
     func addMarker(node: Node<JSValue>?,
                    customMapView: CustomMapView) {
         guard let node = node else { return }
-        let markerObject = node.value as? JSObject ?? JSObject()
-        let preferences = markerObject["preferences"] as? JSObject ?? JSObject()
+        let markerData = node.value as? JSObject ?? JSObject()
 
-        self.addMarker(preferences, customMapView: customMapView)
+        self.addMarker(markerData, customMapView: customMapView)
 
         self.addMarker(node: node.next, customMapView: customMapView)
     }

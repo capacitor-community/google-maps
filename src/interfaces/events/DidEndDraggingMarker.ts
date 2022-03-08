@@ -1,7 +1,6 @@
-import { LatLng, Marker } from "./../../definitions";
+import { Marker } from "./../../definitions";
 
 export interface DidEndDraggingMarkerResult {
-  position: LatLng;
   marker: Marker;
 }
 

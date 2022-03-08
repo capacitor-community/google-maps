@@ -91,4 +91,27 @@ class MapPreferencesAppearance {
         self.isMyLocationDotShown = object[MapPreferencesAppearance.MY_LOCATION_DOT_SHOWN_KEY] as? Bool;
         self.isTrafficShown = object[MapPreferencesAppearance.TRAFFIC_SHOWN_KEY] as? Bool;
     }
+    
+    func getJSObject(_ mapView: GMSMapView) -> JSObject {
+        var type = 1;
+        if (mapView.mapType == GMSMapViewType.none) {
+            type = 0;
+        } else if (mapView.mapType == GMSMapViewType.normal) {
+            type = 1;
+        } else if (mapView.mapType == GMSMapViewType.satellite) {
+            type = 2;
+        } else if (mapView.mapType == GMSMapViewType.terrain) {
+            type = 3;
+        } else if (mapView.mapType == GMSMapViewType.hybrid) {
+            type = 4;
+        }
+        
+        return [
+            MapPreferencesAppearance.TYPE_KEY: type,
+            MapPreferencesAppearance.BUILDINGS_SHOWN_KEY: mapView.isBuildingsEnabled,
+            MapPreferencesAppearance.INDOOR_SHOWN_KEY: mapView.isIndoorEnabled,
+            MapPreferencesAppearance.MY_LOCATION_DOT_SHOWN_KEY: mapView.isMyLocationEnabled,
+            MapPreferencesAppearance.TRAFFIC_SHOWN_KEY: mapView.isTrafficEnabled
+        ]
+    }
 }

@@ -1,7 +1,6 @@
-import { LatLng, Marker } from "./../../definitions";
+import { Marker } from "./../../definitions";
 
 export interface DidTapMarkerResult {
-  position: LatLng;
   marker: Marker;
 }
 

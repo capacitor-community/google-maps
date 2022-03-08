@@ -68,18 +68,10 @@ class CustomMapView: UIViewController, GMSMapViewDelegate {
 
         self.invalidateMap();
 
-        self.customMapViewEvents.lastResultForCallbackId(callbackId: savedCallbackIdForCreate, result: [
-            "googleMap": [
-                "mapId": self.id
-            ]
-        ]);
+        self.customMapViewEvents.lastResultForCallbackId(callbackId: savedCallbackIdForCreate, result: self.getResultForMap());
     }
 
-    func invalidateMap() {
-        if (self.GMapView == nil) {
-            return;
-        }
-
+    func invalidateMap() -> PluginCallResultData {
         // set gestures
         self.GMapView.settings.rotateGestures = self.mapPreferences.gestures.isRotateAllowed;
         self.GMapView.settings.scrollGestures = self.mapPreferences.gestures.isScrollAllowed;
@@ -99,6 +91,12 @@ class CustomMapView: UIViewController, GMSMapViewDelegate {
         self.GMapView.isIndoorEnabled = self.mapPreferences.appearance.isIndoorShown;
         self.GMapView.isMyLocationEnabled = self.mapPreferences.appearance.isMyLocationDotShown;
         self.GMapView.isTrafficEnabled = self.mapPreferences.appearance.isTrafficShown;
+        
+        return self.getResultForMap();
+    }
+    
+    func getMap() -> PluginCallResultData {
+        return self.getResultForMap();
     }
     
     public func getCameraPosition() -> GMSCameraPosition? {
@@ -109,7 +107,6 @@ class CustomMapView: UIViewController, GMSMapViewDelegate {
     }
     
     public func moveCamera(_ duration: Int?) {
-        
         let camera = self.mapCameraPosition.getCameraPosition()
         
         if (duration == nil || duration == 0) {
@@ -151,14 +148,14 @@ class CustomMapView: UIViewController, GMSMapViewDelegate {
 
     internal func mapView(_ mapView: GMSMapView, didTapInfoWindowOf marker: GMSMarker) {
         if (customMapViewEvents != nil && savedCallbackIdForDidTapInfoWindow != nil) {
-            let result: PluginCallResultData = CustomMarker.getResultForMarker(marker);
+            let result: PluginCallResultData = CustomMarker.getResultForMarker(marker, mapId: self.id);
             customMapViewEvents.resultForCallbackId(callbackId: savedCallbackIdForDidTapInfoWindow, result: result);
         }
     }
 
     internal func mapView(_ mapView: GMSMapView, didCloseInfoWindowOf marker: GMSMarker) {
         if (customMapViewEvents != nil && savedCallbackIdForDidCloseInfoWindow != nil) {
-            let result: PluginCallResultData = CustomMarker.getResultForMarker(marker);
+            let result: PluginCallResultData = CustomMarker.getResultForMarker(marker, mapId: self.id);
             customMapViewEvents.resultForCallbackId(callbackId: savedCallbackIdForDidCloseInfoWindow, result: result);
         }
     }
@@ -179,7 +176,7 @@ class CustomMapView: UIViewController, GMSMapViewDelegate {
 
     internal func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
         if (customMapViewEvents != nil && savedCallbackIdForDidTapMarker != nil) {
-            let result: PluginCallResultData = CustomMarker.getResultForMarker(marker);
+            let result: PluginCallResultData = CustomMarker.getResultForMarker(marker, mapId: self.id);
             customMapViewEvents.resultForCallbackId(callbackId: savedCallbackIdForDidTapMarker, result: result);
         }
         return preventDefaultForDidTapMarker;
@@ -197,6 +194,20 @@ class CustomMapView: UIViewController, GMSMapViewDelegate {
             customMapViewEvents.resultForCallbackId(callbackId: savedCallbackIdForDidTapMyLocationButton, result: nil);
         }
         return preventDefaultForDidTapMyLocationButton;
+    }
+    
+    private func getResultForMap() -> PluginCallResultData {
+        return [
+            "googleMap": [
+                "mapId": self.id ?? "",
+                "cameraPosition": self.mapCameraPosition.getJSObject(self.getCameraPosition() ?? GMSCameraPosition()),
+                "preferences": [
+                    "gestures": self.mapPreferences.gestures.getJSObject(self.GMapView),
+                    "controls": self.mapPreferences.controls.getJSObject(self.GMapView),
+                    "appearance": self.mapPreferences.appearance.getJSObject(self.GMapView)
+                ]
+            ]
+        ]
     }
 
     private func getResultForPosition(coordinate: CLLocationCoordinate2D) -> PluginCallResultData {

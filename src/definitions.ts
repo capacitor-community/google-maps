@@ -10,7 +10,6 @@ import {
   RemoveMapOptions,
   ClearMapOptions,
   MoveCameraOptions,
-  MoveCameraResult,
   ElementFromPointResultOptions,
   AddMarkerOptions,
   AddMarkerResult,
@@ -62,7 +61,7 @@ export interface CapacitorGoogleMapsPlugin {
 
   clearMap(options: ClearMapOptions): Promise<void>;
 
-  moveCamera(options: MoveCameraOptions): Promise<MoveCameraResult>;
+  moveCamera(options: MoveCameraOptions): Promise<void>;
 
   addMarker(options: AddMarkerOptions): Promise<AddMarkerResult>;
 
