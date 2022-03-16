@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@capacitor/android": "^3.0.0",
-    "@capacitor/docgen": "git+https://github.com/DutchConcepts/capacitor-docgen",
+    "@capacitor/docgen": "git+https://github.com/DutchConcepts/capacitor-docgen.git",
     "@capacitor/ios": "^3.0.0",
     "all-contributors-cli": "^6.20.0",
     "rimraf": "^3.0.0",
@@ -48,9 +48,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/capacitor-community/google-maps"
+    "url": "git+https://github.com/capacitor-community/google-maps.git"
   },
   "bugs": {
     "url": "https://github.com/capacitor-community/google-maps/issues"
+  },
+  "homepage": "https://github.com/capacitor-community/google-maps#readme",
+  "directories": {
+    "doc": "docs"
   }
 }
