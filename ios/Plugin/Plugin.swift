@@ -74,7 +74,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             self.customWebView?.customMapViews[customMapView.id] = customMapView
         }
     }
-    
+
     @objc func updateMap(_ call: CAPPluginCall) {
         let mapId: String = call.getString("mapId", "")
 
@@ -83,17 +83,17 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
                 call.reject("map not found")
                 return
             }
-            
+
             let preferences = call.getObject("preferences", JSObject());
             customMapView.mapPreferences.updateFromJSObject(preferences);
-            
+
             let result = customMapView.invalidateMap()
-            
+
             call.resolve(result)
         }
 
     }
-    
+
     @objc func getMap(_ call: CAPPluginCall) {
         let mapId: String = call.getString("mapId", "")
 
@@ -102,9 +102,9 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
                 call.reject("map not found")
                 return
             }
-            
+
             let result = customMapView.getMap()
-            
+
             call.resolve(result)
         }
 
@@ -193,6 +193,83 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         }
     }
 
+    @objc func addPolyline(_ call: CAPPluginCall) {
+
+        let points = call.getArray("points", JSObject())
+
+        DispatchQueue.main.async {
+
+            guard let customMapView = self.customWebView?.customMapViews[mapId] else {
+                call.reject("map not found")
+                return
+            }
+
+            let path = GMSMutablePath()
+
+            for point in points ?? [] {
+                let coords = CLLocationCoordinate2D(latitude: point["latitude"] as! CLLocationDegrees, longitude: point["longitude"] as! CLLocationDegrees)
+                path.add(coords)
+            }
+
+            let polyline = GMSPolyline(path: path)
+
+            polyline.map = customMapView.GMapView
+            call.resolve()
+        }
+    }
+
+    @objc func addPolygon(_ call: CAPPluginCall) {
+
+        let points = call.getArray("points", JSObject())
+
+        DispatchQueue.main.async {
+
+            guard let customMapView = self.customWebView?.customMapViews[mapId] else {
+                call.reject("map not found")
+                return
+            }
+
+            let path = GMSMutablePath()
+
+            for point in points ?? [] {
+                let coords = CLLocationCoordinate2D(
+                    latitude: point["latitude"] as! CLLocationDegrees,
+                    longitude: point["longitude"] as! CLLocationDegrees
+                )
+                path.add(coords)
+            }
+
+            let polygon = GMSPolygon(path: path)
+            polygon.map = customMapView.GMapView
+
+            call.resolve()
+        }
+    }
+
+    @objc func addCircle(_ call: CAPPluginCall) {
+        let radius = call.getDouble("radius") ?? 0.0
+
+        let center = call.getObject("center")
+
+        let coordinates = CLLocationCoordinate2D(
+            latitude: center?["latitude"] as! CLLocationDegrees,
+            longitude: center?["longitude"] as! CLLocationDegrees
+        )
+
+        DispatchQueue.main.async {
+            guard let customMapView = self.customWebView?.customMapViews[mapId] else {
+                call.reject("map not found")
+                return
+            }
+
+            let circleCenter = coordinates
+            let circle = GMSCircle(position: circleCenter, radius: radius)
+            circle.map = customMapView.GMapView
+
+            call.resolve()
+        }
+    }
+
     @objc func didTapInfoWindow(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_TAP_INFO_WINDOW);
     }
@@ -208,23 +285,23 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
     @objc func didLongPressMap(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_LONG_PRESS_MAP);
     }
-    
+
     @objc func didTapMarker(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_TAP_MARKER);
     }
-    
+
     @objc func didBeginDraggingMarker(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_BEGIN_DRAGGING_MARKER);
     }
-    
+
     @objc func didDragMarker(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_DRAG_MARKER);
     }
-    
+
     @objc func didEndDraggingMarker(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_END_DRAGGING_MARKER);
     }
-    
+
     @objc func didTapMyLocationButton(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_TAP_MY_LOCATION_BUTTON);
     }
@@ -232,19 +309,19 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
     @objc func didTapMyLocationDot(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_TAP_MY_LOCATION_DOT);
     }
-    
+
     @objc func didTapPoi(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_TAP_POI);
     }
-    
+
     @objc func didBeginMovingCamera(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_BEGIN_MOVING_CAMERA);
     }
-    
+
     @objc func didMoveCamera(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_MOVE_CAMERA);
     }
-    
+
     @objc func didEndMovingCamera(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_END_MOVING_CAMERA);
     }
