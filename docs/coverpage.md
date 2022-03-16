@@ -7,5 +7,5 @@
 - 🔌 Same API for both iOS and Android
 - ✨ Most features from JS SDK
 
-[GitHub](https://github.com/capacitor-community/capacitor-googlemaps-native)
+[GitHub](https://github.com/capacitor-community/google-maps)
 [Get Started](#home)
