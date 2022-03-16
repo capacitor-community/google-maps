@@ -49,7 +49,7 @@ Note that it can be anything really. Like with Capacitor itself, it does not mat
 The Plugin can be imported as follows:
 
 ```javascript
-import { CapacitorGoogleMaps } from "@capacitor-community/capacitor-googlemaps-native";
+import { CapacitorGoogleMaps } from "@capacitor-community/google-maps";
 ```
 
 Let's assume you have imported the Plugin correctly. A simple Maps instance can then be initialized as follows:
