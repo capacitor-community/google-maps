@@ -25,4 +25,4 @@ Under the hood this package makes use of the native Maps SDK for Android and iOS
 
 ## Getting started
 
-Refer to the [docs](https://dutchconcepts.github.io/capacitor-google-maps/) to get started with this plugin.
+Refer to the [docs](https://capacitor-community.github.io/google-maps/) to get started with this plugin.

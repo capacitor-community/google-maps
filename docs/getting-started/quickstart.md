@@ -113,4 +113,4 @@ As the previous example shows, it is really easy to integrate the Maps SDK into 
 
 - Read the Guides to learn more about the plugin.
 - Refer to the [API Reference](api.md#api-reference-🔌) to see all available methods the plugin offers.
-- Take a look at some examples [here](https://github.com/DutchConcepts/capacitor-google-maps-examples).
+- Take a look at some examples [here](https://github.com/capacitor-community/google-maps-examples).
