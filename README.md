@@ -23,7 +23,7 @@
 
 Under the hood this package makes use of the Native SDKs for Google Maps, written in Java and Swift for both Android and iOS respectively. In comparison to the JavaScript SDK the Native SDKs have much better performance and are more cost effective<sup>1</sup>. It also adds support for offline caching. 
 
-<sup>[1]</sup> The "Dynamic Maps" SKU for the Native SDKs is offered free of charge by Google ([Native Dynamic Maps pricing](https://developers.google.com/maps/billing-and-pricing/pricing)), as opposed to the on-demand pricing model for the JavaScript SDK ([JavaScript Dynamic Maps pricing](https://developers.google.com/maps/billing-and-pricing/pricing#dynamic-maps)).
+<sup>[1]</sup> The "Dynamic Maps" SKU for the Native SDKs is offered free of charge by Google ([Native Dynamic Maps pricing](https://developers.google.com/maps/billing-and-pricing/pricing#mobile-dynamic)), as opposed to the on-demand pricing model for the JavaScript SDK ([JavaScript Dynamic Maps pricing](https://developers.google.com/maps/billing-and-pricing/pricing#dynamic-maps)).
 
 ## Documentation
 
