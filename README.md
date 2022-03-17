@@ -21,11 +21,22 @@
 
 ## Purpose
 
-Under the hood this package makes use of the Native Maps SDK for both Android and iOS respectively. In comparison to the JavaScript Maps SDK the Native Maps SDK has much better performance and is more cost effective<sup>1</sup>. It also adds support for offline caching. 
+Under the hood this package makes use of the Native SDKs for Google Maps, written in Java and Swift for both Android and iOS respectively. In comparison to the JavaScript SDK the Native SDKs have much better performance and are more cost effective<sup>1</sup>. It also adds support for offline caching. 
 
-<sup>[1] </sup>Native Maps SDK ("Dynamic Maps") is completely free to use. ([Dynamic Maps pricing](https://developers.google.com/maps/billing-and-pricing/pricing)), as opposed to on-demand pricing for the JavaScript Maps SDK ([JavaScript Maps pricing](https://developers.google.com/maps/documentation/javascript/usage-and-billing#new-payg)).
+<sup>[1]</sup> The "Dynamic Maps" SKU for the Native SDKs is offered free of charge by Google ([Native Dynamic Maps pricing](https://developers.google.com/maps/billing-and-pricing/pricing)), as opposed to the on-demand pricing model for the JavaScript SDK ([JavaScript Dynamic Maps pricing](https://developers.google.com/maps/billing-and-pricing/pricing#dynamic-maps)).
 
-## Getting started
+## Documentation
 
-Refer to the [docs](https://capacitor-community.github.io/google-maps/) to get started with this plugin.<br />
-Jump directly to [installation](https://capacitor-community.github.io/google-maps/#/getting-started/installation).
+Extensive documentation is available [here](https://capacitor-community.github.io/google-maps/).
+
+## Shortcuts
+
+- [Documentation homepage](https://capacitor-community.github.io/google-maps/)
+
+- [Installation](https://capacitor-community.github.io/google-maps/#/getting-started/installation)
+
+- [Should you use this plugin](https://capacitor-community.github.io/google-maps/#/about/should-you-use-this-plugin)
+
+- [API reference](https://capacitor-community.github.io/google-maps/#/api)
+
+- [Examples](https://github.com/capacitor-community/google-maps-examples)
