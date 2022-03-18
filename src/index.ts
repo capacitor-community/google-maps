@@ -52,7 +52,7 @@ export class CapacitorGoogleMaps  {
   }
 
   public static async createMap(element: HTMLElement, _options: CreateMapOptions = {}): Promise<CreateMapResult> {
-    if (element) {
+    if (element && !_options.boundingRect) {
       // get boundaries of element
       const boundingRect = element.getBoundingClientRect();
       _options.boundingRect = {
