@@ -12,6 +12,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
+import android.webkit.WebView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaResourceApi;
@@ -40,27 +43,27 @@ public class AsyncLoadImage extends AsyncTask<Void, Void, AsyncLoadImage.AsyncLo
     public static BitmapCache mIconCache = new BitmapCache(maxMemory / 8);
 
     private final String TAG = "AsyncLoadImage";
-    private CordovaWebView webView;
-    private CordovaInterface cordova;
+    private WebView webView;
+    private AppCompatActivity activity;
 
     public static class AsyncLoadImageOptions {
-        String url;
-        int width;
-        int height;
-        boolean noCaching;
+        public String url;
+        public int width;
+        public int height;
+        public boolean noCaching;
     }
 
     public static class AsyncLoadImageResult {
-        Bitmap image;
-        boolean cacheHit;
-        String cacheKey;
+        public Bitmap image;
+        public boolean cacheHit;
+        public String cacheKey;
     }
 
-    public AsyncLoadImage(CordovaInterface cordova, CordovaWebView webView, AsyncLoadImageOptions options, AsyncLoadImageInterface callback) {
+    public AsyncLoadImage(AppCompatActivity activity, WebView webView, AsyncLoadImageOptions options, AsyncLoadImageInterface callback) {
         this.callback = callback;
         this.mOptions = options;
         this.webView = webView;
-        this.cordova = cordova;
+        this.activity = activity;
     }
 
     public static String getCacheKey(String url, int width, int height) {
@@ -119,13 +122,13 @@ public class AsyncLoadImage extends AsyncTask<Void, Void, AsyncLoadImage.AsyncLo
     protected void onPreExecute() {
         super.onPreExecute();
 
-        //----------------------------------------------------------------
-        // If icon url contains "cdvfile://", convert to physical path.
-        //----------------------------------------------------------------
-        if (mOptions.url.indexOf("cdvfile://") == 0) {
-            CordovaResourceApi resourceApi = webView.getResourceApi();
-            mOptions.url = getAbsolutePathFromCDVFilePath(resourceApi, mOptions.url);
-        }
+//        //----------------------------------------------------------------
+//        // If icon url contains "cdvfile://", convert to physical path.
+//        //----------------------------------------------------------------
+//        if (mOptions.url.indexOf("cdvfile://") == 0) {
+//            CordovaResourceApi resourceApi = webView.getResourceApi();
+//            mOptions.url = getAbsolutePathFromCDVFilePath(resourceApi, mOptions.url);
+//        }
 
         String currentPage = webView.getUrl();
         if (currentPage == null) {
@@ -169,25 +172,25 @@ public class AsyncLoadImage extends AsyncTask<Void, Void, AsyncLoadImage.AsyncLo
 
     }
 
-    private static String getAbsolutePathFromCDVFilePath(CordovaResourceApi resourceApi, String cdvFilePath) {
-        if (cdvFilePath.indexOf("cdvfile://") != 0) {
-            return null;
-        }
-
-        //CordovaResourceApi resourceApi = webView.getResourceApi();
-        Uri fileURL = resourceApi.remapUri(Uri.parse(cdvFilePath));
-        File file = resourceApi.mapUriToFile(fileURL);
-        if (file == null) {
-            return null;
-        }
-
-        try {
-            return file.getCanonicalPath();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+//    private static String getAbsolutePathFromCDVFilePath(CordovaResourceApi resourceApi, String cdvFilePath) {
+//        if (cdvFilePath.indexOf("cdvfile://") != 0) {
+//            return null;
+//        }
+//
+//        //CordovaResourceApi resourceApi = webView.getResourceApi();
+//        Uri fileURL = resourceApi.remapUri(Uri.parse(cdvFilePath));
+//        File file = resourceApi.mapUriToFile(fileURL);
+//        if (file == null) {
+//            return null;
+//        }
+//
+//        try {
+//            return file.getCanonicalPath();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
 
 
     protected AsyncLoadImageResult doInBackground(Void... params) {
@@ -444,12 +447,12 @@ public class AsyncLoadImage extends AsyncTask<Void, Void, AsyncLoadImage.AsyncLo
                 try {
                     InputStream inputStream = null;
                     if (iconUrl.startsWith("file:/android_asset/")) {
-                        AssetManager assetManager = cordova.getActivity().getAssets();
+                        AssetManager assetManager = activity.getAssets();
                         iconUrl = iconUrl.replace("file:/android_asset/", "");
                         inputStream = assetManager.open(iconUrl);
                         //Log.d(TAG, "--> iconUrl = " + iconUrl);
                     } else if (iconUrl.startsWith("file:///android_asset/")) {
-                        AssetManager assetManager = cordova.getActivity().getAssets();
+                        AssetManager assetManager = activity.getAssets();
                         iconUrl = iconUrl.replace("file:///android_asset/", "");
                         inputStream = assetManager.open(iconUrl);
                         //Log.d(TAG, "--> iconUrl = " + iconUrl);
@@ -662,7 +665,7 @@ public class AsyncLoadImage extends AsyncTask<Void, Void, AsyncLoadImage.AsyncLo
 
     @Override
     protected void onPostExecute(AsyncLoadImageResult result) {
-        this.callback.onPostExecute(result);
+        this.callback.onPostExecute(this, result);
     }
 
 }

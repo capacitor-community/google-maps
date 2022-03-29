@@ -4,6 +4,8 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,19 +16,27 @@ import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.annotation.Permission;
+import com.google.android.libraries.maps.model.BitmapDescriptor;
+import com.google.android.libraries.maps.model.BitmapDescriptorFactory;
 import com.google.android.libraries.maps.model.CameraPosition;
 import com.google.android.libraries.maps.model.Marker;
+import com.google.android.libraries.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+
+import plugin.google.maps.AsyncLoadImage;
+import plugin.google.maps.AsyncLoadImageInterface;
 
 @CapacitorPlugin(
         name = "CapacitorGoogleMaps",
         permissions = {
                 @Permission(
-                        strings = { Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION },
+                        strings = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
                         alias = "location"
                 ),
         }
@@ -37,6 +47,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
     private String lastEventChainId;
     public List<MotionEvent> previousEvents = new ArrayList<>();
     private String delegateTouchEventsToMapId;
+    private Set<AsyncTask> imageLoadingTasks = new HashSet<AsyncTask>();
 
     @PluginMethod()
     public void elementFromPointResult(PluginCall call) {
@@ -57,6 +68,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
         }
         call.resolve();
     }
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void load() {
@@ -480,14 +492,16 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
             @Override
             public void run() {
                 CustomMapView customMapView = customMapViews.get(mapId);
-
                 if (customMapView != null) {
-                    CustomMarker customMarker = new CustomMarker();
-                    customMarker.updateFromJSObject(call.getData());
 
-                    Marker marker = customMapView.addMarker(customMarker);
+                    JSObject markerData = call.getData();
 
-                    call.resolve(CustomMarker.getResultForMarker(marker, mapId));
+                    final String iconUrl = getIconUrl(markerData);
+                    if (!TextUtils.isEmpty(iconUrl)) {
+                        asyncLoadIcon(customMapView, mapId, iconUrl, call);
+                    } else {
+                        showMarker(customMapView, mapId, null, call);
+                    }
                 } else {
                     call.reject("map not found");
                 }
@@ -495,25 +509,71 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
         });
     }
 
-     @PluginMethod(returnType = PluginMethod.RETURN_NONE)
-     public void removeMarker(final PluginCall call) {
-         final String mapId = call.getString("mapId");
+    private void showMarker(CustomMapView customMapView, String mapId, BitmapDescriptor icon, PluginCall call) {
+        CustomMarker customMarker = new CustomMarker();
+        customMarker.updateFromJSObject(call.getData(), icon);
+        Marker marker = customMapView.addMarker(customMarker);
+        call.resolve(CustomMarker.getResultForMarker(marker, mapId));
+    }
 
-         getBridge().getActivity().runOnUiThread(new Runnable() {
-             @Override
-             public void run() {
-                 CustomMapView customMapView = customMapViews.get(mapId);
+    private String getIconUrl(JSObject markerData) {
+        final JSObject icon = JSObjectDefaults.getJSObjectSafe(markerData, "icon", new JSObject());
+        return icon.getString("url", "");
+    }
 
-                 if (customMapView != null) {
-                     final String markerId = call.getString("markerId");
+    private void asyncLoadIcon(CustomMapView customMapView, String mapId, String iconUrl, PluginCall call) {
+        AsyncLoadImage.AsyncLoadImageOptions imageOptions = new AsyncLoadImage.AsyncLoadImageOptions();
+        imageOptions.height = -1;
+        imageOptions.width = -1;
+        imageOptions.noCaching = true;
+        imageOptions.url = iconUrl;
 
-                     customMapView.removeMarker(markerId);
+        AsyncLoadImageInterface handler = new AsyncLoadImageInterface() {
+            @Override
+            public void onPostExecute(AsyncLoadImage task, AsyncLoadImage.AsyncLoadImageResult result) {
+                imageLoadingTasks.remove(task);
+                if (result == null || result.image == null) {
+                    call.reject("Can not read image from " + iconUrl);
+                } else {
+                    showMarker(customMapView, mapId, BitmapDescriptorFactory.fromBitmap(result.image), call);
+                }
+            }
+        };
 
-                     call.resolve();
-                 } else {
-                     call.reject("map not found");
-                 }
-             }
-         });
-     }
+        final AsyncLoadImage task = new AsyncLoadImage(
+                getActivity(),
+                getBridge().getWebView(),
+                imageOptions, handler);
+        imageLoadingTasks.add(task);
+        task.execute();
+    }
+
+    private void cancelBackgroundTasks() {
+        for (AsyncTask task : imageLoadingTasks) {
+            task.cancel(true);
+        }
+        imageLoadingTasks.clear();
+    }
+
+    @PluginMethod(returnType = PluginMethod.RETURN_NONE)
+    public void removeMarker(final PluginCall call) {
+        final String mapId = call.getString("mapId");
+
+        getBridge().getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                CustomMapView customMapView = customMapViews.get(mapId);
+
+                if (customMapView != null) {
+                    final String markerId = call.getString("markerId");
+
+                    customMapView.removeMarker(markerId);
+
+                    call.resolve();
+                } else {
+                    call.reject("map not found");
+                }
+            }
+        });
+    }
 }

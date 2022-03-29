@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.util.JSONUtils;
 import com.google.android.libraries.maps.GoogleMap;
+import com.google.android.libraries.maps.model.BitmapDescriptor;
 import com.google.android.libraries.maps.model.LatLng;
 import com.google.android.libraries.maps.model.Marker;
 import com.google.android.libraries.maps.model.MarkerOptions;
@@ -22,7 +23,7 @@ public class CustomMarker {
     private final MarkerOptions markerOptions = new MarkerOptions();
     private JSObject tag = new JSObject();
 
-    public void updateFromJSObject(JSObject marker) {
+    public void updateFromJSObject(JSObject marker, BitmapDescriptor icon) {
         final JSObject position = JSObjectDefaults.getJSObjectSafe(marker, "position", new JSObject());
         final Double latitude = JSObjectDefaults.getDoubleSafe(position, "latitude", 0d);
         final Double longitude = JSObjectDefaults.getDoubleSafe(position, "longitude", 0d);
@@ -48,7 +49,9 @@ public class CustomMarker {
         this.markerOptions.draggable(isDraggable);
         this.markerOptions.zIndex(zIndex);
         this.markerOptions.anchor(anchorX, anchorY);
-
+        if (icon != null) {
+            this.markerOptions.icon(icon);
+        }
         this.setMetadata(JSObjectDefaults.getJSObjectSafe(preferences, "metadata", new JSObject()));
     }
 
