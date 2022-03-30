@@ -4,8 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.os.AsyncTask;
-import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,20 +15,13 @@ import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.annotation.Permission;
 import com.google.android.libraries.maps.model.BitmapDescriptor;
-import com.google.android.libraries.maps.model.BitmapDescriptorFactory;
 import com.google.android.libraries.maps.model.CameraPosition;
 import com.google.android.libraries.maps.model.Marker;
-import com.google.android.libraries.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
-
-import plugin.google.maps.AsyncLoadImage;
-import plugin.google.maps.AsyncLoadImageInterface;
 
 @CapacitorPlugin(
         name = "CapacitorGoogleMaps",
@@ -41,13 +32,12 @@ import plugin.google.maps.AsyncLoadImageInterface;
                 ),
         }
 )
-public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  {
+public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     private final HashMap<String, CustomMapView> customMapViews = new HashMap<>();
     Float devicePixelRatio;
     private String lastEventChainId;
     public List<MotionEvent> previousEvents = new ArrayList<>();
     private String delegateTouchEventsToMapId;
-    private Set<AsyncTask> imageLoadingTasks = new HashSet<AsyncTask>();
 
     @PluginMethod()
     public void elementFromPointResult(PluginCall call) {
@@ -449,10 +439,12 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
     public void didBeginMovingCamera(final PluginCall call) {
         setCallbackIdForEvent(call, CustomMapView.EVENT_DID_BEGIN_MOVING_CAMERA);
     }
+
     @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
     public void didMoveCamera(final PluginCall call) {
         setCallbackIdForEvent(call, CustomMapView.EVENT_DID_MOVE_CAMERA);
     }
+
     @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
     public void didEndMovingCamera(final PluginCall call) {
         setCallbackIdForEvent(call, CustomMapView.EVENT_DID_END_MOVING_CAMERA);
@@ -488,23 +480,14 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
     public void addMarker(final PluginCall call) {
         final String mapId = call.getString("mapId");
 
-        getBridge().getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                CustomMapView customMapView = customMapViews.get(mapId);
-                if (customMapView != null) {
-
-                    JSObject markerData = call.getData();
-
-                    final String iconUrl = getIconUrl(markerData);
-                    if (!TextUtils.isEmpty(iconUrl)) {
-                        asyncLoadIcon(customMapView, mapId, iconUrl, call);
-                    } else {
-                        showMarker(customMapView, mapId, null, call);
-                    }
-                } else {
-                    call.reject("map not found");
-                }
+        getBridge().getActivity().runOnUiThread(() -> {
+            CustomMapView customMapView = customMapViews.get(mapId);
+            if (customMapView != null) {
+                new AsyncIconLoader(call.getData(), getActivity())
+                        .load(bitmapDescriptor ->
+                                showMarker(customMapView, mapId, bitmapDescriptor, call));
+            } else {
+                call.reject("map not found");
             }
         });
     }
@@ -514,45 +497,6 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
         customMarker.updateFromJSObject(call.getData(), icon);
         Marker marker = customMapView.addMarker(customMarker);
         call.resolve(CustomMarker.getResultForMarker(marker, mapId));
-    }
-
-    private String getIconUrl(JSObject markerData) {
-        final JSObject icon = JSObjectDefaults.getJSObjectSafe(markerData, "icon", new JSObject());
-        return icon.getString("url", "");
-    }
-
-    private void asyncLoadIcon(CustomMapView customMapView, String mapId, String iconUrl, PluginCall call) {
-        AsyncLoadImage.AsyncLoadImageOptions imageOptions = new AsyncLoadImage.AsyncLoadImageOptions();
-        imageOptions.height = -1;
-        imageOptions.width = -1;
-        imageOptions.noCaching = true;
-        imageOptions.url = iconUrl;
-
-        AsyncLoadImageInterface handler = new AsyncLoadImageInterface() {
-            @Override
-            public void onPostExecute(AsyncLoadImage task, AsyncLoadImage.AsyncLoadImageResult result) {
-                imageLoadingTasks.remove(task);
-                if (result == null || result.image == null) {
-                    call.reject("Can not read image from " + iconUrl);
-                } else {
-                    showMarker(customMapView, mapId, BitmapDescriptorFactory.fromBitmap(result.image), call);
-                }
-            }
-        };
-
-        final AsyncLoadImage task = new AsyncLoadImage(
-                getActivity(),
-                getBridge().getWebView(),
-                imageOptions, handler);
-        imageLoadingTasks.add(task);
-        task.execute();
-    }
-
-    private void cancelBackgroundTasks() {
-        for (AsyncTask task : imageLoadingTasks) {
-            task.cancel(true);
-        }
-        imageLoadingTasks.clear();
     }
 
     @PluginMethod(returnType = PluginMethod.RETURN_NONE)

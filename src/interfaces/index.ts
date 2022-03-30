@@ -39,3 +39,4 @@ export { PointOfInterest } from "./models/GoogleMap/PointOfInterest";
 export { BoundingRect } from "./models/BoundingRect";
 export { LatLng } from "./models/LatLng";
 export { Icon } from "./models/Icon";
+export { Size } from "./models/Size";

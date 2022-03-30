@@ -1,6 +1,7 @@
 package com.hemangkumar.capacitorgooglemaps;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.getcapacitor.JSObject;
 import com.getcapacitor.util.JSONUtils;
@@ -23,7 +24,7 @@ public class CustomMarker {
     private final MarkerOptions markerOptions = new MarkerOptions();
     private JSObject tag = new JSObject();
 
-    public void updateFromJSObject(JSObject marker, BitmapDescriptor icon) {
+    public void updateFromJSObject(JSObject marker, @Nullable BitmapDescriptor icon) {
         final JSObject position = JSObjectDefaults.getJSObjectSafe(marker, "position", new JSObject());
         final Double latitude = JSObjectDefaults.getDoubleSafe(position, "latitude", 0d);
         final Double longitude = JSObjectDefaults.getDoubleSafe(position, "longitude", 0d);
