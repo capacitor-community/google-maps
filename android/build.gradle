@@ -52,4 +52,6 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
     implementation "org.apache.cordova:framework:$cordovaAndroidVersion"
     implementation 'com.google.android.libraries.maps:maps:3.1.0-beta'
+    implementation 'com.github.bumptech.glide:glide:4.13.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0'
 }

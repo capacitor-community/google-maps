@@ -2,14 +2,25 @@ package com.hemangkumar.capacitorgooglemaps;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.os.AsyncTask;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.util.Size;
+import android.util.SizeF;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
@@ -20,17 +31,11 @@ import com.google.android.libraries.maps.model.BitmapDescriptor;
 import com.google.android.libraries.maps.model.BitmapDescriptorFactory;
 import com.google.android.libraries.maps.model.CameraPosition;
 import com.google.android.libraries.maps.model.Marker;
-import com.google.android.libraries.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
-
-import plugin.google.maps.AsyncLoadImage;
-import plugin.google.maps.AsyncLoadImageInterface;
 
 @CapacitorPlugin(
         name = "CapacitorGoogleMaps",
@@ -41,13 +46,12 @@ import plugin.google.maps.AsyncLoadImageInterface;
                 ),
         }
 )
-public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  {
+public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     private final HashMap<String, CustomMapView> customMapViews = new HashMap<>();
     Float devicePixelRatio;
     private String lastEventChainId;
     public List<MotionEvent> previousEvents = new ArrayList<>();
     private String delegateTouchEventsToMapId;
-    private Set<AsyncTask> imageLoadingTasks = new HashSet<AsyncTask>();
 
     @PluginMethod()
     public void elementFromPointResult(PluginCall call) {
@@ -449,10 +453,12 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
     public void didBeginMovingCamera(final PluginCall call) {
         setCallbackIdForEvent(call, CustomMapView.EVENT_DID_BEGIN_MOVING_CAMERA);
     }
+
     @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
     public void didMoveCamera(final PluginCall call) {
         setCallbackIdForEvent(call, CustomMapView.EVENT_DID_MOVE_CAMERA);
     }
+
     @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
     public void didEndMovingCamera(final PluginCall call) {
         setCallbackIdForEvent(call, CustomMapView.EVENT_DID_END_MOVING_CAMERA);
@@ -496,9 +502,9 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
 
                     JSObject markerData = call.getData();
 
-                    final String iconUrl = getIconUrl(markerData);
-                    if (!TextUtils.isEmpty(iconUrl)) {
-                        asyncLoadIcon(customMapView, mapId, iconUrl, call);
+                    final IconDescriptor iconDescriptor = getIconDescriptor(markerData);
+                    if (!TextUtils.isEmpty(iconDescriptor.url)) {
+                        asyncLoadIcon(customMapView, mapId, iconDescriptor, call);
                     } else {
                         showMarker(customMapView, mapId, null, call);
                     }
@@ -516,43 +522,69 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
         call.resolve(CustomMarker.getResultForMarker(marker, mapId));
     }
 
-    private String getIconUrl(JSObject markerData) {
+    private IconDescriptor getIconDescriptor(JSObject markerData) {
         final JSObject icon = JSObjectDefaults.getJSObjectSafe(markerData, "icon", new JSObject());
-        return icon.getString("url", "");
+        final String url = icon.getString("url", "");
+
+        final JSObject jsSizeInPixels = JSObjectDefaults.getJSObjectSafe(
+                icon,
+                "target_size_px",
+                new JSObject());
+
+        final JSObject jsSizeInMm = JSObjectDefaults.getJSObjectSafe(
+                icon,
+                "target_size_mm",
+                new JSObject());
+
+        final String width = "width";
+        final String height = "height";
+
+        Size sizeInPixels = new Size(
+                (int) Math.round(jsSizeInPixels.optDouble(width, 0)),
+                (int) Math.round(jsSizeInPixels.optDouble(height, 0)));
+
+        SizeF sizeInMm = new SizeF(
+                (float) jsSizeInMm.optDouble(width, 0),
+                (float) jsSizeInMm.optDouble(height, 0));
+
+        return new IconDescriptor(url, sizeInPixels, sizeInMm);
     }
 
-    private void asyncLoadIcon(CustomMapView customMapView, String mapId, String iconUrl, PluginCall call) {
-        AsyncLoadImage.AsyncLoadImageOptions imageOptions = new AsyncLoadImage.AsyncLoadImageOptions();
-        imageOptions.height = -1;
-        imageOptions.width = -1;
-        imageOptions.noCaching = true;
-        imageOptions.url = iconUrl;
+    private void asyncLoadIcon(CustomMapView customMapView,
+                               String mapId,
+                               IconDescriptor iconDescriptor,
+                               PluginCall call) {
+        RequestBuilder<Bitmap> builder = Glide.with(getActivity())
+                .asBitmap()
+                .load(iconDescriptor.url);
 
-        AsyncLoadImageInterface handler = new AsyncLoadImageInterface() {
-            @Override
-            public void onPostExecute(AsyncLoadImage task, AsyncLoadImage.AsyncLoadImageResult result) {
-                imageLoadingTasks.remove(task);
-                if (result == null || result.image == null) {
-                    call.reject("Can not read image from " + iconUrl);
-                } else {
-                    showMarker(customMapView, mapId, BitmapDescriptorFactory.fromBitmap(result.image), call);
-                }
-            }
-        };
-
-        final AsyncLoadImage task = new AsyncLoadImage(
-                getActivity(),
-                getBridge().getWebView(),
-                imageOptions, handler);
-        imageLoadingTasks.add(task);
-        task.execute();
-    }
-
-    private void cancelBackgroundTasks() {
-        for (AsyncTask task : imageLoadingTasks) {
-            task.cancel(true);
+        if (iconDescriptor.sizeInMm.getHeight() > 0 && iconDescriptor.sizeInMm.getWidth() > 0) {
+            final float mmPerInch = 25.4f;
+            DisplayMetrics metrics = getActivity().getResources().getDisplayMetrics();
+            int newWidthPixels = (int) (iconDescriptor.sizeInMm.getWidth() * metrics.xdpi / mmPerInch);
+            int newHeightPixels = (int) (iconDescriptor.sizeInMm.getWidth() * metrics.ydpi / mmPerInch);
+            builder = builder.override(newWidthPixels, newHeightPixels).optionalFitCenter();
+        } else if (iconDescriptor.sizeInPixels.getHeight() > 0 && iconDescriptor.sizeInPixels.getWidth() > 0) {
+            builder = builder.override(iconDescriptor.sizeInPixels.getWidth(),
+                    iconDescriptor.sizeInPixels.getHeight()).optionalFitCenter();
         }
-        imageLoadingTasks.clear();
+
+        builder.into(new CustomTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(@NonNull Bitmap bitmap, @Nullable Transition<? super Bitmap> transition) {
+                showMarker(customMapView, mapId, BitmapDescriptorFactory.fromBitmap(bitmap), call);
+            }
+
+            @Override
+            public void onLoadCleared(@Nullable Drawable placeholder) {
+                call.reject("Image was removed " + iconDescriptor.url);
+            }
+
+            @Override
+            public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                showMarker(customMapView, mapId, null, call);
+            }
+        });
     }
 
     @PluginMethod(returnType = PluginMethod.RETURN_NONE)
