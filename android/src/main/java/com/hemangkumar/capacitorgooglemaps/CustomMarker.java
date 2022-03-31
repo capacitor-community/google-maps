@@ -50,6 +50,7 @@ public class CustomMarker {
         this.markerOptions.draggable(isDraggable);
         this.markerOptions.zIndex(zIndex);
         this.markerOptions.anchor(anchorX, anchorY);
+
         if (icon != null) {
             this.markerOptions.icon(icon);
         }

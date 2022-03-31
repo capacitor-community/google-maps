@@ -5,14 +5,14 @@ export interface Size {
   /**
    * Width
    *
-   * @since 3.0.0
+   * @since x.x.x
    */
   width: number;
 
   /**
    * Height
    *
-   * @since 3.0.0
+   * @since x.x.x
    */
   height: number;
 }

@@ -520,4 +520,9 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
             }
         });
     }
+
+    @PluginMethod()
+    public void addCluster(final PluginCall call) {
+        final String mapId = call.getString("mapId");
+    }
 }

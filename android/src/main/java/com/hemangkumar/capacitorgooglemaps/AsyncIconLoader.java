@@ -4,8 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Size;
-import android.util.SizeF;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,60 +17,20 @@ import com.getcapacitor.JSObject;
 import com.google.android.libraries.maps.model.BitmapDescriptor;
 import com.google.android.libraries.maps.model.BitmapDescriptorFactory;
 
-
 class AsyncIconLoader {
 
     public interface OnIconReady {
         void onReady(@Nullable BitmapDescriptor bitmapDescriptor);
     }
 
-    private static class IconDescriptor {
-        public final String url;
-        public final Size sizeInPixels;
-        public final SizeF sizeInMm;
-
-        public IconDescriptor(String url, Size sizeInPixels, SizeF sizeInMm) {
-            this.url = url;
-            this.sizeInPixels = sizeInPixels;
-            this.sizeInMm = sizeInMm;
-        }
-    }
-
     private final IconDescriptor iconDescriptor;
     private final FragmentActivity activity;
 
     public AsyncIconLoader(final JSObject markerData, FragmentActivity activity) {
-        iconDescriptor = getIconDescriptor(markerData);
+        iconDescriptor = IconDescriptor.createInstance(markerData);
         this.activity = activity;
     }
 
-    private IconDescriptor getIconDescriptor(JSObject markerData) {
-        final JSObject icon = JSObjectDefaults.getJSObjectSafe(markerData, "icon", new JSObject());
-        final String url = icon.getString("url", "");
-
-        final JSObject jsSizeInPixels = JSObjectDefaults.getJSObjectSafe(
-                icon,
-                "target_size_px",
-                new JSObject());
-
-        final JSObject jsSizeInMm = JSObjectDefaults.getJSObjectSafe(
-                icon,
-                "target_size_mm",
-                new JSObject());
-
-        final String width = "width";
-        final String height = "height";
-
-        Size sizeInPixels = new Size(
-                (int) Math.round(jsSizeInPixels.optDouble(width, 0)),
-                (int) Math.round(jsSizeInPixels.optDouble(height, 0)));
-
-        SizeF sizeInMm = new SizeF(
-                (float) jsSizeInMm.optDouble(width, 0),
-                (float) jsSizeInMm.optDouble(height, 0));
-
-        return new IconDescriptor(url, sizeInPixels, sizeInMm);
-    }
 
     public void load(@NonNull OnIconReady onIconReady) {
 

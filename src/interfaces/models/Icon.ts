@@ -7,21 +7,21 @@ export interface Icon {
   /**
    * URL path to icon
    *
-   * @since 3.0.0
+   * @since x.x.x
    */
   url: string;
   
   /**
    * Target icon size in millimeters
    *
-   * @since 3.0.0
+   * @since x.x.x
    */
   target_size_mm?: Size;
   
   /**
    * Target icon size in pixels
    *
-   * @since 3.0.0
+   * @since x.x.x
    */
   target_size_px?: Size;
 }

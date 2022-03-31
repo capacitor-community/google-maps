@@ -13,6 +13,8 @@ import {
   ElementFromPointResultOptions,
   AddMarkerOptions,
   AddMarkerResult,
+  AddClusterOptions,
+  AddClusterResult,
   RemoveMarkerOptions,
   // events
   DidTapInfoWindowCallback,
@@ -64,6 +66,8 @@ export interface CapacitorGoogleMapsPlugin {
   moveCamera(options: MoveCameraOptions): Promise<void>;
 
   addMarker(options: AddMarkerOptions): Promise<AddMarkerResult>;
+
+  addCluster(options: AddClusterOptions): Promise<AddClusterResult>;
 
   removeMarker(options: RemoveMarkerOptions): Promise<void>;
 
