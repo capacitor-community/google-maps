@@ -2,15 +2,16 @@ package com.hemangkumar.capacitorgooglemaps;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.google.android.libraries.maps.CameraUpdate;
 import com.google.android.libraries.maps.CameraUpdateFactory;
@@ -22,10 +23,19 @@ import com.google.android.libraries.maps.UiSettings;
 import com.google.android.libraries.maps.model.CameraPosition;
 import com.google.android.libraries.maps.model.LatLng;
 import com.google.android.libraries.maps.model.Marker;
+import com.google.android.libraries.maps.model.MarkerOptions;
 import com.google.android.libraries.maps.model.PointOfInterest;
+import com.google.maps.android.clustering.Cluster;
+import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.collections.MarkerManager;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CustomMapView
         implements OnMapReadyCallback,
@@ -40,17 +50,23 @@ public class CustomMapView
         GoogleMap.OnPoiClickListener,
         GoogleMap.OnCameraMoveStartedListener,
         GoogleMap.OnCameraMoveListener,
-        GoogleMap.OnCameraIdleListener
-{
-    private final Context context;
+        GoogleMap.OnCameraIdleListener,
+        ClusterManager.OnClusterClickListener<CustomClusterItem>,
+        ClusterManager.OnClusterInfoWindowClickListener<CustomClusterItem>,
+        ClusterManager.OnClusterItemClickListener<CustomClusterItem>,
+        ClusterManager.OnClusterItemInfoWindowClickListener<CustomClusterItem> {
+    private final AppCompatActivity context;
     private final CustomMapViewEvents customMapViewEvents;
+    private final ProxyEventListener proxyEventListener = new ProxyEventListener();
 
     private final String id;
 
     MapView mapView;
     GoogleMap googleMap;
 
-    private HashMap<String, Marker> markers = new HashMap<>();
+    private Map<String, Marker> markers = new HashMap<>();
+    private ClusterManager<CustomClusterItem> clusterManager;
+    private CustomMarkerManager markerManager;
 
     String savedCallbackIdForCreate;
 
@@ -100,7 +116,7 @@ public class CustomMapView
     public MapCameraPosition mapCameraPosition;
     public MapPreferences mapPreferences;
 
-    public CustomMapView(@NonNull Context context, CustomMapViewEvents customMapViewEvents) {
+    public CustomMapView(@NonNull AppCompatActivity context, CustomMapViewEvents customMapViewEvents) {
         this.context = context;
         this.customMapViewEvents = customMapViewEvents;
         this.id = UUID.randomUUID().toString();
@@ -116,9 +132,9 @@ public class CustomMapView
 
     @SuppressLint("MissingPermission")
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(GoogleMap map) {
         // populate `googleMap` variable for other methods to use
-        this.googleMap = googleMap;
+        this.googleMap = map;
 
         // set controls
         UiSettings googleMapUISettings = this.googleMap.getUiSettings();
@@ -140,6 +156,31 @@ public class CustomMapView
             JSObject result = getResultForMap();
             customMapViewEvents.onMapReady(savedCallbackIdForCreate, result);
         }
+
+        assignProxyListenerToMap();
+        markerManager = new CustomMarkerManager(googleMap, proxyEventListener);
+        clusterManager = new ClusterManager<>(context, googleMap, markerManager);
+        clusterManager.setRenderer(new CustomClusterRenderer(context, googleMap, clusterManager));
+        proxyEventListener.addOnCameraIdleListener(clusterManager);
+        clusterManager.setOnClusterClickListener(this);
+        clusterManager.setOnClusterInfoWindowClickListener(this);
+        clusterManager.setOnClusterItemClickListener(this);
+        clusterManager.setOnClusterItemInfoWindowClickListener(this);
+    }
+
+    private void assignProxyListenerToMap() {
+        googleMap.setOnCameraIdleListener(proxyEventListener);
+        googleMap.setOnCameraMoveListener(proxyEventListener);
+        googleMap.setOnMapClickListener(proxyEventListener);
+        googleMap.setOnCameraMoveStartedListener(proxyEventListener);
+        googleMap.setOnMapLongClickListener(proxyEventListener);
+        googleMap.setOnInfoWindowClickListener(proxyEventListener);
+        googleMap.setOnInfoWindowCloseListener(proxyEventListener);
+        googleMap.setOnMarkerClickListener(proxyEventListener);
+        googleMap.setOnMarkerDragListener(proxyEventListener);
+        googleMap.setOnMyLocationClickListener(proxyEventListener);
+        googleMap.setOnMyLocationButtonClickListener(proxyEventListener);
+        googleMap.setOnPoiClickListener(proxyEventListener);
     }
 
     @Override
@@ -260,6 +301,26 @@ public class CustomMapView
         }
     }
 
+    @Override
+    public boolean onClusterClick(Cluster<CustomClusterItem> cluster) {
+        return false;
+    }
+
+    @Override
+    public void onClusterInfoWindowClick(Cluster<CustomClusterItem> cluster) {
+
+    }
+
+    @Override
+    public boolean onClusterItemClick(CustomClusterItem item) {
+        return false;
+    }
+
+    @Override
+    public void onClusterItemInfoWindowClick(CustomClusterItem item) {
+
+    }
+
     protected void handleOnStart() {
         if (mapView != null) {
             mapView.onStart();
@@ -293,54 +354,54 @@ public class CustomMapView
     public void setCallbackIdForEvent(String callbackId, String eventName, Boolean preventDefault) {
         if (callbackId != null && eventName != null) {
             if (eventName.equals(CustomMapView.EVENT_DID_TAP_INFO_WINDOW)) {
-                this.googleMap.setOnInfoWindowClickListener(this);
+                this.proxyEventListener.addOnInfoWindowClickListener(this);
                 savedCallbackIdForDidTapInfoWindow = callbackId;
             } else if (eventName.equals(CustomMapView.EVENT_DID_CLOSE_INFO_WINDOW)) {
-                this.googleMap.setOnInfoWindowCloseListener(this);
+                this.proxyEventListener.addOnInfoWindowCloseListener(this);
                 savedCallbackIdForDidCloseInfoWindow = callbackId;
             } else if (eventName.equals(CustomMapView.EVENT_DID_TAP_MAP)) {
-                this.googleMap.setOnMapClickListener(this);
+                this.proxyEventListener.addOnMapClickListener(this);
                 savedCallbackIdForDidTapMap = callbackId;
             } else if (eventName.equals(CustomMapView.EVENT_DID_LONG_PRESS_MAP)) {
-                this.googleMap.setOnMapLongClickListener(this);
+                this.proxyEventListener.addOnMapLongClickListener(this);
                 savedCallbackIdForDidLongPressMap = callbackId;
             } else if (eventName.equals(CustomMapView.EVENT_DID_TAP_MARKER)) {
-                this.googleMap.setOnMarkerClickListener(this);
+                this.proxyEventListener.addOnMarkerClickListener(this);
                 savedCallbackIdForDidTapMarker = callbackId;
                 if (preventDefault == null) {
                     preventDefault = false;
                 }
                 preventDefaultForDidTapMarker = preventDefault;
             } else if (eventName.equals(CustomMapView.EVENT_DID_BEGIN_DRAGGING_MARKER)) {
-                this.googleMap.setOnMarkerDragListener(this);
+                this.proxyEventListener.addOnMarkerDragListener(this);
                 savedCallbackIdForDidBeginDraggingMarker = callbackId;
             } else if (eventName.equals(CustomMapView.EVENT_DID_DRAG_MARKER)) {
-                this.googleMap.setOnMarkerDragListener(this);
+                this.proxyEventListener.addOnMarkerDragListener(this);
                 savedCallbackIdForDidDragMarker = callbackId;
             } else if (eventName.equals(CustomMapView.EVENT_DID_END_DRAGGING_MARKER)) {
-                this.googleMap.setOnMarkerDragListener(this);
+                this.proxyEventListener.addOnMarkerDragListener(this);
                 savedCallbackIdForDidEndDraggingMarker = callbackId;
             } else if (eventName.equals(CustomMapView.EVENT_DID_TAP_MY_LOCATION_BUTTON)) {
-                this.googleMap.setOnMyLocationButtonClickListener(this);
+                this.proxyEventListener.addOnMyLocationButtonClickListener(this);
                 savedCallbackIdForDidTapMyLocationButton = callbackId;
                 if (preventDefault == null) {
                     preventDefault = false;
                 }
                 preventDefaultForDidTapMyLocationButton = preventDefault;
             } else if (eventName.equals(CustomMapView.EVENT_DID_TAP_MY_LOCATION_DOT)) {
-                this.googleMap.setOnMyLocationClickListener(this);
+                this.proxyEventListener.addOnMyLocationClickListener(this);
                 savedCallbackIdForDidTapMyLocationDot = callbackId;
             } else if (eventName.equals((CustomMapView.EVENT_DID_TAP_POI))) {
-                this.googleMap.setOnPoiClickListener(this);
+                this.proxyEventListener.addOnPoiClickListener(this);
                 savedCallbackIdForDidTapPoi = callbackId;
             } else if (eventName.equals((CustomMapView.EVENT_DID_BEGIN_MOVING_CAMERA))) {
-                this.googleMap.setOnCameraMoveStartedListener(this);
+                this.proxyEventListener.addOnCameraMoveStartedListener(this);
                 savedCallbackIdForDidBeginMovingCamera = callbackId;
             } else if (eventName.equals((CustomMapView.EVENT_DID_MOVE_CAMERA))) {
-                this.googleMap.setOnCameraMoveListener(this);
+                this.proxyEventListener.addOnCameraMoveListener(this);
                 savedCallbackIdForDidMoveCamera = callbackId;
             } else if (eventName.equals((CustomMapView.EVENT_DID_END_MOVING_CAMERA))) {
-                this.googleMap.setOnCameraIdleListener(this);
+                this.proxyEventListener.addOnCameraIdleListener(this);
                 savedCallbackIdForDidEndMovingCamera = callbackId;
             }
         }
@@ -440,14 +501,46 @@ public class CustomMapView
     }
 
     public void clear() {
+        clusterManager.clearItems();
         googleMap.clear();
         markers.clear();
     }
 
-    public Marker addMarker(CustomMarker customMarker) {
-        Marker marker = customMarker.addToMap(googleMap);
+    public Marker addMarker(CustomMarker customMarker, MarkerOptions markerOptions) {
+        Marker marker = customMarker.addToMap(googleMap, markerOptions);
         markers.put(customMarker.markerId, marker);
         return marker;
+    }
+
+    private final AtomicInteger nIconsLoaded = new AtomicInteger(0);
+
+    public void addCluster(JSArray jsMarkers) {
+        for (int i = 0; i < jsMarkers.length(); i++) {
+            JSObject jsObject = getJSMarkerByIndex(jsMarkers, i);
+            CustomMarker customMarker = new CustomMarker();
+            customMarker.updateFromJSObject(jsObject);
+            final CustomClusterItem item = new CustomClusterItem(customMarker);
+            nIconsLoaded.addAndGet(1);
+            clusterManager.addItem(item);
+            item.getCustomMarker().asyncLoadIcon(
+                    context,
+                    () -> {
+                        clusterManager.updateItem(item);
+                        if (nIconsLoaded.addAndGet(-1) <= 0) {
+                            clusterManager.cluster();
+                        }
+                    });
+        }
+    }
+
+    @NonNull
+    private JSObject getJSMarkerByIndex(JSArray jsMarkers, int i) {
+        try {
+            JSONObject jsonObject = (JSONObject) jsMarkers.get(i);
+            return JSObject.fromJSONObject(jsonObject);
+        } catch (JSONException e) {
+            return new JSObject();
+        }
     }
 
     public void removeMarker(String markerId) {

@@ -2,16 +2,15 @@ package com.hemangkumar.capacitorgooglemaps;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 
 import com.getcapacitor.JSObject;
-import com.getcapacitor.util.JSONUtils;
 import com.google.android.libraries.maps.GoogleMap;
 import com.google.android.libraries.maps.model.BitmapDescriptor;
+import com.google.android.libraries.maps.model.BitmapDescriptorFactory;
 import com.google.android.libraries.maps.model.LatLng;
 import com.google.android.libraries.maps.model.Marker;
 import com.google.android.libraries.maps.model.MarkerOptions;
-
-import org.json.JSONObject;
 
 import java.util.UUID;
 
@@ -21,44 +20,93 @@ public class CustomMarker {
     // so we can retrieve the marker by id later on
     public String markerId = UUID.randomUUID().toString();
 
-    private final MarkerOptions markerOptions = new MarkerOptions();
     private JSObject tag = new JSObject();
+    private JSObject iconDescriptor;
+    private LatLng latLng;
+    private String title;
+    private String snippet;
+    private float opacity;
+    private boolean isFlat;
+    private boolean isDraggable;
+    private int zIndex;
+    private float anchorX, anchorY;
+    private BitmapDescriptor bitmapDescriptor;
 
-    public void updateFromJSObject(JSObject marker, @Nullable BitmapDescriptor icon) {
+    public void updateFromJSObject(JSObject marker) {
         final JSObject position = JSObjectDefaults.getJSObjectSafe(marker, "position", new JSObject());
         final Double latitude = JSObjectDefaults.getDoubleSafe(position, "latitude", 0d);
         final Double longitude = JSObjectDefaults.getDoubleSafe(position, "longitude", 0d);
-        LatLng latLng = new LatLng(latitude, longitude);
+        latLng = new LatLng(latitude, longitude);
 
         final JSObject preferences = JSObjectDefaults.getJSObjectSafe(marker, "preferences", new JSObject());
-        final String title = preferences.getString("title", "");
-        final String snippet = preferences.getString("snippet", "");
-        final Float opacity = JSObjectDefaults.getFloatSafe(preferences, "opacity", 1f);
-        final Boolean isFlat = JSObjectDefaults.getBooleanSafe(preferences,"isFlat", false);
-        final Boolean isDraggable = JSObjectDefaults.getBooleanSafe(preferences,"isDraggable", false);
-        final Integer zIndex = JSObjectDefaults.getIntegerSafe(preferences,"zIndex", 0);
+        title = preferences.getString("title", "");
+        snippet = preferences.getString("snippet", "");
+        opacity = JSObjectDefaults.getFloatSafe(preferences, "opacity", 1f);
+        isFlat = JSObjectDefaults.getBooleanSafe(preferences, "isFlat", false);
+        isDraggable = JSObjectDefaults.getBooleanSafe(preferences, "isDraggable", false);
+        zIndex = JSObjectDefaults.getIntegerSafe(preferences, "zIndex", 0);
 
         final JSObject anchor = JSObjectDefaults.getJSObjectSafe(preferences, "anchor", new JSObject());
-        final Float anchorX = JSObjectDefaults.getFloatSafe(anchor, "x", 0.5f);
-        final Float anchorY = JSObjectDefaults.getFloatSafe(anchor, "y", 1f);
+        anchorX = JSObjectDefaults.getFloatSafe(anchor, "x", 0.5f);
+        anchorY = JSObjectDefaults.getFloatSafe(anchor, "y", 1f);
 
-        this.markerOptions.position(latLng);
-        this.markerOptions.title(title);
-        this.markerOptions.snippet(snippet);
-        this.markerOptions.alpha(opacity);
-        this.markerOptions.flat(isFlat);
-        this.markerOptions.draggable(isDraggable);
-        this.markerOptions.zIndex(zIndex);
-        this.markerOptions.anchor(anchorX, anchorY);
+        iconDescriptor = JSObjectDefaults.getJSObjectSafe(marker, "icon", JSObjectDefaults.EMPTY);
 
-        if (icon != null) {
-            this.markerOptions.icon(icon);
-        }
         this.setMetadata(JSObjectDefaults.getJSObjectSafe(preferences, "metadata", new JSObject()));
     }
 
-    public Marker addToMap(GoogleMap googleMap) {
-        Marker marker = googleMap.addMarker(this.markerOptions);
+    public void updateMarkerOptions(@NonNull MarkerOptions markerOptions) {
+        markerOptions.position(latLng);
+        markerOptions.title(title);
+        markerOptions.snippet(snippet);
+        markerOptions.alpha(opacity);
+        markerOptions.flat(isFlat);
+        markerOptions.draggable(isDraggable);
+        markerOptions.zIndex(zIndex);
+        markerOptions.anchor(anchorX, anchorY);
+        markerOptions.icon(bitmapDescriptor);
+    }
+
+    public interface OnIconLoaded {
+        void run();
+    }
+
+    public BitmapDescriptor getBitmapDescriptor() {
+        return bitmapDescriptor;
+    }
+
+    public void asyncLoadIcon(
+            @NonNull FragmentActivity activity,
+            @Nullable OnIconLoaded onLoaded) {
+        new AsyncIconLoader(iconDescriptor, activity)
+                .load((bitmap, allIconsAreLoaded) -> {
+                    if (bitmap != null) {
+                        bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bitmap);
+                    }
+                    if (onLoaded != null) {
+                        onLoaded.run();
+                    }
+                });
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getSnippet() {
+        return snippet;
+    }
+
+    public LatLng getPosition() {
+        return latLng;
+    }
+
+    public Object getTag() {
+        return tag;
+    }
+
+    public Marker addToMap(GoogleMap googleMap, MarkerOptions markerOptions) {
+        Marker marker = googleMap.addMarker(markerOptions);
         marker.setTag(this.tag);
         return marker;
     }
@@ -69,8 +117,8 @@ public class CustomMarker {
         tag.put("markerId", this.markerId);
         // set anchor to tag (because it cannot be retrieved from a marker instance)
         JSObject anchorResult = new JSObject();
-        anchorResult.put("x", this.markerOptions.getAnchorU());
-        anchorResult.put("y", this.markerOptions.getAnchorV());
+        anchorResult.put("x", anchorX);
+        anchorResult.put("y", anchorY);
         tag.put("anchor", anchorResult);
         // then set metadata to tag
         tag.put("metadata", jsObject);

@@ -17,25 +17,41 @@ import com.getcapacitor.JSObject;
 import com.google.android.libraries.maps.model.BitmapDescriptor;
 import com.google.android.libraries.maps.model.BitmapDescriptorFactory;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 class AsyncIconLoader {
 
     public interface OnIconReady {
-        void onReady(@Nullable BitmapDescriptor bitmapDescriptor);
+        void onReady(@Nullable Bitmap bitmap, boolean allIconsAreLoaded);
     }
 
-    private final IconDescriptor iconDescriptor;
+    private final IconDescriptor[] iconDescriptors;
     private final FragmentActivity activity;
+    private final AtomicInteger nLoadedIcons = new AtomicInteger(0);
 
-    public AsyncIconLoader(final JSObject markerData, FragmentActivity activity) {
-        iconDescriptor = IconDescriptor.createInstance(markerData);
+    public AsyncIconLoader(final JSObject[] icons, FragmentActivity activity) {
+        iconDescriptors = new IconDescriptor[icons.length];
+        for (int i = 0; i < icons.length; i++) {
+            iconDescriptors[i] = IconDescriptor.createInstance(icons[i]);
+        }
         this.activity = activity;
     }
 
+    public AsyncIconLoader(final JSObject icon, FragmentActivity activity) {
+        this(new JSObject[]{icon}, activity);
+    }
 
     public void load(@NonNull OnIconReady onIconReady) {
+        nLoadedIcons.set(iconDescriptors.length);
+        for (IconDescriptor iconDescriptor : iconDescriptors) {
+            loadOneIcon(iconDescriptor, onIconReady);
+        }
+    }
+
+    private void loadOneIcon(IconDescriptor iconDescriptor, OnIconReady onIconReady) {
 
         if (TextUtils.isEmpty(iconDescriptor.url)) {
-            onIconReady.onReady(null);
+            onReady(null, onIconReady);
             return;
         }
 
@@ -43,34 +59,42 @@ class AsyncIconLoader {
                 .asBitmap()
                 .load(iconDescriptor.url);
 
-        scaleBitmapOptional(builder).into(
+        scaleBitmapOptional(builder, iconDescriptor).into(
                 new CustomTarget<Bitmap>() {
-                    // It will be called when the resource load has finished.
+                    // It will be called when the resource loadAll has finished.
                     @Override
                     public void onResourceReady(
                             @NonNull Bitmap bitmap,
                             @Nullable Transition<? super Bitmap> transition) {
-                        onIconReady.onReady(BitmapDescriptorFactory.fromBitmap(bitmap));
+                        onReady(bitmap, onIconReady);
                     }
 
-                    // It is called when a load is cancelled and its resources are freed.
+                    // It is called when a loadAll is cancelled and its resources are freed.
                     @Override
                     public void onLoadCleared(@Nullable Drawable placeholder) {
-                        // Show default marker
-                        onIconReady.onReady(null);
+                        // Use default marker
+                        onReady(null, onIconReady);
                     }
 
                     // It is called when can't get image from network AND from a local cache.
                     @Override
                     public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                        // Show default marker
-                        onIconReady.onReady(null);
+                        // Use default marker
+                        onReady(null, onIconReady);
                     }
                 }
         );
     }
 
-    private RequestBuilder<Bitmap> scaleBitmapOptional(RequestBuilder<Bitmap> builder) {
+    private void onReady(Bitmap bitmap, OnIconReady onIconReady) {
+        onIconReady.onReady(
+                bitmap,
+                nLoadedIcons.addAndGet(-1) <= 0);
+    }
+
+    private RequestBuilder<Bitmap> scaleBitmapOptional(
+            RequestBuilder<Bitmap> builder,
+            IconDescriptor iconDescriptor) {
         if (iconDescriptor.sizeInMm.getHeight() > 0 && iconDescriptor.sizeInMm.getWidth() > 0) {
             // Scale image to provided size in Millimeters
             final float mmPerInch = 25.4f;

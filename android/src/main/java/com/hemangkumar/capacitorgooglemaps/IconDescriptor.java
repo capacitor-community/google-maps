@@ -3,6 +3,8 @@ package com.hemangkumar.capacitorgooglemaps;
 import android.util.Size;
 import android.util.SizeF;
 
+import androidx.annotation.NonNull;
+
 import com.getcapacitor.JSObject;
 
 class IconDescriptor {
@@ -16,8 +18,19 @@ class IconDescriptor {
         this.sizeInMm = sizeInMm;
     }
 
-    public static IconDescriptor createInstance(JSObject jsObject) {
-        final JSObject icon = JSObjectDefaults.getJSObjectSafe(jsObject, "icon", new JSObject());
+    /**
+     * Source of JSObject:
+     * {
+     *    url: 'https://www.google.com/favicon.ico',
+     *      target_size_px: {
+     *        width: 64,
+     *        height: 64
+     *   }
+     * }
+     * @param icon is a JSObject icon representation
+     * @return
+     */
+    public static IconDescriptor createInstance(@NonNull final JSObject icon) {
         final String url = icon.getString("url", "");
 
         final JSObject jsSizeInPixels = JSObjectDefaults.getJSObjectSafe(

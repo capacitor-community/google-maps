@@ -7,10 +7,13 @@ import com.getcapacitor.JSObject;
 import com.getcapacitor.PluginCall;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 
 public abstract class JSObjectDefaults {
+    public static final JSObject EMPTY = new JSObject();
+
     private final HashMap<String, Object> defaults;
 
     private final HashMap<String, Object> actualValues = new HashMap<String, Object>(){};
@@ -85,6 +88,13 @@ public abstract class JSObjectDefaults {
             }
         }
         return new JSObject();
+    }
+
+    public static JSObject fromJSONObject(JSONObject obj, @NonNull JSObject defaultValue) {
+        try {
+            return JSObject.fromJSONObject(obj);
+        } catch (JSONException ignored) {}
+        return defaultValue;
     }
 
     @NonNull
