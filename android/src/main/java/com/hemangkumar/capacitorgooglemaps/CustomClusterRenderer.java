@@ -1,7 +1,5 @@
 package com.hemangkumar.capacitorgooglemaps;
 
-import android.content.Context;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,13 +13,9 @@ import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 
 class CustomClusterRenderer extends DefaultClusterRenderer<CustomClusterItem> {
 
-    private final AppCompatActivity activity;
-    private final ClusterManager<CustomClusterItem> clusterManager;
 
     public CustomClusterRenderer(AppCompatActivity activity, GoogleMap map, ClusterManager<CustomClusterItem> clusterManager) {
         super(activity, map, clusterManager);
-        this.activity = activity;
-        this.clusterManager = clusterManager;
     }
 
     @Override
@@ -34,7 +28,6 @@ class CustomClusterRenderer extends DefaultClusterRenderer<CustomClusterItem> {
         super.onClusterItemUpdated(item, marker);
         BitmapDescriptor icon = item.getCustomMarker().getBitmapDescriptor();
         marker.setIcon(icon);
-        marker.setTag(item.getCustomMarker().getTag());
     }
 
     @Override

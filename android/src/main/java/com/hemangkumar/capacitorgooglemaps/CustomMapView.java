@@ -27,7 +27,6 @@ import com.google.android.libraries.maps.model.MarkerOptions;
 import com.google.android.libraries.maps.model.PointOfInterest;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
-import com.google.maps.android.collections.MarkerManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,6 +34,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CustomMapView
@@ -54,7 +54,8 @@ public class CustomMapView
         ClusterManager.OnClusterClickListener<CustomClusterItem>,
         ClusterManager.OnClusterInfoWindowClickListener<CustomClusterItem>,
         ClusterManager.OnClusterItemClickListener<CustomClusterItem>,
-        ClusterManager.OnClusterItemInfoWindowClickListener<CustomClusterItem> {
+        ClusterManager.OnClusterItemInfoWindowClickListener<CustomClusterItem>,
+        OnBeforeAddMarker {
     private final AppCompatActivity context;
     private final CustomMapViewEvents customMapViewEvents;
     private final ProxyEventListener proxyEventListener = new ProxyEventListener();
@@ -64,9 +65,10 @@ public class CustomMapView
     MapView mapView;
     GoogleMap googleMap;
 
-    private Map<String, Marker> markers = new HashMap<>();
+    private final Map<String, Marker> markers = new HashMap<>();
     private ClusterManager<CustomClusterItem> clusterManager;
     private CustomMarkerManager markerManager;
+    private final Map<LatLng, Object> clusteredMarkerTags = new WeakHashMap<>();
 
     String savedCallbackIdForCreate;
 
@@ -158,7 +160,7 @@ public class CustomMapView
         }
 
         assignProxyListenerToMap();
-        markerManager = new CustomMarkerManager(googleMap, proxyEventListener);
+        markerManager = new CustomMarkerManager(googleMap, proxyEventListener, this);
         clusterManager = new ClusterManager<>(context, googleMap, markerManager);
         clusterManager.setRenderer(new CustomClusterRenderer(context, googleMap, clusterManager));
         proxyEventListener.addOnCameraIdleListener(clusterManager);
@@ -166,6 +168,10 @@ public class CustomMapView
         clusterManager.setOnClusterInfoWindowClickListener(this);
         clusterManager.setOnClusterItemClickListener(this);
         clusterManager.setOnClusterItemInfoWindowClickListener(this);
+    }
+
+    public Object getTag(MarkerOptions opts) {
+        return clusteredMarkerTags.get(opts.getPosition());
     }
 
     private void assignProxyListenerToMap() {
@@ -520,6 +526,7 @@ public class CustomMapView
             CustomMarker customMarker = new CustomMarker();
             customMarker.updateFromJSObject(jsObject);
             final CustomClusterItem item = new CustomClusterItem(customMarker);
+            clusteredMarkerTags.put(customMarker.getPosition(), customMarker.getTag());
             nIconsLoaded.addAndGet(1);
             clusterManager.addItem(item);
             item.getCustomMarker().asyncLoadIcon(

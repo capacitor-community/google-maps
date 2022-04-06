@@ -2,15 +2,21 @@ package com.hemangkumar.capacitorgooglemaps;
 
 import com.google.android.libraries.maps.GoogleMap;
 import com.google.android.libraries.maps.model.Marker;
+import com.google.android.libraries.maps.model.MarkerOptions;
 import com.google.maps.android.collections.MarkerManager;
 
 public class CustomMarkerManager extends MarkerManager {
 
     private final ProxyEventListener proxyEventListener;
+    private final OnBeforeAddMarker onBeforeAddMarker;
 
-    public CustomMarkerManager(GoogleMap map, ProxyEventListener proxyEventListener) {
+    public CustomMarkerManager(
+            GoogleMap map,
+            ProxyEventListener proxyEventListener,
+            OnBeforeAddMarker onBeforeAddMarker) {
         super(map);
         this.proxyEventListener = proxyEventListener;
+        this.onBeforeAddMarker = onBeforeAddMarker;
     }
 
     @Override
@@ -41,5 +47,26 @@ public class CustomMarkerManager extends MarkerManager {
     public void onMarkerDragEnd(Marker marker) {
         super.onMarkerDragEnd(marker);
         proxyEventListener.onMarkerDragEnd(marker);
+    }
+
+    @Override
+    public Collection newCollection() {
+        return new CustomCollection();
+    }
+
+    private Object getTag(MarkerOptions opts) {
+        return onBeforeAddMarker.getTag(opts);
+    }
+
+    public class CustomCollection extends MarkerManager.Collection {
+
+        @Override
+        public Marker addMarker(MarkerOptions opts) {
+            Marker marker = mMap.addMarker(opts);
+                marker.setTag(getTag(opts));
+
+            super.add(marker);
+            return marker;
+        }
     }
 }
