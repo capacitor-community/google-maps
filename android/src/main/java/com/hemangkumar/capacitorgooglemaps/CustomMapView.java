@@ -27,6 +27,7 @@ import com.google.android.libraries.maps.model.Marker;
 import com.google.android.libraries.maps.model.MarkerOptions;
 import com.google.android.libraries.maps.model.PointOfInterest;
 import com.google.maps.android.clustering.Cluster;
+import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 
 import org.json.JSONException;
@@ -69,6 +70,7 @@ public class CustomMapView
     private ClusterManager<CustomClusterItem> clusterManager;
     private CustomMarkerManager markerManager;
     private final Map<LatLng, Object> clusteredMarkerTags = new HashMap<>();
+    private final Map<String, CustomClusterItem> clusterItems = new HashMap<>();
 
     String savedCallbackIdForCreate;
 
@@ -516,26 +518,41 @@ public class CustomMapView
         clusterManager.clearItems();
         googleMap.clear();
         markers.clear();
+        clusterItems.clear();
+        clusterManager.cluster();
+        clusteredMarkerTags.clear();
     }
 
-    public Marker addMarker(CustomMarker customMarker, MarkerOptions markerOptions) {
-        Marker marker = customMarker.addToMap(googleMap, markerOptions);
-        markers.put(customMarker.markerId, marker);
-        return marker;
+    public void addMarker(JSObject data, PluginCall call) {
+        final MarkerOptions markerOptions = new MarkerOptions();
+        final CustomMarker customMarker = new CustomMarker();
+        customMarker.updateFromJSObject(call.getData());
+        customMarker.updateMarkerOptions(markerOptions);
+        customMarker.asyncLoadIcon(
+                context,
+                () -> {
+                    markerOptions.icon(customMarker.getBitmapDescriptor());
+                    Marker marker = customMarker.addToMap(googleMap, markerOptions);
+                    markers.put(customMarker.markerId, marker);
+                    call.resolve(CustomMarker.getResultForMarker(new ResultFor(marker), getId()));
+                });
     }
 
     private int nIconsLoaded = 0;
 
     public void addCluster(JSArray jsMarkers, PluginCall call) {
         final JSArray result = new JSArray();
-        for (int i = 0; i < jsMarkers.length(); i++) {
+        final int n = jsMarkers.length();
+        nIconsLoaded += n;
+        for (int i = 0; i < n; i++) {
             JSObject jsObject = getJSMarkerByIndex(jsMarkers, i);
             CustomMarker customMarker = new CustomMarker();
             customMarker.updateFromJSObject(jsObject);
             final CustomClusterItem item = new CustomClusterItem(customMarker);
             clusteredMarkerTags.put(customMarker.getPosition(), customMarker.getTag());
-            nIconsLoaded++;
+
             clusterManager.addItem(item);
+            clusterItems.put(item.getCustomMarker().markerId, item);
 
             item.getCustomMarker().asyncLoadIcon(
                     context,
@@ -569,6 +586,13 @@ public class CustomMapView
         if (marker != null) {
             marker.remove();
             markers.remove(markerId);
+        } else {
+            CustomClusterItem item = clusterItems.get(markerId);
+            if (item != null) {
+                if (clusterManager.removeItem(item)) {
+                    clusterManager.cluster();
+                }
+            }
         }
     }
 
