@@ -13,7 +13,6 @@ import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 
 class CustomClusterRenderer extends DefaultClusterRenderer<CustomClusterItem> {
 
-
     public CustomClusterRenderer(AppCompatActivity activity, GoogleMap map, ClusterManager<CustomClusterItem> clusterManager) {
         super(activity, map, clusterManager);
     }

@@ -8,15 +8,15 @@ import com.google.maps.android.collections.MarkerManager;
 public class CustomMarkerManager extends MarkerManager {
 
     private final ProxyEventListener proxyEventListener;
-    private final OnBeforeAddMarker onBeforeAddMarker;
+    private final MarkerLifecycle markerLifecycle;
 
     public CustomMarkerManager(
             GoogleMap map,
             ProxyEventListener proxyEventListener,
-            OnBeforeAddMarker onBeforeAddMarker) {
+            MarkerLifecycle markerLifecycle) {
         super(map);
         this.proxyEventListener = proxyEventListener;
-        this.onBeforeAddMarker = onBeforeAddMarker;
+        this.markerLifecycle = markerLifecycle;
     }
 
     @Override
@@ -54,19 +54,20 @@ public class CustomMarkerManager extends MarkerManager {
         return new CustomCollection();
     }
 
-    private Object getTag(MarkerOptions opts) {
-        return onBeforeAddMarker.getTag(opts);
-    }
-
     public class CustomCollection extends MarkerManager.Collection {
 
         @Override
         public Marker addMarker(MarkerOptions opts) {
-            Marker marker = mMap.addMarker(opts);
-                marker.setTag(getTag(opts));
-
-            super.add(marker);
+            Object tag = markerLifecycle.onBeforeAddMarker(opts);
+            Marker marker = super.addMarker(opts);
+            marker.setTag(tag);
             return marker;
+        }
+
+        @Override
+        public boolean remove(Marker marker) {
+            markerLifecycle.onBeforeDeleteMarker(marker);
+            return super.remove(marker);
         }
     }
 }

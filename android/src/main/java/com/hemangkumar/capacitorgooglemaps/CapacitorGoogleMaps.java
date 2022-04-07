@@ -496,7 +496,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
                         () -> {
                             markerOptions.icon(customMarker.getBitmapDescriptor());
                             Marker marker = customMapView.addMarker(customMarker, markerOptions);
-                            call.resolve(CustomMarker.getResultForMarker(marker, mapId));
+                            call.resolve(CustomMarker.getResultForMarker(new ResultFor(marker), mapId));
                         });
             } else {
                 call.reject("map not found");
@@ -535,8 +535,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
             CustomMapView customMapView = customMapViews.get(mapId);
 
             if (customMapView != null) {
-                customMapView.addCluster(jsMarkers);
-                call.resolve(); // todo: AGalilov: add result support!!
+                customMapView.addCluster(jsMarkers, call);
             } else {
                 call.reject("map not found");
             }
