@@ -17,6 +17,8 @@ import {
   RemoveMarkerOptions,
   AddClusterOptions,
   AddClusterResult,
+  AddPolygonOptions,
+  AddPolygonResult,
   DidTapInfoWindowCallback,
   DidCloseInfoWindowCallback,
   DidTapMapCallback,
@@ -79,6 +81,10 @@ export class CapacitorGoogleMapsWeb
   }
 
   async addCluster(_options: AddClusterOptions): Promise<AddClusterResult> {
+    throw this.unimplemented("Not implemented on web.");
+  }
+
+  async addPolygon(_options: AddPolygonOptions): Promise<AddPolygonResult> {
     throw this.unimplemented("Not implemented on web.");
   }
 

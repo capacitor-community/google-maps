@@ -7,6 +7,7 @@ export { ClearMapOptions } from "./methods/ClearMap";
 export { MoveCameraOptions } from "./methods/MoveCamera";
 export { ElementFromPointResultOptions } from "./methods/ElementFromPointResult";
 export { AddMarkerOptions, AddMarkerResult } from "./methods/AddMarker";
+export { AddPolygonOptions, AddPolygonResult } from "./methods/AddPolygon";
 export { RemoveMarkerOptions } from "./methods/RemoveMarker";
 export { AddClusterOptions, AddClusterResult } from "./methods/AddCluster";
 
@@ -31,6 +32,7 @@ export { CameraMovementReason } from "./models/GoogleMap/Camera/MovementReason";
 export { CameraPosition } from "./models/GoogleMap/Camera/Position";
 export { Marker } from "./models/GoogleMap/Marker/Marker";
 export { MarkerPreferences } from "./models/GoogleMap/Marker/MarkerPreferences";
+export { PolygonPreferences } from "./models/GoogleMap/Polygon/PolygonPreferences";
 export { ClusteredMarkerPreferences } from "./models/GoogleMap/Marker/ClusteredMarkerPreferences";
 export { ClusterIcon } from "./models/GoogleMap/Marker/ClusterIcon";
 export { MapAppearance } from "./models/GoogleMap/Appearance";
