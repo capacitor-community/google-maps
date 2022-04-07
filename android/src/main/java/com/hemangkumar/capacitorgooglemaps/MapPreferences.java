@@ -3,7 +3,7 @@ package com.hemangkumar.capacitorgooglemaps;
 import androidx.annotation.Nullable;
 
 import com.getcapacitor.JSObject;
-import com.google.android.libraries.maps.GoogleMapOptions;
+import com.google.android.gms.maps.GoogleMapOptions;
 
 public class MapPreferences {
     public MapPreferencesGestures gestures;

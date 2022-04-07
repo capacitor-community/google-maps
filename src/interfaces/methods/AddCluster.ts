@@ -1,9 +1,9 @@
-import { ClusteredMarkerPreferences, ClusterIcon, Marker } from "./../../definitions";
+import { ClusteredMarkerPreferences, Icon, Marker } from "./../../definitions";
 
 export interface AddClusterOptions {
   mapId: string;
   markers: ClusteredMarkerPreferences[];
-  clusterIcons?: ClusterIcon[]
+  clusterIcon?: Icon;
 }
 
 export interface AddClusterResult {

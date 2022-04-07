@@ -1,8 +1,8 @@
 package com.hemangkumar.capacitorgooglemaps;
 
-import com.google.android.libraries.maps.GoogleMap;
-import com.google.android.libraries.maps.model.Marker;
-import com.google.android.libraries.maps.model.MarkerOptions;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.collections.MarkerManager;
 
 public class CustomMarkerManager extends MarkerManager {

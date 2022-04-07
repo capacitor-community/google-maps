@@ -4,10 +4,10 @@ import android.location.Location;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.libraries.maps.GoogleMap;
-import com.google.android.libraries.maps.model.LatLng;
-import com.google.android.libraries.maps.model.Marker;
-import com.google.android.libraries.maps.model.PointOfInterest;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.PointOfInterest;
 
 import java.util.LinkedHashSet;
 import java.util.Set;

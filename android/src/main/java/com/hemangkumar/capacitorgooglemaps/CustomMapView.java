@@ -3,29 +3,31 @@ package com.hemangkumar.capacitorgooglemaps;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.PluginCall;
-import com.google.android.libraries.maps.CameraUpdate;
-import com.google.android.libraries.maps.CameraUpdateFactory;
-import com.google.android.libraries.maps.GoogleMap;
-import com.google.android.libraries.maps.GoogleMapOptions;
-import com.google.android.libraries.maps.MapView;
-import com.google.android.libraries.maps.OnMapReadyCallback;
-import com.google.android.libraries.maps.UiSettings;
-import com.google.android.libraries.maps.model.CameraPosition;
-import com.google.android.libraries.maps.model.LatLng;
-import com.google.android.libraries.maps.model.Marker;
-import com.google.android.libraries.maps.model.MarkerOptions;
-import com.google.android.libraries.maps.model.PointOfInterest;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMapOptions;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PointOfInterest;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
@@ -69,6 +71,7 @@ public class CustomMapView
     private final Map<String, Marker> markers = new HashMap<>();
     private ClusterManager<CustomClusterItem> clusterManager;
     private CustomMarkerManager markerManager;
+    private CustomClusterRenderer clusterRenderer;
     private final Map<LatLng, Object> clusteredMarkerTags = new HashMap<>();
     private final Map<String, CustomClusterItem> clusterItems = new HashMap<>();
 
@@ -164,7 +167,8 @@ public class CustomMapView
         assignProxyListenerToMap();
         markerManager = new CustomMarkerManager(googleMap, proxyEventListener, this);
         clusterManager = new ClusterManager<>(context, googleMap, markerManager);
-        clusterManager.setRenderer(new CustomClusterRenderer(context, googleMap, clusterManager));
+        clusterRenderer = new CustomClusterRenderer(context, googleMap, clusterManager);
+        clusterManager.setRenderer(clusterRenderer);
         proxyEventListener.addOnCameraIdleListener(clusterManager);
         clusterManager.setOnClusterClickListener(this);
         clusterManager.setOnClusterInfoWindowClickListener(this);
@@ -200,7 +204,7 @@ public class CustomMapView
     @Override
     public void onInfoWindowClick(Marker marker) {
         if (customMapViewEvents != null && savedCallbackIdForDidTapInfoWindow != null) {
-            JSObject result = CustomMarker.getResultForMarker(new ResultFor(marker), this.id);
+            JSObject result = CustomMarker.getResultForMarker(marker, this.id);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapInfoWindow, result);
         }
     }
@@ -208,7 +212,7 @@ public class CustomMapView
     @Override
     public void onInfoWindowClose(Marker marker) {
         if (customMapViewEvents != null && savedCallbackIdForDidCloseInfoWindow != null) {
-            JSObject result = CustomMarker.getResultForMarker(new ResultFor(marker), this.id);
+            JSObject result = CustomMarker.getResultForMarker(marker, this.id);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidCloseInfoWindow, result);
         }
     }
@@ -232,7 +236,7 @@ public class CustomMapView
     @Override
     public boolean onMarkerClick(Marker marker) {
         if (customMapViewEvents != null && savedCallbackIdForDidTapMarker != null) {
-            JSObject result = CustomMarker.getResultForMarker(new ResultFor(marker), this.id);
+            JSObject result = CustomMarker.getResultForMarker(marker, this.id);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapMarker, result);
         }
         return preventDefaultForDidTapMarker;
@@ -241,7 +245,7 @@ public class CustomMapView
     @Override
     public void onMarkerDragStart(Marker marker) {
         if (customMapViewEvents != null && savedCallbackIdForDidBeginDraggingMarker != null) {
-            JSObject result = CustomMarker.getResultForMarker(new ResultFor(marker), this.id);
+            JSObject result = CustomMarker.getResultForMarker(marker, this.id);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidBeginDraggingMarker, result);
         }
     }
@@ -249,7 +253,7 @@ public class CustomMapView
     @Override
     public void onMarkerDrag(Marker marker) {
         if (customMapViewEvents != null && savedCallbackIdForDidDragMarker != null) {
-            JSObject result = CustomMarker.getResultForMarker(new ResultFor(marker), this.id);
+            JSObject result = CustomMarker.getResultForMarker(marker, this.id);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidDragMarker, result);
         }
     }
@@ -257,7 +261,7 @@ public class CustomMapView
     @Override
     public void onMarkerDragEnd(Marker marker) {
         if (customMapViewEvents != null && savedCallbackIdForDidEndDraggingMarker != null) {
-            JSObject result = CustomMarker.getResultForMarker(new ResultFor(marker), this.id);
+            JSObject result = CustomMarker.getResultForMarker(marker, this.id);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidEndDraggingMarker, result);
         }
     }
@@ -523,7 +527,7 @@ public class CustomMapView
         clusteredMarkerTags.clear();
     }
 
-    public void addMarker(JSObject data, PluginCall call) {
+    public void addMarker(PluginCall call) {
         final MarkerOptions markerOptions = new MarkerOptions();
         final CustomMarker customMarker = new CustomMarker();
         customMarker.updateFromJSObject(call.getData());
@@ -534,14 +538,20 @@ public class CustomMapView
                     markerOptions.icon(customMarker.getBitmapDescriptor());
                     Marker marker = customMarker.addToMap(googleMap, markerOptions);
                     markers.put(customMarker.markerId, marker);
-                    call.resolve(CustomMarker.getResultForMarker(new ResultFor(marker), getId()));
+                    call.resolve(CustomMarker.getResultForMarker(marker, getId()));
                 });
     }
 
     private int nIconsLoaded = 0;
 
-    public void addCluster(JSArray jsMarkers, PluginCall call) {
+    public void addCluster(PluginCall call) {
         final JSArray result = new JSArray();
+        final JSArray jsMarkers = call.getArray("markers");
+        final JSObject jsClusterIcon = call.getObject("clusterIcon");
+        new AsyncIconLoader(jsClusterIcon, context)
+                .load((bitmap) -> {
+                    clusterRenderer.setIcon(bitmap);
+                });
         final int n = jsMarkers.length();
         nIconsLoaded += n;
         for (int i = 0; i < n; i++) {
@@ -553,13 +563,12 @@ public class CustomMapView
 
             clusterManager.addItem(item);
             clusterItems.put(item.getCustomMarker().markerId, item);
-
             item.getCustomMarker().asyncLoadIcon(
                     context,
                     () -> {
                         clusterManager.updateItem(item);
                         result.put(CustomMarker.getResultForMarker(
-                                new ResultFor(item.getCustomMarker()), getId()));
+                                item.getCustomMarker(), getId()));
                         if (--nIconsLoaded == 0) {
                             clusterManager.cluster();
                             JSObject jsResult = new JSObject();
@@ -570,8 +579,7 @@ public class CustomMapView
         }
     }
 
-    @NonNull
-    private JSObject getJSMarkerByIndex(JSArray jsMarkers, int i) {
+    private static JSObject getJSMarkerByIndex(JSArray jsMarkers, int i) {
         try {
             JSONObject jsonObject = (JSONObject) jsMarkers.get(i);
             return JSObject.fromJSONObject(jsonObject);
@@ -587,7 +595,7 @@ public class CustomMapView
             marker.remove();
             markers.remove(markerId);
         } else {
-            CustomClusterItem item = clusterItems.get(markerId);
+            CustomClusterItem item = clusterItems.remove(markerId);
             if (item != null) {
                 if (clusterManager.removeItem(item)) {
                     clusterManager.cluster();

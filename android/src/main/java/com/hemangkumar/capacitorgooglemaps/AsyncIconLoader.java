@@ -1,7 +1,9 @@
 package com.hemangkumar.capacitorgooglemaps;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.PictureDrawable;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 
@@ -13,87 +15,100 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.bumptech.glide.util.Executors;
 import com.getcapacitor.JSObject;
-import com.google.android.libraries.maps.model.BitmapDescriptor;
-import com.google.android.libraries.maps.model.BitmapDescriptorFactory;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Locale;
 
 class AsyncIconLoader {
 
     public interface OnIconReady {
-        void onReady(@Nullable Bitmap bitmap, boolean allIconsAreLoaded);
+        void onReady(@Nullable Bitmap bitmap);
     }
 
-    private final IconDescriptor[] iconDescriptors;
+    private final IconDescriptor iconDescriptor;
     private final FragmentActivity activity;
-    private final AtomicInteger nLoadedIcons = new AtomicInteger(0);
 
-    public AsyncIconLoader(final JSObject[] icons, FragmentActivity activity) {
-        iconDescriptors = new IconDescriptor[icons.length];
-        for (int i = 0; i < icons.length; i++) {
-            iconDescriptors[i] = IconDescriptor.createInstance(icons[i]);
-        }
+    public AsyncIconLoader(JSObject jsIconDescriptor, FragmentActivity activity) {
+        this.iconDescriptor = IconDescriptor.createInstance(jsIconDescriptor);
         this.activity = activity;
     }
 
-    public AsyncIconLoader(final JSObject icon, FragmentActivity activity) {
-        this(new JSObject[]{icon}, activity);
-    }
-
-    public void load(@NonNull OnIconReady onIconReady) {
-        nLoadedIcons.set(iconDescriptors.length);
-        for (IconDescriptor iconDescriptor : iconDescriptors) {
-            loadOneIcon(iconDescriptor, onIconReady);
-        }
-    }
-
-    private void loadOneIcon(IconDescriptor iconDescriptor, OnIconReady onIconReady) {
+    public void load(OnIconReady onIconReady) {
 
         if (TextUtils.isEmpty(iconDescriptor.url)) {
-            onReady(null, onIconReady);
+            onIconReady.onReady(null);
             return;
         }
 
+        if (iconDescriptor.url.toLowerCase(Locale.ROOT).endsWith(".svg")) {
+            loadSvg(onIconReady);
+        } else {
+            loadBitmap(onIconReady);
+        }
+    }
+
+    private void loadBitmap(OnIconReady onIconReady) {
         RequestBuilder<Bitmap> builder = Glide.with(activity)
                 .asBitmap()
                 .load(iconDescriptor.url);
 
-        scaleBitmapOptional(builder, iconDescriptor).into(
+        scaleImageOptional(builder, iconDescriptor).into(
                 new CustomTarget<Bitmap>() {
                     // It will be called when the resource loadAll has finished.
                     @Override
                     public void onResourceReady(
                             @NonNull Bitmap bitmap,
                             @Nullable Transition<? super Bitmap> transition) {
-                        onReady(bitmap, onIconReady);
+                        onIconReady.onReady(bitmap);
                     }
 
                     // It is called when a loadAll is cancelled and its resources are freed.
                     @Override
                     public void onLoadCleared(@Nullable Drawable placeholder) {
                         // Use default marker
-                        onReady(null, onIconReady);
+                        onIconReady.onReady(null);
                     }
 
                     // It is called when can't get image from network AND from a local cache.
                     @Override
                     public void onLoadFailed(@Nullable Drawable errorDrawable) {
                         // Use default marker
-                        onReady(null, onIconReady);
+                        onIconReady.onReady(null);
                     }
                 }
         );
     }
 
-    private void onReady(Bitmap bitmap, OnIconReady onIconReady) {
-        onIconReady.onReady(
-                bitmap,
-                nLoadedIcons.addAndGet(-1) <= 0);
+    private void loadSvg(OnIconReady onIconReady) {
+        RequestBuilder<PictureDrawable> builder = Glide.with(activity)
+                .as(PictureDrawable.class)
+                .load(iconDescriptor.url);
+
+        scaleImageOptional(builder, iconDescriptor)
+                .into(new CustomTarget<PictureDrawable>() {
+                    @Override
+                    public void onResourceReady(@NonNull PictureDrawable pictureDrawable,
+                                                @Nullable Transition<? super PictureDrawable> transition) {
+                        onIconReady.onReady(pictureDrawableToBitmap(pictureDrawable));
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                        // Use default marker
+                        onIconReady.onReady(null);
+                    }
+
+                    @Override
+                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                        // Use default marker
+                        onIconReady.onReady(null);
+                    }
+                });
     }
 
-    private RequestBuilder<Bitmap> scaleBitmapOptional(
-            RequestBuilder<Bitmap> builder,
+    private <T> RequestBuilder<T> scaleImageOptional(
+            RequestBuilder<T> builder,
             IconDescriptor iconDescriptor) {
         if (iconDescriptor.sizeInMm.getHeight() > 0 && iconDescriptor.sizeInMm.getWidth() > 0) {
             // Scale image to provided size in Millimeters
@@ -108,5 +123,15 @@ class AsyncIconLoader {
                     iconDescriptor.sizeInPixels.getHeight()).optionalFitCenter();
         }
         return builder;
+    }
+
+    private static Bitmap pictureDrawableToBitmap(PictureDrawable pictureDrawable) {
+        Bitmap bmp = Bitmap.createBitmap(
+                pictureDrawable.getIntrinsicWidth(),
+                pictureDrawable.getIntrinsicHeight(),
+                Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bmp);
+        canvas.drawPicture(pictureDrawable.getPicture());
+        return bmp;
     }
 }

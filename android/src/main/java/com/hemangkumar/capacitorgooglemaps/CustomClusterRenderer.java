@@ -1,20 +1,32 @@
 package com.hemangkumar.capacitorgooglemaps;
 
+import android.graphics.Bitmap;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.libraries.maps.GoogleMap;
-import com.google.android.libraries.maps.model.BitmapDescriptor;
-import com.google.android.libraries.maps.model.Marker;
-import com.google.android.libraries.maps.model.MarkerOptions;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 
 class CustomClusterRenderer extends DefaultClusterRenderer<CustomClusterItem> {
 
-    public CustomClusterRenderer(AppCompatActivity activity, GoogleMap map, ClusterManager<CustomClusterItem> clusterManager) {
+    private Bitmap bitmap;
+
+    public CustomClusterRenderer(
+            AppCompatActivity activity,
+            GoogleMap map,
+            ClusterManager<CustomClusterItem> clusterManager) {
         super(activity, map, clusterManager);
+    }
+
+    public void setIcon(Bitmap bitmap) {
+        this.bitmap = bitmap;
     }
 
     @Override
@@ -31,8 +43,25 @@ class CustomClusterRenderer extends DefaultClusterRenderer<CustomClusterItem> {
 
     @Override
     protected void onBeforeClusterRendered(@NonNull Cluster<CustomClusterItem> cluster, @NonNull MarkerOptions markerOptions) {
-        // TODO: consider adding anchor(.5, .5) (Individual markers will overlap more often)
-        markerOptions.icon(getDescriptorForCluster(cluster));
+        if (bitmap != null) {
+            markerOptions.icon(getClusterIcon(cluster));
+        } else {
+            super.onBeforeClusterRendered(cluster, markerOptions);
+        }
+    }
+
+    @Override
+    protected void onClusterUpdated(@NonNull Cluster<CustomClusterItem> cluster, Marker marker) {
+        if (bitmap != null) {
+            // Same implementation as onBeforeClusterRendered() (to update cached markers)
+            marker.setIcon(getClusterIcon(cluster));
+        } else {
+            super.onClusterUpdated(cluster, marker);
+        }
+    }
+
+    private BitmapDescriptor getClusterIcon(Cluster<CustomClusterItem> cluster) {
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
     @Override

@@ -5,12 +5,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
 import com.getcapacitor.JSObject;
-import com.google.android.libraries.maps.GoogleMap;
-import com.google.android.libraries.maps.model.BitmapDescriptor;
-import com.google.android.libraries.maps.model.BitmapDescriptorFactory;
-import com.google.android.libraries.maps.model.LatLng;
-import com.google.android.libraries.maps.model.Marker;
-import com.google.android.libraries.maps.model.MarkerOptions;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.UUID;
 
@@ -79,9 +79,11 @@ public class CustomMarker {
             @NonNull FragmentActivity activity,
             @Nullable OnIconLoaded onLoaded) {
         new AsyncIconLoader(iconDescriptor, activity)
-                .load((bitmap, allIconsAreLoaded) -> {
+                .load((bitmap) -> {
                     if (bitmap != null) {
                         bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bitmap);
+                    } else {
+                        bitmapDescriptor = null;
                     }
                     if (onLoaded != null) {
                         onLoaded.run();
@@ -121,6 +123,10 @@ public class CustomMarker {
         return isDraggable;
     }
 
+    public JSObject getIconDescriptor() {
+        return iconDescriptor;
+    }
+
     public Marker addToMap(GoogleMap googleMap, MarkerOptions markerOptions) {
         Marker marker = googleMap.addMarker(markerOptions);
         marker.setTag(this.tag);
@@ -142,7 +148,15 @@ public class CustomMarker {
         this.tag = tag;
     }
 
-    public static JSObject getResultForMarker(ResultFor r, String mapId) {
+    public static JSObject getResultForMarker(Marker marker, String mapId) {
+        return getResultForMarker(new ResultFor(marker), mapId);
+    }
+
+    public static JSObject getResultForMarker(CustomMarker marker, String mapId) {
+        return getResultForMarker(new ResultFor(marker), mapId);
+    }
+
+    private static JSObject getResultForMarker(ResultFor r, String mapId) {
         JSObject tag = r.getTag();
 
         // initialize JSObjects to return
@@ -182,5 +196,4 @@ public class CustomMarker {
 
         return result;
     }
-
 }

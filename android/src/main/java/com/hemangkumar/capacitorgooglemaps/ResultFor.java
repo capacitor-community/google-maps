@@ -1,9 +1,8 @@
 package com.hemangkumar.capacitorgooglemaps;
 
 import com.getcapacitor.JSObject;
-import com.google.android.libraries.maps.model.LatLng;
-import com.google.android.libraries.maps.model.Marker;
-import com.google.android.libraries.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 
 class ResultFor {
     private JSObject tag;
