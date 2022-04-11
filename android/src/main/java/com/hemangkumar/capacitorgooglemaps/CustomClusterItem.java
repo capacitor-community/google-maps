@@ -3,7 +3,7 @@ package com.hemangkumar.capacitorgooglemaps;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.android.gms.maps.model.LatLng;
+import com.google.android.libraries.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
 
 class CustomClusterItem implements ClusterItem {

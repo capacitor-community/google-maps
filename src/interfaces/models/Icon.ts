@@ -16,12 +16,12 @@ export interface Icon {
    *
    * @since x.x.x
    */
-  target_size_mm?: Size;
+  targetSizeMm?: Size;
   
   /**
    * Target icon size in pixels
    *
    * @since x.x.x
    */
-  target_size_px?: Size;
+  targetSizePx?: Size;
 }

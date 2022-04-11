@@ -8,19 +8,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.annotation.Permission;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.android.libraries.maps.model.CameraPosition;
 
 import java.util.ArrayList;
 import java.util.HashMap;

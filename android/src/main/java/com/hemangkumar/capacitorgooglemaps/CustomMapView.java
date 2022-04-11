@@ -3,34 +3,36 @@ package com.hemangkumar.capacitorgooglemaps;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.location.Location;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.PluginCall;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMapOptions;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PointOfInterest;
+import com.google.android.libraries.maps.CameraUpdate;
+import com.google.android.libraries.maps.CameraUpdateFactory;
+import com.google.android.libraries.maps.GoogleMap;
+import com.google.android.libraries.maps.GoogleMapOptions;
+import com.google.android.libraries.maps.MapView;
+import com.google.android.libraries.maps.OnMapReadyCallback;
+import com.google.android.libraries.maps.UiSettings;
+import com.google.android.libraries.maps.model.BitmapDescriptorFactory;
+import com.google.android.libraries.maps.model.CameraPosition;
+import com.google.android.libraries.maps.model.LatLng;
+import com.google.android.libraries.maps.model.Marker;
+import com.google.android.libraries.maps.model.MarkerOptions;
+import com.google.android.libraries.maps.model.PointOfInterest;
 import com.google.maps.android.clustering.Cluster;
-import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.ui.IconGenerator;
+import com.hemangkumar.capacitorgooglemaps.capacitorgooglemaps.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,7 +40,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class CustomMapView
         implements OnMapReadyCallback,
@@ -235,6 +236,7 @@ public class CustomMapView
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+        if (clusterRenderer.isItAClusterMarker(marker)) return false;
         if (customMapViewEvents != null && savedCallbackIdForDidTapMarker != null) {
             JSObject result = CustomMarker.getResultForMarker(marker, this.id);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapMarker, result);
@@ -244,6 +246,7 @@ public class CustomMapView
 
     @Override
     public void onMarkerDragStart(Marker marker) {
+        if (clusterRenderer.isItAClusterMarker(marker)) return;
         if (customMapViewEvents != null && savedCallbackIdForDidBeginDraggingMarker != null) {
             JSObject result = CustomMarker.getResultForMarker(marker, this.id);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidBeginDraggingMarker, result);
@@ -252,6 +255,7 @@ public class CustomMapView
 
     @Override
     public void onMarkerDrag(Marker marker) {
+        if (clusterRenderer.isItAClusterMarker(marker)) return;
         if (customMapViewEvents != null && savedCallbackIdForDidDragMarker != null) {
             JSObject result = CustomMarker.getResultForMarker(marker, this.id);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidDragMarker, result);
@@ -260,6 +264,7 @@ public class CustomMapView
 
     @Override
     public void onMarkerDragEnd(Marker marker) {
+        if (clusterRenderer.isItAClusterMarker(marker)) return;
         if (customMapViewEvents != null && savedCallbackIdForDidEndDraggingMarker != null) {
             JSObject result = CustomMarker.getResultForMarker(marker, this.id);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidEndDraggingMarker, result);
@@ -546,12 +551,8 @@ public class CustomMapView
 
     public void addCluster(PluginCall call) {
         final JSArray result = new JSArray();
+        asyncLoadClusterIcon(call);
         final JSArray jsMarkers = call.getArray("markers");
-        final JSObject jsClusterIcon = call.getObject("clusterIcon");
-        new AsyncIconLoader(jsClusterIcon, context)
-                .load((bitmap) -> {
-                    clusterRenderer.setIcon(bitmap);
-                });
         final int n = jsMarkers.length();
         nIconsLoaded += n;
         for (int i = 0; i < n; i++) {
@@ -560,7 +561,6 @@ public class CustomMapView
             customMarker.updateFromJSObject(jsObject);
             final CustomClusterItem item = new CustomClusterItem(customMarker);
             clusteredMarkerTags.put(customMarker.getPosition(), customMarker.getTag());
-
             clusterManager.addItem(item);
             clusterItems.put(item.getCustomMarker().markerId, item);
             item.getCustomMarker().asyncLoadIcon(
@@ -569,14 +569,24 @@ public class CustomMapView
                         clusterManager.updateItem(item);
                         result.put(CustomMarker.getResultForMarker(
                                 item.getCustomMarker(), getId()));
+                        clusterManager.cluster();
                         if (--nIconsLoaded == 0) {
-                            clusterManager.cluster();
                             JSObject jsResult = new JSObject();
                             jsResult.put("result", result);
                             call.resolve(jsResult);
                         }
                     });
         }
+    }
+
+    private void asyncLoadClusterIcon(final PluginCall call) {
+        final JSObject jsClusterIcon = call.getObject("clusterIcon");
+        new AsyncIconLoader(jsClusterIcon, context)
+                .load((bitmap) -> {
+                    clusterRenderer.setIcon(bitmap);
+                    JSObject jsClusterCaptionPrefs = call.getObject("clusterCaptionPrefs");
+                    clusterRenderer.setCaptionPreferences(new CaptionPreferences(jsClusterCaptionPrefs));
+                });
     }
 
     private static JSObject getJSMarkerByIndex(JSArray jsMarkers, int i) {

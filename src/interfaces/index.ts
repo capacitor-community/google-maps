@@ -44,3 +44,4 @@ export { BoundingRect } from "./models/BoundingRect";
 export { LatLng } from "./models/LatLng";
 export { Icon } from "./models/Icon";
 export { Size } from "./models/Size";
+export { CaptionPreferences } from "./models/CaptionPreferences"

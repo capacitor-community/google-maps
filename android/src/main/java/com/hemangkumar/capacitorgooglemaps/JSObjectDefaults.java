@@ -70,8 +70,8 @@ public abstract class JSObjectDefaults {
         }
     }
 
-    @NonNull
-    public static JSObject getJSObjectSafe(JSObject jsObject, @NonNull String name, @NonNull JSObject defaultValue) {
+    @Nullable
+    public static JSObject getJSObjectSafe(JSObject jsObject, @NonNull String name, @Nullable JSObject defaultValue) {
         JSObject returnedJsObject = jsObject.getJSObject(name);
         if (returnedJsObject != null) {
             return returnedJsObject;

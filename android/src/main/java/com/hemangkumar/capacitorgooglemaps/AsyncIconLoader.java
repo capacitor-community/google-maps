@@ -2,10 +2,12 @@ package com.hemangkumar.capacitorgooglemaps;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Picture;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PictureDrawable;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Size;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,9 +17,14 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.bumptech.glide.util.Executors;
+import com.caverock.androidsvg.SVG;
+import com.caverock.androidsvg.SVGParseException;
 import com.getcapacitor.JSObject;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Locale;
 
 class AsyncIconLoader {
@@ -30,7 +37,7 @@ class AsyncIconLoader {
     private final FragmentActivity activity;
 
     public AsyncIconLoader(JSObject jsIconDescriptor, FragmentActivity activity) {
-        this.iconDescriptor = IconDescriptor.createInstance(jsIconDescriptor);
+        this.iconDescriptor = new IconDescriptor(jsIconDescriptor);
         this.activity = activity;
     }
 
@@ -53,9 +60,9 @@ class AsyncIconLoader {
                 .asBitmap()
                 .load(iconDescriptor.url);
 
-        scaleImageOptional(builder, iconDescriptor).into(
+        scaleImageOptional(builder).into(
                 new CustomTarget<Bitmap>() {
-                    // It will be called when the resource loadAll has finished.
+                    // It will be called when the resource load has finished.
                     @Override
                     public void onResourceReady(
                             @NonNull Bitmap bitmap,
@@ -81,48 +88,66 @@ class AsyncIconLoader {
     }
 
     private void loadSvg(OnIconReady onIconReady) {
-        RequestBuilder<PictureDrawable> builder = Glide.with(activity)
-                .as(PictureDrawable.class)
-                .load(iconDescriptor.url);
-
-        scaleImageOptional(builder, iconDescriptor)
-                .into(new CustomTarget<PictureDrawable>() {
-                    @Override
-                    public void onResourceReady(@NonNull PictureDrawable pictureDrawable,
-                                                @Nullable Transition<? super PictureDrawable> transition) {
-                        onIconReady.onReady(pictureDrawableToBitmap(pictureDrawable));
+        Glide.with(activity).downloadOnly().load(iconDescriptor.url).into(new CustomTarget<File>() {
+            @Override
+            public void onResourceReady(@NonNull File resource, @Nullable Transition<? super File> transition) {
+                try {
+                    try (InputStream inputStream = new FileInputStream(resource)) {
+                        SVG svg = SVG.getFromInputStream(inputStream);
+                        Size sz = calcPictureSize();
+                        if (sz.getWidth() > -1) {
+                            svg.setDocumentWidth(sz.getWidth());
+                            svg.setDocumentHeight(sz.getHeight());
+                        }
+                        Picture picture = svg.renderToPicture();
+                        Bitmap bitmap = pictureToBitmap(picture);
+                        onIconReady.onReady(bitmap);
                     }
+                } catch (IOException | SVGParseException exception) {
+                    onIconReady.onReady(null);
+                }
+            }
 
-                    @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {
-                        // Use default marker
-                        onIconReady.onReady(null);
-                    }
+            @Override
+            public void onLoadCleared(@Nullable Drawable placeholder) {
+                onIconReady.onReady(null);
+            }
 
-                    @Override
-                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                        // Use default marker
-                        onIconReady.onReady(null);
-                    }
-                });
+            @Override
+            public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                onIconReady.onReady(null);
+            }
+        });
     }
 
-    private <T> RequestBuilder<T> scaleImageOptional(
-            RequestBuilder<T> builder,
-            IconDescriptor iconDescriptor) {
+    private Size calcPictureSize() {
         if (iconDescriptor.sizeInMm.getHeight() > 0 && iconDescriptor.sizeInMm.getWidth() > 0) {
             // Scale image to provided size in Millimeters
             final float mmPerInch = 25.4f;
             DisplayMetrics metrics = activity.getResources().getDisplayMetrics();
             int newWidthPixels = (int) (iconDescriptor.sizeInMm.getWidth() * metrics.xdpi / mmPerInch);
             int newHeightPixels = (int) (iconDescriptor.sizeInMm.getWidth() * metrics.ydpi / mmPerInch);
-            builder = builder.override(newWidthPixels, newHeightPixels).optionalFitCenter();
+            return new Size(newWidthPixels, newHeightPixels);
         } else if (iconDescriptor.sizeInPixels.getHeight() > 0 && iconDescriptor.sizeInPixels.getWidth() > 0) {
             // Scale image to provided size in Pixels
-            builder = builder.override(iconDescriptor.sizeInPixels.getWidth(),
-                    iconDescriptor.sizeInPixels.getHeight()).optionalFitCenter();
+            return new Size(iconDescriptor.sizeInPixels.getWidth(), iconDescriptor.sizeInPixels.getHeight());
+        }
+        // size is not set -> return (-1; -1)
+        return new Size(-1, -1);
+    }
+
+    private <T> RequestBuilder<T> scaleImageOptional(
+            RequestBuilder<T> builder) {
+        Size sz = calcPictureSize();
+        if (sz.getWidth() > -1) {
+            builder = builder.override(sz.getWidth(), sz.getHeight()).optionalFitCenter();
         }
         return builder;
+    }
+
+    private static Bitmap pictureToBitmap(Picture picture) {
+        PictureDrawable pictureDrawable = new PictureDrawable(picture);
+        return pictureDrawableToBitmap(pictureDrawable);
     }
 
     private static Bitmap pictureDrawableToBitmap(PictureDrawable pictureDrawable) {
