@@ -4,10 +4,8 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,16 +21,14 @@ import com.google.android.libraries.maps.GoogleMapOptions;
 import com.google.android.libraries.maps.MapView;
 import com.google.android.libraries.maps.OnMapReadyCallback;
 import com.google.android.libraries.maps.UiSettings;
-import com.google.android.libraries.maps.model.BitmapDescriptorFactory;
 import com.google.android.libraries.maps.model.CameraPosition;
 import com.google.android.libraries.maps.model.LatLng;
 import com.google.android.libraries.maps.model.Marker;
 import com.google.android.libraries.maps.model.MarkerOptions;
 import com.google.android.libraries.maps.model.PointOfInterest;
+import com.google.android.libraries.maps.model.PolygonOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
-import com.google.maps.android.ui.IconGenerator;
-import com.hemangkumar.capacitorgooglemaps.capacitorgooglemaps.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,8 +54,7 @@ public class CustomMapView
         ClusterManager.OnClusterClickListener<CustomClusterItem>,
         ClusterManager.OnClusterInfoWindowClickListener<CustomClusterItem>,
         ClusterManager.OnClusterItemClickListener<CustomClusterItem>,
-        ClusterManager.OnClusterItemInfoWindowClickListener<CustomClusterItem>,
-        MarkerLifecycle {
+        ClusterManager.OnClusterItemInfoWindowClickListener<CustomClusterItem> {
     private final AppCompatActivity context;
     private final CustomMapViewEvents customMapViewEvents;
     private final ProxyEventListener proxyEventListener = new ProxyEventListener();
@@ -71,9 +66,8 @@ public class CustomMapView
 
     private final Map<String, Marker> markers = new HashMap<>();
     private ClusterManager<CustomClusterItem> clusterManager;
-    private CustomMarkerManager markerManager;
     private CustomClusterRenderer clusterRenderer;
-    private final Map<LatLng, Object> clusteredMarkerTags = new HashMap<>();
+    //private final Map<LatLng, Object> clusteredMarkerTags = new HashMap<>();
     private final Map<String, CustomClusterItem> clusterItems = new HashMap<>();
 
     String savedCallbackIdForCreate;
@@ -166,7 +160,7 @@ public class CustomMapView
         }
 
         assignProxyListenerToMap();
-        markerManager = new CustomMarkerManager(googleMap, proxyEventListener, this);
+        CustomMarkerManager markerManager = new CustomMarkerManager(googleMap, proxyEventListener);
         clusterManager = new ClusterManager<>(context, googleMap, markerManager);
         clusterRenderer = new CustomClusterRenderer(context, googleMap, clusterManager);
         clusterManager.setRenderer(clusterRenderer);
@@ -175,17 +169,6 @@ public class CustomMapView
         clusterManager.setOnClusterInfoWindowClickListener(this);
         clusterManager.setOnClusterItemClickListener(this);
         clusterManager.setOnClusterItemInfoWindowClickListener(this);
-    }
-
-    @Override
-    public Object onBeforeAddMarker(MarkerOptions opts) {
-        // todo: AGalilov: add z-index support for multiple markers at the same location
-        return clusteredMarkerTags.get(opts.getPosition());
-    }
-
-    @Override
-    public void onBeforeDeleteMarker(Marker marker) {
-        clusteredMarkerTags.remove(marker.getPosition());
     }
 
     private void assignProxyListenerToMap() {
@@ -377,56 +360,71 @@ public class CustomMapView
 
     public void setCallbackIdForEvent(String callbackId, String eventName, Boolean preventDefault) {
         if (callbackId != null && eventName != null) {
-            if (eventName.equals(CustomMapView.EVENT_DID_TAP_INFO_WINDOW)) {
-                this.proxyEventListener.addOnInfoWindowClickListener(this);
-                savedCallbackIdForDidTapInfoWindow = callbackId;
-            } else if (eventName.equals(CustomMapView.EVENT_DID_CLOSE_INFO_WINDOW)) {
-                this.proxyEventListener.addOnInfoWindowCloseListener(this);
-                savedCallbackIdForDidCloseInfoWindow = callbackId;
-            } else if (eventName.equals(CustomMapView.EVENT_DID_TAP_MAP)) {
-                this.proxyEventListener.addOnMapClickListener(this);
-                savedCallbackIdForDidTapMap = callbackId;
-            } else if (eventName.equals(CustomMapView.EVENT_DID_LONG_PRESS_MAP)) {
-                this.proxyEventListener.addOnMapLongClickListener(this);
-                savedCallbackIdForDidLongPressMap = callbackId;
-            } else if (eventName.equals(CustomMapView.EVENT_DID_TAP_MARKER)) {
-                this.proxyEventListener.addOnMarkerClickListener(this);
-                savedCallbackIdForDidTapMarker = callbackId;
-                if (preventDefault == null) {
-                    preventDefault = false;
-                }
-                preventDefaultForDidTapMarker = preventDefault;
-            } else if (eventName.equals(CustomMapView.EVENT_DID_BEGIN_DRAGGING_MARKER)) {
-                this.proxyEventListener.addOnMarkerDragListener(this);
-                savedCallbackIdForDidBeginDraggingMarker = callbackId;
-            } else if (eventName.equals(CustomMapView.EVENT_DID_DRAG_MARKER)) {
-                this.proxyEventListener.addOnMarkerDragListener(this);
-                savedCallbackIdForDidDragMarker = callbackId;
-            } else if (eventName.equals(CustomMapView.EVENT_DID_END_DRAGGING_MARKER)) {
-                this.proxyEventListener.addOnMarkerDragListener(this);
-                savedCallbackIdForDidEndDraggingMarker = callbackId;
-            } else if (eventName.equals(CustomMapView.EVENT_DID_TAP_MY_LOCATION_BUTTON)) {
-                this.proxyEventListener.addOnMyLocationButtonClickListener(this);
-                savedCallbackIdForDidTapMyLocationButton = callbackId;
-                if (preventDefault == null) {
-                    preventDefault = false;
-                }
-                preventDefaultForDidTapMyLocationButton = preventDefault;
-            } else if (eventName.equals(CustomMapView.EVENT_DID_TAP_MY_LOCATION_DOT)) {
-                this.proxyEventListener.addOnMyLocationClickListener(this);
-                savedCallbackIdForDidTapMyLocationDot = callbackId;
-            } else if (eventName.equals((CustomMapView.EVENT_DID_TAP_POI))) {
-                this.proxyEventListener.addOnPoiClickListener(this);
-                savedCallbackIdForDidTapPoi = callbackId;
-            } else if (eventName.equals((CustomMapView.EVENT_DID_BEGIN_MOVING_CAMERA))) {
-                this.proxyEventListener.addOnCameraMoveStartedListener(this);
-                savedCallbackIdForDidBeginMovingCamera = callbackId;
-            } else if (eventName.equals((CustomMapView.EVENT_DID_MOVE_CAMERA))) {
-                this.proxyEventListener.addOnCameraMoveListener(this);
-                savedCallbackIdForDidMoveCamera = callbackId;
-            } else if (eventName.equals((CustomMapView.EVENT_DID_END_MOVING_CAMERA))) {
-                this.proxyEventListener.addOnCameraIdleListener(this);
-                savedCallbackIdForDidEndMovingCamera = callbackId;
+            switch (eventName) {
+                case CustomMapView.EVENT_DID_TAP_INFO_WINDOW:
+                    this.proxyEventListener.addOnInfoWindowClickListener(this);
+                    savedCallbackIdForDidTapInfoWindow = callbackId;
+                    break;
+                case CustomMapView.EVENT_DID_CLOSE_INFO_WINDOW:
+                    this.proxyEventListener.addOnInfoWindowCloseListener(this);
+                    savedCallbackIdForDidCloseInfoWindow = callbackId;
+                    break;
+                case CustomMapView.EVENT_DID_TAP_MAP:
+                    this.proxyEventListener.addOnMapClickListener(this);
+                    savedCallbackIdForDidTapMap = callbackId;
+                    break;
+                case CustomMapView.EVENT_DID_LONG_PRESS_MAP:
+                    this.proxyEventListener.addOnMapLongClickListener(this);
+                    savedCallbackIdForDidLongPressMap = callbackId;
+                    break;
+                case CustomMapView.EVENT_DID_TAP_MARKER:
+                    this.proxyEventListener.addOnMarkerClickListener(this);
+                    savedCallbackIdForDidTapMarker = callbackId;
+                    if (preventDefault == null) {
+                        preventDefault = false;
+                    }
+                    preventDefaultForDidTapMarker = preventDefault;
+                    break;
+                case CustomMapView.EVENT_DID_BEGIN_DRAGGING_MARKER:
+                    this.proxyEventListener.addOnMarkerDragListener(this);
+                    savedCallbackIdForDidBeginDraggingMarker = callbackId;
+                    break;
+                case CustomMapView.EVENT_DID_DRAG_MARKER:
+                    this.proxyEventListener.addOnMarkerDragListener(this);
+                    savedCallbackIdForDidDragMarker = callbackId;
+                    break;
+                case CustomMapView.EVENT_DID_END_DRAGGING_MARKER:
+                    this.proxyEventListener.addOnMarkerDragListener(this);
+                    savedCallbackIdForDidEndDraggingMarker = callbackId;
+                    break;
+                case CustomMapView.EVENT_DID_TAP_MY_LOCATION_BUTTON:
+                    this.proxyEventListener.addOnMyLocationButtonClickListener(this);
+                    savedCallbackIdForDidTapMyLocationButton = callbackId;
+                    if (preventDefault == null) {
+                        preventDefault = false;
+                    }
+                    preventDefaultForDidTapMyLocationButton = preventDefault;
+                    break;
+                case CustomMapView.EVENT_DID_TAP_MY_LOCATION_DOT:
+                    this.proxyEventListener.addOnMyLocationClickListener(this);
+                    savedCallbackIdForDidTapMyLocationDot = callbackId;
+                    break;
+                case (CustomMapView.EVENT_DID_TAP_POI):
+                    this.proxyEventListener.addOnPoiClickListener(this);
+                    savedCallbackIdForDidTapPoi = callbackId;
+                    break;
+                case (CustomMapView.EVENT_DID_BEGIN_MOVING_CAMERA):
+                    this.proxyEventListener.addOnCameraMoveStartedListener(this);
+                    savedCallbackIdForDidBeginMovingCamera = callbackId;
+                    break;
+                case (CustomMapView.EVENT_DID_MOVE_CAMERA):
+                    this.proxyEventListener.addOnCameraMoveListener(this);
+                    savedCallbackIdForDidMoveCamera = callbackId;
+                    break;
+                case (CustomMapView.EVENT_DID_END_MOVING_CAMERA):
+                    this.proxyEventListener.addOnCameraIdleListener(this);
+                    savedCallbackIdForDidEndMovingCamera = callbackId;
+                    break;
             }
         }
     }
@@ -530,7 +528,7 @@ public class CustomMapView
         markers.clear();
         clusterItems.clear();
         clusterManager.cluster();
-        clusteredMarkerTags.clear();
+        //clusteredMarkerTags.clear();
     }
 
     public void addMarker(PluginCall call) {
@@ -557,11 +555,10 @@ public class CustomMapView
         final int n = jsMarkers.length();
         nIconsLoaded += n;
         for (int i = 0; i < n; i++) {
-            JSObject jsObject = getJSMarkerByIndex(jsMarkers, i);
+            JSObject jsObject = getJSObjectByIndex(jsMarkers, i);
             CustomMarker customMarker = new CustomMarker();
             customMarker.updateFromJSObject(jsObject);
             final CustomClusterItem item = new CustomClusterItem(customMarker);
-            clusteredMarkerTags.put(customMarker.getPosition(), customMarker.getTag());
             clusterManager.addItem(item);
             clusterItems.put(item.getCustomMarker().markerId, item);
             item.getCustomMarker().asyncLoadIcon(
@@ -580,6 +577,20 @@ public class CustomMapView
         }
     }
 
+    public void addPolygon(PluginCall call) {
+        PolygonOptions options = new PolygonOptions();
+        JSArray jsPoints = call.getArray("points");
+        final int n = jsPoints.length();
+        for (int i = 0; i < n; i++) {
+            JSObject jsLatLng = getJSObjectByIndex(jsPoints, i);
+            double latitude = JSObjectDefaults.getDoubleSafe(jsLatLng, "latitude", 0d);
+            double longitude = JSObjectDefaults.getDoubleSafe(jsLatLng, "longitude", 0d);
+            options.add(new LatLng(latitude, longitude));
+        }
+        googleMap.addPolygon(options);
+        call.resolve();
+    }
+
     private void asyncLoadClusterIcon(final PluginCall call) {
         final JSObject jsClusterIcon = call.getObject("clusterIcon");
         new AsyncIconLoader(jsClusterIcon, context)
@@ -590,9 +601,9 @@ public class CustomMapView
                 });
     }
 
-    private static JSObject getJSMarkerByIndex(JSArray jsMarkers, int i) {
+    private static JSObject getJSObjectByIndex(JSArray jsArray, int i) {
         try {
-            JSONObject jsonObject = (JSONObject) jsMarkers.get(i);
+            JSONObject jsonObject = (JSONObject) jsArray.get(i);
             return JSObject.fromJSONObject(jsonObject);
         } catch (JSONException e) {
             return new JSObject();

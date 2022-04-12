@@ -523,6 +523,19 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
                 call.reject("map not found");
             }
         });
+    }
 
+    @PluginMethod()
+    public void addPolygon(final PluginCall call) {
+        final String mapId = call.getString("mapId");
+        getBridge().getActivity().runOnUiThread(() -> {
+            CustomMapView customMapView = customMapViews.get(mapId);
+
+            if (customMapView != null) {
+                customMapView.addPolygon(call);
+            } else {
+                call.reject("map not found");
+            }
+        });
     }
 }

@@ -140,7 +140,7 @@ class AsyncIconLoader {
             RequestBuilder<T> builder) {
         Size sz = calcPictureSize();
         if (sz.getWidth() > -1) {
-            builder = builder.override(sz.getWidth(), sz.getHeight()).optionalFitCenter();
+            builder = builder.override(sz.getWidth(), sz.getHeight());
         }
         return builder;
     }

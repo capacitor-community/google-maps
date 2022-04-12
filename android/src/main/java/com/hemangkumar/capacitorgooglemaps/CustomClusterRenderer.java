@@ -104,6 +104,11 @@ class CustomClusterRenderer extends DefaultClusterRenderer<CustomClusterItem> {
         }
     }
 
+    @Override
+    protected void onClusterItemRendered(@NonNull CustomClusterItem clusterItem, @NonNull Marker marker) {
+        marker.setTag(clusterItem.getCustomMarker().getTag());
+    }
+
     private BitmapDescriptor getClusterIcon(Cluster<CustomClusterItem> cluster) {
         if (bitmap == null) return null;
         clusterImageView.setImageBitmap(bitmap);
