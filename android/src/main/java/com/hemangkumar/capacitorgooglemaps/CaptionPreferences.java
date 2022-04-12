@@ -25,10 +25,10 @@ class CaptionPreferences {
         JSObject jsPadding = JSObjectDefaults.getJSObjectSafe(
                 jsCaptionPreferences, "padding", null);
         if (jsPadding != null) {
-            int left = JSObjectDefaults.getIntegerSafe(jsPadding, "left", 2);
-            int top = JSObjectDefaults.getIntegerSafe(jsPadding, "top", -1);
-            int right = JSObjectDefaults.getIntegerSafe(jsPadding, "right", 2);
-            int bottom = JSObjectDefaults.getIntegerSafe(jsPadding, "bottom", 8);
+            int left = JSObjectDefaults.getIntegerSafe(jsPadding, "left", 5);
+            int top = JSObjectDefaults.getIntegerSafe(jsPadding, "top", 0);
+            int right = JSObjectDefaults.getIntegerSafe(jsPadding, "right", 5);
+            int bottom = JSObjectDefaults.getIntegerSafe(jsPadding, "bottom", 16);
             padding = new Padding(left, top, right, bottom);
         } else {
             padding = null;

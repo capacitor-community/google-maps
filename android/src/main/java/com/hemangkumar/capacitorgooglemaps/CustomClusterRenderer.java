@@ -20,7 +20,6 @@ import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
 import com.hemangkumar.capacitorgooglemaps.capacitorgooglemaps.R;
 
-import java.lang.ref.WeakReference;
 import java.util.WeakHashMap;
 
 class CustomClusterRenderer extends DefaultClusterRenderer<CustomClusterItem> {
@@ -29,7 +28,8 @@ class CustomClusterRenderer extends DefaultClusterRenderer<CustomClusterItem> {
     private final IconGenerator iconGenerator;
     private final ImageView clusterImageView;
     private final TextView clusterText;
-    private WeakHashMap<Marker, Object> clusterMarker = new WeakHashMap<>();
+    private final static Object OBJECT = new Object();
+    private final WeakHashMap<Marker, Object> clusteredMarkers = new WeakHashMap<>();
 
     public CustomClusterRenderer(
             AppCompatActivity activity,
@@ -50,10 +50,9 @@ class CustomClusterRenderer extends DefaultClusterRenderer<CustomClusterItem> {
 
     public void setCaptionPreferences(CaptionPreferences captionPreferences) {
         if (captionPreferences.padding != null) {
-            final int top = captionPreferences.padding.top;
             clusterText.setPadding(
                     captionPreferences.padding.left,
-                    top == -1 ? clusterText.getPaddingTop() : top,
+                    captionPreferences.padding.top,
                     captionPreferences.padding.right,
                     captionPreferences.padding.bottom);
         }
@@ -62,7 +61,7 @@ class CustomClusterRenderer extends DefaultClusterRenderer<CustomClusterItem> {
     }
 
     public boolean isItAClusterMarker(Marker marker) {
-        return clusterMarker.containsKey(marker);
+        return clusteredMarkers.containsKey(marker);
     }
 
     @Override
@@ -74,7 +73,9 @@ class CustomClusterRenderer extends DefaultClusterRenderer<CustomClusterItem> {
     protected void onClusterItemUpdated(@NonNull CustomClusterItem item, @NonNull Marker marker) {
         super.onClusterItemUpdated(item, marker);
         BitmapDescriptor icon = item.getCustomMarker().getBitmapDescriptor();
-        marker.setIcon(icon);
+        if (icon != null) {
+            marker.setIcon(icon);
+        }
     }
 
     @Override
@@ -89,12 +90,11 @@ class CustomClusterRenderer extends DefaultClusterRenderer<CustomClusterItem> {
 
     @Override
     protected void onClusterRendered(@NonNull Cluster<CustomClusterItem> cluster, @NonNull Marker marker) {
-        clusterMarker.put(marker, this);
+        clusteredMarkers.put(marker, OBJECT);
     }
 
     @Override
-    protected void onClusterUpdated(@NonNull Cluster<CustomClusterItem> cluster, Marker marker) {
-        clusterMarker.put(marker, this);
+    protected void onClusterUpdated(@NonNull Cluster<CustomClusterItem> cluster, @NonNull Marker marker) {
         BitmapDescriptor icon = getClusterIcon(cluster);
         if (icon != null) {
             // Same implementation as onBeforeClusterRendered() (to update cached markers)

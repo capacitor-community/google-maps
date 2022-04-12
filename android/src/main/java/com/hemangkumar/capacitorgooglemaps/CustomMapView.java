@@ -179,6 +179,7 @@ public class CustomMapView
 
     @Override
     public Object onBeforeAddMarker(MarkerOptions opts) {
+        // todo: AGalilov: add z-index support for multiple markers at the same location
         return clusteredMarkerTags.get(opts.getPosition());
     }
 

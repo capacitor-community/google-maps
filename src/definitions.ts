@@ -15,8 +15,11 @@ import {
   AddMarkerResult,
   AddClusterOptions,
   AddClusterResult,
-  AddPolygonOptions,
-  AddPolygonResult,
+  PolygonOptions,
+  PolygonResult,
+  GetPolygonOptions,
+  UpdatePolygonOptions,
+  RemovePolygonOptions,
   RemoveMarkerOptions,
   // events
   DidTapInfoWindowCallback,
@@ -71,7 +74,13 @@ export interface CapacitorGoogleMapsPlugin {
 
   addCluster(options: AddClusterOptions): Promise<AddClusterResult>;
 
-  addPolygon(options: AddPolygonOptions): Promise<AddPolygonResult>;
+  addPolygon(options: PolygonOptions): Promise<PolygonResult>;
+
+  updatePolygon(options: UpdatePolygonOptions): Promise<void>;
+
+  getPolygon(options: GetPolygonOptions): Promise<PolygonResult>;
+
+  removePolygon(options: RemovePolygonOptions): Promise<void>;
 
   removeMarker(options: RemoveMarkerOptions): Promise<void>;
 
