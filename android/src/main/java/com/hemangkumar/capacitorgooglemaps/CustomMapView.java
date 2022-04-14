@@ -2,18 +2,18 @@ package com.hemangkumar.capacitorgooglemaps;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.core.util.Consumer;
 
-import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
-import com.getcapacitor.PluginCall;
 import com.google.android.libraries.maps.CameraUpdate;
 import com.google.android.libraries.maps.CameraUpdateFactory;
 import com.google.android.libraries.maps.GoogleMap;
@@ -24,11 +24,9 @@ import com.google.android.libraries.maps.UiSettings;
 import com.google.android.libraries.maps.model.CameraPosition;
 import com.google.android.libraries.maps.model.LatLng;
 import com.google.android.libraries.maps.model.Marker;
-import com.google.android.libraries.maps.model.MarkerOptions;
 import com.google.android.libraries.maps.model.PointOfInterest;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class CustomMapView
@@ -46,7 +44,7 @@ public class CustomMapView
         GoogleMap.OnCameraMoveListener,
         GoogleMap.OnCameraIdleListener
 {
-    private final AppCompatActivity context;
+    private final Context context;
     private final CustomMapViewEvents customMapViewEvents;
 
     private final String id;
@@ -54,7 +52,7 @@ public class CustomMapView
     MapView mapView;
     GoogleMap googleMap;
 
-    private final Map<String, Marker> markers = new HashMap<>();
+    private HashMap<String, Marker> markers = new HashMap<>();
 
     String savedCallbackIdForCreate;
 
@@ -104,7 +102,7 @@ public class CustomMapView
     public MapCameraPosition mapCameraPosition;
     public MapPreferences mapPreferences;
 
-    public CustomMapView(@NonNull AppCompatActivity context, CustomMapViewEvents customMapViewEvents) {
+    public CustomMapView(@NonNull Context context, CustomMapViewEvents customMapViewEvents) {
         this.context = context;
         this.customMapViewEvents = customMapViewEvents;
         this.id = UUID.randomUUID().toString();
@@ -120,9 +118,9 @@ public class CustomMapView
 
     @SuppressLint("MissingPermission")
     @Override
-    public void onMapReady(GoogleMap map) {
+    public void onMapReady(GoogleMap googleMap) {
         // populate `googleMap` variable for other methods to use
-        this.googleMap = map;
+        this.googleMap = googleMap;
 
         // set controls
         UiSettings googleMapUISettings = this.googleMap.getUiSettings();
@@ -448,23 +446,23 @@ public class CustomMapView
         markers.clear();
     }
 
-    public void addMarker(PluginCall call) {
-        final MarkerOptions markerOptions = new MarkerOptions();
-        final CustomMarker customMarker = new CustomMarker();
-        customMarker.updateFromJSObject(call.getData());
-        customMarker.updateMarkerOptions(markerOptions);
-        customMarker.asyncLoadIcon(
-                context,
-                () -> {
-                    markerOptions.icon(customMarker.getBitmapDescriptor());
-                    Marker marker = customMarker.addToMap(googleMap, markerOptions);
-                    markers.put(customMarker.markerId, marker);
-                    call.resolve(CustomMarker.getResultForMarker(marker, getId()));
-                });
+    public void addMarker(CustomMarker customMarker, @Nullable Consumer<Marker> consumer) {
+        customMarker.addToMap(
+            context,
+            googleMap,
+            (marker) -> {
+                markers.put(customMarker.markerId, marker);
+
+                if (consumer != null) {
+                    consumer.accept(marker);
+                }
+            }
+        );
     }
 
     public void removeMarker(String markerId) {
         Marker marker = markers.get(markerId);
+
         if (marker != null) {
             marker.remove();
             markers.remove(markerId);

@@ -6,14 +6,12 @@ import android.graphics.Canvas;
 import android.graphics.Picture;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PictureDrawable;
-import android.net.ConnectivityManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Size;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
@@ -36,11 +34,11 @@ class AsyncIconLoader {
     }
 
     private final IconDescriptor iconDescriptor;
-    private final FragmentActivity activity;
+    private final Context context;
 
-    public AsyncIconLoader(JSObject jsIconDescriptor, FragmentActivity activity) {
+    public AsyncIconLoader(JSObject jsIconDescriptor, Context context) {
         this.iconDescriptor = new IconDescriptor(jsIconDescriptor);
-        this.activity = activity;
+        this.context = context;
     }
 
     public void load(OnIconReady onIconReady) {
@@ -58,7 +56,7 @@ class AsyncIconLoader {
     }
 
     private void loadBitmap(OnIconReady onIconReady) {
-        RequestBuilder<Bitmap> builder = Glide.with(activity)
+        RequestBuilder<Bitmap> builder = Glide.with(context)
                 .asBitmap()
                 .load(iconDescriptor.url)
                 .timeout(3000);
@@ -90,7 +88,7 @@ class AsyncIconLoader {
     }
 
     private void loadSvg(OnIconReady onIconReady) {
-        Glide.with(activity).downloadOnly().load(iconDescriptor.url).into(new CustomTarget<File>() {
+        Glide.with(context).downloadOnly().load(iconDescriptor.url).into(new CustomTarget<File>() {
             @Override
             public void onResourceReady(@NonNull File resource, @Nullable Transition<? super File> transition) {
                 try {
@@ -126,7 +124,7 @@ class AsyncIconLoader {
         if (iconDescriptor.sizeInMm.getHeight() > 0 && iconDescriptor.sizeInMm.getWidth() > 0) {
             // Scale image to provided size in Millimeters
             final float mmPerInch = 25.4f;
-            DisplayMetrics metrics = activity.getResources().getDisplayMetrics();
+            DisplayMetrics metrics = context.getResources().getDisplayMetrics();
             int newWidthPixels = (int) (iconDescriptor.sizeInMm.getWidth() * metrics.xdpi / mmPerInch);
             int newHeightPixels = (int) (iconDescriptor.sizeInMm.getWidth() * metrics.ydpi / mmPerInch);
             return new Size(newWidthPixels, newHeightPixels);

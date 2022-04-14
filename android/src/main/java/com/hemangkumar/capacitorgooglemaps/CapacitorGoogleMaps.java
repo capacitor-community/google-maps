@@ -15,6 +15,7 @@ import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.annotation.Permission;
 import com.google.android.libraries.maps.model.CameraPosition;
+import com.google.android.libraries.maps.model.Marker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,12 +26,12 @@ import java.util.UUID;
         name = "CapacitorGoogleMaps",
         permissions = {
                 @Permission(
-                        strings = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                        strings = { Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION },
                         alias = "location"
                 ),
         }
 )
-public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
+public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  {
     private final HashMap<String, CustomMapView> customMapViews = new HashMap<>();
     Float devicePixelRatio;
     private String lastEventChainId;
@@ -56,7 +57,6 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
         }
         call.resolve();
     }
-
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void load() {
@@ -236,7 +236,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
         getBridge().getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                CustomMapView customMapView = new CustomMapView(getBridge().getActivity(), ctx);
+                CustomMapView customMapView = new CustomMapView(getBridge().getContext(), ctx);
 
                 customMapViews.put(customMapView.getId(), customMapView);
 
@@ -437,12 +437,10 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     public void didBeginMovingCamera(final PluginCall call) {
         setCallbackIdForEvent(call, CustomMapView.EVENT_DID_BEGIN_MOVING_CAMERA);
     }
-
     @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
     public void didMoveCamera(final PluginCall call) {
         setCallbackIdForEvent(call, CustomMapView.EVENT_DID_MOVE_CAMERA);
     }
-
     @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
     public void didEndMovingCamera(final PluginCall call) {
         setCallbackIdForEvent(call, CustomMapView.EVENT_DID_END_MOVING_CAMERA);
@@ -458,8 +456,13 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
         if (customMapView != null) {
             final Boolean preventDefault = call.getBoolean("preventDefault", false);
 
-            getBridge().getActivity().runOnUiThread(
-                    () -> customMapView.setCallbackIdForEvent(callbackId, eventName, preventDefault));
+
+            getBridge().getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    customMapView.setCallbackIdForEvent(callbackId, eventName, preventDefault);
+                }
+            });
         }
     }
 
@@ -473,35 +476,47 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     public void addMarker(final PluginCall call) {
         final String mapId = call.getString("mapId");
 
-        getBridge().getActivity().runOnUiThread(() -> {
-            CustomMapView customMapView = customMapViews.get(mapId);
-            if (customMapView != null) {
-                customMapView.addMarker(call);
-            } else {
-                call.reject("map not found");
-            }
-        });
-    }
-
-    @PluginMethod(returnType = PluginMethod.RETURN_NONE)
-    public void removeMarker(final PluginCall call) {
-        final String mapId = call.getString("mapId");
-
         getBridge().getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 CustomMapView customMapView = customMapViews.get(mapId);
 
                 if (customMapView != null) {
-                    final String markerId = call.getString("markerId");
+                    CustomMarker customMarker = new CustomMarker();
+                    customMarker.updateFromJSObject(call.getData());
 
-                    customMapView.removeMarker(markerId);
-
-                    call.resolve();
+                    customMapView.addMarker(
+                        customMarker,
+                        (Marker marker) -> {
+                            call.resolve(CustomMarker.getResultForMarker(marker, mapId));
+                        }
+                    );
                 } else {
                     call.reject("map not found");
                 }
             }
         });
     }
+
+     @PluginMethod(returnType = PluginMethod.RETURN_NONE)
+     public void removeMarker(final PluginCall call) {
+         final String mapId = call.getString("mapId");
+
+         getBridge().getActivity().runOnUiThread(new Runnable() {
+             @Override
+             public void run() {
+                 CustomMapView customMapView = customMapViews.get(mapId);
+
+                 if (customMapView != null) {
+                     final String markerId = call.getString("markerId");
+
+                     customMapView.removeMarker(markerId);
+
+                     call.resolve();
+                 } else {
+                     call.reject("map not found");
+                 }
+             }
+         });
+     }
 }

@@ -1,8 +1,10 @@
 package com.hemangkumar.capacitorgooglemaps;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentActivity;
+import androidx.core.util.Consumer;
 
 import com.getcapacitor.JSObject;
 import com.google.android.libraries.maps.GoogleMap;
@@ -18,112 +20,74 @@ public class CustomMarker {
     // generate id for the just added marker,
     // put this marker into a hashmap with the corresponding id,
     // so we can retrieve the marker by id later on
-    public final String markerId = UUID.randomUUID().toString();
+    public String markerId = UUID.randomUUID().toString();
 
+    private final MarkerOptions markerOptions = new MarkerOptions();
     private JSObject tag = new JSObject();
     private JSObject iconDescriptor;
-    private LatLng latLng;
-    private String title;
-    private String snippet;
-    private float opacity;
-    private boolean isFlat;
-    private boolean isDraggable;
-    private float zIndex;
-    private float anchorX, anchorY;
-    private BitmapDescriptor bitmapDescriptor;
+
+    public void asyncLoadIcon(
+            @NonNull Context context,
+            @Nullable Consumer<BitmapDescriptor> consumer) {
+        new AsyncIconLoader(iconDescriptor, context)
+            .load((bitmap) -> {
+                BitmapDescriptor bitmapDescriptor;
+                if (bitmap != null) {
+                    bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bitmap);
+                } else {
+                    bitmapDescriptor = null;
+                }
+
+                if (consumer != null) {
+                    consumer.accept(bitmapDescriptor);
+                }
+            });
+    }
 
     public void updateFromJSObject(JSObject marker) {
         final JSObject position = JSObjectDefaults.getJSObjectSafe(marker, "position", new JSObject());
         final Double latitude = JSObjectDefaults.getDoubleSafe(position, "latitude", 0d);
         final Double longitude = JSObjectDefaults.getDoubleSafe(position, "longitude", 0d);
-        latLng = new LatLng(latitude, longitude);
+        LatLng latLng = new LatLng(latitude, longitude);
 
         final JSObject preferences = JSObjectDefaults.getJSObjectSafe(marker, "preferences", new JSObject());
-        title = preferences.getString("title", "");
-        snippet = preferences.getString("snippet", "");
-        opacity = JSObjectDefaults.getFloatSafe(preferences, "opacity", 1f);
-        isFlat = JSObjectDefaults.getBooleanSafe(preferences, "isFlat", false);
-        isDraggable = JSObjectDefaults.getBooleanSafe(preferences, "isDraggable", false);
-        zIndex = JSObjectDefaults.getIntegerSafe(preferences, "zIndex", 0);
+        final String title = preferences.getString("title", "");
+        final String snippet = preferences.getString("snippet", "");
+        final Float opacity = JSObjectDefaults.getFloatSafe(preferences, "opacity", 1f);
+        final Boolean isFlat = JSObjectDefaults.getBooleanSafe(preferences,"isFlat", false);
+        final Boolean isDraggable = JSObjectDefaults.getBooleanSafe(preferences,"isDraggable", false);
+        final Integer zIndex = JSObjectDefaults.getIntegerSafe(preferences,"zIndex", 0);
 
         final JSObject anchor = JSObjectDefaults.getJSObjectSafe(preferences, "anchor", new JSObject());
-        anchorX = JSObjectDefaults.getFloatSafe(anchor, "x", 0.5f);
-        anchorY = JSObjectDefaults.getFloatSafe(anchor, "y", 1f);
+        final Float anchorX = JSObjectDefaults.getFloatSafe(anchor, "x", 0.5f);
+        final Float anchorY = JSObjectDefaults.getFloatSafe(anchor, "y", 1f);
 
-        iconDescriptor = JSObjectDefaults.getJSObjectSafe(marker, "icon", new JSObject());
+        this.markerOptions.position(latLng);
+        this.markerOptions.title(title);
+        this.markerOptions.snippet(snippet);
+        this.markerOptions.alpha(opacity);
+        this.markerOptions.flat(isFlat);
+        this.markerOptions.draggable(isDraggable);
+        this.markerOptions.zIndex(zIndex);
+        this.markerOptions.anchor(anchorX, anchorY);
 
         this.setMetadata(JSObjectDefaults.getJSObjectSafe(preferences, "metadata", new JSObject()));
+
+        iconDescriptor = JSObjectDefaults.getJSObjectSafe(marker, "icon", new JSObject());
     }
 
-    public void updateMarkerOptions(@NonNull MarkerOptions markerOptions) {
-        markerOptions
-                .position(latLng)
-                .title(title)
-                .snippet(snippet)
-                .alpha(opacity)
-                .flat(isFlat)
-                .draggable(isDraggable)
-                .zIndex(zIndex)
-                .anchor(anchorX, anchorY)
-                .icon(bitmapDescriptor);
-    }
+    public void addToMap(Context context, GoogleMap googleMap, @Nullable Consumer<Marker> consumer) {
+        asyncLoadIcon(
+            context,
+            (BitmapDescriptor bitmapDescriptor) -> {
+                markerOptions.icon(bitmapDescriptor);
+                Marker marker = googleMap.addMarker(markerOptions);
+                marker.setTag(tag);
 
-    public BitmapDescriptor getBitmapDescriptor() {
-        return bitmapDescriptor;
-    }
-
-    public void asyncLoadIcon(
-            @NonNull FragmentActivity activity,
-            @Nullable Runnable onLoaded) {
-        new AsyncIconLoader(iconDescriptor, activity)
-                .load((bitmap) -> {
-                    if (bitmap != null) {
-                        bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bitmap);
-                    } else {
-                        bitmapDescriptor = null;
-                    }
-                    if (onLoaded != null) {
-                        onLoaded.run();
-                    }
-                });
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getSnippet() {
-        return snippet;
-    }
-
-    public float getOpacity() {
-        return opacity;
-    }
-
-    public boolean isFlat() {
-        return isFlat;
-    }
-
-    public float getZIndex() {
-        return zIndex;
-    }
-
-    public LatLng getPosition() {
-        return latLng;
-    }
-
-    public Object getTag() {
-        return tag;
-    }
-
-    public boolean isDraggable() {
-        return isDraggable;
-    }
-
-    public Marker addToMap(GoogleMap googleMap, MarkerOptions markerOptions) {
-        Marker marker = googleMap.addMarker(markerOptions);
-        marker.setTag(this.tag);
-        return marker;
+                if (consumer != null) {
+                    consumer.accept(marker);
+                }
+            });
     }
 
     private void setMetadata(@NonNull JSObject jsObject) {
@@ -132,8 +96,8 @@ public class CustomMarker {
         tag.put("markerId", this.markerId);
         // set anchor to tag (because it cannot be retrieved from a marker instance)
         JSObject anchorResult = new JSObject();
-        anchorResult.put("x", anchorX);
-        anchorResult.put("y", anchorY);
+        anchorResult.put("x", this.markerOptions.getAnchorU());
+        anchorResult.put("y", this.markerOptions.getAnchorV());
         tag.put("anchor", anchorResult);
         // then set metadata to tag
         tag.put("metadata", jsObject);
@@ -142,15 +106,15 @@ public class CustomMarker {
     }
 
     public static JSObject getResultForMarker(Marker marker, String mapId) {
-        return getResultForMarker(new ResultAdapter(marker), mapId);
-    }
+        JSObject tag = null;
 
-    public static JSObject getResultForMarker(CustomMarker marker, String mapId) {
-        return getResultForMarker(new ResultAdapter(marker), mapId);
-    }
-
-    private static JSObject getResultForMarker(ResultAdapter r, String mapId) {
-        JSObject tag = r.getTag();
+        try {
+            tag = (JSObject) marker.getTag();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            tag = tag != null ? tag : new JSObject();
+        }
 
         // initialize JSObjects to return
         JSObject result = new JSObject();
@@ -166,20 +130,20 @@ public class CustomMarker {
         markerResult.put("mapId", mapId);
 
         // get id
-        String markerId = tag.optString("markerId", r.getMarkerId());
+        String markerId = tag.optString("markerId", marker.getId());
         markerResult.put("markerId", markerId);
 
         // get position values
-        positionResult.put("latitude", r.getPosition().latitude);
-        positionResult.put("longitude", r.getPosition().longitude);
+        positionResult.put("latitude", marker.getPosition().latitude);
+        positionResult.put("longitude", marker.getPosition().longitude);
 
         // get preferences
-        preferencesResult.put("title", r.getTitle());
-        preferencesResult.put("snippet", r.getSnippet());
-        preferencesResult.put("opacity", r.getOpacity());
-        preferencesResult.put("isFlat", r.isFlat());
-        preferencesResult.put("isDraggable", r.isDraggable());
-        preferencesResult.put("zIndex", r.getZIndex());
+        preferencesResult.put("title", marker.getTitle());
+        preferencesResult.put("snippet", marker.getSnippet());
+        preferencesResult.put("opacity", marker.getAlpha());
+        preferencesResult.put("isFlat", marker.isFlat());
+        preferencesResult.put("isDraggable", marker.isDraggable());
+        preferencesResult.put("zIndex", marker.getZIndex());
         // anchor values
         JSObject anchorResult = JSObjectDefaults.getJSObjectSafe(tag, "anchor", new JSObject());
         preferencesResult.put("anchor", anchorResult);
@@ -189,4 +153,5 @@ public class CustomMarker {
 
         return result;
     }
+
 }
