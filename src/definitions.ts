@@ -13,13 +13,6 @@ import {
   ElementFromPointResultOptions,
   AddMarkerOptions,
   AddMarkerResult,
-  AddClusterOptions,
-  AddClusterResult,
-  PolygonOptions,
-  PolygonResult,
-  GetPolygonOptions,
-  UpdatePolygonOptions,
-  RemovePolygonOptions,
   RemoveMarkerOptions,
   // events
   DidTapInfoWindowCallback,
@@ -27,7 +20,6 @@ import {
   DidTapMapCallback,
   DidLongPressMapCallback,
   DidTapMarkerCallback,
-  DidTapPolygonCallback,
   DidBeginDraggingMarkerCallback,
   DidDragMarkerCallback,
   DidEndDraggingMarkerCallback,
@@ -73,16 +65,6 @@ export interface CapacitorGoogleMapsPlugin {
 
   addMarker(options: AddMarkerOptions): Promise<AddMarkerResult>;
 
-  addCluster(options: AddClusterOptions): Promise<AddClusterResult>;
-
-  addPolygon(options: PolygonOptions): Promise<PolygonResult>;
-
-  updatePolygon(options: UpdatePolygonOptions): Promise<void>;
-
-  getPolygon(options: GetPolygonOptions): Promise<PolygonResult>;
-
-  removePolygon(options: RemovePolygonOptions): Promise<void>;
-
   removeMarker(options: RemoveMarkerOptions): Promise<void>;
 
   didTapInfoWindow(
@@ -108,11 +90,6 @@ export interface CapacitorGoogleMapsPlugin {
   didTapMarker(
     options: DefaultEventWithPreventDefaultOptions,
     callback: DidTapMarkerCallback
-  ): Promise<CallbackID>;
-
-  didTapPolygon(
-    options: DefaultEventOptions,
-    callback: DidTapPolygonCallback
   ): Promise<CallbackID>;
 
   didBeginDraggingMarker(

@@ -3,24 +3,17 @@ package com.hemangkumar.capacitorgooglemaps;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.PluginCall;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public abstract class JSObjectDefaults {
-
     private final HashMap<String, Object> defaults;
 
-    private final HashMap<String, Object> actualValues = new HashMap<String, Object>() {
-    };
+    private final HashMap<String, Object> actualValues = new HashMap<String, Object>(){};
 
     public JSObjectDefaults(HashMap<String, Object> defaults) {
         this.defaults = defaults;
@@ -74,8 +67,8 @@ public abstract class JSObjectDefaults {
         }
     }
 
-    @Nullable
-    public static JSObject getJSObjectSafe(JSObject jsObject, @NonNull String name, @Nullable JSObject defaultValue) {
+    @NonNull
+    public static JSObject getJSObjectSafe(JSObject jsObject, @NonNull String name, @NonNull JSObject defaultValue) {
         JSObject returnedJsObject = jsObject.getJSObject(name);
         if (returnedJsObject != null) {
             return returnedJsObject;
@@ -94,50 +87,11 @@ public abstract class JSObjectDefaults {
         return new JSObject();
     }
 
-    public static JSObject fromJSONObject(JSONObject obj, @NonNull JSObject defaultValue) {
-        try {
-            return JSObject.fromJSONObject(obj);
-        } catch (JSONException ignored) {
-        }
-        return defaultValue;
-    }
-
-    public static JSArray fromJSONArray(JSONArray value, @NonNull JSArray defaultValue) {
-        try {
-            List<Object> items = new ArrayList<>(value.length());
-            for (int i = 0; i < value.length(); i++) {
-                items.add(value.get(i));
-            }
-            return new JSArray(items.toArray());
-        } catch (JSONException ex) {
-            return defaultValue;
-        }
-    }
-
-    public static JSArray getJSArray(JSObject value, String name, JSArray defaultValue) {
-        Object o = value.opt(name);
-        if (o instanceof JSONArray) {
-            JSONArray jsArray = (JSONArray) o;
-            return JSObjectDefaults.fromJSONArray(jsArray, defaultValue);
-        }
-        return defaultValue;
-    }
-
-    public static JSArray getJSArray(JSArray value, int index, JSArray defaultValue) {
-        Object o = value.opt(index);
-        if (o instanceof JSONArray) {
-            JSONArray jsArray = (JSONArray) o;
-            return JSObjectDefaults.fromJSONArray(jsArray, defaultValue);
-        }
-        return defaultValue;
-    }
-
     @NonNull
     public static Double getDoubleSafe(JSObject jsObject, @NonNull String name, @NonNull Double defaultValue) {
         try {
             return jsObject.getDouble(name);
-        } catch (JSONException ignored) {
-        }
+        } catch (JSONException ignored) {}
         return defaultValue;
     }
 
@@ -163,14 +117,5 @@ public abstract class JSObjectDefaults {
             return returnedBoolean;
         }
         return defaultValue;
-    }
-
-    public static JSObject getJSObjectByIndex(JSArray jsArray, int i) {
-        try {
-            JSONObject jsonObject = (JSONObject) jsArray.get(i);
-            return JSObject.fromJSONObject(jsonObject);
-        } catch (JSONException e) {
-            return new JSObject();
-        }
     }
 }

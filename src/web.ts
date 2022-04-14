@@ -15,19 +15,11 @@ import {
   AddMarkerOptions,
   AddMarkerResult,
   RemoveMarkerOptions,
-  AddClusterOptions,
-  AddClusterResult,
-  PolygonOptions,
-  PolygonResult,
-  RemovePolygonOptions,
-  UpdatePolygonOptions,
-  GetPolygonOptions,
   DidTapInfoWindowCallback,
   DidCloseInfoWindowCallback,
   DidTapMapCallback,
   DidLongPressMapCallback,
   DidTapMarkerCallback,
-  DidTapPolygonCallback,
   DidBeginDraggingMarkerCallback,
   DidDragMarkerCallback,
   DidEndDraggingMarkerCallback,
@@ -84,26 +76,6 @@ export class CapacitorGoogleMapsWeb
     throw this.unimplemented("Not implemented on web.");
   }
 
-  async addCluster(_options: AddClusterOptions): Promise<AddClusterResult> {
-    throw this.unimplemented("Not implemented on web.");
-  }
-
-  async addPolygon(_options: PolygonOptions): Promise<PolygonResult> {
-    throw this.unimplemented("Not implemented on web.");
-  }
-
-  async updatePolygon(_options: UpdatePolygonOptions): Promise<void> {
-    throw this.unimplemented("Not implemented on web.");
-  }
-
-  async getPolygon(_options: GetPolygonOptions): Promise<PolygonResult> {
-    throw this.unimplemented("Not implemented on web.");
-  }
-
-  async removePolygon(_options: RemovePolygonOptions): Promise<void> {
-    throw this.unimplemented("Not implemented on web.");
-  }
-
   async didTapInfoWindow(
     _options: DefaultEventOptions,
     _callback: DidTapInfoWindowCallback
@@ -135,13 +107,6 @@ export class CapacitorGoogleMapsWeb
   async didTapMarker(
     _options: DefaultEventWithPreventDefaultOptions,
     _callback: DidTapMarkerCallback
-  ): Promise<CallbackID> {
-    throw this.unimplemented("Not implemented on web.");
-  }
-
-  async didTapPolygon(
-    _options: DefaultEventOptions,
-    _callback: DidTapPolygonCallback
   ): Promise<CallbackID> {
     throw this.unimplemented("Not implemented on web.");
   }

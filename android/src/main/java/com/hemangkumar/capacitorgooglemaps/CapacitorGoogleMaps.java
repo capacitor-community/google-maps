@@ -404,11 +404,6 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     }
 
     @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
-    public void didTapPolygon(final PluginCall call) {
-        setCallbackIdForEvent(call, CustomMapView.EVENT_DID_TAP_POLYGON);
-    }
-
-    @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
     public void didBeginDraggingMarker(final PluginCall call) {
         setCallbackIdForEvent(call, CustomMapView.EVENT_DID_BEGIN_DRAGGING_MARKER);
     }
@@ -499,56 +494,9 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
 
                 if (customMapView != null) {
                     final String markerId = call.getString("markerId");
+
                     customMapView.removeMarker(markerId);
-                    call.resolve();
-                } else {
-                    call.reject("map not found");
-                }
-            }
-        });
-    }
 
-    @PluginMethod()
-    public void addCluster(final PluginCall call) {
-        final String mapId = call.getString("mapId");
-
-        getBridge().getActivity().runOnUiThread(() -> {
-            CustomMapView customMapView = customMapViews.get(mapId);
-
-            if (customMapView != null) {
-                customMapView.addCluster(call);
-            } else {
-                call.reject("map not found");
-            }
-        });
-    }
-
-    @PluginMethod()
-    public void addPolygon(final PluginCall call) {
-        final String mapId = call.getString("mapId");
-        getBridge().getActivity().runOnUiThread(() -> {
-            CustomMapView customMapView = customMapViews.get(mapId);
-
-            if (customMapView != null) {
-                customMapView.addPolygon(call);
-            } else {
-                call.reject("map not found");
-            }
-        });
-    }
-
-    @PluginMethod(returnType = PluginMethod.RETURN_NONE)
-    public void removePolygon(final PluginCall call) {
-        final String mapId = call.getString("mapId");
-
-        getBridge().getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                CustomMapView customMapView = customMapViews.get(mapId);
-
-                if (customMapView != null) {
-                    final String polygonId = call.getString("polygonId");
-                    customMapView.removePolygon(polygonId);
                     call.resolve();
                 } else {
                     call.reject("map not found");
