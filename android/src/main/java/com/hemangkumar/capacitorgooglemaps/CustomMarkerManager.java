@@ -6,42 +6,42 @@ import com.google.maps.android.collections.MarkerManager;
 
 public class CustomMarkerManager extends MarkerManager {
 
-    private final ProxyEventListener proxyEventListener;
+    private final MapEventsListener mapEventsListener;
 
     public CustomMarkerManager(
             GoogleMap map,
-            ProxyEventListener proxyEventListener) {
+            MapEventsListener mapEventsListener) {
         super(map);
-        this.proxyEventListener = proxyEventListener;
+        this.mapEventsListener = mapEventsListener;
     }
 
     @Override
     public void onInfoWindowClick(Marker marker) {
         super.onInfoWindowClick(marker);
-        proxyEventListener.onInfoWindowClick(marker);
+        mapEventsListener.onInfoWindowClick(marker);
     }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
         super.onMarkerClick(marker);
-        return proxyEventListener.onMarkerClick(marker);
+        return mapEventsListener.onMarkerClick(marker);
     }
 
     @Override
     public void onMarkerDragStart(Marker marker) {
         super.onMarkerDragStart(marker);
-        proxyEventListener.onMarkerDragStart(marker);
+        mapEventsListener.onMarkerDragStart(marker);
     }
 
     @Override
     public void onMarkerDrag(Marker marker) {
         super.onMarkerDrag(marker);
-        proxyEventListener.onMarkerDrag(marker);
+        mapEventsListener.onMarkerDrag(marker);
     }
 
     @Override
     public void onMarkerDragEnd(Marker marker) {
         super.onMarkerDragEnd(marker);
-        proxyEventListener.onMarkerDragEnd(marker);
+        mapEventsListener.onMarkerDragEnd(marker);
     }
 }

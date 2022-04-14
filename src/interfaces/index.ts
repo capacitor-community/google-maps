@@ -37,6 +37,7 @@ export { Marker } from "./models/GoogleMap/Marker/Marker";
 export { Polygon } from "./models/GoogleMap/Polygon/Polygon";
 export { MarkerPreferences } from "./models/GoogleMap/Marker/MarkerPreferences";
 export { PolygonPreferences } from "./models/GoogleMap/Polygon/PolygonPreferences";
+export { PatternItem } from "./models/GoogleMap/PatternItem";
 export { ClusteredMarkerPreferences } from "./models/GoogleMap/Cluster/ClusteredMarkerPreferences";
 export { MapAppearance } from "./models/GoogleMap/Appearance";
 export { MapControls } from "./models/GoogleMap/Controls";

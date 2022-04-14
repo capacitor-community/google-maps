@@ -26,6 +26,7 @@ import com.google.android.libraries.maps.model.LatLng;
 import com.google.android.libraries.maps.model.Marker;
 import com.google.android.libraries.maps.model.MarkerOptions;
 import com.google.android.libraries.maps.model.PointOfInterest;
+import com.google.android.libraries.maps.model.Polygon;
 import com.google.android.libraries.maps.model.PolygonOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
@@ -57,7 +58,7 @@ public class CustomMapView
         ClusterManager.OnClusterItemInfoWindowClickListener<CustomClusterItem> {
     private final AppCompatActivity context;
     private final CustomMapViewEvents customMapViewEvents;
-    private final ProxyEventListener proxyEventListener = new ProxyEventListener();
+    private final MapEventsListener mapEventsListener = new MapEventsListener();
 
     private final String id;
 
@@ -65,6 +66,7 @@ public class CustomMapView
     GoogleMap googleMap;
 
     private final Map<String, Marker> markers = new HashMap<>();
+    private final Map<String, Polygon> polygons = new HashMap<>();
     private ClusterManager<CustomClusterItem> clusterManager;
     private CustomClusterRenderer clusterRenderer;
     //private final Map<LatLng, Object> clusteredMarkerTags = new HashMap<>();
@@ -160,11 +162,11 @@ public class CustomMapView
         }
 
         assignProxyListenerToMap();
-        CustomMarkerManager markerManager = new CustomMarkerManager(googleMap, proxyEventListener);
+        CustomMarkerManager markerManager = new CustomMarkerManager(googleMap, mapEventsListener);
         clusterManager = new ClusterManager<>(context, googleMap, markerManager);
         clusterRenderer = new CustomClusterRenderer(context, googleMap, clusterManager);
         clusterManager.setRenderer(clusterRenderer);
-        proxyEventListener.addOnCameraIdleListener(clusterManager);
+        mapEventsListener.addOnCameraIdleListener(clusterManager);
         clusterManager.setOnClusterClickListener(this);
         clusterManager.setOnClusterInfoWindowClickListener(this);
         clusterManager.setOnClusterItemClickListener(this);
@@ -172,18 +174,18 @@ public class CustomMapView
     }
 
     private void assignProxyListenerToMap() {
-        googleMap.setOnCameraIdleListener(proxyEventListener);
-        googleMap.setOnCameraMoveListener(proxyEventListener);
-        googleMap.setOnMapClickListener(proxyEventListener);
-        googleMap.setOnCameraMoveStartedListener(proxyEventListener);
-        googleMap.setOnMapLongClickListener(proxyEventListener);
-        googleMap.setOnInfoWindowClickListener(proxyEventListener);
-        googleMap.setOnInfoWindowCloseListener(proxyEventListener);
-        googleMap.setOnMarkerClickListener(proxyEventListener);
-        googleMap.setOnMarkerDragListener(proxyEventListener);
-        googleMap.setOnMyLocationClickListener(proxyEventListener);
-        googleMap.setOnMyLocationButtonClickListener(proxyEventListener);
-        googleMap.setOnPoiClickListener(proxyEventListener);
+        googleMap.setOnCameraIdleListener(mapEventsListener);
+        googleMap.setOnCameraMoveListener(mapEventsListener);
+        googleMap.setOnMapClickListener(mapEventsListener);
+        googleMap.setOnCameraMoveStartedListener(mapEventsListener);
+        googleMap.setOnMapLongClickListener(mapEventsListener);
+        googleMap.setOnInfoWindowClickListener(mapEventsListener);
+        googleMap.setOnInfoWindowCloseListener(mapEventsListener);
+        googleMap.setOnMarkerClickListener(mapEventsListener);
+        googleMap.setOnMarkerDragListener(mapEventsListener);
+        googleMap.setOnMyLocationClickListener(mapEventsListener);
+        googleMap.setOnMyLocationButtonClickListener(mapEventsListener);
+        googleMap.setOnPoiClickListener(mapEventsListener);
     }
 
     @Override
@@ -362,23 +364,23 @@ public class CustomMapView
         if (callbackId != null && eventName != null) {
             switch (eventName) {
                 case CustomMapView.EVENT_DID_TAP_INFO_WINDOW:
-                    this.proxyEventListener.addOnInfoWindowClickListener(this);
+                    this.mapEventsListener.addOnInfoWindowClickListener(this);
                     savedCallbackIdForDidTapInfoWindow = callbackId;
                     break;
                 case CustomMapView.EVENT_DID_CLOSE_INFO_WINDOW:
-                    this.proxyEventListener.addOnInfoWindowCloseListener(this);
+                    this.mapEventsListener.addOnInfoWindowCloseListener(this);
                     savedCallbackIdForDidCloseInfoWindow = callbackId;
                     break;
                 case CustomMapView.EVENT_DID_TAP_MAP:
-                    this.proxyEventListener.addOnMapClickListener(this);
+                    this.mapEventsListener.addOnMapClickListener(this);
                     savedCallbackIdForDidTapMap = callbackId;
                     break;
                 case CustomMapView.EVENT_DID_LONG_PRESS_MAP:
-                    this.proxyEventListener.addOnMapLongClickListener(this);
+                    this.mapEventsListener.addOnMapLongClickListener(this);
                     savedCallbackIdForDidLongPressMap = callbackId;
                     break;
                 case CustomMapView.EVENT_DID_TAP_MARKER:
-                    this.proxyEventListener.addOnMarkerClickListener(this);
+                    this.mapEventsListener.addOnMarkerClickListener(this);
                     savedCallbackIdForDidTapMarker = callbackId;
                     if (preventDefault == null) {
                         preventDefault = false;
@@ -386,19 +388,19 @@ public class CustomMapView
                     preventDefaultForDidTapMarker = preventDefault;
                     break;
                 case CustomMapView.EVENT_DID_BEGIN_DRAGGING_MARKER:
-                    this.proxyEventListener.addOnMarkerDragListener(this);
+                    this.mapEventsListener.addOnMarkerDragListener(this);
                     savedCallbackIdForDidBeginDraggingMarker = callbackId;
                     break;
                 case CustomMapView.EVENT_DID_DRAG_MARKER:
-                    this.proxyEventListener.addOnMarkerDragListener(this);
+                    this.mapEventsListener.addOnMarkerDragListener(this);
                     savedCallbackIdForDidDragMarker = callbackId;
                     break;
                 case CustomMapView.EVENT_DID_END_DRAGGING_MARKER:
-                    this.proxyEventListener.addOnMarkerDragListener(this);
+                    this.mapEventsListener.addOnMarkerDragListener(this);
                     savedCallbackIdForDidEndDraggingMarker = callbackId;
                     break;
                 case CustomMapView.EVENT_DID_TAP_MY_LOCATION_BUTTON:
-                    this.proxyEventListener.addOnMyLocationButtonClickListener(this);
+                    this.mapEventsListener.addOnMyLocationButtonClickListener(this);
                     savedCallbackIdForDidTapMyLocationButton = callbackId;
                     if (preventDefault == null) {
                         preventDefault = false;
@@ -406,23 +408,23 @@ public class CustomMapView
                     preventDefaultForDidTapMyLocationButton = preventDefault;
                     break;
                 case CustomMapView.EVENT_DID_TAP_MY_LOCATION_DOT:
-                    this.proxyEventListener.addOnMyLocationClickListener(this);
+                    this.mapEventsListener.addOnMyLocationClickListener(this);
                     savedCallbackIdForDidTapMyLocationDot = callbackId;
                     break;
                 case (CustomMapView.EVENT_DID_TAP_POI):
-                    this.proxyEventListener.addOnPoiClickListener(this);
+                    this.mapEventsListener.addOnPoiClickListener(this);
                     savedCallbackIdForDidTapPoi = callbackId;
                     break;
                 case (CustomMapView.EVENT_DID_BEGIN_MOVING_CAMERA):
-                    this.proxyEventListener.addOnCameraMoveStartedListener(this);
+                    this.mapEventsListener.addOnCameraMoveStartedListener(this);
                     savedCallbackIdForDidBeginMovingCamera = callbackId;
                     break;
                 case (CustomMapView.EVENT_DID_MOVE_CAMERA):
-                    this.proxyEventListener.addOnCameraMoveListener(this);
+                    this.mapEventsListener.addOnCameraMoveListener(this);
                     savedCallbackIdForDidMoveCamera = callbackId;
                     break;
                 case (CustomMapView.EVENT_DID_END_MOVING_CAMERA):
-                    this.proxyEventListener.addOnCameraIdleListener(this);
+                    this.mapEventsListener.addOnCameraIdleListener(this);
                     savedCallbackIdForDidEndMovingCamera = callbackId;
                     break;
             }
@@ -527,8 +529,8 @@ public class CustomMapView
         googleMap.clear();
         markers.clear();
         clusterItems.clear();
+        polygons.clear();
         clusterManager.cluster();
-        //clusteredMarkerTags.clear();
     }
 
     public void addMarker(PluginCall call) {
@@ -555,7 +557,7 @@ public class CustomMapView
         final int n = jsMarkers.length();
         nIconsLoaded += n;
         for (int i = 0; i < n; i++) {
-            JSObject jsObject = getJSObjectByIndex(jsMarkers, i);
+            JSObject jsObject = JSObjectDefaults.getJSObjectByIndex(jsMarkers, i);
             CustomMarker customMarker = new CustomMarker();
             customMarker.updateFromJSObject(jsObject);
             final CustomClusterItem item = new CustomClusterItem(customMarker);
@@ -565,8 +567,7 @@ public class CustomMapView
                     context,
                     () -> {
                         clusterManager.updateItem(item);
-                        result.put(CustomMarker.getResultForMarker(
-                                item.getCustomMarker(), getId()));
+                        result.put(CustomMarker.getResultForMarker(item.getCustomMarker(), getId()));
                         clusterManager.cluster();
                         if (--nIconsLoaded == 0) {
                             JSObject jsResult = new JSObject();
@@ -578,17 +579,13 @@ public class CustomMapView
     }
 
     public void addPolygon(PluginCall call) {
+        CustomPolygon customPolygon = new CustomPolygon();
+        customPolygon.updateFromJSObject(call.getData());
         PolygonOptions options = new PolygonOptions();
-        JSArray jsPoints = call.getArray("points");
-        final int n = jsPoints.length();
-        for (int i = 0; i < n; i++) {
-            JSObject jsLatLng = getJSObjectByIndex(jsPoints, i);
-            double latitude = JSObjectDefaults.getDoubleSafe(jsLatLng, "latitude", 0d);
-            double longitude = JSObjectDefaults.getDoubleSafe(jsLatLng, "longitude", 0d);
-            options.add(new LatLng(latitude, longitude));
-        }
-        googleMap.addPolygon(options);
-        call.resolve();
+        customPolygon.updatePolygonOptions(options);
+        Polygon polygon = customPolygon.addToMap(googleMap, options);
+        polygons.put(customPolygon.polygonId, polygon);
+        call.resolve(CustomPolygon.getResultForPolygon(polygon, getId()));
     }
 
     private void asyncLoadClusterIcon(final PluginCall call) {
@@ -601,21 +598,10 @@ public class CustomMapView
                 });
     }
 
-    private static JSObject getJSObjectByIndex(JSArray jsArray, int i) {
-        try {
-            JSONObject jsonObject = (JSONObject) jsArray.get(i);
-            return JSObject.fromJSONObject(jsonObject);
-        } catch (JSONException e) {
-            return new JSObject();
-        }
-    }
-
     public void removeMarker(String markerId) {
-        Marker marker = markers.get(markerId);
-
+        Marker marker = markers.remove(markerId);
         if (marker != null) {
             marker.remove();
-            markers.remove(markerId);
         } else {
             CustomClusterItem item = clusterItems.remove(markerId);
             if (item != null) {
@@ -623,6 +609,13 @@ public class CustomMapView
                     clusterManager.cluster();
                 }
             }
+        }
+    }
+
+    public void removePolygon(String polygonId) {
+        Polygon polygon = polygons.remove(polygonId);
+        if (polygon != null) {
+            polygon.remove();
         }
     }
 

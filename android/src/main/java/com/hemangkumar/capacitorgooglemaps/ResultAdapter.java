@@ -4,7 +4,7 @@ import com.getcapacitor.JSObject;
 import com.google.android.libraries.maps.model.LatLng;
 import com.google.android.libraries.maps.model.Marker;
 
-class ResultFor {
+class ResultAdapter {
     private JSObject tag;
     private final String markerId;
     private final LatLng position;
@@ -15,7 +15,7 @@ class ResultFor {
     private final float zindex;
     private final boolean isDraggable;
 
-    public ResultFor(Marker marker) {
+    public ResultAdapter(Marker marker) {
         try {
             tag = (JSObject) marker.getTag();
         } catch (Exception e) {
@@ -33,7 +33,7 @@ class ResultFor {
         isDraggable = marker.isDraggable();
     }
 
-    public ResultFor(CustomMarker customMarker) {
+    public ResultAdapter(CustomMarker customMarker) {
         try {
             tag = (JSObject) customMarker.getTag();
         } catch (Exception e) {

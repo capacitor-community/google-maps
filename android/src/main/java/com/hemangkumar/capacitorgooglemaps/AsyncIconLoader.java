@@ -1,10 +1,12 @@
 package com.hemangkumar.capacitorgooglemaps;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Picture;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PictureDrawable;
+import android.net.ConnectivityManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Size;
@@ -58,8 +60,8 @@ class AsyncIconLoader {
     private void loadBitmap(OnIconReady onIconReady) {
         RequestBuilder<Bitmap> builder = Glide.with(activity)
                 .asBitmap()
-                .load(iconDescriptor.url);
-
+                .load(iconDescriptor.url)
+                .timeout(3000);
         scaleImageOptional(builder).into(
                 new CustomTarget<Bitmap>() {
                     // It will be called when the resource load has finished.

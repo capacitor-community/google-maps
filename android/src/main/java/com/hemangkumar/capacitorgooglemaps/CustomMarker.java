@@ -18,7 +18,7 @@ public class CustomMarker {
     // generate id for the just added marker,
     // put this marker into a hashmap with the corresponding id,
     // so we can retrieve the marker by id later on
-    public String markerId = UUID.randomUUID().toString();
+    public final String markerId = UUID.randomUUID().toString();
 
     private JSObject tag = new JSObject();
     private JSObject iconDescriptor;
@@ -50,25 +50,22 @@ public class CustomMarker {
         anchorX = JSObjectDefaults.getFloatSafe(anchor, "x", 0.5f);
         anchorY = JSObjectDefaults.getFloatSafe(anchor, "y", 1f);
 
-        iconDescriptor = JSObjectDefaults.getJSObjectSafe(marker, "icon", JSObjectDefaults.EMPTY);
+        iconDescriptor = JSObjectDefaults.getJSObjectSafe(marker, "icon", new JSObject());
 
         this.setMetadata(JSObjectDefaults.getJSObjectSafe(preferences, "metadata", new JSObject()));
     }
 
     public void updateMarkerOptions(@NonNull MarkerOptions markerOptions) {
-        markerOptions.position(latLng);
-        markerOptions.title(title);
-        markerOptions.snippet(snippet);
-        markerOptions.alpha(opacity);
-        markerOptions.flat(isFlat);
-        markerOptions.draggable(isDraggable);
-        markerOptions.zIndex(zIndex);
-        markerOptions.anchor(anchorX, anchorY);
-        markerOptions.icon(bitmapDescriptor);
-    }
-
-    public interface OnIconLoaded {
-        void run();
+        markerOptions
+                .position(latLng)
+                .title(title)
+                .snippet(snippet)
+                .alpha(opacity)
+                .flat(isFlat)
+                .draggable(isDraggable)
+                .zIndex(zIndex)
+                .anchor(anchorX, anchorY)
+                .icon(bitmapDescriptor);
     }
 
     public BitmapDescriptor getBitmapDescriptor() {
@@ -77,7 +74,7 @@ public class CustomMarker {
 
     public void asyncLoadIcon(
             @NonNull FragmentActivity activity,
-            @Nullable OnIconLoaded onLoaded) {
+            @Nullable Runnable onLoaded) {
         new AsyncIconLoader(iconDescriptor, activity)
                 .load((bitmap) -> {
                     if (bitmap != null) {
@@ -145,14 +142,14 @@ public class CustomMarker {
     }
 
     public static JSObject getResultForMarker(Marker marker, String mapId) {
-        return getResultForMarker(new ResultFor(marker), mapId);
+        return getResultForMarker(new ResultAdapter(marker), mapId);
     }
 
     public static JSObject getResultForMarker(CustomMarker marker, String mapId) {
-        return getResultForMarker(new ResultFor(marker), mapId);
+        return getResultForMarker(new ResultAdapter(marker), mapId);
     }
 
-    private static JSObject getResultForMarker(ResultFor r, String mapId) {
+    private static JSObject getResultForMarker(ResultAdapter r, String mapId) {
         JSObject tag = r.getTag();
 
         // initialize JSObjects to return

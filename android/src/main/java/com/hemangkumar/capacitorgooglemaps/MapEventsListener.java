@@ -12,7 +12,7 @@ import com.google.android.libraries.maps.model.PointOfInterest;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-class ProxyEventListener implements
+class MapEventsListener implements
         GoogleMap.OnInfoWindowClickListener,
         GoogleMap.OnInfoWindowCloseListener,
         GoogleMap.OnMapClickListener,
