@@ -20,6 +20,7 @@ export * from "./events/DidCloseInfoWindow";
 export * from "./events/DidTapMap";
 export * from "./events/DidLongPressMap";
 export * from "./events/DidTapMarker";
+export * from "./events/DidTapPolygon";
 export * from "./events/DidBeginDraggingMarker";
 export * from "./events/DidDragMarker";
 export * from "./events/DidEndDraggingMarker";

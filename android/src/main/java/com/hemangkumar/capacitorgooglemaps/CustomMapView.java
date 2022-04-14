@@ -31,9 +31,6 @@ import com.google.android.libraries.maps.model.PolygonOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -46,6 +43,7 @@ public class CustomMapView
         GoogleMap.OnMapLongClickListener,
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnMarkerDragListener,
+        GoogleMap.OnPolygonClickListener,
         GoogleMap.OnMyLocationClickListener,
         GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnPoiClickListener,
@@ -88,6 +86,7 @@ public class CustomMapView
     String savedCallbackIdForDidBeginDraggingMarker;
 
     String savedCallbackIdForDidDragMarker;
+    String savedCallbackIdForDidTapPolygon;
 
     String savedCallbackIdForDidEndDraggingMarker;
 
@@ -107,6 +106,7 @@ public class CustomMapView
     public static final String EVENT_DID_TAP_MAP = "didTapMap";
     public static final String EVENT_DID_LONG_PRESS_MAP = "didLongPressMap";
     public static final String EVENT_DID_TAP_MARKER = "didTapMarker";
+    public static final String EVENT_DID_TAP_POLYGON = "didTapPolygon";
     public static final String EVENT_DID_BEGIN_DRAGGING_MARKER = "didBeginDraggingMarker";
     public static final String EVENT_DID_DRAG_MARKER = "didDragMarker";
     public static final String EVENT_DID_END_DRAGGING_MARKER = "didEndDraggingMarker";
@@ -186,6 +186,7 @@ public class CustomMapView
         googleMap.setOnMyLocationClickListener(mapEventsListener);
         googleMap.setOnMyLocationButtonClickListener(mapEventsListener);
         googleMap.setOnPoiClickListener(mapEventsListener);
+        googleMap.setOnPolygonClickListener(mapEventsListener);
     }
 
     @Override
@@ -228,6 +229,14 @@ public class CustomMapView
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapMarker, result);
         }
         return preventDefaultForDidTapMarker;
+    }
+
+    @Override
+    public void onPolygonClick(Polygon polygon) {
+        if (customMapViewEvents != null && savedCallbackIdForDidTapPolygon != null) {
+            JSObject result = CustomPolygon.getResultForPolygon(polygon, this.id);
+            customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapPolygon, result);
+        }
     }
 
     @Override
@@ -386,6 +395,10 @@ public class CustomMapView
                         preventDefault = false;
                     }
                     preventDefaultForDidTapMarker = preventDefault;
+                    break;
+                case CustomMapView.EVENT_DID_TAP_POLYGON:
+                    this.mapEventsListener.addOnPolygonClickListener(this);
+                    savedCallbackIdForDidTapPolygon = callbackId;
                     break;
                 case CustomMapView.EVENT_DID_BEGIN_DRAGGING_MARKER:
                     this.mapEventsListener.addOnMarkerDragListener(this);

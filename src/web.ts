@@ -27,6 +27,7 @@ import {
   DidTapMapCallback,
   DidLongPressMapCallback,
   DidTapMarkerCallback,
+  DidTapPolygonCallback,
   DidBeginDraggingMarkerCallback,
   DidDragMarkerCallback,
   DidEndDraggingMarkerCallback,
@@ -134,6 +135,13 @@ export class CapacitorGoogleMapsWeb
   async didTapMarker(
     _options: DefaultEventWithPreventDefaultOptions,
     _callback: DidTapMarkerCallback
+  ): Promise<CallbackID> {
+    throw this.unimplemented("Not implemented on web.");
+  }
+
+  async didTapPolygon(
+    _options: DefaultEventOptions,
+    _callback: DidTapPolygonCallback
   ): Promise<CallbackID> {
     throw this.unimplemented("Not implemented on web.");
   }

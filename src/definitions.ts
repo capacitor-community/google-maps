@@ -27,6 +27,7 @@ import {
   DidTapMapCallback,
   DidLongPressMapCallback,
   DidTapMarkerCallback,
+  DidTapPolygonCallback,
   DidBeginDraggingMarkerCallback,
   DidDragMarkerCallback,
   DidEndDraggingMarkerCallback,
@@ -107,6 +108,11 @@ export interface CapacitorGoogleMapsPlugin {
   didTapMarker(
     options: DefaultEventWithPreventDefaultOptions,
     callback: DidTapMarkerCallback
+  ): Promise<CallbackID>;
+
+  didTapPolygon(
+    options: DefaultEventOptions,
+    callback: DidTapPolygonCallback
   ): Promise<CallbackID>;
 
   didBeginDraggingMarker(

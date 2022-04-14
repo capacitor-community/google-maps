@@ -8,6 +8,7 @@ import com.google.android.libraries.maps.GoogleMap;
 import com.google.android.libraries.maps.model.LatLng;
 import com.google.android.libraries.maps.model.Marker;
 import com.google.android.libraries.maps.model.PointOfInterest;
+import com.google.android.libraries.maps.model.Polygon;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -18,6 +19,7 @@ class MapEventsListener implements
         GoogleMap.OnMapClickListener,
         GoogleMap.OnMapLongClickListener,
         GoogleMap.OnMarkerClickListener,
+        GoogleMap.OnPolygonClickListener,
         GoogleMap.OnMarkerDragListener,
         GoogleMap.OnMyLocationClickListener,
         GoogleMap.OnMyLocationButtonClickListener,
@@ -60,6 +62,9 @@ class MapEventsListener implements
             new LinkedHashSet<>();
 
     private final Set<GoogleMap.OnCameraIdleListener> onCameraIdleListeners =
+            new LinkedHashSet<>();
+
+    private final Set<GoogleMap.OnPolygonClickListener> onPolygonClickListeners =
             new LinkedHashSet<>();
 
     @Override
@@ -258,5 +263,20 @@ class MapEventsListener implements
 
     public void removeOnPoiClickListener(GoogleMap.OnPoiClickListener listener) {
         onPoiClickListeners.remove(listener);
+    }
+
+    @Override
+    public void onPolygonClick(Polygon polygon) {
+        for (GoogleMap.OnPolygonClickListener listener : onPolygonClickListeners) {
+            listener.onPolygonClick(polygon);
+        }
+    }
+
+    public void addOnPolygonClickListener(GoogleMap.OnPolygonClickListener listener) {
+        onPolygonClickListeners.add(listener);
+    }
+
+    public void removeOnPolygonClickListener(GoogleMap.OnPolygonClickListener listener) {
+        onPolygonClickListeners.remove(listener);
     }
 }

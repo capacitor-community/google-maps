@@ -404,6 +404,11 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     }
 
     @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
+    public void didTapPolygon(final PluginCall call) {
+        setCallbackIdForEvent(call, CustomMapView.EVENT_DID_TAP_POLYGON);
+    }
+
+    @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
     public void didBeginDraggingMarker(final PluginCall call) {
         setCallbackIdForEvent(call, CustomMapView.EVENT_DID_BEGIN_DRAGGING_MARKER);
     }
@@ -458,13 +463,8 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
         if (customMapView != null) {
             final Boolean preventDefault = call.getBoolean("preventDefault", false);
 
-
-            getBridge().getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    customMapView.setCallbackIdForEvent(callbackId, eventName, preventDefault);
-                }
-            });
+            getBridge().getActivity().runOnUiThread(
+                    () -> customMapView.setCallbackIdForEvent(callbackId, eventName, preventDefault));
         }
     }
 

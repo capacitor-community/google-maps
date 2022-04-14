@@ -14,5 +14,5 @@ export interface Polygon {
    */
   polygonId: string;
   points: LatLng[];
-  preferences: PolygonPreferences;
+  preferences?: PolygonPreferences;
 }
