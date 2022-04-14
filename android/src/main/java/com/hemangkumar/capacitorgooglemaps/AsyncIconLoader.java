@@ -121,14 +121,7 @@ class AsyncIconLoader {
     }
 
     private Size calcPictureSize() {
-        if (iconDescriptor.sizeInMm.getHeight() > 0 && iconDescriptor.sizeInMm.getWidth() > 0) {
-            // Scale image to provided size in Millimeters
-            final float mmPerInch = 25.4f;
-            DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-            int newWidthPixels = (int) (iconDescriptor.sizeInMm.getWidth() * metrics.xdpi / mmPerInch);
-            int newHeightPixels = (int) (iconDescriptor.sizeInMm.getWidth() * metrics.ydpi / mmPerInch);
-            return new Size(newWidthPixels, newHeightPixels);
-        } else if (iconDescriptor.sizeInPixels.getHeight() > 0 && iconDescriptor.sizeInPixels.getWidth() > 0) {
+        if (iconDescriptor.sizeInPixels.getHeight() > 0 && iconDescriptor.sizeInPixels.getWidth() > 0) {
             // Scale image to provided size in Pixels
             return new Size(iconDescriptor.sizeInPixels.getWidth(), iconDescriptor.sizeInPixels.getHeight());
         }

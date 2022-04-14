@@ -10,15 +10,14 @@ import com.getcapacitor.JSObject;
 class IconDescriptor {
     public final String url;
     public final Size sizeInPixels;
-    public final SizeF sizeInMm;
 
     /**
-     * Source of JSObject:
+     * Example source of JSObject:
      * {
-     *    url: 'https://www.google.com/favicon.ico',
-     *      targetSizePx: {
-     *        width: 64,
-     *        height: 64
+     *   url: 'https://www.google.com/favicon.ico',
+     *   size: {
+     *     width: 64,
+     *     height: 64
      *   }
      * }
      * @param jsIcon is a JSObject icon representation
@@ -27,25 +26,16 @@ class IconDescriptor {
     public IconDescriptor(@NonNull final JSObject jsIcon) {
         url = jsIcon.getString("url", "");
 
-        final JSObject jsSizeInPixels = JSObjectDefaults.getJSObjectSafe(
+        final JSObject jsSize = JSObjectDefaults.getJSObjectSafe(
                 jsIcon,
-                "targetSizePx",
-                new JSObject());
-
-        final JSObject jsSizeInMm = JSObjectDefaults.getJSObjectSafe(
-                jsIcon,
-                "targetSizeMm",
+                "size",
                 new JSObject());
 
         final String width = "width";
         final String height = "height";
 
         sizeInPixels = new Size(
-                (int) Math.round(jsSizeInPixels.optDouble(width, 0)),
-                (int) Math.round(jsSizeInPixels.optDouble(height, 0)));
-
-        sizeInMm = new SizeF(
-                (float) jsSizeInMm.optDouble(width, 0),
-                (float) jsSizeInMm.optDouble(height, 0));
+                (int) Math.round(jsSize.optDouble(width, 30)),
+                (int) Math.round(jsSize.optDouble(height, 30)));
     }
 }

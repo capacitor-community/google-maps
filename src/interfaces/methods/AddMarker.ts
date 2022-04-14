@@ -1,4 +1,4 @@
-import { LatLng, Marker, MarkerPreferences, Icon } from "./../../definitions";
+import { LatLng, Marker, MarkerPreferences } from "./../../definitions";
 
 export interface AddMarkerOptions {
   /**
@@ -13,10 +13,6 @@ export interface AddMarkerOptions {
    * @since 2.0.0
    */
   preferences?: MarkerPreferences;
-  /**
-   * @since x.x.x
-   */	
-  icon?: Icon;
 }
 
 export interface AddMarkerResult {
