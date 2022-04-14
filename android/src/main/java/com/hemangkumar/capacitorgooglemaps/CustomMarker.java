@@ -73,7 +73,7 @@ public class CustomMarker {
 
         this.setMetadata(JSObjectDefaults.getJSObjectSafe(preferences, "metadata", new JSObject()));
 
-        iconDescriptor = JSObjectDefaults.getJSObjectSafe(marker, "icon", new JSObject());
+        iconDescriptor = JSObjectDefaults.getJSObjectSafe(preferences, "icon", new JSObject());
     }
 
     public void addToMap(Context context, GoogleMap googleMap, @Nullable Consumer<Marker> consumer) {
