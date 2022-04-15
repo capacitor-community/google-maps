@@ -93,6 +93,23 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         }
 
     }
+
+
+    @objc func removeMap(_ call: CAPPluginCall) {
+        let mapId: String = call.getString("mapId", "")
+
+        DispatchQueue.main.async {
+            guard let customMapView = self.customWebView?.customMapViews[mapId] else {
+                call.reject("map not found")
+                return
+            }
+            
+            (customMapView).view.removeFromSuperview()
+            self.customWebView?.customMapViews.removeValue(forKey: mapId)
+
+            call.resolve()
+        }
+    }
     
     @objc func getMap(_ call: CAPPluginCall) {
         let mapId: String = call.getString("mapId", "")
@@ -190,21 +207,6 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             } else {
                 call.reject("marker not found");
             }
-        }
-    }
-    
-    
-    @objc func removeMap(_ call: CAPPluginCall) {
-        let mapId: String = call.getString("mapId", "")
-
-        DispatchQueue.main.async {
-            guard let customMapView = self.customWebView?.customMapViews[mapId] else {
-                call.reject("map not found")
-                return
-            }
-            
-            (customMapView).view.removeFromSuperview()
-            self.customWebView?.customMapViews.removeValue(forKey: mapId)
         }
     }
 
