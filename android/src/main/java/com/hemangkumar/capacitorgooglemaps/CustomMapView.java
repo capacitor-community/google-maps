@@ -601,14 +601,34 @@ public class CustomMapView
         call.resolve(CustomPolygon.getResultForPolygon(polygon, getId()));
     }
 
-    private void asyncLoadClusterIcon(final PluginCall call) {
-        final JSObject jsClusterIcon = call.getObject("clusterIcon");
-        new AsyncIconLoader(jsClusterIcon, context)
-                .load((bitmap) -> {
-                    clusterRenderer.setIcon(bitmap);
-                    JSObject jsClusterCaptionPrefs = call.getObject("clusterCaptionPrefs");
-                    clusterRenderer.setCaptionPreferences(new CaptionPreferences(jsClusterCaptionPrefs));
-                });
+    public void getPolygon(PluginCall call) {
+        String polygonId = call.getData().optString("polygonId", "");
+        Polygon polygon = polygons.get(polygonId);
+        if (polygon != null) {
+            call.resolve(CustomPolygon.getResultForPolygon(polygon, getId()));
+        } else {
+            call.reject("polygon not found");
+        }
+    }
+
+    public void updatePolygon(PluginCall call) {
+        String polygonId = call.getData().optString("polygonId", "");
+        Polygon polygon = polygons.get(polygonId);
+        if (polygon != null) {
+            CustomPolygon customPolygon = new CustomPolygon();
+            customPolygon.updateFromJSObject(call.getData());
+            customPolygon.updatePolygon(polygon);
+            call.resolve();
+        } else {
+            call.reject("polygon not found");
+        }
+    }
+
+    public void removePolygon(String polygonId) {
+        Polygon polygon = polygons.remove(polygonId);
+        if (polygon != null) {
+            polygon.remove();
+        }
     }
 
     public void removeMarker(String markerId) {
@@ -625,11 +645,14 @@ public class CustomMapView
         }
     }
 
-    public void removePolygon(String polygonId) {
-        Polygon polygon = polygons.remove(polygonId);
-        if (polygon != null) {
-            polygon.remove();
-        }
+    private void asyncLoadClusterIcon(final PluginCall call) {
+        final JSObject jsClusterIcon = call.getObject("clusterIcon");
+        new AsyncIconLoader(jsClusterIcon, context)
+                .load((bitmap) -> {
+                    clusterRenderer.setIcon(bitmap);
+                    JSObject jsClusterCaptionPrefs = call.getObject("clusterCaptionPrefs");
+                    clusterRenderer.setCaptionPreferences(new CaptionPreferences(jsClusterCaptionPrefs));
+                });
     }
 
     private JSObject getResultForMap() {

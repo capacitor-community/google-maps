@@ -1,7 +1,7 @@
-import { PolygonOptions } from "./PolygonOptions";
+import { PolygonPreferences } from "../../definitions";
 
 export interface UpdatePolygonOptions {
   mapId: string;
   polygonId: string;
-  options: PolygonOptions;
+  preferences?: PolygonPreferences;
 }

@@ -66,7 +66,29 @@ public class CustomPolygon {
                 .visible(visibility)
                 .zIndex(zIndex);
 
-        setMetadata();
+        setMetadata(this.polygonId);
+    }
+
+    public void updatePolygon(Polygon polygon) {
+        polygon.setHoles(holes);
+        polygon.setStrokePattern(strokePattern);
+        polygon.setStrokeJointType(strokeJointType);
+        polygon.setStrokeWidth(strokeWidth);
+        polygon.setStrokeColor(strokeColor);
+        polygon.setClickable(isClickable);
+        polygon.setFillColor(fillColor);
+        polygon.setGeodesic(isGeodesic);
+        polygon.setVisible(visibility);
+        polygon.setZIndex(zIndex);
+        Object tag = polygon.getTag();
+        JSObject jsTag;
+        if (tag instanceof JSObject) {
+            jsTag = (JSObject) tag;
+        } else {
+            jsTag = new JSObject();
+            jsTag.put("polygonId", polygonId);
+        }
+        jsTag.put("metadata", metadata);
     }
 
     public Polygon addToMap(GoogleMap googleMap, PolygonOptions polygonOptions) {
@@ -79,30 +101,103 @@ public class CustomPolygon {
         JSObject tag = (JSObject) polygon.getTag();
 
         // initialize JSObjects to return
-        JSObject result = new JSObject();
-        JSObject polygonResult = new JSObject();
-        JSObject preferencesResult = new JSObject();
+        JSObject jsResult = new JSObject();
+        JSObject jsPolygon = new JSObject();
+        JSObject jsPreferences = new JSObject();
+        JSArray jsPoints = new JSArray();
 
-        result.put("polygon", polygonResult);
-        polygonResult.put("preferences", preferencesResult);
+        jsResult.put("polygon", jsPolygon);
+        jsPolygon.put("points", jsPoints);
+        jsPolygon.put("preferences", jsPreferences);
 
         // get map id
-        polygonResult.put("mapId", mapId);
+        jsPolygon.put("mapId", mapId);
 
         // get id
         String polygonId = tag.optString("polygonId", polygon.getId());
-        polygonResult.put("polygonId", polygonId);
+        jsPolygon.put("polygonId", polygonId);
 
+        // points
+        for (LatLng point : polygon.getPoints()) {
+            JSObject jsPoint = new JSObject();
+            jsPoint.put("latitude", point.latitude);
+            jsPoint.put("longitude", point.longitude);
+            jsPoints.put(jsPoint);
+        }
+
+        // preferences.holes
+        JSArray jsHoles = new JSArray();
+        for (List<LatLng> hole : polygon.getHoles()) {
+            JSArray jsHole = new JSArray();
+            for (LatLng holePoint : hole) {
+                JSObject jsHolePoint = new JSObject();
+                jsHolePoint.put("latitude", holePoint.latitude);
+                jsHolePoint.put("longitude", holePoint.longitude);
+                jsHole.put(jsHolePoint);
+            }
+            jsHoles.put(jsHole);
+        }
+        if (jsHoles.length() > 0) {
+            jsPreferences.put("holes", jsHoles);
+        }
         // metadata
         JSObject metadata = JSObjectDefaults.getJSObjectSafe(tag, "metadata", new JSObject());
-        preferencesResult.put("metadata", metadata);
-
-        return result;
+        jsPreferences.put("metadata", metadata);
+        // other preferences
+        jsPreferences.put("strokeWidth", polygon.getStrokeWidth());
+        jsPreferences.put("strokeColor", colorToString(polygon.getStrokeColor()));
+        jsPreferences.put("fillColor", colorToString(polygon.getFillColor()));
+        jsPreferences.put("zIndex", polygon.getZIndex());
+        jsPreferences.put("visibility", polygon.isVisible());
+        jsPreferences.put("isGeodesic", polygon.isGeodesic());
+        jsPreferences.put("isClickable", polygon.isClickable());
+        switch (polygon.getStrokeJointType()) {
+            case JointType.BEVEL:
+                jsPreferences.put("strokeJointType", "BEVEL");
+                break;
+            case JointType.ROUND:
+                jsPreferences.put("strokeJointType", "ROUND");
+                break;
+            case JointType.DEFAULT:
+                jsPreferences.put("strokeJointType", "DEFAULT");
+                break;
+        }
+        // preferences.strokePattern
+        JSArray jsStrokePattern = new JSArray();
+        for (PatternItem patternItem : polygon.getStrokePattern()) {
+            JSObject jsPatternItem = new JSObject();
+            if (patternItem instanceof Dot) {
+                jsPatternItem.put("pattern", "Dot");
+            } else if (patternItem instanceof Dash) {
+                jsPatternItem.put("pattern", "Dash");
+                jsPatternItem.put("length", ((Dash) patternItem).length);
+            } else if (patternItem instanceof Gap) {
+                jsPatternItem.put("pattern", "Gap");
+                jsPatternItem.put("length", ((Gap) patternItem).length);
+            }
+            if (jsPatternItem.length() > 0) {
+                jsStrokePattern.put(jsPatternItem);
+            }
+        }
+        jsPreferences.put("strokePattern", jsStrokePattern);
+        return jsResult;
     }
 
-    private void setMetadata() {
+    private static String colorToString(int color) {
+        int r = ((color >> 16) & 0xff);
+        int g = ((color >> 8) & 0xff);
+        int b = ((color) & 0xff);
+        int a = ((color >> 24) & 0xff);
+        if (a != 255) {
+            return String.format("#%02X%02X%02X%02X", a, r, g, b);
+        } else {
+            return String.format("#%02X%02X%02X", r, g, b);
+        }
+    }
+
+    private void setMetadata(String polygonId) {
         JSObject tag = new JSObject();
-        tag.put("polygonId", this.polygonId);
+        tag.put("polygonId", polygonId);
         tag.put("metadata", metadata);
         this.tag = tag;
     }

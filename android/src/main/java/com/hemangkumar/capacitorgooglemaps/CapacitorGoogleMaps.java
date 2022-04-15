@@ -537,22 +537,47 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
         });
     }
 
+    @PluginMethod()
+    public void getPolygon(final PluginCall call) {
+        final String mapId = call.getString("mapId");
+        getBridge().getActivity().runOnUiThread(() -> {
+            CustomMapView customMapView = customMapViews.get(mapId);
+
+            if (customMapView != null) {
+                customMapView.getPolygon(call);
+            } else {
+                call.reject("map not found");
+            }
+        });
+    }
+
+    @PluginMethod(returnType = PluginMethod.RETURN_NONE)
+    public void updatePolygon(final PluginCall call) {
+        final String mapId = call.getString("mapId");
+        getBridge().getActivity().runOnUiThread(() -> {
+            CustomMapView customMapView = customMapViews.get(mapId);
+
+            if (customMapView != null) {
+                customMapView.updatePolygon(call);
+            } else {
+                call.reject("map not found");
+            }
+        });
+    }
+
     @PluginMethod(returnType = PluginMethod.RETURN_NONE)
     public void removePolygon(final PluginCall call) {
         final String mapId = call.getString("mapId");
 
-        getBridge().getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                CustomMapView customMapView = customMapViews.get(mapId);
+        getBridge().getActivity().runOnUiThread(() -> {
+            CustomMapView customMapView = customMapViews.get(mapId);
 
-                if (customMapView != null) {
-                    final String polygonId = call.getString("polygonId");
-                    customMapView.removePolygon(polygonId);
-                    call.resolve();
-                } else {
-                    call.reject("map not found");
-                }
+            if (customMapView != null) {
+                final String polygonId = call.getString("polygonId");
+                customMapView.removePolygon(polygonId);
+                call.resolve();
+            } else {
+                call.reject("map not found");
             }
         });
     }

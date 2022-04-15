@@ -7,10 +7,10 @@ export { ClearMapOptions } from "./methods/ClearMap";
 export { MoveCameraOptions } from "./methods/MoveCamera";
 export { ElementFromPointResultOptions } from "./methods/ElementFromPointResult";
 export { AddMarkerOptions, AddMarkerResult } from "./methods/AddMarker";
-export { PolygonOptions, PolygonResult } from "./methods/PolygonOptions";
+export { AddPolygonOptions } from "./methods/AddPolygonOptions";
+export { PolygonResult } from "./methods/PolygonResult"
 export { GetPolygonOptions } from "./methods/GetPolygon";
 export { UpdatePolygonOptions } from "./methods/UpdatePolygon";
-export { RemovePolygonOptions } from "./methods/RemovePolygon"
 export { RemoveMarkerOptions } from "./methods/RemoveMarker";
 export { AddClusterOptions, AddClusterResult } from "./methods/AddCluster";
 
