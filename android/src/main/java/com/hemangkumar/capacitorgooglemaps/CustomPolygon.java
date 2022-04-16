@@ -22,64 +22,56 @@ public class CustomPolygon {
 
     public final String polygonId = UUID.randomUUID().toString();
     private JSObject tag = new JSObject();
-    private List<LatLng> points;
-    private List<List<LatLng>> holes;
-    private float strokeWidth;
-    private int strokeColor;
-    private int fillColor;
-    private float zIndex;
-    private boolean visibility;
-    private boolean isGeodesic;
-    private boolean isClickable;
-    private int strokeJointType;
-    private List<PatternItem> strokePattern;
+    private PolygonOptions polygonOptions = new PolygonOptions();
     private JSObject metadata;
 
     public void updateFromJSObject(JSObject polygon) {
+        polygonOptions = new PolygonOptions();
         loadPoints(polygon);
 
-        JSObject preferences = JSObjectDefaults.getJSObjectSafe(
-                polygon, "preferences", new JSObject());
-
-        loadHoles(preferences);
-        loadStrokePattern(preferences);
-        initPlainFields(preferences);
+        JSObject preferences = polygon.getJSObject("preferences");
+        if (preferences != null) {
+            loadHoles(preferences);
+            loadStrokePattern(preferences);
+            initPlainFields(preferences);
+        }
     }
 
-    public void updatePolygonOptions(PolygonOptions polygonOptions) {
-        for (LatLng point : points) {
-            polygonOptions.add(point);
+    public void updatePolygonOptions(PolygonOptions other) {
+        for (LatLng point : polygonOptions.getPoints()) {
+            other.add(point);
         }
 
-        for (Iterable<LatLng> hole : holes) {
-            polygonOptions.addHole(hole);
+        for (Iterable<LatLng> hole : polygonOptions.getHoles()) {
+            other.addHole(hole);
         }
 
-        polygonOptions
-                .strokePattern(strokePattern)
-                .strokeJointType(strokeJointType)
-                .strokeWidth(strokeWidth)
-                .strokeColor(strokeColor)
-                .clickable(isClickable)
-                .fillColor(fillColor)
-                .geodesic(isGeodesic)
-                .visible(visibility)
-                .zIndex(zIndex);
+        other
+                .strokePattern(polygonOptions.getStrokePattern())
+                .strokeJointType(polygonOptions.getStrokeJointType())
+                .strokeWidth(polygonOptions.getStrokeWidth())
+                .strokeColor(polygonOptions.getStrokeColor())
+                .clickable(polygonOptions.isClickable())
+                .fillColor(polygonOptions.getFillColor())
+                .geodesic(polygonOptions.isGeodesic())
+                .visible(polygonOptions.isVisible())
+                .zIndex(polygonOptions.getZIndex());
 
         setMetadata(this.polygonId);
     }
 
     public void updatePolygon(Polygon polygon) {
-        polygon.setHoles(holes);
-        polygon.setStrokePattern(strokePattern);
-        polygon.setStrokeJointType(strokeJointType);
-        polygon.setStrokeWidth(strokeWidth);
-        polygon.setStrokeColor(strokeColor);
-        polygon.setClickable(isClickable);
-        polygon.setFillColor(fillColor);
-        polygon.setGeodesic(isGeodesic);
-        polygon.setVisible(visibility);
-        polygon.setZIndex(zIndex);
+        polygon.setHoles(polygonOptions.getHoles());
+        polygon.setStrokePattern(polygonOptions.getStrokePattern());
+        polygon.setStrokeJointType(polygonOptions.getStrokeJointType());
+        polygon.setStrokeWidth(polygonOptions.getStrokeWidth());
+        polygon.setStrokeColor(polygonOptions.getStrokeColor());
+        polygon.setClickable(polygonOptions.isClickable());
+        polygon.setFillColor(polygonOptions.getFillColor());
+        polygon.setGeodesic(polygonOptions.isGeodesic());
+        polygon.setVisible(polygonOptions.isVisible());
+        polygon.setZIndex(polygonOptions.getZIndex());
+        //polygon.setPoints(polygonOptions.getPoints());
         Object tag = polygon.getTag();
         JSObject jsTag;
         if (tag instanceof JSObject) {
@@ -91,7 +83,7 @@ public class CustomPolygon {
         jsTag.put("metadata", metadata);
     }
 
-    public Polygon addToMap(GoogleMap googleMap, PolygonOptions polygonOptions) {
+    public Polygon addToMap(GoogleMap googleMap) {
         Polygon polygon = googleMap.addPolygon(polygonOptions);
         polygon.setTag(this.tag);
         return polygon;
@@ -164,22 +156,25 @@ public class CustomPolygon {
         }
         // preferences.strokePattern
         JSArray jsStrokePattern = new JSArray();
-        for (PatternItem patternItem : polygon.getStrokePattern()) {
-            JSObject jsPatternItem = new JSObject();
-            if (patternItem instanceof Dot) {
-                jsPatternItem.put("pattern", "Dot");
-            } else if (patternItem instanceof Dash) {
-                jsPatternItem.put("pattern", "Dash");
-                jsPatternItem.put("length", ((Dash) patternItem).length);
-            } else if (patternItem instanceof Gap) {
-                jsPatternItem.put("pattern", "Gap");
-                jsPatternItem.put("length", ((Gap) patternItem).length);
+        List<PatternItem> strokePatterns = polygon.getStrokePattern();
+        if (strokePatterns != null) {
+            for (PatternItem patternItem : strokePatterns) {
+                JSObject jsPatternItem = new JSObject();
+                if (patternItem instanceof Dot) {
+                    jsPatternItem.put("pattern", "Dot");
+                } else if (patternItem instanceof Dash) {
+                    jsPatternItem.put("pattern", "Dash");
+                    jsPatternItem.put("length", ((Dash) patternItem).length);
+                } else if (patternItem instanceof Gap) {
+                    jsPatternItem.put("pattern", "Gap");
+                    jsPatternItem.put("length", ((Gap) patternItem).length);
+                }
+                if (jsPatternItem.length() > 0) {
+                    jsStrokePattern.put(jsPatternItem);
+                }
             }
-            if (jsPatternItem.length() > 0) {
-                jsStrokePattern.put(jsPatternItem);
-            }
+            jsPreferences.put("strokePattern", jsStrokePattern);
         }
-        jsPreferences.put("strokePattern", jsStrokePattern);
         return jsResult;
     }
 
@@ -203,14 +198,15 @@ public class CustomPolygon {
     }
 
     private void initPlainFields(final JSObject preferences) {
-        strokeWidth = (float) preferences.optDouble("strokeWidth", 2);
-        strokeColor = Color.parseColor(preferences.optString("strokeColor", "#000000"));
-        fillColor = Color.parseColor(preferences.optString("fillColor", "#300000FF"));
-        zIndex = (float) preferences.optDouble("zIndex", 0);
-        visibility = preferences.optBoolean("visibility", true);
-        isGeodesic = preferences.optBoolean("isGeodesic", false);
-        isClickable = preferences.optBoolean("isClickable", false);
+        final float strokeWidth = (float) preferences.optDouble("strokeWidth", 2);
+        final int strokeColor = Color.parseColor(preferences.optString("strokeColor", "#000000"));
+        final int fillColor = Color.parseColor(preferences.optString("fillColor", "#300000FF"));
+        final float zIndex = (float) preferences.optDouble("zIndex", 0);
+        final boolean visibility = preferences.optBoolean("visibility", true);
+        final boolean isGeodesic = preferences.optBoolean("isGeodesic", false);
+        final boolean isClickable = preferences.optBoolean("isClickable", false);
         metadata = JSObjectDefaults.getJSObjectSafe(preferences, "metadata", new JSObject());
+        final int strokeJointType;
 
         switch (preferences.optString("strokeJointType", "DEFAULT")) {
             case "BEVEL":
@@ -222,13 +218,22 @@ public class CustomPolygon {
             default:
                 strokeJointType = JointType.DEFAULT;
         }
+
+        polygonOptions.strokeWidth(strokeWidth);
+        polygonOptions.strokeColor(strokeColor);
+        polygonOptions.fillColor(fillColor);
+        polygonOptions.zIndex(zIndex);
+        polygonOptions.visible(visibility);
+        polygonOptions.geodesic(isGeodesic);
+        polygonOptions.clickable(isClickable);
+        polygonOptions.strokeJointType(strokeJointType);
     }
 
     private void loadStrokePattern(final JSObject preferences) {
         JSArray jsStrokePattern = JSObjectDefaults.getJSArray(
                 preferences, "strokePattern", new JSArray());
         int n = jsStrokePattern.length();
-        strokePattern = new ArrayList<>(n);
+        List<PatternItem> strokePattern = new ArrayList<>(n);
         for (int i = 0; i < n; i++) {
             JSObject jsPatterItem = JSObjectDefaults.getJSObjectByIndex(jsStrokePattern, i);
             String pattern = jsPatterItem.optString("pattern", "Gap");
@@ -247,35 +252,34 @@ public class CustomPolygon {
             }
             strokePattern.add(item);
         }
+        polygonOptions.strokePattern(strokePattern);
     }
 
     private void loadHoles(final JSObject preferences) {
         JSArray jsHoles = JSObjectDefaults.getJSArray(preferences, "holes", new JSArray());
         int n = jsHoles.length();
-        holes = new ArrayList<>(n);
         for (int i = 0; i < n; i++) {
             JSArray jsLatLngArr = JSObjectDefaults.getJSArray(jsHoles, i, new JSArray());
             int m = jsLatLngArr.length();
             List<LatLng> holeList = new ArrayList<>(m);
-            holes.add(holeList);
             for (int j = 0; j < m; j++) {
                 JSObject jsLatLon = JSObjectDefaults.getJSObjectByIndex(jsLatLngArr, j);
                 double latitude = jsLatLon.optDouble("latitude", 0d);
                 double longitude = jsLatLon.optDouble("longitude", 0d);
                 holeList.add(new LatLng(latitude, longitude));
             }
+            polygonOptions.addHole(holeList);
         }
     }
 
     private void loadPoints(final JSObject polygon) {
         JSArray jsPoints = JSObjectDefaults.getJSArray(polygon, "points", new JSArray());
         int n = jsPoints.length();
-        points = new ArrayList<>(n);
         for (int i = 0; i < n; i++) {
             JSObject jsLatLng = JSObjectDefaults.getJSObjectByIndex(jsPoints, i);
             double latitude = jsLatLng.optDouble("latitude", 0d);
             double longitude = jsLatLng.optDouble("longitude", 0d);
-            points.add(new LatLng(latitude, longitude));
+            polygonOptions.add(new LatLng(latitude, longitude));
         }
     }
 }

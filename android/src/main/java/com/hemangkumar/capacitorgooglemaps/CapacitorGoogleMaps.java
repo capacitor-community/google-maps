@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
@@ -15,8 +16,12 @@ import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.annotation.Permission;
 import com.google.android.libraries.maps.model.CameraPosition;
+import com.google.android.libraries.maps.model.Marker;
+import com.google.android.libraries.maps.model.Polygon;
+import com.google.android.libraries.maps.model.PolygonOptions;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -481,9 +486,14 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
         getBridge().getActivity().runOnUiThread(() -> {
             CustomMapView customMapView = customMapViews.get(mapId);
             if (customMapView != null) {
-                customMapView.addMarker(call);
-            } else {
-                call.reject("map not found");
+                CustomMarker customMarker = new CustomMarker();
+                customMarker.updateFromJSObject(call.getData());
+                customMapView.addMarker(
+                        customMarker,
+                        (Marker marker) -> {
+                            call.resolve(CustomMarker.getResultForMarker(marker, mapId));
+                        }
+                );
             }
         });
     }
@@ -492,18 +502,15 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     public void removeMarker(final PluginCall call) {
         final String mapId = call.getString("mapId");
 
-        getBridge().getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                CustomMapView customMapView = customMapViews.get(mapId);
+        getBridge().getActivity().runOnUiThread(() -> {
+            CustomMapView customMapView = customMapViews.get(mapId);
 
-                if (customMapView != null) {
-                    final String markerId = call.getString("markerId");
-                    customMapView.removeMarker(markerId);
-                    call.resolve();
-                } else {
-                    call.reject("map not found");
-                }
+            if (customMapView != null) {
+                final String markerId = call.getString("markerId");
+                customMapView.removeMarker(markerId);
+                call.resolve();
+            } else {
+                call.reject("map not found");
             }
         });
     }
@@ -511,16 +518,58 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     @PluginMethod()
     public void addCluster(final PluginCall call) {
         final String mapId = call.getString("mapId");
-
         getBridge().getActivity().runOnUiThread(() -> {
             CustomMapView customMapView = customMapViews.get(mapId);
 
-            if (customMapView != null) {
-                customMapView.addCluster(call);
-            } else {
+            if (customMapView == null) {
                 call.reject("map not found");
+                return;
             }
+
+            JSArray jsMarkers = call.getArray("markers");
+            Collection<CustomMarker> customMarkers = prepareCustomMarkersForCluster(mapId, jsMarkers);
+
+            JSObject jsResult = prepareResultForCluster(mapId, customMarkers);
+
+            JSObject jsClusterIcon = call.getObject("clusterIcon");
+            IconDescriptor iconDescriptor = jsClusterIcon != null ?
+                    new IconDescriptor(jsClusterIcon) :
+                    null;
+
+            JSObject jsClusterCaptionPrefs = call.getObject("clusterCaptionPrefs");
+            CaptionPreferences captionPreferences = jsClusterCaptionPrefs != null ?
+                    new CaptionPreferences(jsClusterCaptionPrefs) :
+                    null;
+
+
+            customMapView.addCluster(customMarkers, iconDescriptor, captionPreferences,
+                    () -> {
+                        call.resolve(jsResult);
+                    });
         });
+    }
+
+    private Collection<CustomMarker> prepareCustomMarkersForCluster(String mapId, JSArray jsMarkers) {
+        final int n = jsMarkers.length();
+        Collection<CustomMarker> customMarkers = new ArrayList<>(n);
+        for (int i = 0; i < n; i++) {
+            JSObject jsObject = JSObjectDefaults.getJSObjectByIndex(jsMarkers, i);
+            CustomMarker customMarker = new CustomMarker();
+            customMarker.updateFromJSObject(jsObject);
+            customMarkers.add(customMarker);
+
+        }
+        return customMarkers;
+    }
+
+    private JSObject prepareResultForCluster(String mapId, Collection<CustomMarker> customMarkers) {
+        final JSArray jsArrResult = new JSArray();
+        for (CustomMarker customMarker : customMarkers) {
+            jsArrResult.put(CustomMarker.getResultForMarker(customMarker, mapId));
+        }
+        JSObject jsResult = new JSObject();
+        jsResult.put("result", jsArrResult);
+        return jsResult;
     }
 
     @PluginMethod()
@@ -529,11 +578,16 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
         getBridge().getActivity().runOnUiThread(() -> {
             CustomMapView customMapView = customMapViews.get(mapId);
 
-            if (customMapView != null) {
-                customMapView.addPolygon(call);
-            } else {
+            if (customMapView == null) {
                 call.reject("map not found");
+                return;
             }
+
+            CustomPolygon customPolygon = new CustomPolygon();
+            customPolygon.updateFromJSObject(call.getData());
+
+            Polygon polygon = customMapView.addPolygon(customPolygon);
+            call.resolve(CustomPolygon.getResultForPolygon(polygon, mapId));
         });
     }
 

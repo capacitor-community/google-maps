@@ -91,7 +91,7 @@ export class CapacitorGoogleMapsWeb
     throw this.unimplemented("Not implemented on web.");
   }
 
-  async updatePolygon(_options: UpdatePolygonOptions): Promise<PolygonResult> {
+  async updatePolygon(_options: UpdatePolygonOptions): Promise<void> {
     throw this.unimplemented("Not implemented on web.");
   }
 

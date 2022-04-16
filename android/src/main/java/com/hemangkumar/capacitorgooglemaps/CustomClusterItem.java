@@ -17,19 +17,19 @@ class CustomClusterItem implements ClusterItem {
     @NonNull
     @Override
     public LatLng getPosition() {
-        return getCustomMarker().getPosition();
+        return getCustomMarker().getMarkerOptions().getPosition();
     }
 
     @Nullable
     @Override
     public String getTitle() {
-        return getCustomMarker().getTitle();
+        return getCustomMarker().getMarkerOptions().getTitle();
     }
 
     @Nullable
     @Override
     public String getSnippet() {
-        return getCustomMarker().getSnippet();
+        return getCustomMarker().getMarkerOptions().getSnippet();
     }
 
     public CustomMarker getCustomMarker() {

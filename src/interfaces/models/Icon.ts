@@ -1,27 +1,19 @@
-import { Size } from "./Size";
+import { IconSize } from "../../definitions";
 
 /**
  * A data class representing icon/marker.
  */
 export interface Icon {
-  /**
+   /**
    * URL path to icon
    *
-   * @since x.x.x
+   * @since 2.0.0
    */
-  url: string;
-  
-  /**
-   * Target icon size in millimeters
-   *
-   * @since x.x.x
-   */
-  targetSizeMm?: Size;
-  
-  /**
-   * Target icon size in pixels
-   *
-   * @since x.x.x
-   */
-  targetSizePx?: Size;
+    url: string;
+    /**
+     * Target icon size in pixels. Defaults to 30x30 if not specified.
+     *
+     * @since 2.0.0
+     */
+    size?: IconSize;
 }

@@ -8,8 +8,10 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.util.Consumer;
 
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
@@ -24,13 +26,13 @@ import com.google.android.libraries.maps.UiSettings;
 import com.google.android.libraries.maps.model.CameraPosition;
 import com.google.android.libraries.maps.model.LatLng;
 import com.google.android.libraries.maps.model.Marker;
-import com.google.android.libraries.maps.model.MarkerOptions;
 import com.google.android.libraries.maps.model.PointOfInterest;
 import com.google.android.libraries.maps.model.Polygon;
 import com.google.android.libraries.maps.model.PolygonOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -54,7 +56,7 @@ public class CustomMapView
         ClusterManager.OnClusterInfoWindowClickListener<CustomClusterItem>,
         ClusterManager.OnClusterItemClickListener<CustomClusterItem>,
         ClusterManager.OnClusterItemInfoWindowClickListener<CustomClusterItem> {
-    private final AppCompatActivity context;
+    private final AppCompatActivity activity;
     private final CustomMapViewEvents customMapViewEvents;
     private final MapEventsListener mapEventsListener = new MapEventsListener();
 
@@ -67,7 +69,6 @@ public class CustomMapView
     private final Map<String, Polygon> polygons = new HashMap<>();
     private ClusterManager<CustomClusterItem> clusterManager;
     private CustomClusterRenderer clusterRenderer;
-    //private final Map<LatLng, Object> clusteredMarkerTags = new HashMap<>();
     private final Map<String, CustomClusterItem> clusterItems = new HashMap<>();
 
     String savedCallbackIdForCreate;
@@ -120,8 +121,8 @@ public class CustomMapView
     public MapCameraPosition mapCameraPosition;
     public MapPreferences mapPreferences;
 
-    public CustomMapView(@NonNull AppCompatActivity context, CustomMapViewEvents customMapViewEvents) {
-        this.context = context;
+    public CustomMapView(@NonNull AppCompatActivity activity, CustomMapViewEvents customMapViewEvents) {
+        this.activity = activity;
         this.customMapViewEvents = customMapViewEvents;
         this.id = UUID.randomUUID().toString();
     }
@@ -131,7 +132,7 @@ public class CustomMapView
     }
 
     private boolean hasPermission() {
-        return ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+        return ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
     @SuppressLint("MissingPermission")
@@ -163,8 +164,8 @@ public class CustomMapView
 
         assignProxyListenerToMap();
         CustomMarkerManager markerManager = new CustomMarkerManager(googleMap, mapEventsListener);
-        clusterManager = new ClusterManager<>(context, googleMap, markerManager);
-        clusterRenderer = new CustomClusterRenderer(context, googleMap, clusterManager);
+        clusterManager = new ClusterManager<>(activity, googleMap, markerManager);
+        clusterRenderer = new CustomClusterRenderer(activity, googleMap, clusterManager);
         clusterManager.setRenderer(clusterRenderer);
         mapEventsListener.addOnCameraIdleListener(clusterManager);
         clusterManager.setOnClusterClickListener(this);
@@ -453,7 +454,7 @@ public class CustomMapView
         GoogleMapOptions googleMapOptions = this.mapPreferences.generateGoogleMapOptions();
         googleMapOptions.camera(this.mapCameraPosition.cameraPosition);
 
-        mapView = new MapView(context, googleMapOptions);
+        mapView = new MapView(activity, googleMapOptions);
 
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(getScaledPixels(boundingRect.width), getScaledPixels(boundingRect.height));
         lp.topMargin = getScaledPixels(boundingRect.y);
@@ -524,7 +525,7 @@ public class CustomMapView
 
     private int getScaledPixels(float pixels) {
         // Get the screen's density scale
-        final float scale = context.getResources().getDisplayMetrics().density;
+        final float scale = activity.getResources().getDisplayMetrics().density;
         // Convert the dps to pixels, based on density scale
         return (int) (pixels * scale + 0.5f);
     }
@@ -546,59 +547,49 @@ public class CustomMapView
         clusterManager.cluster();
     }
 
-    public void addMarker(PluginCall call) {
-        final MarkerOptions markerOptions = new MarkerOptions();
-        final CustomMarker customMarker = new CustomMarker();
-        customMarker.updateFromJSObject(call.getData());
-        customMarker.updateMarkerOptions(markerOptions);
-        customMarker.asyncLoadIcon(
-                context,
-                () -> {
-                    markerOptions.icon(customMarker.getBitmapDescriptor());
-                    Marker marker = customMarker.addToMap(googleMap, markerOptions);
+    public void addMarker(CustomMarker customMarker, @Nullable Consumer<Marker> consumer) {
+        customMarker.addToMap(
+                activity,
+                googleMap,
+                (marker) -> {
                     markers.put(customMarker.markerId, marker);
-                    call.resolve(CustomMarker.getResultForMarker(marker, getId()));
-                });
+
+                    if (consumer != null) {
+                        consumer.accept(marker);
+                    }
+                }
+        );
     }
 
-    private int nIconsLoaded = 0;
+    private int nIconsToLoad = 0;
 
-    public void addCluster(PluginCall call) {
-        final JSArray result = new JSArray();
-        asyncLoadClusterIcon(call);
-        final JSArray jsMarkers = call.getArray("markers");
-        final int n = jsMarkers.length();
-        nIconsLoaded += n;
-        for (int i = 0; i < n; i++) {
-            JSObject jsObject = JSObjectDefaults.getJSObjectByIndex(jsMarkers, i);
-            CustomMarker customMarker = new CustomMarker();
-            customMarker.updateFromJSObject(jsObject);
+    public void addCluster(
+            Collection<CustomMarker> customMarkers,
+            @Nullable IconDescriptor clusterIconDescriptor,
+            @Nullable CaptionPreferences clusterCaptionPreferences,
+            @Nullable Runnable complete) {
+        asyncLoadClusterIcon(clusterIconDescriptor, clusterCaptionPreferences);
+        final int n = customMarkers.size();
+        nIconsToLoad += n;
+        for (CustomMarker customMarker : customMarkers) {
             final CustomClusterItem item = new CustomClusterItem(customMarker);
             clusterManager.addItem(item);
             clusterItems.put(item.getCustomMarker().markerId, item);
             item.getCustomMarker().asyncLoadIcon(
-                    context,
+                    activity,
                     () -> {
                         clusterManager.updateItem(item);
-                        result.put(CustomMarker.getResultForMarker(item.getCustomMarker(), getId()));
                         clusterManager.cluster();
-                        if (--nIconsLoaded == 0) {
-                            JSObject jsResult = new JSObject();
-                            jsResult.put("result", result);
-                            call.resolve(jsResult);
+                        if (--nIconsToLoad == 0 && complete != null) {
+                            complete.run();
                         }
                     });
         }
     }
 
-    public void addPolygon(PluginCall call) {
-        CustomPolygon customPolygon = new CustomPolygon();
-        customPolygon.updateFromJSObject(call.getData());
-        PolygonOptions options = new PolygonOptions();
-        customPolygon.updatePolygonOptions(options);
-        Polygon polygon = customPolygon.addToMap(googleMap, options);
-        polygons.put(customPolygon.polygonId, polygon);
-        call.resolve(CustomPolygon.getResultForPolygon(polygon, getId()));
+    public Polygon addPolygon(CustomPolygon customPolygon) {
+        Polygon polygon = customPolygon.addToMap(googleMap);
+        return polygons.put(customPolygon.polygonId, polygon);
     }
 
     public void getPolygon(PluginCall call) {
@@ -645,13 +636,18 @@ public class CustomMapView
         }
     }
 
-    private void asyncLoadClusterIcon(final PluginCall call) {
-        final JSObject jsClusterIcon = call.getObject("clusterIcon");
-        new AsyncIconLoader(jsClusterIcon, context)
+    private void asyncLoadClusterIcon(
+            @Nullable IconDescriptor clusterIconDescriptor,
+            @Nullable CaptionPreferences captionPreferences) {
+        if (clusterIconDescriptor == null) {
+            return;
+        }
+        new AsyncIconLoader(clusterIconDescriptor, activity)
                 .load((bitmap) -> {
                     clusterRenderer.setIcon(bitmap);
-                    JSObject jsClusterCaptionPrefs = call.getObject("clusterCaptionPrefs");
-                    clusterRenderer.setCaptionPreferences(new CaptionPreferences(jsClusterCaptionPrefs));
+                    if (captionPreferences != null) {
+                        clusterRenderer.setCaptionPreferences(captionPreferences);
+                    }
                 });
     }
 

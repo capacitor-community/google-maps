@@ -76,7 +76,7 @@ export interface CapacitorGoogleMapsPlugin {
 
   addPolygon(options: AddPolygonOptions): Promise<PolygonResult>;
 
-  updatePolygon(options: UpdatePolygonOptions): Promise<PolygonResult>;
+  updatePolygon(options: UpdatePolygonOptions): Promise<void>;
 
   getPolygon(options: GetPolygonOptions): Promise<PolygonResult>;
 
