@@ -35,6 +35,8 @@ public class CustomPolygon {
             loadStrokePattern(preferences);
             initPlainFields(preferences);
         }
+
+        setMetadata(JSObjectDefaults.getJSObjectSafe(preferences, "metadata", new JSObject()));
     }
 
     public void updatePolygonOptions(PolygonOptions other) {
@@ -56,8 +58,6 @@ public class CustomPolygon {
                 .geodesic(polygonOptions.isGeodesic())
                 .visible(polygonOptions.isVisible())
                 .zIndex(polygonOptions.getZIndex());
-
-        setMetadata(this.polygonId);
     }
 
     public void updatePolygon(Polygon polygon) {
@@ -190,10 +190,10 @@ public class CustomPolygon {
         }
     }
 
-    private void setMetadata(String polygonId) {
+    private void setMetadata(JSObject jsObject) {
         JSObject tag = new JSObject();
         tag.put("polygonId", polygonId);
-        tag.put("metadata", metadata);
+        tag.put("metadata", jsObject);
         this.tag = tag;
     }
 
@@ -205,7 +205,7 @@ public class CustomPolygon {
         final boolean visibility = preferences.optBoolean("visibility", true);
         final boolean isGeodesic = preferences.optBoolean("isGeodesic", false);
         final boolean isClickable = preferences.optBoolean("isClickable", false);
-        metadata = JSObjectDefaults.getJSObjectSafe(preferences, "metadata", new JSObject());
+
         final int strokeJointType;
 
         switch (preferences.optString("strokeJointType", "DEFAULT")) {

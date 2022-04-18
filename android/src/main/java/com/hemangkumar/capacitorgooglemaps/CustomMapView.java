@@ -589,51 +589,47 @@ public class CustomMapView
 
     public Polygon addPolygon(CustomPolygon customPolygon) {
         Polygon polygon = customPolygon.addToMap(googleMap);
-        return polygons.put(customPolygon.polygonId, polygon);
+        polygons.put(customPolygon.polygonId, polygon);
+        return polygon;
     }
 
-    public void getPolygon(PluginCall call) {
-        String polygonId = call.getData().optString("polygonId", "");
-        Polygon polygon = polygons.get(polygonId);
-        if (polygon != null) {
-            call.resolve(CustomPolygon.getResultForPolygon(polygon, getId()));
-        } else {
-            call.reject("polygon not found");
-        }
+    public Polygon getPolygon( String polygonId) {
+        return polygons.get(polygonId);
     }
 
-    public void updatePolygon(PluginCall call) {
-        String polygonId = call.getData().optString("polygonId", "");
+    public boolean updatePolygon(String polygonId, CustomPolygon customPolygon) {
         Polygon polygon = polygons.get(polygonId);
         if (polygon != null) {
-            CustomPolygon customPolygon = new CustomPolygon();
-            customPolygon.updateFromJSObject(call.getData());
             customPolygon.updatePolygon(polygon);
-            call.resolve();
-        } else {
-            call.reject("polygon not found");
+            return true;
         }
+        return false;
     }
 
-    public void removePolygon(String polygonId) {
+    public boolean removePolygon(String polygonId) {
         Polygon polygon = polygons.remove(polygonId);
         if (polygon != null) {
             polygon.remove();
+            return true;
         }
+        return false;
     }
 
-    public void removeMarker(String markerId) {
+    public boolean removeMarker(String markerId) {
         Marker marker = markers.remove(markerId);
         if (marker != null) {
             marker.remove();
+            return true;
         } else {
             CustomClusterItem item = clusterItems.remove(markerId);
             if (item != null) {
                 if (clusterManager.removeItem(item)) {
                     clusterManager.cluster();
+                    return true;
                 }
             }
         }
+        return false;
     }
 
     private void asyncLoadClusterIcon(

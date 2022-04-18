@@ -21,6 +21,10 @@ import {
   PolygonResult,
   UpdatePolygonOptions,
   GetPolygonOptions,
+  AddPolylineOptions,
+  UpdatePolylineOptions,
+  PolylineResult,
+  GetPolylineOptions,
   DidTapInfoWindowCallback,
   DidCloseInfoWindowCallback,
   DidTapMapCallback,
@@ -100,6 +104,22 @@ export class CapacitorGoogleMapsWeb
   }
 
   async removePolygon(_options: GetPolygonOptions): Promise<void> {
+    throw this.unimplemented("Not implemented on web.");
+  }
+
+  async addPolyline(_options: AddPolylineOptions): Promise<PolylineResult> {
+    throw this.unimplemented("Not implemented on web.");
+  }
+  
+  async updatePolyline(_options: UpdatePolylineOptions): Promise<void> {
+    throw this.unimplemented("Not implemented on web.");
+  }
+
+  async getPolyline(_options: GetPolylineOptions): Promise<PolylineResult> {
+    throw this.unimplemented("Not implemented on web.");
+  }
+
+  async removePolyline(_options: GetPolylineOptions): Promise<void> {
     throw this.unimplemented("Not implemented on web.");
   }
 

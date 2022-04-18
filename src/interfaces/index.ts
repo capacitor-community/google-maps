@@ -13,6 +13,10 @@ export { GetPolygonOptions } from "./methods/GetPolygon";
 export { UpdatePolygonOptions } from "./methods/UpdatePolygon";
 export { RemoveMarkerOptions } from "./methods/RemoveMarker";
 export { AddClusterOptions, AddClusterResult } from "./methods/AddCluster";
+export { AddPolylineOptions } from "./methods/AddPolylineOptions";
+export { PolylineResult } from "./methods/PolylineResult"
+export { GetPolylineOptions } from "./methods/GetPolyline";
+export { UpdatePolylineOptions } from "./methods/UpdatePolyline";
 
 // events
 export * from "./events/DidTapInfoWindow";
@@ -36,8 +40,10 @@ export { CameraMovementReason } from "./models/GoogleMap/Camera/MovementReason";
 export { CameraPosition } from "./models/GoogleMap/Camera/Position";
 export { Marker } from "./models/GoogleMap/Marker/Marker";
 export { Polygon } from "./models/GoogleMap/Polygon/Polygon";
+export { Polyline } from "./models/GoogleMap/Polyline/Polyline";
 export { MarkerPreferences } from "./models/GoogleMap/Marker/MarkerPreferences";
 export { PolygonPreferences } from "./models/GoogleMap/Polygon/PolygonPreferences";
+export { PolylinePreferences } from "./models/GoogleMap/Polyline/PolylinePreferences";
 export { PatternItem } from "./models/GoogleMap/PatternItem";
 export { ClusteredMarkerPreferences } from "./models/GoogleMap/Cluster/ClusteredMarkerPreferences";
 export { MapAppearance } from "./models/GoogleMap/Appearance";

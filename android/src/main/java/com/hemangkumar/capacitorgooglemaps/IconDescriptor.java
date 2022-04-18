@@ -4,11 +4,14 @@ import android.content.res.Resources;
 import android.util.Size;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.getcapacitor.JSObject;
 
 class IconDescriptor {
+    @NonNull
     public final String url;
+    @NonNull
     public final Size size;
 
     private float density = Resources.getSystem().getDisplayMetrics().density;
@@ -36,9 +39,5 @@ class IconDescriptor {
         size = new Size(
                 (int) Math.round(jsSize.optDouble("width", 30) * density),
                 (int) Math.round(jsSize.optDouble("height", 30) * density));
-    }
-
-    public boolean isSizeSet() {
-        return size.getHeight() > 0 && size.getWidth() > 0;
     }
 }

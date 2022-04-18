@@ -92,10 +92,8 @@ class AsyncIconLoader {
                 try {
                     try (InputStream inputStream = new FileInputStream(resource)) {
                         SVG svg = SVG.getFromInputStream(inputStream);
-                        if (iconDescriptor.isSizeSet()) {
-                            svg.setDocumentWidth(iconDescriptor.size.getWidth());
-                            svg.setDocumentHeight(iconDescriptor.size.getHeight());
-                        }
+                        svg.setDocumentWidth(iconDescriptor.size.getWidth());
+                        svg.setDocumentHeight(iconDescriptor.size.getHeight());
                         Picture picture = svg.renderToPicture();
                         Bitmap bitmap = pictureToBitmap(picture);
                         onIconReady.onReady(bitmap);
@@ -119,10 +117,7 @@ class AsyncIconLoader {
 
     private <T> RequestBuilder<T> scaleImageOptional(
             RequestBuilder<T> builder) {
-        if (iconDescriptor.isSizeSet()) {
-            builder = builder.override(iconDescriptor.size.getWidth(), iconDescriptor.size.getHeight());
-        }
-        return builder;
+        return builder.override(iconDescriptor.size.getWidth(), iconDescriptor.size.getHeight());
     }
 
     private static Bitmap pictureToBitmap(Picture picture) {
