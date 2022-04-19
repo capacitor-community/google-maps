@@ -11,7 +11,7 @@ import com.google.android.libraries.maps.model.PolylineOptions;
 
 import java.util.List;
 
-public class CustomPolyline extends CustomPoly<Polyline> {
+public class CustomPolyline extends CustomShape<Polyline> {
     private PolylineOptions polylineOptions = new PolylineOptions();
 
     @Override

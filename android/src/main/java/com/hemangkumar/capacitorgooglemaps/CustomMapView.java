@@ -44,6 +44,7 @@ public class CustomMapView
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnMarkerDragListener,
         GoogleMap.OnPolygonClickListener,
+        GoogleMap.OnPolylineClickListener,
         GoogleMap.OnMyLocationClickListener,
         GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnPoiClickListener,
@@ -87,6 +88,7 @@ public class CustomMapView
 
     String savedCallbackIdForDidDragMarker;
     String savedCallbackIdForDidTapPolygon;
+    String savedCallbackIdForDidTapPolyline;
 
     String savedCallbackIdForDidEndDraggingMarker;
 
@@ -107,6 +109,7 @@ public class CustomMapView
     public static final String EVENT_DID_LONG_PRESS_MAP = "didLongPressMap";
     public static final String EVENT_DID_TAP_MARKER = "didTapMarker";
     public static final String EVENT_DID_TAP_POLYGON = "didTapPolygon";
+    public static final String EVENT_DID_TAP_POLYLINE = "didTapPolyline";
     public static final String EVENT_DID_BEGIN_DRAGGING_MARKER = "didBeginDraggingMarker";
     public static final String EVENT_DID_DRAG_MARKER = "didDragMarker";
     public static final String EVENT_DID_END_DRAGGING_MARKER = "didEndDraggingMarker";
@@ -187,6 +190,7 @@ public class CustomMapView
         googleMap.setOnMyLocationButtonClickListener(mapEventsListener);
         googleMap.setOnPoiClickListener(mapEventsListener);
         googleMap.setOnPolygonClickListener(mapEventsListener);
+        googleMap.setOnPolylineClickListener(mapEventsListener);
     }
 
     @Override
@@ -236,6 +240,14 @@ public class CustomMapView
         if (customMapViewEvents != null && savedCallbackIdForDidTapPolygon != null) {
             JSObject result = CustomPolygon.getResultForPolygon(polygon, this.id);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapPolygon, result);
+        }
+    }
+
+    @Override
+    public void onPolylineClick(Polyline polyline) {
+        if (customMapViewEvents != null && savedCallbackIdForDidTapPolyline != null) {
+            JSObject result = CustomPolyline.getResultForPolyline(polyline, this.id);
+            customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapPolyline, result);
         }
     }
 
@@ -399,6 +411,10 @@ public class CustomMapView
                 case CustomMapView.EVENT_DID_TAP_POLYGON:
                     this.mapEventsListener.addOnPolygonClickListener(this);
                     savedCallbackIdForDidTapPolygon = callbackId;
+                    break;
+                case CustomMapView.EVENT_DID_TAP_POLYLINE:
+                    this.mapEventsListener.addOnPolylineClickListener(this);
+                    savedCallbackIdForDidTapPolyline = callbackId;
                     break;
                 case CustomMapView.EVENT_DID_BEGIN_DRAGGING_MARKER:
                     this.mapEventsListener.addOnMarkerDragListener(this);

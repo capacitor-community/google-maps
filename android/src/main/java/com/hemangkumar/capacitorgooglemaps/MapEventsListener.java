@@ -9,6 +9,7 @@ import com.google.android.libraries.maps.model.LatLng;
 import com.google.android.libraries.maps.model.Marker;
 import com.google.android.libraries.maps.model.PointOfInterest;
 import com.google.android.libraries.maps.model.Polygon;
+import com.google.android.libraries.maps.model.Polyline;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -20,6 +21,7 @@ class MapEventsListener implements
         GoogleMap.OnMapLongClickListener,
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnPolygonClickListener,
+        GoogleMap.OnPolylineClickListener,
         GoogleMap.OnMarkerDragListener,
         GoogleMap.OnMyLocationClickListener,
         GoogleMap.OnMyLocationButtonClickListener,
@@ -65,6 +67,9 @@ class MapEventsListener implements
             new LinkedHashSet<>();
 
     private final Set<GoogleMap.OnPolygonClickListener> onPolygonClickListeners =
+            new LinkedHashSet<>();
+
+    private final Set<GoogleMap.OnPolylineClickListener> onPolylineClickListeners =
             new LinkedHashSet<>();
 
     @Override
@@ -278,5 +283,20 @@ class MapEventsListener implements
 
     public void removeOnPolygonClickListener(GoogleMap.OnPolygonClickListener listener) {
         onPolygonClickListeners.remove(listener);
+    }
+
+    @Override
+    public void onPolylineClick(Polyline polyline) {
+        for (GoogleMap.OnPolylineClickListener listener : onPolylineClickListeners) {
+            listener.onPolylineClick(polyline);
+        }
+    }
+
+    public void addOnPolylineClickListener(GoogleMap.OnPolylineClickListener listener) {
+        onPolylineClickListeners.add(listener);
+    }
+
+    public void removeOnPolylineClickListener(GoogleMap.OnPolylineClickListener listener) {
+        onPolylineClickListeners.remove(listener);
     }
 }

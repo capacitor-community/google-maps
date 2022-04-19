@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class CustomPoly<T> {
+public abstract class CustomShape<T> {
     public final String id = UUID.randomUUID().toString();
     protected JSObject tag = new JSObject();
 

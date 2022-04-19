@@ -13,7 +13,7 @@ import com.google.android.libraries.maps.model.PolygonOptions;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomPolygon extends CustomPoly<Polygon> {
+public class CustomPolygon extends CustomShape<Polygon> {
     private PolygonOptions polygonOptions = new PolygonOptions();
 
     @Override

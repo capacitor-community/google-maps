@@ -416,6 +416,11 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     }
 
     @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
+    public void didTapPolyline(final PluginCall call) {
+        setCallbackIdForEvent(call, CustomMapView.EVENT_DID_TAP_POLYLINE);
+    }
+
+    @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
     public void didBeginDraggingMarker(final PluginCall call) {
         setCallbackIdForEvent(call, CustomMapView.EVENT_DID_BEGIN_DRAGGING_MARKER);
     }

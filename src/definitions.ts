@@ -24,6 +24,8 @@ import {
   UpdatePolylineOptions,
   PolylineResult,
   GetPolylineOptions,
+  AddCircleOptions,
+  AddCircleResult,
   // events
   DidTapInfoWindowCallback,
   DidCloseInfoWindowCallback,
@@ -31,6 +33,7 @@ import {
   DidLongPressMapCallback,
   DidTapMarkerCallback,
   DidTapPolygonCallback,
+  DidTapPolylineCallback,
   DidBeginDraggingMarkerCallback,
   DidDragMarkerCallback,
   DidEndDraggingMarkerCallback,
@@ -96,6 +99,8 @@ export interface CapacitorGoogleMapsPlugin {
 
   removePolyline(options: GetPolylineOptions): Promise<void>;
 
+  addCircle(options: AddCircleOptions): Promise<AddCircleResult>;
+
   didTapInfoWindow(
     options: DefaultEventOptions,
     callback: DidTapInfoWindowCallback
@@ -124,6 +129,11 @@ export interface CapacitorGoogleMapsPlugin {
   didTapPolygon(
     options: DefaultEventOptions,
     callback: DidTapPolygonCallback
+  ): Promise<CallbackID>;
+
+  didTapPolyline(
+    options: DefaultEventOptions,
+    callback: DidTapPolylineCallback
   ): Promise<CallbackID>;
 
   didBeginDraggingMarker(

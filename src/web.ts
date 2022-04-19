@@ -25,12 +25,15 @@ import {
   UpdatePolylineOptions,
   PolylineResult,
   GetPolylineOptions,
+  AddCircleOptions,
+  AddCircleResult,
   DidTapInfoWindowCallback,
   DidCloseInfoWindowCallback,
   DidTapMapCallback,
   DidLongPressMapCallback,
   DidTapMarkerCallback,
   DidTapPolygonCallback,
+  DidTapPolylineCallback,
   DidBeginDraggingMarkerCallback,
   DidDragMarkerCallback,
   DidEndDraggingMarkerCallback,
@@ -123,6 +126,10 @@ export class CapacitorGoogleMapsWeb
     throw this.unimplemented("Not implemented on web.");
   }
 
+  async addCircle(_options: AddCircleOptions): Promise<AddCircleResult> {
+    throw this.unimplemented("Not implemented on web.");
+  }
+
   async didTapInfoWindow(
     _options: DefaultEventOptions,
     _callback: DidTapInfoWindowCallback
@@ -161,6 +168,13 @@ export class CapacitorGoogleMapsWeb
   async didTapPolygon(
     _options: DefaultEventOptions,
     _callback: DidTapPolygonCallback
+  ): Promise<CallbackID> {
+    throw this.unimplemented("Not implemented on web.");
+  }
+
+  async didTapPolyline(
+    _options: DefaultEventOptions,
+    _callback: DidTapPolylineCallback
   ): Promise<CallbackID> {
     throw this.unimplemented("Not implemented on web.");
   }

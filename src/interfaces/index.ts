@@ -17,6 +17,8 @@ export { AddPolylineOptions } from "./methods/AddPolylineOptions";
 export { PolylineResult } from "./methods/PolylineResult"
 export { GetPolylineOptions } from "./methods/GetPolyline";
 export { UpdatePolylineOptions } from "./methods/UpdatePolyline";
+export { AddCircleOptions } from "./methods/AddCircle";
+export { AddCircleResult } from "./methods/AddCircleResult";
 
 // events
 export * from "./events/DidTapInfoWindow";
@@ -25,6 +27,7 @@ export * from "./events/DidTapMap";
 export * from "./events/DidLongPressMap";
 export * from "./events/DidTapMarker";
 export * from "./events/DidTapPolygon";
+export * from "./events/DidTapPolyline";
 export * from "./events/DidBeginDraggingMarker";
 export * from "./events/DidDragMarker";
 export * from "./events/DidEndDraggingMarker";
@@ -41,8 +44,10 @@ export { CameraPosition } from "./models/GoogleMap/Camera/Position";
 export { Marker } from "./models/GoogleMap/Marker/Marker";
 export { Polygon } from "./models/GoogleMap/Polygon/Polygon";
 export { Polyline } from "./models/GoogleMap/Polyline/Polyline";
+export { Circle } from "./models/GoogleMap/Circle/Circle";
 export { MarkerPreferences } from "./models/GoogleMap/Marker/MarkerPreferences";
 export { PolygonPreferences } from "./models/GoogleMap/Polygon/PolygonPreferences";
+export { CirclePreferences } from "./models/GoogleMap/Circle/CirclePreferences";
 export { PolylinePreferences } from "./models/GoogleMap/Polyline/PolylinePreferences";
 export { PatternItem } from "./models/GoogleMap/PatternItem";
 export { ClusteredMarkerPreferences } from "./models/GoogleMap/Cluster/ClusteredMarkerPreferences";
