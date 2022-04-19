@@ -8,7 +8,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
+import androidx.core.util.Consumer;
 
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
@@ -20,15 +20,13 @@ import com.getcapacitor.annotation.Permission;
 import com.google.android.libraries.maps.model.CameraPosition;
 import com.google.android.libraries.maps.model.Marker;
 import com.google.android.libraries.maps.model.Polygon;
-import com.google.android.libraries.maps.model.PolygonOptions;
+import com.google.android.libraries.maps.model.Polyline;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-
-import androidx.core.util.Consumer;
 
 @CapacitorPlugin(
         name = "CapacitorGoogleMaps",
@@ -543,7 +541,6 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
             CustomMarker customMarker = new CustomMarker();
             customMarker.updateFromJSObject(jsObject);
             customMarkers.add(customMarker);
-
         }
         return customMarkers;
     }
@@ -607,12 +604,60 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
         });
     }
 
+    @PluginMethod()
+    public void addPolyline(final PluginCall call) {
+        callMapViewMethodInUiThread(call, (customMapView) -> {
+            CustomPolyline customPolyline = new CustomPolyline();
+            customPolyline.updateFromJSObject(call.getData());
+            Polyline polyline = customMapView.addPolyline(customPolyline);
+            call.resolve(CustomPolyline.getResultForPolyline(polyline, customMapView.getId()));
+        });
+    }
+
+    @PluginMethod()
+    public void getPolyline(final PluginCall call) {
+        callMapViewMethodInUiThread(call, (customMapView) -> {
+            String polylineId = call.getString("polylineId", "");
+            Polyline polyline = customMapView.getPolyline(polylineId);
+            if (polyline != null) {
+                call.resolve(CustomPolyline.getResultForPolyline(polyline, customMapView.getId()));
+            } else {
+                call.reject("polyline is not found when get");
+            }
+        });
+    }
+
+    @PluginMethod(returnType = PluginMethod.RETURN_NONE)
+    public void updatePolyline(final PluginCall call) {
+        callMapViewMethodInUiThread(call, (customMapView) -> {
+            String polylineId = call.getString("polylineId", "");
+            CustomPolyline customPolyline = new CustomPolyline();
+            customPolyline.updateFromJSObject(call.getData());
+            if (customMapView.updatePolyline(polylineId, customPolyline)) {
+                call.resolve();
+            } else {
+                call.reject("polyline is not found when update");
+            }
+        });
+    }
+
+    @PluginMethod(returnType = PluginMethod.RETURN_NONE)
+    public void removePolyline(final PluginCall call) {
+        callMapViewMethodInUiThread(call, (customMapView) -> {
+            final String polylineId = call.getString("polylineId");
+            if (customMapView.removePolyline(polylineId)) {
+                call.resolve();
+            } else {
+                call.reject("polyline is not found when remove");
+            }
+        });
+    }
+
     private <T> void callMapViewMethodInUiThread(final PluginCall call,
                                                  final Consumer<CustomMapView> consumer) {
         final String mapId = call.getString("mapId");
         getBridge().getActivity().runOnUiThread(() -> {
             CustomMapView customMapView = customMapViews.get(mapId);
-
             if (customMapView != null) {
                 consumer.accept(customMapView);
             } else {

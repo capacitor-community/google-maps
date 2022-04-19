@@ -8,7 +8,7 @@ export interface PolylinePreferences {
   visibility?: boolean;
   isGeodesic?: boolean;
   isClickable?: boolean;
-  strokePattern?: PatternItem[];
+  pattern?: PatternItem[];
   jointType?: string; // 'BEVEL', 'DEFAULT', 'ROUND'
   // spans?: todo: AGalilov: Do we need spans? 
   metadata?: { [key: string]: any };

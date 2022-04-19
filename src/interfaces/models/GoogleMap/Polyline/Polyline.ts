@@ -9,10 +9,10 @@ export interface Polyline {
    */
   mapId: string;
   /**
-   * GUID representing the unique id of this polygon
+   * GUID representing the unique id of this polyline
    *
    */
-  polygonId: string;
+  polylineId: string;
   points: LatLng[];
   preferences?: PolylinePreferences;
 }

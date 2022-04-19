@@ -13,9 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.util.Consumer;
 
-import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
-import com.getcapacitor.PluginCall;
 import com.google.android.libraries.maps.CameraUpdate;
 import com.google.android.libraries.maps.CameraUpdateFactory;
 import com.google.android.libraries.maps.GoogleMap;
@@ -28,7 +26,7 @@ import com.google.android.libraries.maps.model.LatLng;
 import com.google.android.libraries.maps.model.Marker;
 import com.google.android.libraries.maps.model.PointOfInterest;
 import com.google.android.libraries.maps.model.Polygon;
-import com.google.android.libraries.maps.model.PolygonOptions;
+import com.google.android.libraries.maps.model.Polyline;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 
@@ -67,6 +65,7 @@ public class CustomMapView
 
     private final Map<String, Marker> markers = new HashMap<>();
     private final Map<String, Polygon> polygons = new HashMap<>();
+    private final Map<String, Polyline> polylines = new HashMap<>();
     private ClusterManager<CustomClusterItem> clusterManager;
     private CustomClusterRenderer clusterRenderer;
     private final Map<String, CustomClusterItem> clusterItems = new HashMap<>();
@@ -544,6 +543,7 @@ public class CustomMapView
         markers.clear();
         clusterItems.clear();
         polygons.clear();
+        polylines.clear();
         clusterManager.cluster();
     }
 
@@ -559,6 +559,23 @@ public class CustomMapView
                     }
                 }
         );
+    }
+
+    public boolean removeMarker(String markerId) {
+        Marker marker = markers.remove(markerId);
+        if (marker != null) {
+            marker.remove();
+            return true;
+        } else {
+            CustomClusterItem item = clusterItems.remove(markerId);
+            if (item != null) {
+                if (clusterManager.removeItem(item)) {
+                    clusterManager.cluster();
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private int nIconsToLoad = 0;
@@ -589,18 +606,18 @@ public class CustomMapView
 
     public Polygon addPolygon(CustomPolygon customPolygon) {
         Polygon polygon = customPolygon.addToMap(googleMap);
-        polygons.put(customPolygon.polygonId, polygon);
+        polygons.put(customPolygon.id, polygon);
         return polygon;
     }
 
-    public Polygon getPolygon( String polygonId) {
+    public Polygon getPolygon(String polygonId) {
         return polygons.get(polygonId);
     }
 
     public boolean updatePolygon(String polygonId, CustomPolygon customPolygon) {
         Polygon polygon = polygons.get(polygonId);
         if (polygon != null) {
-            customPolygon.updatePolygon(polygon);
+            customPolygon.updateObject(polygon);
             return true;
         }
         return false;
@@ -615,19 +632,30 @@ public class CustomMapView
         return false;
     }
 
-    public boolean removeMarker(String markerId) {
-        Marker marker = markers.remove(markerId);
-        if (marker != null) {
-            marker.remove();
+    public Polyline addPolyline(CustomPolyline customPolyline) {
+        Polyline polyline = customPolyline.addToMap(googleMap);
+        polylines.put(customPolyline.id, polyline);
+        return polyline;
+    }
+
+    public Polyline getPolyline(String polylineId) {
+        return polylines.get(polylineId);
+    }
+
+    public boolean updatePolyline(String polylineId, CustomPolyline customPolyline) {
+        Polyline polyline = polylines.get(polylineId);
+        if (polyline != null) {
+            customPolyline.updateObject(polyline);
             return true;
-        } else {
-            CustomClusterItem item = clusterItems.remove(markerId);
-            if (item != null) {
-                if (clusterManager.removeItem(item)) {
-                    clusterManager.cluster();
-                    return true;
-                }
-            }
+        }
+        return false;
+    }
+
+    public boolean removePolyline(String polylineId) {
+        Polyline polyline = polylines.remove(polylineId);
+        if (polyline != null) {
+            polyline.remove();
+            return true;
         }
         return false;
     }
