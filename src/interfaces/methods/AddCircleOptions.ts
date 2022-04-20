@@ -1,8 +1,8 @@
-import { LatLng, CirclePreferences } from "./../../definitions";
+import { LatLng, CirclePreferences } from "../../definitions";
 
 export interface AddCircleOptions {
   mapId: string;
-  position: LatLng;
+  center: LatLng;
   radius: number;
   preferences?: CirclePreferences;
 }

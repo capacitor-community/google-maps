@@ -26,7 +26,8 @@ import {
   PolylineResult,
   GetPolylineOptions,
   AddCircleOptions,
-  AddCircleResult,
+  GetCircleOptions,
+  CircleResult,
   DidTapInfoWindowCallback,
   DidCloseInfoWindowCallback,
   DidTapMapCallback,
@@ -126,7 +127,15 @@ export class CapacitorGoogleMapsWeb
     throw this.unimplemented("Not implemented on web.");
   }
 
-  async addCircle(_options: AddCircleOptions): Promise<AddCircleResult> {
+  async addCircle(_options: AddCircleOptions): Promise<CircleResult> {
+    throw this.unimplemented("Not implemented on web.");
+  }
+
+  async getCircle(_options: GetCircleOptions): Promise<CircleResult> {
+    throw this.unimplemented("Not implemented on web.");
+  }
+
+  async removeCircle(_options: GetCircleOptions): Promise<void> {
     throw this.unimplemented("Not implemented on web.");
   }
 

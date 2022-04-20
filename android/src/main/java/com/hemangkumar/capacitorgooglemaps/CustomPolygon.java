@@ -17,14 +17,14 @@ public class CustomPolygon extends CustomShape<Polygon> {
     private PolygonOptions polygonOptions = new PolygonOptions();
 
     @Override
-    public void updateFromJSObject(JSObject polygon) {
+    public void updateFromJSObject(JSObject jsPolygon) {
         polygonOptions = new PolygonOptions();
-        loadPoints(polygon, polygonOptions::add);
-        JSObject preferences = polygon.getJSObject("preferences");
-        if (preferences != null) {
-            loadHoles(preferences);
-            initPlainFields(preferences);
-            saveMetadataToTag(preferences);
+        loadPoints(jsPolygon, polygonOptions::add);
+        JSObject jsPreferences = jsPolygon.getJSObject("preferences");
+        if (jsPreferences != null) {
+            loadHoles(jsPreferences);
+            initPlainFields(jsPreferences);
+            saveMetadataToTag(jsPreferences);
         }
     }
 
@@ -34,7 +34,7 @@ public class CustomPolygon extends CustomShape<Polygon> {
     }
 
     @Override
-    public void updateObject(Polygon polygon) {
+    public void updateShape(Polygon polygon) {
         polygon.setHoles(polygonOptions.getHoles());
         polygon.setStrokePattern(polygonOptions.getStrokePattern());
         polygon.setStrokeJointType(polygonOptions.getStrokeJointType());
@@ -56,6 +56,7 @@ public class CustomPolygon extends CustomShape<Polygon> {
         return polygon;
     }
 
+    // todo: AGalilov: DRY! move this code to the parent class
     public static JSObject getResultForPolygon(Polygon polygon, String mapId) {
         JSObject tag = (JSObject) polygon.getTag();
 
@@ -65,7 +66,7 @@ public class CustomPolygon extends CustomShape<Polygon> {
         JSObject jsPreferences = new JSObject();
 
         jsResult.put("polygon", jsPolygon);
-        jsPolygon.put("points", latLonsToJSArray(polygon.getPoints()));
+        jsPolygon.put("points", latLongsToJSArray(polygon.getPoints()));
         jsPolygon.put("preferences", jsPreferences);
 
         // get map id
@@ -78,7 +79,7 @@ public class CustomPolygon extends CustomShape<Polygon> {
         // preferences.holes
         JSArray jsHoles = new JSArray();
         for (List<LatLng> hole : polygon.getHoles()) {
-            JSArray jsHole = latLonsToJSArray(hole);
+            JSArray jsHole = latLongsToJSArray(hole);
             jsHoles.put(jsHole);
         }
         if (jsHoles.length() > 0) {
@@ -103,7 +104,9 @@ public class CustomPolygon extends CustomShape<Polygon> {
         return jsResult;
     }
 
+    // todo: AGalilov: DRY!
     private void initPlainFields(final JSObject jsPreferences) {
+        // todo: Move to parent class
         final float strokeWidth = (float) jsPreferences.optDouble("strokeWidth", 6);
         final int strokeColor = Color.parseColor(jsPreferences.optString("strokeColor", "#000000"));
         final int fillColor = Color.parseColor(jsPreferences.optString("fillColor", "#300000FF"));
@@ -113,7 +116,7 @@ public class CustomPolygon extends CustomShape<Polygon> {
         final boolean isClickable = jsPreferences.optBoolean("isClickable", false);
         final List<PatternItem> strokePattern = parsePatternItems(JSObjectDefaults.getJSArray(
                 jsPreferences, "strokePattern", new JSArray()));
-
+        // todo: AGalilov: wrap ***Options class with common interface for PolygonOptions and CircleOptions
         polygonOptions.strokeWidth(strokeWidth);
         polygonOptions.strokeColor(strokeColor);
         polygonOptions.fillColor(fillColor);
@@ -138,9 +141,7 @@ public class CustomPolygon extends CustomShape<Polygon> {
             List<LatLng> holeList = new ArrayList<>(m);
             for (int j = 0; j < m; j++) {
                 JSObject jsLatLon = JSObjectDefaults.getJSObjectByIndex(jsLatLngArr, j);
-                double latitude = jsLatLon.optDouble("latitude", 0d);
-                double longitude = jsLatLon.optDouble("longitude", 0d);
-                holeList.add(new LatLng(latitude, longitude));
+                holeList.add(loadLatLng(jsLatLon));
             }
             polygonOptions.addHole(holeList);
         }

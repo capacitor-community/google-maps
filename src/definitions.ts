@@ -25,7 +25,8 @@ import {
   PolylineResult,
   GetPolylineOptions,
   AddCircleOptions,
-  AddCircleResult,
+  GetCircleOptions,
+  CircleResult,
   // events
   DidTapInfoWindowCallback,
   DidCloseInfoWindowCallback,
@@ -99,7 +100,11 @@ export interface CapacitorGoogleMapsPlugin {
 
   removePolyline(options: GetPolylineOptions): Promise<void>;
 
-  addCircle(options: AddCircleOptions): Promise<AddCircleResult>;
+  addCircle(options: AddCircleOptions): Promise<CircleResult>;
+
+  getCircle(options: GetCircleOptions): Promise<CircleResult>;
+
+  removeCircle(options: GetCircleOptions): Promise<void>;
 
   didTapInfoWindow(
     options: DefaultEventOptions,

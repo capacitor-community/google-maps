@@ -17,8 +17,9 @@ export { AddPolylineOptions } from "./methods/AddPolylineOptions";
 export { PolylineResult } from "./methods/PolylineResult"
 export { GetPolylineOptions } from "./methods/GetPolyline";
 export { UpdatePolylineOptions } from "./methods/UpdatePolyline";
-export { AddCircleOptions } from "./methods/AddCircle";
-export { AddCircleResult } from "./methods/AddCircleResult";
+export { AddCircleOptions } from "./methods/AddCircleOptions";
+export { GetCircleOptions } from "./methods/GetCircle";
+export { CircleResult } from "./methods/CircleResult";
 
 // events
 export * from "./events/DidTapInfoWindow";

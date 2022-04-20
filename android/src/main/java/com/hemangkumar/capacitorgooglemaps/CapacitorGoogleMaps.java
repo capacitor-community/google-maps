@@ -18,6 +18,7 @@ import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.annotation.Permission;
 import com.google.android.libraries.maps.model.CameraPosition;
+import com.google.android.libraries.maps.model.Circle;
 import com.google.android.libraries.maps.model.Marker;
 import com.google.android.libraries.maps.model.Polygon;
 import com.google.android.libraries.maps.model.Polyline;
@@ -654,6 +655,55 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
                 call.resolve();
             } else {
                 call.reject("polyline is not found when remove");
+            }
+        });
+    }
+
+    @PluginMethod()
+    public void addCircle(final PluginCall call) {
+        callMapViewMethodInUiThread(call, (customMapView) -> {
+            CustomCircle customCircle = new CustomCircle();
+            customCircle.updateFromJSObject(call.getData());
+            Circle circle = customMapView.addCircle(customCircle);
+            call.resolve(CustomCircle.getResultForCircle(circle, customMapView.getId()));
+        });
+    }
+
+    @PluginMethod()
+    public void getCircle(final PluginCall call) {
+        callMapViewMethodInUiThread(call, (customMapView) -> {
+            String circleId = call.getString("circleId", "");
+            Circle circle = customMapView.getCircle(circleId);
+            if (circle != null) {
+                call.resolve(CustomCircle.getResultForCircle(circle, customMapView.getId()));
+            } else {
+                call.reject("circle not found when get");
+            }
+        });
+    }
+
+    @PluginMethod(returnType = PluginMethod.RETURN_NONE)
+    public void updateCircle(final PluginCall call) {
+        callMapViewMethodInUiThread(call, (customMapView) -> {
+            String circleId = call.getString("circleId", "");
+            CustomCircle customCircle = new CustomCircle();
+            customCircle.updateFromJSObject(call.getData());
+            if (customMapView.updateCircle(circleId, customCircle)) {
+                call.resolve();
+            } else {
+                call.reject("circle is not found when update");
+            }
+        });
+    }
+
+    @PluginMethod(returnType = PluginMethod.RETURN_NONE)
+    public void removeCircle(final PluginCall call) {
+        callMapViewMethodInUiThread(call, (customMapView) -> {
+            final String circleId = call.getString("circleId");
+            if (customMapView.removeCircle(circleId)) {
+                call.resolve();
+            } else {
+                call.reject("circle is not found when remove");
             }
         });
     }

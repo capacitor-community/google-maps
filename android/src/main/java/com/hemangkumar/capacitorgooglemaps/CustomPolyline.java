@@ -15,13 +15,13 @@ public class CustomPolyline extends CustomShape<Polyline> {
     private PolylineOptions polylineOptions = new PolylineOptions();
 
     @Override
-    public void updateFromJSObject(JSObject polyline) {
+    public void updateFromJSObject(JSObject jsPolyline) {
         polylineOptions = new PolylineOptions();
-        loadPoints(polyline, polylineOptions::add);
-        JSObject preferences = polyline.getJSObject("preferences");
-        if (preferences != null) {
-            initPlainFields(preferences);
-            saveMetadataToTag(preferences);
+        loadPoints(jsPolyline, polylineOptions::add);
+        JSObject jsPreferences = jsPolyline.getJSObject("preferences");
+        if (jsPreferences != null) {
+            initPlainFields(jsPreferences);
+            saveMetadataToTag(jsPreferences);
         }
     }
 
@@ -30,7 +30,7 @@ public class CustomPolyline extends CustomShape<Polyline> {
         return "polylineId";
     }
 
-    public void updateObject(Polyline polyline) {
+    public void updateShape(Polyline polyline) {
         polyline.setPattern(polylineOptions.getPattern());
         polyline.setJointType(polylineOptions.getJointType());
         polyline.setWidth(polylineOptions.getWidth());
@@ -59,7 +59,7 @@ public class CustomPolyline extends CustomShape<Polyline> {
         JSObject jsPreferences = new JSObject();
 
         jsResult.put("polyline", jsPolyline);
-        jsPolyline.put("points", latLonsToJSArray(polyline.getPoints()));
+        jsPolyline.put("points", latLongsToJSArray(polyline.getPoints()));
         jsPolyline.put("preferences", jsPreferences);
 
         // get map id

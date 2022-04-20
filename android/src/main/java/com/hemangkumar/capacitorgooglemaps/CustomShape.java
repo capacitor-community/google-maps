@@ -1,5 +1,6 @@
 package com.hemangkumar.capacitorgooglemaps;
 
+import androidx.annotation.NonNull;
 import androidx.core.util.Consumer;
 
 import com.getcapacitor.JSArray;
@@ -21,9 +22,9 @@ public abstract class CustomShape<T> {
     public final String id = UUID.randomUUID().toString();
     protected JSObject tag = new JSObject();
 
-    public abstract void updateFromJSObject(JSObject polygon);
+    public abstract void updateFromJSObject(JSObject jsObject);
 
-    public abstract void updateObject(T polyline);
+    public abstract void updateShape(T shape);
 
     public abstract T addToMap(GoogleMap googleMap);
 
@@ -100,10 +101,14 @@ public abstract class CustomShape<T> {
         int n = jsPoints.length();
         for (int i = 0; i < n; i++) {
             JSObject jsLatLng = JSObjectDefaults.getJSObjectByIndex(jsPoints, i);
-            double latitude = jsLatLng.optDouble("latitude", 0d);
-            double longitude = jsLatLng.optDouble("longitude", 0d);
-            consumer.accept(new LatLng(latitude, longitude));
+            consumer.accept(loadLatLng(jsLatLng));
         }
+    }
+
+    protected static LatLng loadLatLng(JSObject jsLatLng) {
+        double latitude = jsLatLng.optDouble("latitude", 0d);
+        double longitude = jsLatLng.optDouble("longitude", 0d);
+        return new LatLng(latitude, longitude);
     }
 
     protected static String getJointTypeName(int jt) {
@@ -117,7 +122,7 @@ public abstract class CustomShape<T> {
         }
     }
 
-    protected int parseJointTypeName(String strokeJointTypeName) {
+    protected static int parseJointTypeName(String strokeJointTypeName) {
         switch (strokeJointTypeName) {
             case "BEVEL":
                 return JointType.BEVEL;
@@ -153,14 +158,20 @@ public abstract class CustomShape<T> {
         return jsStrokePattern;
     }
 
-    protected static JSArray latLonsToJSArray(Collection<LatLng> positions) {
+    protected static JSArray latLongsToJSArray(Collection<LatLng> positions) {
         JSArray jsPositions = new JSArray();
         for (LatLng pos : positions) {
-            JSObject jsPos = new JSObject();
-            jsPos.put("latitude", pos.latitude);
-            jsPos.put("longitude", pos.longitude);
+            JSObject jsPos = latLngToJSObject(pos);
             jsPositions.put(jsPos);
         }
         return jsPositions;
+    }
+
+    @NonNull
+    protected static JSObject latLngToJSObject(LatLng latLng) {
+        JSObject jsPos = new JSObject();
+        jsPos.put("latitude", latLng.latitude);
+        jsPos.put("longitude", latLng.longitude);
+        return jsPos;
     }
 }

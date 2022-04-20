@@ -22,6 +22,7 @@ import com.google.android.libraries.maps.MapView;
 import com.google.android.libraries.maps.OnMapReadyCallback;
 import com.google.android.libraries.maps.UiSettings;
 import com.google.android.libraries.maps.model.CameraPosition;
+import com.google.android.libraries.maps.model.Circle;
 import com.google.android.libraries.maps.model.LatLng;
 import com.google.android.libraries.maps.model.Marker;
 import com.google.android.libraries.maps.model.PointOfInterest;
@@ -67,6 +68,7 @@ public class CustomMapView
     private final Map<String, Marker> markers = new HashMap<>();
     private final Map<String, Polygon> polygons = new HashMap<>();
     private final Map<String, Polyline> polylines = new HashMap<>();
+    private final Map<String, Circle> circles = new HashMap<>();
     private ClusterManager<CustomClusterItem> clusterManager;
     private CustomClusterRenderer clusterRenderer;
     private final Map<String, CustomClusterItem> clusterItems = new HashMap<>();
@@ -560,6 +562,7 @@ public class CustomMapView
         clusterItems.clear();
         polygons.clear();
         polylines.clear();
+        circles.clear();
         clusterManager.cluster();
     }
 
@@ -633,7 +636,7 @@ public class CustomMapView
     public boolean updatePolygon(String polygonId, CustomPolygon customPolygon) {
         Polygon polygon = polygons.get(polygonId);
         if (polygon != null) {
-            customPolygon.updateObject(polygon);
+            customPolygon.updateShape(polygon);
             return true;
         }
         return false;
@@ -661,7 +664,7 @@ public class CustomMapView
     public boolean updatePolyline(String polylineId, CustomPolyline customPolyline) {
         Polyline polyline = polylines.get(polylineId);
         if (polyline != null) {
-            customPolyline.updateObject(polyline);
+            customPolyline.updateShape(polyline);
             return true;
         }
         return false;
@@ -671,6 +674,34 @@ public class CustomMapView
         Polyline polyline = polylines.remove(polylineId);
         if (polyline != null) {
             polyline.remove();
+            return true;
+        }
+        return false;
+    }
+
+    public Circle addCircle(CustomCircle customCircle) {
+        Circle circle = customCircle.addToMap(googleMap);
+        circles.put(customCircle.id, circle);
+        return circle;
+    }
+
+    public Circle getCircle(String circleId) {
+        return circles.get(circleId);
+    }
+
+    public boolean updateCircle(String circleId, CustomCircle customCircle) {
+        Circle circle = circles.get(circleId);
+        if (circle != null) {
+            customCircle.updateShape(circle);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removeCircle(String circleId) {
+        Circle circle = circles.remove(circleId);
+        if (circle != null) {
+            circle.remove();
             return true;
         }
         return false;
