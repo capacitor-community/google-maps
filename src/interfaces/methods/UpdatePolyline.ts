@@ -2,6 +2,6 @@ import { PolylinePreferences } from "../../definitions";
 
 export interface UpdatePolylineOptions {
   mapId: string;
-  polylineId: string;
+  id: string;
   preferences?: PolylinePreferences;
 }

@@ -297,7 +297,6 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
 
                 if (customMapView != null) {
                     JSObject result = customMapView.getMap();
-
                     call.resolve(result);
                 } else {
                     call.reject("map not found");
@@ -566,18 +565,19 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
         callMapViewMethodInUiThread(call, (customMapView) -> {
             CustomPolygon customPolygon = new CustomPolygon();
             customPolygon.updateFromJSObject(call.getData());
-            Polygon polygon = customMapView.addPolygon(customPolygon);
-            call.resolve(CustomPolygon.getResultForPolygon(polygon, customMapView.getId()));
+            ShapePolygon polygon = customMapView.addPolygon(customPolygon);
+            call.resolve(customPolygon.getResultFor(polygon, customMapView.getId()));
         });
     }
 
     @PluginMethod()
     public void getPolygon(final PluginCall call) {
         callMapViewMethodInUiThread(call, (customMapView) -> {
-            String polygonId = call.getString("polygonId", "");
-            Polygon polygon = customMapView.getPolygon(polygonId);
+            String polygonId = call.getString("id", "");
+            ShapePolygon polygon = customMapView.getPolygon(polygonId);
             if (polygon != null) {
-                call.resolve(CustomPolygon.getResultForPolygon(polygon, customMapView.getId()));
+                CustomPolygon customPolygon = new CustomPolygon();
+                call.resolve(customPolygon.getResultFor(polygon, customMapView.getId()));
             } else {
                 call.reject("polygon not found when get");
             }
@@ -587,10 +587,10 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     @PluginMethod(returnType = PluginMethod.RETURN_NONE)
     public void updatePolygon(final PluginCall call) {
         callMapViewMethodInUiThread(call, (customMapView) -> {
-            String polygonId = call.getString("polygonId", "");
+            String id = call.getString("id", "");
             CustomPolygon customPolygon = new CustomPolygon();
             customPolygon.updateFromJSObject(call.getData());
-            if (customMapView.updatePolygon(polygonId, customPolygon)) {
+            if (customMapView.updatePolygon(id, customPolygon)) {
                 call.resolve();
             } else {
                 call.reject("polygon is not found when update");
@@ -601,8 +601,8 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     @PluginMethod(returnType = PluginMethod.RETURN_NONE)
     public void removePolygon(final PluginCall call) {
         callMapViewMethodInUiThread(call, (customMapView) -> {
-            final String polygonId = call.getString("polygonId");
-            if (customMapView.removePolygon(polygonId)) {
+            final String id = call.getString("id");
+            if (customMapView.removePolygon(id)) {
                 call.resolve();
             } else {
                 call.reject("polygon is not found when remove");
@@ -615,18 +615,19 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
         callMapViewMethodInUiThread(call, (customMapView) -> {
             CustomPolyline customPolyline = new CustomPolyline();
             customPolyline.updateFromJSObject(call.getData());
-            Polyline polyline = customMapView.addPolyline(customPolyline);
-            call.resolve(CustomPolyline.getResultForPolyline(polyline, customMapView.getId()));
+            ShapePolyline polyline = customMapView.addPolyline(customPolyline);
+            call.resolve(customPolyline.getResultFor(polyline, customMapView.getId()));
         });
     }
 
     @PluginMethod()
     public void getPolyline(final PluginCall call) {
         callMapViewMethodInUiThread(call, (customMapView) -> {
-            String polylineId = call.getString("polylineId", "");
-            Polyline polyline = customMapView.getPolyline(polylineId);
-            if (polyline != null) {
-                call.resolve(CustomPolyline.getResultForPolyline(polyline, customMapView.getId()));
+            String polylineId = call.getString("id", "");
+            ShapePolyline id = customMapView.getPolyline(polylineId);
+            if (id != null) {
+                CustomPolyline customPolyline = new CustomPolyline();
+                call.resolve(customPolyline.getResultFor(id, customMapView.getId()));
             } else {
                 call.reject("polyline is not found when get");
             }
@@ -636,10 +637,10 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     @PluginMethod(returnType = PluginMethod.RETURN_NONE)
     public void updatePolyline(final PluginCall call) {
         callMapViewMethodInUiThread(call, (customMapView) -> {
-            String polylineId = call.getString("polylineId", "");
+            String id = call.getString("id", "");
             CustomPolyline customPolyline = new CustomPolyline();
             customPolyline.updateFromJSObject(call.getData());
-            if (customMapView.updatePolyline(polylineId, customPolyline)) {
+            if (customMapView.updatePolyline(id, customPolyline)) {
                 call.resolve();
             } else {
                 call.reject("polyline is not found when update");
@@ -650,8 +651,8 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     @PluginMethod(returnType = PluginMethod.RETURN_NONE)
     public void removePolyline(final PluginCall call) {
         callMapViewMethodInUiThread(call, (customMapView) -> {
-            final String polylineId = call.getString("polylineId");
-            if (customMapView.removePolyline(polylineId)) {
+            final String id = call.getString("id");
+            if (customMapView.removePolyline(id)) {
                 call.resolve();
             } else {
                 call.reject("polyline is not found when remove");
@@ -664,18 +665,19 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
         callMapViewMethodInUiThread(call, (customMapView) -> {
             CustomCircle customCircle = new CustomCircle();
             customCircle.updateFromJSObject(call.getData());
-            Circle circle = customMapView.addCircle(customCircle);
-            call.resolve(CustomCircle.getResultForCircle(circle, customMapView.getId()));
+            ShapeCircle circle = customMapView.addCircle(customCircle);
+            call.resolve(customCircle.getResultFor(circle, customMapView.getId()));
         });
     }
 
     @PluginMethod()
     public void getCircle(final PluginCall call) {
         callMapViewMethodInUiThread(call, (customMapView) -> {
-            String circleId = call.getString("circleId", "");
-            Circle circle = customMapView.getCircle(circleId);
+            String circleId = call.getString("id", "");
+            ShapeCircle circle = customMapView.getCircle(circleId);
             if (circle != null) {
-                call.resolve(CustomCircle.getResultForCircle(circle, customMapView.getId()));
+                CustomCircle customCircle = new CustomCircle();
+                call.resolve(customCircle.getResultFor(circle, customMapView.getId()));
             } else {
                 call.reject("circle not found when get");
             }
@@ -685,7 +687,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     @PluginMethod(returnType = PluginMethod.RETURN_NONE)
     public void updateCircle(final PluginCall call) {
         callMapViewMethodInUiThread(call, (customMapView) -> {
-            String circleId = call.getString("circleId", "");
+            String circleId = call.getString("id", "");
             CustomCircle customCircle = new CustomCircle();
             customCircle.updateFromJSObject(call.getData());
             if (customMapView.updateCircle(circleId, customCircle)) {
@@ -699,8 +701,8 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     @PluginMethod(returnType = PluginMethod.RETURN_NONE)
     public void removeCircle(final PluginCall call) {
         callMapViewMethodInUiThread(call, (customMapView) -> {
-            final String circleId = call.getString("circleId");
-            if (customMapView.removeCircle(circleId)) {
+            final String id = call.getString("id");
+            if (customMapView.removeCircle(id)) {
                 call.resolve();
             } else {
                 call.reject("circle is not found when remove");

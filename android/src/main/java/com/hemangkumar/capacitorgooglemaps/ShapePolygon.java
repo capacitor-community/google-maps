@@ -6,7 +6,7 @@ import com.google.android.libraries.maps.model.Polygon;
 
 import java.util.List;
 
-public class ShapePolygon implements Shape {
+public class ShapePolygon extends Shape {
 
     private final Polygon polygon;
 
@@ -110,12 +110,42 @@ public class ShapePolygon implements Shape {
     }
 
     @Override
-    public void setHoles(List<? extends List<LatLng>> points) {
+    public void setHoles(List<List<LatLng>> points) {
         polygon.setHoles(points);
     }
 
     @Override
-    public Object getNativeOptions() {
+    public void setPoints(List<LatLng> points) {
+        polygon.setPoints(points);
+    }
+
+    @Override
+    public List<LatLng> getPoints() {
+        return polygon.getPoints();
+    }
+
+    @Override
+    public Object getTag() {
+        return polygon.getTag();
+    }
+
+    @Override
+    public void setTag(Object tag) {
+        polygon.setTag(tag);
+    }
+
+    @Override
+    public String getId() {
+        return polygon.getId();
+    }
+
+    @Override
+    public String getShapeName() {
+        return "polygon";
+    }
+
+    @Override
+    public Polygon getNativeShape() {
         return polygon;
     }
 }

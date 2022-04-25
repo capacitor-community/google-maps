@@ -12,7 +12,7 @@ export interface Polyline {
    * GUID representing the unique id of this polyline
    *
    */
-  polylineId: string;
+  id: string;
   points: LatLng[];
   preferences?: PolylinePreferences;
 }

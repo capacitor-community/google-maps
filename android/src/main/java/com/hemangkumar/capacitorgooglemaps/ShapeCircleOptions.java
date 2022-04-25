@@ -1,62 +1,62 @@
 package com.hemangkumar.capacitorgooglemaps;
 
+import com.google.android.libraries.maps.model.CircleOptions;
 import com.google.android.libraries.maps.model.LatLng;
 import com.google.android.libraries.maps.model.PatternItem;
-import com.google.android.libraries.maps.model.PolylineOptions;
 
 import java.util.List;
 
-public class ShapePolylineOptions implements ShapeOptions {
-    private PolylineOptions options = new PolylineOptions();
+public class ShapeCircleOptions implements ShapeOptions {
+    private final CircleOptions options = new CircleOptions();
 
     @Override
     public float getStrokeWidth() {
-        return options.getWidth();
+        return options.getStrokeWidth();
     }
 
     @Override
     public void strokeWidth(float width) {
-        options.width(width);
+        options.strokeWidth(width);
     }
 
     @Override
     public int getStrokeColor() {
-        return options.getColor();
+        return options.getStrokeColor();
     }
 
     @Override
     public void strokeColor(int color) {
-        options.color(color);
+        options.strokeColor(color);
     }
 
     @Override
     public int getFillColor() {
-        return options.getColor();
+        return options.getFillColor();
     }
 
     @Override
     public void fillColor(int color) {
-        options.color(color);
+        options.fillColor(color);
     }
 
     @Override
     public int getStrokeJointType() {
-        return options.getJointType();
+        return 0;
     }
 
     @Override
     public void strokeJointType(int jointType) {
-        options.jointType(jointType);
+
     }
 
     @Override
     public List<PatternItem> getStrokePattern() {
-        return options.getPattern();
+        return options.getStrokePattern();
     }
 
     @Override
     public void strokePattern(List<PatternItem> pattern) {
-        options.pattern(pattern);
+        options.strokePattern(pattern);
     }
 
     @Override
@@ -81,12 +81,12 @@ public class ShapePolylineOptions implements ShapeOptions {
 
     @Override
     public boolean isGeodesic() {
-        return options.isGeodesic();
+        return false;
     }
 
     @Override
     public void geodesic(boolean geodesic) {
-        options.geodesic(geodesic);
+
     }
 
     @Override
@@ -106,17 +106,17 @@ public class ShapePolylineOptions implements ShapeOptions {
 
     @Override
     public void addHole(Iterable<LatLng> points) {
-        // nothing
+
     }
 
     @Override
     public List<LatLng> getPoints() {
-        return options.getPoints();
+        return null;
     }
 
     @Override
     public void add(LatLng latLng) {
-        options.add(latLng);
+
     }
 
     @Override
@@ -126,7 +126,7 @@ public class ShapePolylineOptions implements ShapeOptions {
 
     @Override
     public List<PatternItem> getPattern() {
-        return options.getPattern();
+        return null;
     }
 
     @Override
@@ -136,51 +136,51 @@ public class ShapePolylineOptions implements ShapeOptions {
 
     @Override
     public int getJointType() {
-        return options.getJointType();
-    }
-
-    @Override
-    public void jointType(int jointType) {
-        options.jointType(jointType);
-    }
-
-    @Override
-    public float getWidth() {
-        return options.getWidth();
-    }
-
-    @Override
-    public void width(float width) {
-        options.width(width);
-    }
-
-    @Override
-    public int getColor() {
-        return options.getColor();
-    }
-
-    @Override
-    public void color(int color) {
-        options.color(color);
-    }
-
-    @Override
-    public double getRadius() {
         return 0;
     }
 
     @Override
-    public void radius(double radius) {
+    public void jointType(int jointType) {
 
+    }
+
+    @Override
+    public float getWidth() {
+        return 0;
+    }
+
+    @Override
+    public void width(float width) {
+
+    }
+
+    @Override
+    public int getColor() {
+        return 0;
+    }
+
+    @Override
+    public void color(int color) {
+
+    }
+
+    @Override
+    public double getRadius() {
+        return options.getRadius();
+    }
+
+    @Override
+    public void radius(double radius) {
+        options.radius(radius);
     }
 
     @Override
     public LatLng getCenter() {
-        return null;
+        return options.getCenter();
     }
 
     @Override
     public void center(LatLng center) {
-
+        options.center(center);
     }
 }

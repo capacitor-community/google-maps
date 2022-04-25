@@ -5,36 +5,57 @@ import com.google.android.libraries.maps.model.PatternItem;
 
 import java.util.List;
 
-public interface ShapeOptions<T, O> {
+public interface ShapeOptions {
     float getStrokeWidth();
-    T strokeWidth(float width);
+    void strokeWidth(float width);
 
     int getStrokeColor();
-    T strokeColor(int color);
+    void strokeColor(int color);
 
     int getFillColor();
-    T fillColor(int color);
+    void fillColor(int color);
 
     int getStrokeJointType();
-    T strokeJointType(int jointType);
+    void strokeJointType(int jointType);
 
     List<PatternItem> getStrokePattern();
-    T strokePattern(List<PatternItem> pattern);
+    void strokePattern(List<PatternItem> pattern);
 
     float getZIndex();
-    T zIndex(float zIndex);
+    void zIndex(float zIndex);
 
     boolean isClickable();
-    T clickable(boolean clickable);
+    void clickable(boolean clickable);
 
     boolean isGeodesic();
-    T geodesic(boolean geodesic);
+    void geodesic(boolean geodesic);
 
     boolean isVisible();
-    T visible(boolean visible);
+    void visible(boolean visible);
 
     List<List<LatLng>> getHoles();
-    T addHole(Iterable<LatLng> points);
+    void addHole(Iterable<LatLng> points);
 
-    O getNativeOptions();
+    List<LatLng> getPoints();
+    void add(LatLng latLng);
+
+    Object getNativeOptions();
+
+    List<PatternItem> getPattern();
+    void pattern(List<PatternItem> patternItems);
+
+    int getJointType();
+    void jointType(int jointType);
+
+    float getWidth();
+    void width(float width);
+
+    int getColor();
+    void color(int color);
+
+    double getRadius();
+    void radius(double radius);
+
+    LatLng getCenter();
+    void center(LatLng center);
 }

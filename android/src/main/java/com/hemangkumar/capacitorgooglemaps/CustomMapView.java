@@ -66,9 +66,9 @@ public class CustomMapView
     GoogleMap googleMap;
 
     private final Map<String, Marker> markers = new HashMap<>();
-    private final Map<String, Polygon> polygons = new HashMap<>();
-    private final Map<String, Polyline> polylines = new HashMap<>();
-    private final Map<String, Circle> circles = new HashMap<>();
+    private final Map<String, ShapePolygon> polygons = new HashMap<>();
+    private final Map<String, ShapePolyline> polylines = new HashMap<>();
+    private final Map<String, ShapeCircle> circles = new HashMap<>();
     private ClusterManager<CustomClusterItem> clusterManager;
     private CustomClusterRenderer clusterRenderer;
     private final Map<String, CustomClusterItem> clusterItems = new HashMap<>();
@@ -240,7 +240,8 @@ public class CustomMapView
     @Override
     public void onPolygonClick(Polygon polygon) {
         if (customMapViewEvents != null && savedCallbackIdForDidTapPolygon != null) {
-            JSObject result = CustomPolygon.getResultForPolygon(polygon, this.id);
+            CustomPolygon customPolygon = new CustomPolygon();
+            JSObject result = customPolygon.getResultFor(new ShapePolygon(polygon), this.id);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapPolygon, result);
         }
     }
@@ -248,7 +249,8 @@ public class CustomMapView
     @Override
     public void onPolylineClick(Polyline polyline) {
         if (customMapViewEvents != null && savedCallbackIdForDidTapPolyline != null) {
-            JSObject result = CustomPolyline.getResultForPolyline(polyline, this.id);
+            CustomPolyline customPolyline = new CustomPolyline();
+            JSObject result = customPolyline.getResultFor(new ShapePolyline(polyline), this.id);
             customMapViewEvents.resultForCallbackId(savedCallbackIdForDidTapPolyline, result);
         }
     }
@@ -623,18 +625,18 @@ public class CustomMapView
         }
     }
 
-    public Polygon addPolygon(CustomPolygon customPolygon) {
-        Polygon polygon = customPolygon.addToMap(googleMap);
+    public ShapePolygon addPolygon(CustomPolygon customPolygon) {
+        ShapePolygon polygon = customPolygon.addToMap(googleMap);
         polygons.put(customPolygon.id, polygon);
         return polygon;
     }
 
-    public Polygon getPolygon(String polygonId) {
+    public ShapePolygon getPolygon(String polygonId) {
         return polygons.get(polygonId);
     }
 
     public boolean updatePolygon(String polygonId, CustomPolygon customPolygon) {
-        Polygon polygon = polygons.get(polygonId);
+        ShapePolygon polygon = polygons.get(polygonId);
         if (polygon != null) {
             customPolygon.updateShape(polygon);
             return true;
@@ -643,26 +645,26 @@ public class CustomMapView
     }
 
     public boolean removePolygon(String polygonId) {
-        Polygon polygon = polygons.remove(polygonId);
+        ShapePolygon polygon = polygons.remove(polygonId);
         if (polygon != null) {
-            polygon.remove();
+            polygon.getNativeShape().remove();
             return true;
         }
         return false;
     }
 
-    public Polyline addPolyline(CustomPolyline customPolyline) {
-        Polyline polyline = customPolyline.addToMap(googleMap);
+    public ShapePolyline addPolyline(CustomPolyline customPolyline) {
+        ShapePolyline polyline = customPolyline.addToMap(googleMap);
         polylines.put(customPolyline.id, polyline);
         return polyline;
     }
 
-    public Polyline getPolyline(String polylineId) {
+    public ShapePolyline getPolyline(String polylineId) {
         return polylines.get(polylineId);
     }
 
     public boolean updatePolyline(String polylineId, CustomPolyline customPolyline) {
-        Polyline polyline = polylines.get(polylineId);
+        ShapePolyline polyline = polylines.get(polylineId);
         if (polyline != null) {
             customPolyline.updateShape(polyline);
             return true;
@@ -671,26 +673,26 @@ public class CustomMapView
     }
 
     public boolean removePolyline(String polylineId) {
-        Polyline polyline = polylines.remove(polylineId);
+        ShapePolyline polyline = polylines.remove(polylineId);
         if (polyline != null) {
-            polyline.remove();
+            polyline.getNativeShape().remove();
             return true;
         }
         return false;
     }
 
-    public Circle addCircle(CustomCircle customCircle) {
-        Circle circle = customCircle.addToMap(googleMap);
+    public ShapeCircle addCircle(CustomCircle customCircle) {
+        ShapeCircle circle = customCircle.addToMap(googleMap);
         circles.put(customCircle.id, circle);
         return circle;
     }
 
-    public Circle getCircle(String circleId) {
+    public ShapeCircle getCircle(String circleId) {
         return circles.get(circleId);
     }
 
     public boolean updateCircle(String circleId, CustomCircle customCircle) {
-        Circle circle = circles.get(circleId);
+        ShapeCircle circle = circles.get(circleId);
         if (circle != null) {
             customCircle.updateShape(circle);
             return true;
@@ -699,9 +701,9 @@ public class CustomMapView
     }
 
     public boolean removeCircle(String circleId) {
-        Circle circle = circles.remove(circleId);
+        ShapeCircle circle = circles.remove(circleId);
         if (circle != null) {
-            circle.remove();
+            circle.getNativeShape().remove();
             return true;
         }
         return false;

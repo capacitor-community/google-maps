@@ -1,4 +1,4 @@
 export interface GetPolygonOptions {
   mapId: string;
-  polygonId: string;
+  id: string;
 }

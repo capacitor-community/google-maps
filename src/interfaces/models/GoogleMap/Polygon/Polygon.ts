@@ -12,7 +12,7 @@ export interface Polygon {
    * GUID representing the unique id of this polygon
    *
    */
-  polygonId: string;
+  id: string;
   points: LatLng[];
   preferences?: PolygonPreferences;
 }
