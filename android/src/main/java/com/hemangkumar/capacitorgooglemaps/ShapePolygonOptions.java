@@ -6,7 +6,7 @@ import com.google.android.libraries.maps.model.PolygonOptions;
 
 import java.util.List;
 
-public class ShapePolygonOptions implements ShapeOptions {
+public class ShapePolygonOptions extends ShapeOptions {
 
     private final PolygonOptions options = new PolygonOptions();
 
@@ -113,66 +113,6 @@ public class ShapePolygonOptions implements ShapeOptions {
     @Override
     public PolygonOptions getNativeOptions() {
         return options;
-    }
-
-    @Override
-    public List<PatternItem> getPattern() {
-        return null;
-    }
-
-    @Override
-    public void pattern(List<PatternItem> patternItems) {
-
-    }
-
-    @Override
-    public int getJointType() {
-        return 0;
-    }
-
-    @Override
-    public void jointType(int jointType) {
-
-    }
-
-    @Override
-    public float getWidth() {
-        return 0;
-    }
-
-    @Override
-    public void width(float width) {
-
-    }
-
-    @Override
-    public int getColor() {
-        return 0;
-    }
-
-    @Override
-    public void color(int color) {
-
-    }
-
-    @Override
-    public double getRadius() {
-        return 0;
-    }
-
-    @Override
-    public void radius(double radius) {
-
-    }
-
-    @Override
-    public LatLng getCenter() {
-        return null;
-    }
-
-    @Override
-    public void center(LatLng center) {
-
     }
 
     @Override

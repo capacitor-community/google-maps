@@ -6,7 +6,7 @@ import com.google.android.libraries.maps.model.PatternItem;
 
 import java.util.List;
 
-public class ShapeCircleOptions implements ShapeOptions {
+public class ShapeCircleOptions extends ShapeOptions {
     private final CircleOptions options = new CircleOptions();
 
     @Override
@@ -40,16 +40,6 @@ public class ShapeCircleOptions implements ShapeOptions {
     }
 
     @Override
-    public int getStrokeJointType() {
-        return 0;
-    }
-
-    @Override
-    public void strokeJointType(int jointType) {
-
-    }
-
-    @Override
     public List<PatternItem> getStrokePattern() {
         return options.getStrokePattern();
     }
@@ -80,16 +70,6 @@ public class ShapeCircleOptions implements ShapeOptions {
     }
 
     @Override
-    public boolean isGeodesic() {
-        return false;
-    }
-
-    @Override
-    public void geodesic(boolean geodesic) {
-
-    }
-
-    @Override
     public boolean isVisible() {
         return options.isVisible();
     }
@@ -100,68 +80,8 @@ public class ShapeCircleOptions implements ShapeOptions {
     }
 
     @Override
-    public List<List<LatLng>> getHoles() {
-        return null;
-    }
-
-    @Override
-    public void addHole(Iterable<LatLng> points) {
-
-    }
-
-    @Override
-    public List<LatLng> getPoints() {
-        return null;
-    }
-
-    @Override
-    public void add(LatLng latLng) {
-
-    }
-
-    @Override
     public Object getNativeOptions() {
         return options;
-    }
-
-    @Override
-    public List<PatternItem> getPattern() {
-        return null;
-    }
-
-    @Override
-    public void pattern(List<PatternItem> patternItems) {
-
-    }
-
-    @Override
-    public int getJointType() {
-        return 0;
-    }
-
-    @Override
-    public void jointType(int jointType) {
-
-    }
-
-    @Override
-    public float getWidth() {
-        return 0;
-    }
-
-    @Override
-    public void width(float width) {
-
-    }
-
-    @Override
-    public int getColor() {
-        return 0;
-    }
-
-    @Override
-    public void color(int color) {
-
     }
 
     @Override

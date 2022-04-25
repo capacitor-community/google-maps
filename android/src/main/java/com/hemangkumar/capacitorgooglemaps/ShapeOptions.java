@@ -5,57 +5,130 @@ import com.google.android.libraries.maps.model.PatternItem;
 
 import java.util.List;
 
-public interface ShapeOptions {
-    float getStrokeWidth();
-    void strokeWidth(float width);
+public abstract class ShapeOptions {
+    public float getStrokeWidth() {
+        return 0;
+    }
 
-    int getStrokeColor();
-    void strokeColor(int color);
+    public void strokeWidth(float width) {
+        // nothing
+    }
 
-    int getFillColor();
-    void fillColor(int color);
+    public int getStrokeColor() {
+        return 0;
+    }
 
-    int getStrokeJointType();
-    void strokeJointType(int jointType);
+    public void strokeColor(int color) {
+        // nothing
+    }
 
-    List<PatternItem> getStrokePattern();
-    void strokePattern(List<PatternItem> pattern);
+    public int getFillColor() {
+        return 0;
+    }
 
-    float getZIndex();
-    void zIndex(float zIndex);
+    public void fillColor(int color) {
+        // nothing
+    }
 
-    boolean isClickable();
-    void clickable(boolean clickable);
+    public int getStrokeJointType() {
+        return 0;
+    }
 
-    boolean isGeodesic();
-    void geodesic(boolean geodesic);
+    public void strokeJointType(int jointType) {
+        // nothing
+    }
 
-    boolean isVisible();
-    void visible(boolean visible);
+    public List<PatternItem> getStrokePattern() {
+        return null;
+    }
 
-    List<List<LatLng>> getHoles();
-    void addHole(Iterable<LatLng> points);
+    public void strokePattern(List<PatternItem> pattern) {
+        // nothing
+    }
 
-    List<LatLng> getPoints();
-    void add(LatLng latLng);
+    public abstract float getZIndex();
 
-    Object getNativeOptions();
+    public abstract void zIndex(float zIndex);
 
-    List<PatternItem> getPattern();
-    void pattern(List<PatternItem> patternItems);
+    public abstract boolean isClickable();
 
-    int getJointType();
-    void jointType(int jointType);
+    public abstract void clickable(boolean clickable);
 
-    float getWidth();
-    void width(float width);
+    public boolean isGeodesic() {
+        return false;
+    }
 
-    int getColor();
-    void color(int color);
+    public void geodesic(boolean geodesic) {
+        // nothing
+    }
 
-    double getRadius();
-    void radius(double radius);
+    public abstract boolean isVisible();
 
-    LatLng getCenter();
-    void center(LatLng center);
+    public abstract void visible(boolean visible);
+
+    public List<List<LatLng>> getHoles() {
+        return null;
+    }
+
+    public void addHole(Iterable<LatLng> points) {
+        // nothing
+    }
+
+    public List<LatLng> getPoints() {
+        return null;
+    }
+
+    public void add(LatLng latLng) {
+        // nothing
+    }
+
+    public abstract Object getNativeOptions();
+
+    public List<PatternItem> getPattern() {
+        return null;
+    }
+
+    public void pattern(List<PatternItem> patternItems) {
+        // nothing
+    }
+
+    public int getJointType() {
+        return 0;
+    }
+
+    public void jointType(int jointType) {
+        // nothing
+    }
+
+    public float getWidth() {
+        return 0;
+    }
+
+    public void width(float width) {
+        // nothing
+    }
+
+    public int getColor() {
+        return 0;
+    }
+
+    public void color(int color) {
+        // nothing
+    }
+
+    public double getRadius() {
+        return 0;
+    }
+
+    public void radius(double radius) {
+        // nothing
+    }
+
+    public LatLng getCenter() {
+        return null;
+    }
+
+    public void center(LatLng center) {
+        // nothing
+    }
 }

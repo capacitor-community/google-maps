@@ -6,28 +6,8 @@ import com.google.android.libraries.maps.model.PolylineOptions;
 
 import java.util.List;
 
-public class ShapePolylineOptions implements ShapeOptions {
-    private PolylineOptions options = new PolylineOptions();
-
-    @Override
-    public float getStrokeWidth() {
-        return options.getWidth();
-    }
-
-    @Override
-    public void strokeWidth(float width) {
-        options.width(width);
-    }
-
-    @Override
-    public int getStrokeColor() {
-        return options.getColor();
-    }
-
-    @Override
-    public void strokeColor(int color) {
-        options.color(color);
-    }
+public class ShapePolylineOptions extends ShapeOptions {
+    private final PolylineOptions options = new PolylineOptions();
 
     @Override
     public int getFillColor() {
@@ -100,16 +80,6 @@ public class ShapePolylineOptions implements ShapeOptions {
     }
 
     @Override
-    public List<List<LatLng>> getHoles() {
-        return null;
-    }
-
-    @Override
-    public void addHole(Iterable<LatLng> points) {
-        // nothing
-    }
-
-    @Override
     public List<LatLng> getPoints() {
         return options.getPoints();
     }
@@ -127,11 +97,6 @@ public class ShapePolylineOptions implements ShapeOptions {
     @Override
     public List<PatternItem> getPattern() {
         return options.getPattern();
-    }
-
-    @Override
-    public void pattern(List<PatternItem> patternItems) {
-
     }
 
     @Override
@@ -162,25 +127,5 @@ public class ShapePolylineOptions implements ShapeOptions {
     @Override
     public void color(int color) {
         options.color(color);
-    }
-
-    @Override
-    public double getRadius() {
-        return 0;
-    }
-
-    @Override
-    public void radius(double radius) {
-
-    }
-
-    @Override
-    public LatLng getCenter() {
-        return null;
-    }
-
-    @Override
-    public void center(LatLng center) {
-
     }
 }
