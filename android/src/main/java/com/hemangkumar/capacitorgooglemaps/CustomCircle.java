@@ -1,15 +1,7 @@
 package com.hemangkumar.capacitorgooglemaps;
 
-import android.graphics.Color;
-
-import com.getcapacitor.JSArray;
-import com.getcapacitor.JSObject;
 import com.google.android.libraries.maps.GoogleMap;
 import com.google.android.libraries.maps.model.Circle;
-import com.google.android.libraries.maps.model.CircleOptions;
-import com.google.android.libraries.maps.model.PatternItem;
-
-import java.util.List;
 
 public class CustomCircle extends CustomShape<ShapeCircle> {
     private ShapeCircleOptions options;
@@ -31,9 +23,8 @@ public class CustomCircle extends CustomShape<ShapeCircle> {
         return options;
     }
 
-    @Override
     public ShapeCircle addToMap(GoogleMap googleMap) {
-        Circle circle = googleMap.addCircle((CircleOptions) options.getNativeOptions());
+        Circle circle = googleMap.addCircle(options.getNativeOptions());
         circle.setTag(tag);
         return new ShapeCircle(circle);
     }

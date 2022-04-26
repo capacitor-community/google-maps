@@ -83,6 +83,11 @@ public class ShapeCircle extends Shape {
     }
 
     @Override
+    public void remove() {
+        circle.remove();
+    }
+
+    @Override
     public LatLng getCenter() {
         return circle.getCenter();
     }

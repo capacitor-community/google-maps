@@ -23,6 +23,7 @@ import com.google.android.libraries.maps.OnMapReadyCallback;
 import com.google.android.libraries.maps.UiSettings;
 import com.google.android.libraries.maps.model.CameraPosition;
 import com.google.android.libraries.maps.model.Circle;
+import com.google.android.libraries.maps.model.GroundOverlay;
 import com.google.android.libraries.maps.model.LatLng;
 import com.google.android.libraries.maps.model.Marker;
 import com.google.android.libraries.maps.model.PointOfInterest;
@@ -625,10 +626,13 @@ public class CustomMapView
         }
     }
 
-    public ShapePolygon addPolygon(CustomPolygon customPolygon) {
-        ShapePolygon polygon = customPolygon.addToMap(googleMap);
-        polygons.put(customPolygon.id, polygon);
-        return polygon;
+    public void addPolygon(CustomPolygon customPolygon, @Nullable Consumer<ShapePolygon> consumer) {
+        customPolygon.addToMap(activity, googleMap, (shapePolygon)->{
+            polygons.put(customPolygon.id, shapePolygon);
+            if (consumer != null) {
+                consumer.accept(shapePolygon);
+            }
+        });
     }
 
     public ShapePolygon getPolygon(String polygonId) {
@@ -647,7 +651,7 @@ public class CustomMapView
     public boolean removePolygon(String polygonId) {
         ShapePolygon polygon = polygons.remove(polygonId);
         if (polygon != null) {
-            polygon.getNativeShape().remove();
+            polygon.remove();
             return true;
         }
         return false;
@@ -675,7 +679,7 @@ public class CustomMapView
     public boolean removePolyline(String polylineId) {
         ShapePolyline polyline = polylines.remove(polylineId);
         if (polyline != null) {
-            polyline.getNativeShape().remove();
+            polyline.remove();
             return true;
         }
         return false;
@@ -703,7 +707,7 @@ public class CustomMapView
     public boolean removeCircle(String circleId) {
         ShapeCircle circle = circles.remove(circleId);
         if (circle != null) {
-            circle.getNativeShape().remove();
+            circle.remove();
             return true;
         }
         return false;

@@ -91,6 +91,8 @@ public abstract class Shape {
 
     public abstract void setVisible(boolean visible);
 
+    public abstract void remove();
+
     public List<List<LatLng>> getHoles() {
         return null;
     }

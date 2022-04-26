@@ -80,7 +80,7 @@ public class ShapeCircleOptions extends ShapeOptions {
     }
 
     @Override
-    public Object getNativeOptions() {
+    public CircleOptions getNativeOptions() {
         return options;
     }
 

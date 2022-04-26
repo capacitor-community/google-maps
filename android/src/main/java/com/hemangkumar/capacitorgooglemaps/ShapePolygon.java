@@ -1,5 +1,7 @@
 package com.hemangkumar.capacitorgooglemaps;
 
+import com.google.android.libraries.maps.model.BitmapDescriptor;
+import com.google.android.libraries.maps.model.GroundOverlay;
 import com.google.android.libraries.maps.model.LatLng;
 import com.google.android.libraries.maps.model.PatternItem;
 import com.google.android.libraries.maps.model.Polygon;
@@ -9,9 +11,16 @@ import java.util.List;
 public class ShapePolygon extends Shape {
 
     private final Polygon polygon;
+    private final GroundOverlay groundOverlay;
 
     public ShapePolygon(Polygon polygon) {
         this.polygon = polygon;
+        this.groundOverlay = null;
+    }
+
+    public ShapePolygon(Polygon polygon, GroundOverlay groundOverlay) {
+        this.polygon = polygon;
+        this.groundOverlay = groundOverlay;
     }
 
     @Override
@@ -105,6 +114,14 @@ public class ShapePolygon extends Shape {
     }
 
     @Override
+    public void remove() {
+        polygon.remove();
+        if (groundOverlay != null) {
+            groundOverlay.remove();
+        }
+    }
+
+    @Override
     public List<List<LatLng>> getHoles() {
         return polygon.getHoles();
     }
@@ -147,5 +164,9 @@ public class ShapePolygon extends Shape {
     @Override
     public Polygon getNativeShape() {
         return polygon;
+    }
+
+    public GroundOverlay getGroundOverlay() {
+        return groundOverlay;
     }
 }

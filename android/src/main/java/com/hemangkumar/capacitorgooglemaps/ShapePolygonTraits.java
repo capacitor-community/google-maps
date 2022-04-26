@@ -40,4 +40,9 @@ public class ShapePolygonTraits extends ShapeTraits {
     public boolean hasPoints() {
         return true;
     }
+
+    @Override
+    public boolean hasPatternIcon() {
+        return true;
+    }
 }

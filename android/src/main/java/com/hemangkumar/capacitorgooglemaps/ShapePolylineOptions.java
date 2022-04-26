@@ -90,13 +90,18 @@ public class ShapePolylineOptions extends ShapeOptions {
     }
 
     @Override
-    public Object getNativeOptions() {
+    public PolylineOptions getNativeOptions() {
         return options;
     }
 
     @Override
     public List<PatternItem> getPattern() {
         return options.getPattern();
+    }
+
+    @Override
+    public void pattern(List<PatternItem> patternItems) {
+        options.pattern(patternItems);
     }
 
     @Override

@@ -1,4 +1,4 @@
-import { LatLng, PatternItem } from "../../../../definitions";
+import { LatLng, PatternItem, Icon } from "../../../../definitions";
 
 export interface PolygonPreferences {
   holes?: LatLng[][];
@@ -11,5 +11,6 @@ export interface PolygonPreferences {
   isClickable?: boolean;
   strokePattern?: PatternItem[];
   strokeJointType?: string; // 'BEVEL', 'DEFAULT', 'ROUND'
+  patternIcon?: Icon;
   metadata?: { [key: string]: any };
 }

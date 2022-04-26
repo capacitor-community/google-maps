@@ -86,6 +86,11 @@ public class ShapePolyline extends Shape {
     }
 
     @Override
+    public void remove() {
+        polyline.remove();
+    }
+
+    @Override
     public void setPoints(List<LatLng> points) {
         // points should not be empty, otherwise the app crashes
         if (points != null && !points.isEmpty()) {

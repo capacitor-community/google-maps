@@ -1,5 +1,7 @@
 package com.hemangkumar.capacitorgooglemaps;
 
+import android.graphics.drawable.Icon;
+
 import com.google.android.libraries.maps.model.LatLng;
 import com.google.android.libraries.maps.model.PatternItem;
 import com.google.android.libraries.maps.model.PolygonOptions;
@@ -9,6 +11,7 @@ import java.util.List;
 public class ShapePolygonOptions extends ShapeOptions {
 
     private final PolygonOptions options = new PolygonOptions();
+    private IconDescriptor patternIconDescriptor;
 
     @Override
     public float getStrokeWidth() {
@@ -123,5 +126,15 @@ public class ShapePolygonOptions extends ShapeOptions {
     @Override
     public void add(LatLng latLng) {
         options.add(latLng);
+    }
+
+    @Override
+    public IconDescriptor getPatternIconDescriptor() {
+        return patternIconDescriptor;
+    }
+
+    @Override
+    public void patternIconDescriptor(IconDescriptor patternIconDescriptor) {
+        this.patternIconDescriptor = patternIconDescriptor;
     }
 }

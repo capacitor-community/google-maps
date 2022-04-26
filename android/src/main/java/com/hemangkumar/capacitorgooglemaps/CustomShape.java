@@ -2,7 +2,6 @@ package com.hemangkumar.capacitorgooglemaps;
 
 import android.graphics.Color;
 
-import androidx.annotation.NonNull;
 import androidx.core.util.Consumer;
 
 import com.getcapacitor.JSArray;
@@ -41,7 +40,9 @@ public abstract class CustomShape<T extends Shape> {
         }
         JSObject jsPreferences = jsObject.getJSObject("preferences");
         if (jsPreferences != null) {
-            loadHoles(jsPreferences);
+            if (traits.hasHoles()) {
+                loadHoles(jsPreferences);
+            }
             initPlainFields(jsPreferences);
             saveMetadataToTag(jsPreferences);
         }
@@ -75,8 +76,8 @@ public abstract class CustomShape<T extends Shape> {
         JSObject jsResult = new JSObject();
         JSObject jsShape = new JSObject();
         JSObject jsPreferences = new JSObject();
-        final String shapeName = shape.getShapeName();
-        jsResult.put(shapeName, jsShape);
+
+        jsResult.put(shape.getShapeName(), jsShape);
 
         ShapeTraits traits = getShapeTraits();
 
@@ -163,9 +164,7 @@ public abstract class CustomShape<T extends Shape> {
 
     protected abstract ShapeOptions newOptions();
 
-    public abstract T addToMap(GoogleMap googleMap);
-
-    protected void saveMetadataToTag(JSObject preferences) {
+    private void saveMetadataToTag(JSObject preferences) {
         JSObject jsMetadata = JSObjectDefaults.getJSObjectSafe(
                 preferences, "metadata", new JSObject());
         JSObject tag = new JSObject();
@@ -174,11 +173,11 @@ public abstract class CustomShape<T extends Shape> {
         this.tag = tag;
     }
 
-    protected JSObject getMetadata() {
+    private JSObject getMetadata() {
         return JSObjectDefaults.getJSObjectSafe(tag, "metadata", new JSObject());
     }
 
-    protected void saveCurrentMetadataToTag(Object tag) {
+    private void saveCurrentMetadataToTag(Object tag) {
         JSObject jsTag;
         if (tag instanceof JSObject) {
             jsTag = (JSObject) tag;
@@ -189,11 +188,11 @@ public abstract class CustomShape<T extends Shape> {
         jsTag.put("metadata", getMetadata());
     }
 
-    protected static JSObject getMetadata(JSObject tag) {
+    private static JSObject getMetadata(JSObject tag) {
         return JSObjectDefaults.getJSObjectSafe(tag, "metadata", new JSObject());
     }
 
-    protected static String colorToString(int color) {
+    private static String colorToString(int color) {
         int r = ((color >> 16) & 0xff);
         int g = ((color >> 8) & 0xff);
         int b = ((color) & 0xff);
@@ -205,7 +204,7 @@ public abstract class CustomShape<T extends Shape> {
         }
     }
 
-    protected static List<PatternItem> parsePatternItems(final JSArray jsPatterns) {
+    private static List<PatternItem> parsePatternItems(final JSArray jsPatterns) {
         int n = jsPatterns.length();
         List<PatternItem> strokePattern = new ArrayList<>(n);
         for (int i = 0; i < n; i++) {
@@ -231,7 +230,7 @@ public abstract class CustomShape<T extends Shape> {
         return strokePattern;
     }
 
-    protected static void loadPoints(final JSObject jsPoly, Consumer<LatLng> consumer) {
+    private static void loadPoints(final JSObject jsPoly, Consumer<LatLng> consumer) {
         JSArray jsPoints = JSObjectDefaults.getJSArray(jsPoly, "points", new JSArray());
         int n = jsPoints.length();
         for (int i = 0; i < n; i++) {
@@ -240,13 +239,13 @@ public abstract class CustomShape<T extends Shape> {
         }
     }
 
-    protected static LatLng loadLatLng(JSObject jsLatLng) {
+    private static LatLng loadLatLng(JSObject jsLatLng) {
         double latitude = jsLatLng.optDouble("latitude", 0d);
         double longitude = jsLatLng.optDouble("longitude", 0d);
         return new LatLng(latitude, longitude);
     }
 
-    protected static String getJointTypeName(int jt) {
+    private static String getJointTypeName(int jt) {
         switch (jt) {
             case JointType.BEVEL:
                 return "BEVEL";
@@ -257,7 +256,7 @@ public abstract class CustomShape<T extends Shape> {
         }
     }
 
-    protected static int parseJointTypeName(String strokeJointTypeName) {
+    private static int parseJointTypeName(String strokeJointTypeName) {
         switch (strokeJointTypeName) {
             case "BEVEL":
                 return JointType.BEVEL;
@@ -268,7 +267,7 @@ public abstract class CustomShape<T extends Shape> {
         }
     }
 
-    protected static JSArray patternToJSArray(Collection<PatternItem> patterns) {
+    private static JSArray patternToJSArray(Collection<PatternItem> patterns) {
         JSArray jsStrokePattern = new JSArray();
         if (patterns == null) {
             return jsStrokePattern;
@@ -293,7 +292,7 @@ public abstract class CustomShape<T extends Shape> {
         return jsStrokePattern;
     }
 
-    protected static JSArray latLongsToJSArray(Collection<LatLng> positions) {
+    private static JSArray latLongsToJSArray(Collection<LatLng> positions) {
         JSArray jsPositions = new JSArray();
         for (LatLng pos : positions) {
             JSObject jsPos = latLngToJSObject(pos);
@@ -302,8 +301,7 @@ public abstract class CustomShape<T extends Shape> {
         return jsPositions;
     }
 
-    @NonNull
-    protected static JSObject latLngToJSObject(LatLng latLng) {
+    private static JSObject latLngToJSObject(LatLng latLng) {
         JSObject jsPos = new JSObject();
         jsPos.put("latitude", latLng.latitude);
         jsPos.put("longitude", latLng.longitude);
@@ -356,7 +354,15 @@ public abstract class CustomShape<T extends Shape> {
                 options.pattern(patternItems);
             }
         }
-
+        if (traits.hasPatternIcon()) {
+            JSObject jsPatternIcon = jsPreferences.getJSObject("patternIcon");
+            if (jsPatternIcon != null) {
+                IconDescriptor iconDescriptor = new IconDescriptor(jsPatternIcon);
+                options.patternIconDescriptor(iconDescriptor);
+            } else {
+                options.patternIconDescriptor(null);
+            }
+        }
 
         final float zIndex = (float) jsPreferences.optDouble("zIndex", 0);
         final boolean visibility = jsPreferences.optBoolean("visibility", true);

@@ -131,4 +131,12 @@ public abstract class ShapeOptions {
     public void center(LatLng center) {
         // nothing
     }
+
+    public IconDescriptor getPatternIconDescriptor() {
+        return null;
+    }
+
+    public void patternIconDescriptor(IconDescriptor iconDescriptor) {
+        // nothing
+    }
 }

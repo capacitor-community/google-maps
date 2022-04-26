@@ -54,4 +54,8 @@ public abstract class ShapeTraits {
     boolean hasJointType() {
         return false;
     }
+
+    boolean hasPatternIcon() {
+        return false;
+    }
 }
