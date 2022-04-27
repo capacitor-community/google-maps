@@ -14,6 +14,8 @@ import {
   ElementFromPointResultOptions,
   AddMarkerOptions,
   AddMarkerResult,
+  AddMarkersOptions,
+  AddMarkersResult,
   RemoveMarkerOptions,
   DidTapInfoWindowCallback,
   DidCloseInfoWindowCallback,
@@ -69,6 +71,10 @@ export class CapacitorGoogleMapsWeb
   }
 
   async addMarker(_options: AddMarkerOptions): Promise<AddMarkerResult> {
+    throw this.unimplemented("Not implemented on web.");
+  }
+
+  async addMarkers(_options: AddMarkersOptions): Promise<AddMarkersResult> {
     throw this.unimplemented("Not implemented on web.");
   }
 
