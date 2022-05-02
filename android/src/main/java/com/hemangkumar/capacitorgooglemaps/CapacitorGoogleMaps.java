@@ -31,6 +31,8 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @CapacitorPlugin(
         name = "CapacitorGoogleMaps",
@@ -523,20 +525,27 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
             call.reject("map not found");
             return;
         }
-        final JSArray jsMarkers = call.getArray("markers", new JSArray());
-        final int n = jsMarkers.length();
-        final List<JSObject> result = new ArrayList<>(n);
-        final List<CustomMarker> customMarkers = new ArrayList<>(n);
-        ExecutorService executorService = Executors.newFixedThreadPool(4);
-        final Object syncRoot = new Object();
+        try {
+            final JSArray jsMarkers = call.getArray("markers", new JSArray());
+            final List<CustomMarker> customMarkers = createCustomMarkers(jsMarkers);
+            addCustomMarkers(customMarkers, mapId, customMapView, call);
+        } catch (RuntimeException e) {
+            call.reject("exception in addMarkers", e);
+        }
+    }
 
+    private List<CustomMarker> createCustomMarkers(final JSArray jsMarkers) {
+        final int n = jsMarkers.length();
+        final List<CustomMarker> customMarkers = new ArrayList<>(n);
+        final Object syncRoot = new Object();
+        final AtomicInteger nMarkersCounter = new AtomicInteger(0);
         // prepare customMarkers as fast as possible. Really it doesn't increase the total
         // speed of this method :( noticeably.
+        final ExecutorService executorService = Executors.newFixedThreadPool(4);
         for (int i = 0; i < n; i++) {
             final int fi = i;
             if (executorService.isShutdown()) {
-                call.reject("exception in addMarkers");
-                return;
+                throw new RuntimeException("exception in addMarkers");
             }
             executorService.execute(() -> {
                 try {
@@ -544,10 +553,12 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
                     JSObject jsObject = JSObject.fromJSONObject(jsonObject);
                     CustomMarker customMarker = new CustomMarker();
                     customMarker.updateFromJSObject(jsObject);
-                    synchronized (syncRoot) {
+                    synchronized (customMarkers) {
                         customMarkers.add(customMarker);
-                        if (customMarkers.size() == n) {
-                            syncRoot.notify();
+                        if (nMarkersCounter.addAndGet(1) == n) {
+                            synchronized (syncRoot) {
+                                syncRoot.notify();
+                            }
                         }
                     }
                 } catch (JSONException ignored) {
@@ -556,25 +567,38 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
             });
         }
 
-        // Wait for customMarkers are populated
-        try {
-            synchronized (syncRoot) {
+        synchronized (syncRoot) {
+            try {
+                // Wait for customMarkers are populated
+                // I follow https://www.baeldung.com/java-wait-notify#1-why-enclose-wait-in-a-while-loop
                 do {
                     syncRoot.wait();
-                } while (customMarkers.size() < n);
+                } while (nMarkersCounter.get() < n);
+            } catch (InterruptedException e) {
+                throw new RuntimeException("exception in createCustomMarkers", e);
             }
-        } catch (InterruptedException e) {
-            call.reject("exception in addMarkers", e);
-            return;
+        }
+        return customMarkers;
+    }
+
+    private void addCustomMarkers(final List<CustomMarker> customMarkers,
+                                  String mapId,
+                                  final CustomMapView customMapView,
+                                  final PluginCall call) {
+        final int n = customMarkers.size();
+        final List<JSObject> result = new ArrayList<>(n);
+        final Object syncRoot = new Object();
+        final AtomicInteger nMarkersAdded = new AtomicInteger(0);
+        final AtomicBoolean isMarkerAdded = new AtomicBoolean(false);
+        final ExecutorService executorService = Executors.newFixedThreadPool(1);
+
+
+        if (executorService.isShutdown()) {
+            throw new RuntimeException("exception in addCustomMarkers");
         }
 
-        final int[] nAddMarkersInProgress = new int[]{n};
-        for (CustomMarker customMarker : customMarkers) {
-            if (executorService.isShutdown()) {
-                call.reject("exception in addMarkers");
-                return;
-            }
-            executorService.execute(() -> {
+        executorService.execute(() -> {
+            for (CustomMarker customMarker : customMarkers) {
                 getBridge().getActivity().runOnUiThread(() -> {
                     customMapView.addMarker(
                             customMarker,
@@ -584,10 +608,10 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
                                                 .opt("marker")
                                 );
                                 synchronized (syncRoot) {
-                                    // unblock ONE THREAD! Otherwise UI will be freezed!
+                                    isMarkerAdded.set(true);
                                     syncRoot.notify();
                                 }
-                                if (--nAddMarkersInProgress[0] <= 0) {
+                                if (nMarkersAdded.addAndGet(1) == n) {
                                     JSObject jsResult = new JSObject();
                                     jsResult.put("mapId", mapId);
                                     JSArray jsMarkerOutputEntries = JSArray.from(result.toArray());
@@ -596,19 +620,25 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
                                 }
                             }
                     );
-                });
+                }); // end of runOnUiThread
                 synchronized (syncRoot) {
                     try {
                         // wait for Marker is rendered before the next iteration
                         // here is a background thread -> No UI freeze
-                        syncRoot.wait();
+                        // I don not follow https://www.baeldung.com/java-wait-notify#1-why-enclose-wait-in-a-while-loop
+                        // because it is not absolutely necessary here.
+                        if (!isMarkerAdded.get()) {
+                            syncRoot.wait();
+                            isMarkerAdded.set(false);
+                        }
                     } catch (InterruptedException ignored) {
-                        executorService.shutdown();
+                        //executorService.shutdown();
+                        break;
                     }
                 }
-            });
-        }
-        //executorService.shutdown();
+            } // end for
+            System.out.println("END FOR");
+        }); // end of execute
     }
 
     @PluginMethod()
