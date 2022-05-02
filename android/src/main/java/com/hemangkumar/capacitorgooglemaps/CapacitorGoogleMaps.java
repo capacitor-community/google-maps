@@ -18,16 +18,19 @@ import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.annotation.Permission;
 import com.google.android.libraries.maps.model.CameraPosition;
-import com.google.android.libraries.maps.model.Circle;
 import com.google.android.libraries.maps.model.Marker;
-import com.google.android.libraries.maps.model.Polygon;
-import com.google.android.libraries.maps.model.Polyline;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @CapacitorPlugin(
         name = "CapacitorGoogleMaps",
@@ -39,7 +42,7 @@ import java.util.UUID;
         }
 )
 public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
-    private final HashMap<String, CustomMapView> customMapViews = new HashMap<>();
+    private final Map<String, CustomMapView> customMapViews = new ConcurrentHashMap<>();
     Float devicePixelRatio;
     private String lastEventChainId;
     public List<MotionEvent> previousEvents = new ArrayList<>();
@@ -513,6 +516,102 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     }
 
     @PluginMethod()
+    public void addMarkers(final PluginCall call) {
+        final String mapId = call.getString("mapId");
+        CustomMapView customMapView = customMapViews.get(mapId);
+        if (customMapView == null) {
+            call.reject("map not found");
+            return;
+        }
+        final JSArray jsMarkers = call.getArray("markers", new JSArray());
+        final int n = jsMarkers.length();
+        final List<JSObject> result = new ArrayList<>(n);
+        final List<CustomMarker> customMarkers = new ArrayList<>(n);
+        ExecutorService executorService = Executors.newFixedThreadPool(4);
+        final Object syncRoot = new Object();
+
+        // prepare customMarkers as fast as possible. Really it doesn't increase the total
+        // speed of this method :( noticeably.
+        for (int i = 0; i < n; i++) {
+            final int fi = i;
+            if (executorService.isShutdown()) {
+                call.reject("exception in addMarkers");
+                return;
+            }
+            executorService.execute(() -> {
+                try {
+                    JSONObject jsonObject = (JSONObject) jsMarkers.get(fi);
+                    JSObject jsObject = JSObject.fromJSONObject(jsonObject);
+                    CustomMarker customMarker = new CustomMarker();
+                    customMarker.updateFromJSObject(jsObject);
+                    synchronized (syncRoot) {
+                        customMarkers.add(customMarker);
+                        if (customMarkers.size() == n) {
+                            syncRoot.notify();
+                        }
+                    }
+                } catch (JSONException ignored) {
+                    executorService.shutdown();
+                }
+            });
+        }
+
+        // Wait for customMarkers are populated
+        try {
+            synchronized (syncRoot) {
+                do {
+                    syncRoot.wait();
+                } while (customMarkers.size() < n);
+            }
+        } catch (InterruptedException e) {
+            call.reject("exception in addMarkers", e);
+            return;
+        }
+
+        final int[] nAddMarkersInProgress = new int[]{n};
+        for (CustomMarker customMarker : customMarkers) {
+            if (executorService.isShutdown()) {
+                call.reject("exception in addMarkers");
+                return;
+            }
+            executorService.execute(() -> {
+                getBridge().getActivity().runOnUiThread(() -> {
+                    customMapView.addMarker(
+                            customMarker,
+                            (Marker marker) -> {
+                                result.add(
+                                        (JSObject) CustomMarker.getResultForMarker(marker, mapId)
+                                                .opt("marker")
+                                );
+                                synchronized (syncRoot) {
+                                    // unblock ONE THREAD! Otherwise UI will be freezed!
+                                    syncRoot.notify();
+                                }
+                                if (--nAddMarkersInProgress[0] <= 0) {
+                                    JSObject jsResult = new JSObject();
+                                    jsResult.put("mapId", mapId);
+                                    JSArray jsMarkerOutputEntries = JSArray.from(result.toArray());
+                                    jsResult.put("markers", jsMarkerOutputEntries);
+                                    call.resolve(jsResult);
+                                }
+                            }
+                    );
+                });
+                synchronized (syncRoot) {
+                    try {
+                        // wait for Marker is rendered before the next iteration
+                        // here is a background thread -> No UI freeze
+                        syncRoot.wait();
+                    } catch (InterruptedException ignored) {
+                        executorService.shutdown();
+                    }
+                }
+            });
+        }
+        //executorService.shutdown();
+    }
+
+    @PluginMethod()
     public void addCluster(final PluginCall call) {
         callMapViewMethodInUiThread(call, (customMapView) -> {
             final String mapId = customMapView.getId();
@@ -565,7 +664,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
         callMapViewMethodInUiThread(call, (customMapView) -> {
             CustomPolygon customPolygon = new CustomPolygon();
             customPolygon.updateFromJSObject(call.getData());
-            customMapView.addPolygon(customPolygon, (shapePolygon)->{
+            customMapView.addPolygon(customPolygon, (shapePolygon) -> {
                 call.resolve(customPolygon.getResultFor(shapePolygon, customMapView.getId()));
             });
         });

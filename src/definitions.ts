@@ -15,6 +15,8 @@ import {
   AddMarkerResult,
   AddClusterOptions,
   AddClusterResult,
+  AddMarkersOptions,
+  AddMarkersResult,
   AddPolygonOptions,
   PolygonResult,
   GetPolygonOptions,
@@ -79,6 +81,8 @@ export interface CapacitorGoogleMapsPlugin {
   moveCamera(options: MoveCameraOptions): Promise<void>;
 
   addMarker(options: AddMarkerOptions): Promise<AddMarkerResult>;
+  
+  addMarkers(options: AddMarkersOptions): Promise<AddMarkersResult>;
 
   addCluster(options: AddClusterOptions): Promise<AddClusterResult>;
 

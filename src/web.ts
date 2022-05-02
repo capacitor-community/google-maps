@@ -15,6 +15,8 @@ import {
   AddMarkerOptions,
   AddMarkerResult,
   RemoveMarkerOptions,
+  AddMarkersOptions,
+  AddMarkersResult,
   AddClusterOptions,
   AddClusterResult,
   AddPolygonOptions,
@@ -88,6 +90,10 @@ export class CapacitorGoogleMapsWeb
   }
 
   async removeMarker(_options: RemoveMarkerOptions): Promise<void> {
+    throw this.unimplemented("Not implemented on web.");
+  }
+
+  async addMarkers(_options: AddMarkersOptions): Promise<AddMarkersResult> {
     throw this.unimplemented("Not implemented on web.");
   }
 

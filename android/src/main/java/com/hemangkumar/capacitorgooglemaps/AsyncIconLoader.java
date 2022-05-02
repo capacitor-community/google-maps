@@ -6,9 +6,11 @@ import android.graphics.Picture;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PictureDrawable;
 import android.text.TextUtils;
+import android.util.LruCache;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
 import androidx.fragment.app.FragmentActivity;
 
 import com.bumptech.glide.Glide;
@@ -27,6 +29,11 @@ import java.util.Locale;
 
 class AsyncIconLoader {
 
+    private static final int PICTURE_DOWNLOAD_TIMEOUT = 3000;
+    private static final int FAST_CACHE_SIZE_ENTRIES = 32;
+
+    private static final LruCache<String, Bitmap> bitmapCache = new LruCache<>(FAST_CACHE_SIZE_ENTRIES);
+
     public interface OnIconReady {
         void onReady(@Nullable Bitmap bitmap);
     }
@@ -39,14 +46,19 @@ class AsyncIconLoader {
         this.activity = activity;
     }
 
+    @UiThread
     public void load(OnIconReady onIconReady) {
-
-        if (iconDescriptor == null || TextUtils.isEmpty(iconDescriptor.url)) {
+        if (TextUtils.isEmpty(iconDescriptor.url)) {
             onIconReady.onReady(null);
             return;
         }
-
-        if (iconDescriptor.url.toLowerCase(Locale.ROOT).endsWith(".svg")) {
+        String url = iconDescriptor.url.toLowerCase(Locale.ROOT);
+        Bitmap cachedBitmap = bitmapCache.get(url);
+        if (cachedBitmap != null) {
+            onIconReady.onReady(cachedBitmap);
+            return;
+        }
+        if (url.endsWith(".svg")) {
             loadSvg(onIconReady);
         } else {
             loadBitmap(onIconReady);
@@ -57,18 +69,21 @@ class AsyncIconLoader {
         RequestBuilder<Bitmap> builder = Glide.with(activity)
                 .asBitmap()
                 .load(iconDescriptor.url)
-                .timeout(3000);
+                .timeout(PICTURE_DOWNLOAD_TIMEOUT);
         scaleImageOptional(builder).into(
                 new CustomTarget<Bitmap>() {
                     // It will be called when the resource load has finished.
+                    @UiThread
                     @Override
                     public void onResourceReady(
                             @NonNull Bitmap bitmap,
                             @Nullable Transition<? super Bitmap> transition) {
+                        bitmapCache.put(iconDescriptor.url, bitmap);
                         onIconReady.onReady(bitmap);
                     }
 
                     // It is called when a loadAll is cancelled and its resources are freed.
+                    @UiThread
                     @Override
                     public void onLoadCleared(@Nullable Drawable placeholder) {
                         // Use default marker
@@ -76,6 +91,7 @@ class AsyncIconLoader {
                     }
 
                     // It is called when can't get image from network AND from a local cache.
+                    @UiThread
                     @Override
                     public void onLoadFailed(@Nullable Drawable errorDrawable) {
                         // Use default marker
@@ -87,6 +103,8 @@ class AsyncIconLoader {
 
     private void loadSvg(OnIconReady onIconReady) {
         Glide.with(activity).downloadOnly().load(iconDescriptor.url).into(new CustomTarget<File>() {
+            // It will be called when the resource load has finished.
+            @UiThread
             @Override
             public void onResourceReady(@NonNull File resource, @Nullable Transition<? super File> transition) {
                 try {
@@ -96,6 +114,7 @@ class AsyncIconLoader {
                         svg.setDocumentHeight(iconDescriptor.size.getHeight());
                         Picture picture = svg.renderToPicture();
                         Bitmap bitmap = pictureToBitmap(picture);
+                        bitmapCache.put(iconDescriptor.url, bitmap);
                         onIconReady.onReady(bitmap);
                     }
                 } catch (IOException | SVGParseException exception) {
@@ -103,11 +122,13 @@ class AsyncIconLoader {
                 }
             }
 
+            @UiThread
             @Override
             public void onLoadCleared(@Nullable Drawable placeholder) {
                 onIconReady.onReady(null);
             }
 
+            @UiThread
             @Override
             public void onLoadFailed(@Nullable Drawable errorDrawable) {
                 onIconReady.onReady(null);

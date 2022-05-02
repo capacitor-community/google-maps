@@ -11,6 +11,7 @@ export { AddPolygonOptions } from "./methods/AddPolygonOptions";
 export { PolygonResult } from "./methods/PolygonResult"
 export { GetPolygonOptions } from "./methods/GetPolygon";
 export { UpdatePolygonOptions } from "./methods/UpdatePolygon";
+export { AddMarkersOptions, MarkerInputEntry, AddMarkersResult } from "./methods/AddMarkers";
 export { RemoveMarkerOptions } from "./methods/RemoveMarker";
 export { AddClusterOptions, AddClusterResult } from "./methods/AddCluster";
 export { AddPolylineOptions } from "./methods/AddPolylineOptions";
