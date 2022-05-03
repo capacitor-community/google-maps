@@ -528,7 +528,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
         try {
             final JSArray jsMarkers = call.getArray("markers", new JSArray());
             final List<CustomMarker> customMarkers = createCustomMarkers(jsMarkers);
-            addCustomMarkers(customMarkers, mapId, customMapView, call);
+            addCustomMarkers(customMarkers, customMapView, call);
         } catch (RuntimeException e) {
             call.reject("exception in addMarkers", e);
         }
@@ -545,7 +545,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
         for (int i = 0; i < n; i++) {
             final int fi = i;
             if (executorService.isShutdown()) {
-                throw new RuntimeException("exception in addMarkers");
+                throw new RuntimeException("exception in createCustomMarkers");
             }
             executorService.execute(() -> {
                 try {
@@ -555,10 +555,10 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
                     customMarker.updateFromJSObject(jsObject);
                     synchronized (customMarkers) {
                         customMarkers.add(customMarker);
-                        if (nMarkersCounter.addAndGet(1) == n) {
-                            synchronized (syncRoot) {
-                                syncRoot.notify();
-                            }
+                    }
+                    if (nMarkersCounter.addAndGet(1) == n) {
+                        synchronized (syncRoot) {
+                            syncRoot.notify();
                         }
                     }
                 } catch (JSONException ignored) {
@@ -571,9 +571,9 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
             try {
                 // Wait for customMarkers are populated
                 // I follow https://www.baeldung.com/java-wait-notify#1-why-enclose-wait-in-a-while-loop
-                do {
+                while (nMarkersCounter.get() < n) {
                     syncRoot.wait();
-                } while (nMarkersCounter.get() < n);
+                }
             } catch (InterruptedException e) {
                 throw new RuntimeException("exception in createCustomMarkers", e);
             }
@@ -582,7 +582,6 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     }
 
     private void addCustomMarkers(final List<CustomMarker> customMarkers,
-                                  String mapId,
                                   final CustomMapView customMapView,
                                   final PluginCall call) {
         final int n = customMarkers.size();
@@ -604,7 +603,9 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
                             customMarker,
                             (Marker marker) -> {
                                 result.add(
-                                        (JSObject) CustomMarker.getResultForMarker(marker, mapId)
+                                        (JSObject) CustomMarker.getResultForMarker(
+                                                marker,
+                                                customMapView.getId())
                                                 .opt("marker")
                                 );
                                 synchronized (syncRoot) {
@@ -613,7 +614,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
                                 }
                                 if (nMarkersAdded.addAndGet(1) == n) {
                                     JSObject jsResult = new JSObject();
-                                    jsResult.put("mapId", mapId);
+                                    jsResult.put("mapId", customMapView.getId());
                                     JSArray jsMarkerOutputEntries = JSArray.from(result.toArray());
                                     jsResult.put("markers", jsMarkerOutputEntries);
                                     call.resolve(jsResult);

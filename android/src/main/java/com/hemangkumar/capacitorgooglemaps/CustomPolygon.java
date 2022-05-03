@@ -106,8 +106,13 @@ public class CustomPolygon extends CustomShape<ShapePolygon> {
 
         // create overlay bitmap
         Bitmap overlayBitmap = createOverlayBitmap(
-                projection, northEast, southWest, overlayWidth, overlayHeight,
-                bounds, points, tileBitmap);
+                projection,
+                northEast,
+                southWest,
+                overlayWidth,
+                overlayHeight,
+                points,
+                tileBitmap);
 
         return new GroundOverlayOptions()
                 .image(BitmapDescriptorFactory.fromBitmap(overlayBitmap))
@@ -120,7 +125,6 @@ public class CustomPolygon extends CustomShape<ShapePolygon> {
                                        Point southWest,
                                        int width,
                                        int height,
-                                       LatLngBounds bounds,
                                        List<LatLng> points,
                                        Bitmap tileBitmap) {
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
