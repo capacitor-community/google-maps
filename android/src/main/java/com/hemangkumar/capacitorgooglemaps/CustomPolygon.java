@@ -106,7 +106,8 @@ public class CustomPolygon extends CustomShape<ShapePolygon> {
 
         // create overlay bitmap
         Bitmap overlayBitmap = createOverlayBitmap(
-                overlayWidth, overlayHeight, bounds, points, tileBitmap);
+                projection, northEast, southWest, overlayWidth, overlayHeight,
+                bounds, points, tileBitmap);
 
         return new GroundOverlayOptions()
                 .image(BitmapDescriptorFactory.fromBitmap(overlayBitmap))
@@ -114,7 +115,10 @@ public class CustomPolygon extends CustomShape<ShapePolygon> {
                 .positionFromBounds(bounds);
     }
 
-    private Bitmap createOverlayBitmap(int width,
+    private Bitmap createOverlayBitmap(Projection projection,
+                                       Point northEast,
+                                       Point southWest,
+                                       int width,
                                        int height,
                                        LatLngBounds bounds,
                                        List<LatLng> points,
@@ -134,15 +138,15 @@ public class CustomPolygon extends CustomShape<ShapePolygon> {
 
         List<Point> screenPoints = new ArrayList<>(points.size());
 
-        double boundHeight = bounds.northeast.latitude - bounds.southwest.latitude;
-        double boundWidth = bounds.northeast.longitude - bounds.southwest.longitude;
+        double boundHeight = northEast.y - southWest.y;
+        double boundWidth = northEast.x - southWest.x;
         double kx = width / boundWidth;
         double ky = height / boundHeight;
         for (int i = 0; i < points.size(); i++) {
-            LatLng latLng = points.get(i);
+            Point p = projection.toScreenLocation(points.get(i));
             Point screenPoint = new Point();
-            screenPoint.x = (int) (kx * (latLng.longitude - bounds.southwest.longitude));
-            screenPoint.y = height - (int) (ky * (latLng.latitude - bounds.southwest.latitude));
+            screenPoint.x = (int) (kx * (p.x - southWest.x));
+            screenPoint.y = height - (int) (ky * (p.y - southWest.y));
             screenPoints.add(screenPoint);
         }
 

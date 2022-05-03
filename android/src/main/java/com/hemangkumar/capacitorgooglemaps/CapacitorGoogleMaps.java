@@ -637,7 +637,6 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
                     }
                 }
             } // end for
-            System.out.println("END FOR");
         }); // end of execute
     }
 
