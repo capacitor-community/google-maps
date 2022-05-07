@@ -9,6 +9,7 @@ export { ElementFromPointResultOptions } from "./methods/ElementFromPointResult"
 export { AddMarkerOptions, AddMarkerResult } from "./methods/AddMarker";
 export { AddMarkersOptions, MarkerInputEntry, AddMarkersResult } from "./methods/AddMarkers";
 export { RemoveMarkerOptions } from "./methods/RemoveMarker";
+export { ViewBoundsOptions } from './methods/ViewBounds';
 
 // events
 export * from "./events/DidTapInfoWindow";
