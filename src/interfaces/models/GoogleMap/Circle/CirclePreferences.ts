@@ -9,6 +9,7 @@ export interface CirclePreferences {
     isClickable?: boolean;
     strokePattern?: PatternItem[];
     strokeJointType?: string; // 'BEVEL', 'DEFAULT', 'ROUND'
+    aboveMarkers?: boolean;
     metadata?: { [key: string]: any };
   }
   

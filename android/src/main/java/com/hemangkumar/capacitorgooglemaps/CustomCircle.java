@@ -5,7 +5,7 @@ import com.google.android.libraries.maps.model.Circle;
 
 public class CustomCircle extends CustomShape<ShapeCircle> {
     private ShapeCircleOptions options;
-    private final ShapeCircleTraits traits = new ShapeCircleTraits();
+    private final ShapeCircleTraits traits = ShapeCircleTraits.INSTANCE;
 
     @Override
     protected ShapeOptions getOptions() {
@@ -26,6 +26,8 @@ public class CustomCircle extends CustomShape<ShapeCircle> {
     public ShapeCircle addToMap(GoogleMap googleMap) {
         Circle circle = googleMap.addCircle(options.getNativeOptions());
         circle.setTag(tag);
-        return new ShapeCircle(circle);
+        ShapeCircle shapeCircle = new ShapeCircle(circle);
+        shapeCircle.setAboveMarkers(options.isAboveMarkers());
+        return shapeCircle;
     }
 }

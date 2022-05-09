@@ -1,6 +1,17 @@
 package com.hemangkumar.capacitorgooglemaps;
 
 public class ShapePolygonTraits extends ShapeTraits {
+    public final static ShapePolygonTraits INSTANCE = new ShapePolygonTraits();
+
+    private ShapePolygonTraits() {
+
+    }
+
+    @Override
+    public boolean hasAboveMarkers() {
+        return true;
+    }
+
     @Override
     public boolean hasStrokeWidth() {
         return true;

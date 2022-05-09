@@ -12,5 +12,6 @@ export interface PolygonPreferences {
   strokePattern?: PatternItem[];
   strokeJointType?: string; // 'BEVEL', 'DEFAULT', 'ROUND'
   patternIcon?: Icon;
+  aboveMarkers?: boolean;
   metadata?: { [key: string]: any };
 }

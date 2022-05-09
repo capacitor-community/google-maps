@@ -36,6 +36,8 @@ public class MarkersAppender {
                            final JSArray jsMarkers,
                            final Activity activity,
                            Consumer<JSObject> resultConsumer) throws AppenderException {
+        currentException = null;
+        isException.set(false);
         final List<CustomMarker> customMarkers = createCustomMarkers(jsMarkers);
         addCustomMarkers(customMarkers, customMapView, activity, resultConsumer);
     }
@@ -45,8 +47,6 @@ public class MarkersAppender {
         final List<CustomMarker> customMarkers = new ArrayList<>(n);
         final Object syncRoot = new Object();
         final AtomicInteger nMarkersCounter = new AtomicInteger(0);
-        isException.set(false);
-        currentException = null;
         // prepare customMarkers as fast as possible. Really it doesn't increase the total
         // speed of this method :( noticeably.
         for (int i = 0; i < n; i++) {

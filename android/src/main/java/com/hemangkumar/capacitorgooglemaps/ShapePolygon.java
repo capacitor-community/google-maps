@@ -169,4 +169,5 @@ public class ShapePolygon extends Shape {
     public GroundOverlay getGroundOverlay() {
         return groundOverlay;
     }
+
 }

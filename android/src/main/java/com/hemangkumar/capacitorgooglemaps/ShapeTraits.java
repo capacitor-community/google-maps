@@ -1,6 +1,7 @@
 package com.hemangkumar.capacitorgooglemaps;
 
 public abstract class ShapeTraits {
+    boolean hasAboveMarkers() {return false;}
     boolean hasWidth() {
         return false;
     }

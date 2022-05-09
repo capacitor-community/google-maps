@@ -6,6 +6,15 @@ import com.google.android.libraries.maps.model.PatternItem;
 import java.util.List;
 
 public abstract class Shape {
+    private boolean aboveMarkers;
+
+    public boolean isAboveMarkers() {
+        return aboveMarkers;
+    }
+
+    public void setAboveMarkers(boolean aboveMarkers) {
+        this.aboveMarkers = aboveMarkers;
+    }
 
     public float getWidth() {
         return 0;

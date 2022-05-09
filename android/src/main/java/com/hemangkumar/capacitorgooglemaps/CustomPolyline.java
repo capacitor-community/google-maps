@@ -4,7 +4,7 @@ import com.google.android.libraries.maps.GoogleMap;
 import com.google.android.libraries.maps.model.Polyline;
 
 public class CustomPolyline extends CustomShape<ShapePolyline> {
-    private final ShapePolylineTraits traits = new ShapePolylineTraits();
+    private final ShapePolylineTraits traits = ShapePolylineTraits.INSTANCE;
     private ShapePolylineOptions options;
 
     @Override

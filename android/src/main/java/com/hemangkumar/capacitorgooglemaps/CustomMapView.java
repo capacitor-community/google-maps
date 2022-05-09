@@ -73,6 +73,7 @@ public class CustomMapView
     private ClusterManager<CustomClusterItem> clusterManager;
     private CustomClusterRenderer clusterRenderer;
     private final Map<String, CustomClusterItem> clusterItems = new HashMap<>();
+    private boolean shapesAboveMarkers = false;
 
     String savedCallbackIdForCreate;
 
@@ -125,11 +126,13 @@ public class CustomMapView
 
     public MapCameraPosition mapCameraPosition;
     public MapPreferences mapPreferences;
+    private final MarkerVisibilityCorrector markerVisibilityCorrector;
 
     public CustomMapView(@NonNull AppCompatActivity activity, CustomMapViewEvents customMapViewEvents) {
         this.activity = activity;
         this.customMapViewEvents = customMapViewEvents;
         this.id = UUID.randomUUID().toString();
+        markerVisibilityCorrector = new MarkerVisibilityCorrector(markers, polygons, circles);
     }
 
     public String getId() {
@@ -567,6 +570,8 @@ public class CustomMapView
         polylines.clear();
         circles.clear();
         clusterManager.cluster();
+        shapesAboveMarkers = false;
+        markerVisibilityCorrector.clear();
     }
 
     public void addMarker(CustomMarker customMarker, @Nullable Consumer<Marker> consumer) {
@@ -575,7 +580,7 @@ public class CustomMapView
                 googleMap,
                 (marker) -> {
                     markers.put(customMarker.markerId, marker);
-
+                    markerVisibilityCorrector.correctMarkerVisibility(marker);
                     if (consumer != null) {
                         consumer.accept(marker);
                     }
@@ -587,6 +592,7 @@ public class CustomMapView
         Marker marker = markers.remove(markerId);
         if (marker != null) {
             marker.remove();
+            markerVisibilityCorrector.remove(marker);
             return true;
         } else {
             CustomClusterItem item = clusterItems.remove(markerId);
@@ -629,6 +635,7 @@ public class CustomMapView
     public void addPolygon(CustomPolygon customPolygon, @Nullable Consumer<ShapePolygon> consumer) {
         customPolygon.addToMap(activity, googleMap, (shapePolygon)->{
             polygons.put(customPolygon.id, shapePolygon);
+            markerVisibilityCorrector.correctMarkerVisibility();
             if (consumer != null) {
                 consumer.accept(shapePolygon);
             }
@@ -643,6 +650,7 @@ public class CustomMapView
         ShapePolygon polygon = polygons.get(polygonId);
         if (polygon != null) {
             customPolygon.updateShape(polygon);
+            markerVisibilityCorrector.correctMarkerVisibility();
             return true;
         }
         return false;
@@ -652,6 +660,7 @@ public class CustomMapView
         ShapePolygon polygon = polygons.remove(polygonId);
         if (polygon != null) {
             polygon.remove();
+            markerVisibilityCorrector.correctMarkerVisibility();
             return true;
         }
         return false;
@@ -688,6 +697,7 @@ public class CustomMapView
     public ShapeCircle addCircle(CustomCircle customCircle) {
         ShapeCircle circle = customCircle.addToMap(googleMap);
         circles.put(customCircle.id, circle);
+        markerVisibilityCorrector.correctMarkerVisibility();
         return circle;
     }
 
@@ -699,6 +709,7 @@ public class CustomMapView
         ShapeCircle circle = circles.get(circleId);
         if (circle != null) {
             customCircle.updateShape(circle);
+            markerVisibilityCorrector.correctMarkerVisibility();
             return true;
         }
         return false;
@@ -708,6 +719,7 @@ public class CustomMapView
         ShapeCircle circle = circles.remove(circleId);
         if (circle != null) {
             circle.remove();
+            markerVisibilityCorrector.correctMarkerVisibility();
             return true;
         }
         return false;

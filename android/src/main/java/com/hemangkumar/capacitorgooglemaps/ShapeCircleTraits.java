@@ -1,6 +1,18 @@
 package com.hemangkumar.capacitorgooglemaps;
 
 public class ShapeCircleTraits extends ShapeTraits {
+
+    public static final ShapeCircleTraits INSTANCE = new ShapeCircleTraits();
+
+    private ShapeCircleTraits() {
+
+    }
+
+    @Override
+    public boolean hasAboveMarkers() {
+        return true;
+    }
+
     @Override
     public boolean hasStrokeWidth() {
         return true;

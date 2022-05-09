@@ -26,7 +26,7 @@ import java.util.List;
 
 public class CustomPolygon extends CustomShape<ShapePolygon> {
     private static final int OVERLAY_MAX_SIZE = 512;
-    private final ShapePolygonTraits traits = new ShapePolygonTraits();
+    private final ShapePolygonTraits traits = ShapePolygonTraits.INSTANCE;
     private ShapePolygonOptions options;
 
     @Override
@@ -66,6 +66,7 @@ public class CustomPolygon extends CustomShape<ShapePolygon> {
                         } else {
                             shapePolygon = new ShapePolygon(polygon);
                         }
+                        shapePolygon.setAboveMarkers(options.isAboveMarkers());
                         if (consumer != null) {
                             consumer.accept(shapePolygon);
                         }
@@ -136,7 +137,7 @@ public class CustomPolygon extends CustomShape<ShapePolygon> {
 
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
-        paint.setStrokeWidth(10);
+        paint.setStrokeWidth(0);
         paint.setAntiAlias(true);
         paint.setShader(shader);
 

@@ -67,6 +67,7 @@ public abstract class CustomShape<T extends Shape> {
         shape.setColor(options.getColor());
         shape.setRadius(options.getRadius());
         shape.setCenter(options.getCenter());
+        shape.setAboveMarkers(options.isAboveMarkers());
 
         saveCurrentMetadataToTag(shape.getTag());
     }
@@ -136,6 +137,10 @@ public abstract class CustomShape<T extends Shape> {
             if (jsHoles.length() > 0) {
                 jsPreferences.put("holes", jsHoles);
             }
+        }
+
+        if (traits.hasAboveMarkers()) {
+            jsPreferences.put("aboveMarkers", shape.isAboveMarkers());
         }
 
         // metadata
@@ -362,6 +367,11 @@ public abstract class CustomShape<T extends Shape> {
             } else {
                 options.patternIconDescriptor(null);
             }
+        }
+
+        if (traits.hasAboveMarkers()) {
+            final boolean aboveMarkers = jsPreferences.optBoolean("aboveMarkers", false);
+            options.aboveMarkers(aboveMarkers);
         }
 
         final float zIndex = (float) jsPreferences.optDouble("zIndex", 0);

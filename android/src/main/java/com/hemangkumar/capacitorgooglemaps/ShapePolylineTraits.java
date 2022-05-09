@@ -2,6 +2,12 @@ package com.hemangkumar.capacitorgooglemaps;
 
 public class ShapePolylineTraits extends ShapeTraits {
 
+    public final static ShapePolylineTraits INSTANCE = new ShapePolylineTraits();
+
+    private ShapePolylineTraits() {
+
+    }
+
     @Override
     public boolean hasWidth() {
         return true;
