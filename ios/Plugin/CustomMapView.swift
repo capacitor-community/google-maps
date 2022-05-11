@@ -118,6 +118,12 @@ class CustomMapView: UIViewController, GMSMapViewDelegate {
         return self.getResultForMap();
     }
     
+    func clearMap() {
+        if (self.GMapView != nil) {
+            self.GMapView.clear();
+        }
+    }
+    
     public func getCameraPosition() -> GMSCameraPosition? {
         if (self.GMapView != nil) {
             return self.GMapView.camera;
