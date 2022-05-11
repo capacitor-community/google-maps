@@ -93,6 +93,20 @@ addMarker(options: AddMarkerOptions) => Promise<AddMarkerResult>
 
 ---
 
+### addMarkers(...)
+
+```typescript
+addMarkers(options: AddMarkersOptions) => Promise<AddMarkersResult>
+```
+
+| Param         | Type                                                 |
+| ------------- | ---------------------------------------------------- |
+| **`options`** | <code>[AddMarkersOptions](#addmarkersoptions)</code> |
+
+**Returns:** <code>Promise&lt;[AddMarkersResult](#addmarkersresult)&gt;</code>
+
+---
+
 ### removeMarker(...)
 
 ```typescript
@@ -545,13 +559,61 @@ Additionally, it also holds parameters such as the type of map tiles and the ove
 | **`isDraggable`** | <code>boolean</code>                   | Controls whether this marker can be dragged interactively. When a marker is draggable, it can be moved by the user by long pressing on the marker.                                                                                                                                                                                                                                                                                                                                                               | <code>false</code>            | 2.0.0 |
 | **`zIndex`**      | <code>number</code>                    | The z-index specifies the stack order of this marker, relative to other markers on the map. A marker with a high z-index is drawn on top of markers with lower z-indexes. Markers are always drawn above tile layers and other non-marker overlays (ground overlays, polylines, polygons, and other shapes) regardless of the z-index of the other overlays. Markers are effectively considered to be in a separate z-index group compared to other overlays.                                                    | <code>0</code>                | 2.0.0 |
 | **`anchor`**      | <code>{ x: number; y: number; }</code> | Specifies the anchor to be at a particular point in the marker image. The anchor specifies the point in the icon image that is anchored to the marker's position on the Earth's surface. The anchor point is specified in the continuous space [0.0, 1.0] x [0.0, 1.0], where (0, 0) is the top-left corner of the image, and (1, 1) is the bottom-right corner. Read more about it here: https://developers.google.com/android/reference/com/google/android/gms/maps/model/MarkerOptions#anchor(float,%20float) | <code>{ x: 0.5, y: 1 }</code> | 2.0.0 |
-| **`metadata`**    | <code>object</code>                    | You can use this property to associate an arbitrary object with this overlay. The Google Maps SDK neither reads nor writes this property. Note that metadata should not hold any strong references to any Maps objects, otherwise a retain cycle may be created (preventing objects from being released).                                                                                                                                                                                                        | <code>{}</code>               | 2.0.0 |
+| **`icon`**        | <code>[MarkerIcon](#markericon)</code> |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | <code>undefined</code>        | 2.0.0 |
+| **`metadata`**    | <code>{ [key: string]: any; }</code>   | You can use this property to associate an arbitrary object with this overlay. The Google Maps SDK neither reads nor writes this property. Note that metadata should not hold any strong references to any Maps objects, otherwise a retain cycle may be created (preventing objects from being released).                                                                                                                                                                                                        | <code>{}</code>               | 2.0.0 |
+
+#### MarkerIcon
+
+A data class representing icon/marker.
+
+| Prop       | Type                                           | Description                                                     | Since |
+| ---------- | ---------------------------------------------- | --------------------------------------------------------------- | ----- |
+| **`url`**  | <code>string</code>                            | URL path to icon                                                | 2.0.0 |
+| **`size`** | <code>[MarkerIconSize](#markericonsize)</code> | Target icon size in pixels. Defaults to 30x30 if not specified. | 2.0.0 |
+
+#### MarkerIconSize
+
+A data class representing a pair of "width" and "height" in pixels.
+
+| Prop         | Type                | Description      | Default         | Since |
+| ------------ | ------------------- | ---------------- | --------------- | ----- |
+| **`width`**  | <code>number</code> | Width in pixels  | <code>30</code> | 2.0.0 |
+| **`height`** | <code>number</code> | Height in pixels | <code>30</code> | 2.0.0 |
 
 #### AddMarkerOptions
 
 | Prop              | Type                                                 | Since |
 | ----------------- | ---------------------------------------------------- | ----- |
 | **`mapId`**       | <code>string</code>                                  | 2.0.0 |
+| **`position`**    | <code>[LatLng](#latlng)</code>                       | 2.0.0 |
+| **`preferences`** | <code>[MarkerPreferences](#markerpreferences)</code> | 2.0.0 |
+
+#### AddMarkersResult
+
+| Prop          | Type                             | Since |
+| ------------- | -------------------------------- | ----- |
+| **`mapId`**   | <code>string</code>              | 2.0.0 |
+| **`markers`** | <code>MarkerOutputEntry[]</code> | 2.0.0 |
+
+#### MarkerOutputEntry
+
+| Prop              | Type                                                 | Description                                    | Since |
+| ----------------- | ---------------------------------------------------- | ---------------------------------------------- | ----- |
+| **`markerId`**    | <code>string</code>                                  | GUID representing the unique id of this marker | 2.0.0 |
+| **`position`**    | <code>[LatLng](#latlng)</code>                       |                                                | 2.0.0 |
+| **`preferences`** | <code>[MarkerPreferences](#markerpreferences)</code> |                                                | 2.0.0 |
+
+#### AddMarkersOptions
+
+| Prop          | Type                            | Since |
+| ------------- | ------------------------------- | ----- |
+| **`mapId`**   | <code>string</code>             | 2.0.0 |
+| **`markers`** | <code>MarkerInputEntry[]</code> | 2.0.0 |
+
+#### MarkerInputEntry
+
+| Prop              | Type                                                 | Since |
+| ----------------- | ---------------------------------------------------- | ----- |
 | **`position`**    | <code>[LatLng](#latlng)</code>                       | 2.0.0 |
 | **`preferences`** | <code>[MarkerPreferences](#markerpreferences)</code> | 2.0.0 |
 
