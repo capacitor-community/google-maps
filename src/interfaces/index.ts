@@ -7,6 +7,7 @@ export { ClearMapOptions } from "./methods/ClearMap";
 export { MoveCameraOptions } from "./methods/MoveCamera";
 export { ElementFromPointResultOptions } from "./methods/ElementFromPointResult";
 export { AddMarkerOptions, AddMarkerResult } from "./methods/AddMarker";
+export { AddMarkersOptions, MarkerInputEntry, AddMarkersResult } from "./methods/AddMarkers";
 export { RemoveMarkerOptions } from "./methods/RemoveMarker";
 
 // events

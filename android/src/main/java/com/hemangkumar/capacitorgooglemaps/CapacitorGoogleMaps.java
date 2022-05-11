@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
@@ -31,7 +32,7 @@ import java.util.UUID;
                 ),
         }
 )
-public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  {
+public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     private final HashMap<String, CustomMapView> customMapViews = new HashMap<>();
     Float devicePixelRatio;
     private String lastEventChainId;
@@ -57,6 +58,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
         }
         call.resolve();
     }
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void load() {
@@ -437,10 +439,12 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
     public void didBeginMovingCamera(final PluginCall call) {
         setCallbackIdForEvent(call, CustomMapView.EVENT_DID_BEGIN_MOVING_CAMERA);
     }
+
     @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
     public void didMoveCamera(final PluginCall call) {
         setCallbackIdForEvent(call, CustomMapView.EVENT_DID_MOVE_CAMERA);
     }
+
     @PluginMethod(returnType = PluginMethod.RETURN_CALLBACK)
     public void didEndMovingCamera(final PluginCall call) {
         setCallbackIdForEvent(call, CustomMapView.EVENT_DID_END_MOVING_CAMERA);
@@ -498,25 +502,42 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
         });
     }
 
-     @PluginMethod(returnType = PluginMethod.RETURN_NONE)
-     public void removeMarker(final PluginCall call) {
-         final String mapId = call.getString("mapId");
+    @PluginMethod()
+    public void addMarkers(final PluginCall call) {
+        final String mapId = call.getString("mapId");
+        CustomMapView customMapView = customMapViews.get(mapId);
+        if (customMapView == null) {
+            call.reject("map not found");
+            return;
+        }
+        try {
+            final JSArray jsMarkers = call.getArray("markers", new JSArray());
+            MarkersAppender appender = new MarkersAppender();
+            appender.addMarkers(customMapView, jsMarkers, getBridge().getActivity(), call::resolve);
+        } catch (MarkersAppender.AppenderException e) {
+            call.reject("exception in addMarkers", e);
+        }
+    }
 
-         getBridge().getActivity().runOnUiThread(new Runnable() {
-             @Override
-             public void run() {
-                 CustomMapView customMapView = customMapViews.get(mapId);
+    @PluginMethod(returnType = PluginMethod.RETURN_NONE)
+    public void removeMarker(final PluginCall call) {
+        final String mapId = call.getString("mapId");
 
-                 if (customMapView != null) {
-                     final String markerId = call.getString("markerId");
+        getBridge().getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                CustomMapView customMapView = customMapViews.get(mapId);
 
-                     customMapView.removeMarker(markerId);
+                if (customMapView != null) {
+                    final String markerId = call.getString("markerId");
 
-                     call.resolve();
-                 } else {
-                     call.reject("map not found");
-                 }
-             }
-         });
-     }
+                    customMapView.removeMarker(markerId);
+
+                    call.resolve();
+                } else {
+                    call.reject("map not found");
+                }
+            }
+        });
+    }
 }
