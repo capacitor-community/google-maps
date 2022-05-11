@@ -2,7 +2,6 @@ package com.hemangkumar.capacitorgooglemaps;
 
 import android.content.res.Resources;
 import android.util.Size;
-import android.util.SizeF;
 
 import androidx.annotation.NonNull;
 
@@ -10,7 +9,7 @@ import com.getcapacitor.JSObject;
 
 class IconDescriptor {
     public final String url;
-    public final Size sizeInPixels;
+    public final Size size;
 
     private float density = Resources.getSystem().getDisplayMetrics().density;
 
@@ -37,7 +36,7 @@ class IconDescriptor {
         final String width = "width";
         final String height = "height";
 
-        sizeInPixels = new Size(
+        size = new Size(
                 (int) Math.round(jsSize.optDouble(width, 30) * density),
                 (int) Math.round(jsSize.optDouble(height, 30) * density));
     }

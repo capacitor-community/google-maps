@@ -2,7 +2,6 @@ package com.hemangkumar.capacitorgooglemaps;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.view.ViewGroup;
@@ -10,6 +9,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.util.Consumer;
 
@@ -44,7 +44,7 @@ public class CustomMapView
         GoogleMap.OnCameraMoveListener,
         GoogleMap.OnCameraIdleListener
 {
-    private final Context context;
+    private final AppCompatActivity activity;
     private final CustomMapViewEvents customMapViewEvents;
 
     private final String id;
@@ -102,8 +102,8 @@ public class CustomMapView
     public MapCameraPosition mapCameraPosition;
     public MapPreferences mapPreferences;
 
-    public CustomMapView(@NonNull Context context, CustomMapViewEvents customMapViewEvents) {
-        this.context = context;
+    public CustomMapView(@NonNull AppCompatActivity activity, CustomMapViewEvents customMapViewEvents) {
+        this.activity = activity;
         this.customMapViewEvents = customMapViewEvents;
         this.id = UUID.randomUUID().toString();
     }
@@ -113,7 +113,7 @@ public class CustomMapView
     }
 
     private boolean hasPermission() {
-        return ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+        return ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
     @SuppressLint("MissingPermission")
@@ -357,7 +357,7 @@ public class CustomMapView
         GoogleMapOptions googleMapOptions = this.mapPreferences.generateGoogleMapOptions();
         googleMapOptions.camera(this.mapCameraPosition.cameraPosition);
 
-        mapView = new MapView(context, googleMapOptions);
+        mapView = new MapView(activity, googleMapOptions);
 
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(getScaledPixels(boundingRect.width), getScaledPixels(boundingRect.height));
         lp.topMargin = getScaledPixels(boundingRect.y);
@@ -428,7 +428,7 @@ public class CustomMapView
 
     private int getScaledPixels(float pixels) {
         // Get the screen's density scale
-        final float scale = context.getResources().getDisplayMetrics().density;
+        final float scale = activity.getResources().getDisplayMetrics().density;
         // Convert the dps to pixels, based on density scale
         return (int) (pixels * scale + 0.5f);
     }
@@ -448,7 +448,7 @@ public class CustomMapView
 
     public void addMarker(CustomMarker customMarker, @Nullable Consumer<Marker> consumer) {
         customMarker.addToMap(
-            context,
+            activity,
             googleMap,
             (marker) -> {
                 markers.put(customMarker.markerId, marker);

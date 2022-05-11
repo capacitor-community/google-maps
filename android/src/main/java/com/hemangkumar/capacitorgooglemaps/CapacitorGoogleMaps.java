@@ -236,7 +236,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
         getBridge().getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                CustomMapView customMapView = new CustomMapView(getBridge().getContext(), ctx);
+                CustomMapView customMapView = new CustomMapView(getBridge().getActivity(), ctx);
 
                 customMapViews.put(customMapView.getId(), customMapView);
 

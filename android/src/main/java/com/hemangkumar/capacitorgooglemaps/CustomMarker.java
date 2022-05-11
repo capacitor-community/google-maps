@@ -1,10 +1,9 @@
 package com.hemangkumar.capacitorgooglemaps;
 
-import android.content.Context;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Consumer;
+import androidx.fragment.app.FragmentActivity;
 
 import com.getcapacitor.JSObject;
 import com.google.android.libraries.maps.GoogleMap;
@@ -27,9 +26,9 @@ public class CustomMarker {
     private JSObject iconDescriptor;
 
     public void asyncLoadIcon(
-            @NonNull Context context,
+            @NonNull FragmentActivity activity,
             @Nullable Consumer<BitmapDescriptor> consumer) {
-        new AsyncIconLoader(iconDescriptor, context)
+        new AsyncIconLoader(iconDescriptor, activity)
             .load((bitmap) -> {
                 BitmapDescriptor bitmapDescriptor;
                 if (bitmap != null) {
@@ -76,9 +75,9 @@ public class CustomMarker {
         iconDescriptor = JSObjectDefaults.getJSObjectSafe(preferences, "icon", new JSObject());
     }
 
-    public void addToMap(Context context, GoogleMap googleMap, @Nullable Consumer<Marker> consumer) {
+    public void addToMap(FragmentActivity activity, GoogleMap googleMap, @Nullable Consumer<Marker> consumer) {
         asyncLoadIcon(
-            context,
+            activity,
             (BitmapDescriptor bitmapDescriptor) -> {
                 markerOptions.icon(bitmapDescriptor);
                 Marker marker = googleMap.addMarker(markerOptions);

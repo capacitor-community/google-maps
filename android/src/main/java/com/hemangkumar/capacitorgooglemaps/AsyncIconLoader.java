@@ -1,17 +1,15 @@
 package com.hemangkumar.capacitorgooglemaps;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Picture;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PictureDrawable;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
-import android.util.Size;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
@@ -34,16 +32,16 @@ class AsyncIconLoader {
     }
 
     private final IconDescriptor iconDescriptor;
-    private final Context context;
+    private final FragmentActivity activity;
 
-    public AsyncIconLoader(JSObject jsIconDescriptor, Context context) {
+    public AsyncIconLoader(JSObject jsIconDescriptor, FragmentActivity activity) {
         this.iconDescriptor = new IconDescriptor(jsIconDescriptor);
-        this.context = context;
+        this.activity = activity;
     }
 
     public void load(OnIconReady onIconReady) {
 
-        if (TextUtils.isEmpty(iconDescriptor.url)) {
+        if (iconDescriptor == null || TextUtils.isEmpty(iconDescriptor.url)) {
             onIconReady.onReady(null);
             return;
         }
@@ -55,8 +53,8 @@ class AsyncIconLoader {
         }
     }
 
-    private void loadBitmap(OnIconReady onIconReady) {
-        RequestBuilder<Bitmap> builder = Glide.with(context)
+    private void loadBitmap(final OnIconReady onIconReady) {
+        RequestBuilder<Bitmap> builder = Glide.with(activity)
                 .asBitmap()
                 .load(iconDescriptor.url)
                 .timeout(3000);
@@ -87,18 +85,15 @@ class AsyncIconLoader {
         );
     }
 
-    private void loadSvg(OnIconReady onIconReady) {
-        Glide.with(context).downloadOnly().load(iconDescriptor.url).into(new CustomTarget<File>() {
+    private void loadSvg(final OnIconReady onIconReady) {
+        Glide.with(activity).downloadOnly().load(iconDescriptor.url).into(new CustomTarget<File>() {
             @Override
             public void onResourceReady(@NonNull File resource, @Nullable Transition<? super File> transition) {
                 try {
                     try (InputStream inputStream = new FileInputStream(resource)) {
                         SVG svg = SVG.getFromInputStream(inputStream);
-                        Size sz = calcPictureSize();
-                        if (sz.getWidth() > -1) {
-                            svg.setDocumentWidth(sz.getWidth());
-                            svg.setDocumentHeight(sz.getHeight());
-                        }
+                        svg.setDocumentWidth(iconDescriptor.size.getWidth());
+                        svg.setDocumentHeight(iconDescriptor.size.getHeight());
                         Picture picture = svg.renderToPicture();
                         Bitmap bitmap = pictureToBitmap(picture);
                         onIconReady.onReady(bitmap);
@@ -120,22 +115,9 @@ class AsyncIconLoader {
         });
     }
 
-    private Size calcPictureSize() {
-        if (iconDescriptor.sizeInPixels.getHeight() > 0 && iconDescriptor.sizeInPixels.getWidth() > 0) {
-            // Scale image to provided size in Pixels
-            return new Size(iconDescriptor.sizeInPixels.getWidth(), iconDescriptor.sizeInPixels.getHeight());
-        }
-        // size is not set -> return (-1; -1)
-        return new Size(-1, -1);
-    }
-
     private <T> RequestBuilder<T> scaleImageOptional(
             RequestBuilder<T> builder) {
-        Size sz = calcPictureSize();
-        if (sz.getWidth() > -1) {
-            builder = builder.override(sz.getWidth(), sz.getHeight());
-        }
-        return builder;
+        return builder.override(iconDescriptor.size.getWidth(), iconDescriptor.size.getHeight());
     }
 
     private static Bitmap pictureToBitmap(Picture picture) {
