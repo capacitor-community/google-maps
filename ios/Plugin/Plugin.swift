@@ -109,6 +109,22 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         }
 
     }
+    
+    @objc func clearMap(_ call: CAPPluginCall) {
+        let mapId: String = call.getString("mapId", "")
+
+        DispatchQueue.main.async {
+            guard let customMapView = self.customWebView?.customMapViews[mapId] else {
+                call.reject("map not found")
+                return
+            }
+            
+            let result = customMapView.clearMap()
+            
+            call.resolve()
+        }
+
+    }
 
     @objc func moveCamera(_ call: CAPPluginCall) {
         let mapId: String = call.getString("mapId", "")
