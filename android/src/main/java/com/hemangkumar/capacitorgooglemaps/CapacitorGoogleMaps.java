@@ -19,10 +19,9 @@ import com.google.android.libraries.maps.model.CameraPosition;
 import com.google.android.libraries.maps.model.Marker;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 @CapacitorPlugin(
         name = "CapacitorGoogleMaps",
@@ -34,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
         }
 )
 public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
-    private final Map<String, CustomMapView> customMapViews = new ConcurrentHashMap<>();
+    private final HashMap<String, CustomMapView> customMapViews = new HashMap<>();
     Float devicePixelRatio;
     private String lastEventChainId;
     public List<MotionEvent> previousEvents = new ArrayList<>();
