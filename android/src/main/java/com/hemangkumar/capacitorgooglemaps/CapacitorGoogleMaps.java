@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
         name = "CapacitorGoogleMaps",
         permissions = {
                 @Permission(
-                        strings = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                        strings = { Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION },
                         alias = "location"
                 ),
         }
