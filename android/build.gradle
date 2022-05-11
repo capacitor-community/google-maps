@@ -38,7 +38,6 @@ android {
 
 repositories {
     google()
-    jcenter()
     mavenCentral()
 }
 
@@ -50,4 +49,6 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
     implementation 'com.google.android.libraries.maps:maps:3.1.0-beta'
+    implementation 'com.github.bumptech.glide:glide:4.13.0'
+    implementation 'com.caverock:androidsvg-aar:1.4'
 }

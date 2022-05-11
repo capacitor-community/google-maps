@@ -1,3 +1,5 @@
+import { MarkerIcon } from "./../../../../definitions";
+
 export interface MarkerPreferences {
   /**
    * A text string that's displayed in an info window when the user taps the marker.
@@ -60,6 +62,11 @@ export interface MarkerPreferences {
    * @since 2.0.0
    */
   anchor?: { x: number; y: number };
+  /**
+   * @default undefined
+   * @since 2.0.0
+   */
+  icon?: MarkerIcon;
   /**
    * You can use this property to associate an arbitrary object with this overlay.
    * The Google Maps SDK neither reads nor writes this property.

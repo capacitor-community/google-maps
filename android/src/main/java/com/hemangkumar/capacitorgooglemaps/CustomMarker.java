@@ -1,15 +1,17 @@
 package com.hemangkumar.capacitorgooglemaps;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.util.Consumer;
+import androidx.fragment.app.FragmentActivity;
 
 import com.getcapacitor.JSObject;
-import com.getcapacitor.util.JSONUtils;
 import com.google.android.libraries.maps.GoogleMap;
+import com.google.android.libraries.maps.model.BitmapDescriptor;
+import com.google.android.libraries.maps.model.BitmapDescriptorFactory;
 import com.google.android.libraries.maps.model.LatLng;
 import com.google.android.libraries.maps.model.Marker;
 import com.google.android.libraries.maps.model.MarkerOptions;
-
-import org.json.JSONObject;
 
 import java.util.UUID;
 
@@ -21,6 +23,25 @@ public class CustomMarker {
 
     private final MarkerOptions markerOptions = new MarkerOptions();
     private JSObject tag = new JSObject();
+    private JSObject iconDescriptor;
+
+    public void asyncLoadIcon(
+            @NonNull FragmentActivity activity,
+            @Nullable Consumer<BitmapDescriptor> consumer) {
+        new AsyncIconLoader(iconDescriptor, activity)
+            .load((bitmap) -> {
+                BitmapDescriptor bitmapDescriptor;
+                if (bitmap != null) {
+                    bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bitmap);
+                } else {
+                    bitmapDescriptor = null;
+                }
+
+                if (consumer != null) {
+                    consumer.accept(bitmapDescriptor);
+                }
+            });
+    }
 
     public void updateFromJSObject(JSObject marker) {
         final JSObject position = JSObjectDefaults.getJSObjectSafe(marker, "position", new JSObject());
@@ -50,12 +71,22 @@ public class CustomMarker {
         this.markerOptions.anchor(anchorX, anchorY);
 
         this.setMetadata(JSObjectDefaults.getJSObjectSafe(preferences, "metadata", new JSObject()));
+
+        iconDescriptor = JSObjectDefaults.getJSObjectSafe(preferences, "icon", new JSObject());
     }
 
-    public Marker addToMap(GoogleMap googleMap) {
-        Marker marker = googleMap.addMarker(this.markerOptions);
-        marker.setTag(this.tag);
-        return marker;
+    public void addToMap(FragmentActivity activity, GoogleMap googleMap, @Nullable Consumer<Marker> consumer) {
+        asyncLoadIcon(
+            activity,
+            (BitmapDescriptor bitmapDescriptor) -> {
+                markerOptions.icon(bitmapDescriptor);
+                Marker marker = googleMap.addMarker(markerOptions);
+                marker.setTag(tag);
+
+                if (consumer != null) {
+                    consumer.accept(marker);
+                }
+            });
     }
 
     private void setMetadata(@NonNull JSObject jsObject) {

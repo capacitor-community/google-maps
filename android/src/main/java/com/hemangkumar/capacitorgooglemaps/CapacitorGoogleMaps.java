@@ -236,7 +236,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
         getBridge().getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                CustomMapView customMapView = new CustomMapView(getBridge().getContext(), ctx);
+                CustomMapView customMapView = new CustomMapView(getBridge().getActivity(), ctx);
 
                 customMapViews.put(customMapView.getId(), customMapView);
 
@@ -485,9 +485,12 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
                     CustomMarker customMarker = new CustomMarker();
                     customMarker.updateFromJSObject(call.getData());
 
-                    Marker marker = customMapView.addMarker(customMarker);
-
-                    call.resolve(CustomMarker.getResultForMarker(marker, mapId));
+                    customMapView.addMarker(
+                        customMarker,
+                        (Marker marker) -> {
+                            call.resolve(CustomMarker.getResultForMarker(marker, mapId));
+                        }
+                    );
                 } else {
                     call.reject("map not found");
                 }

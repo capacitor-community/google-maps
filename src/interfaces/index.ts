@@ -30,6 +30,8 @@ export { CameraMovementReason } from "./models/GoogleMap/Camera/MovementReason";
 export { CameraPosition } from "./models/GoogleMap/Camera/Position";
 export { Marker } from "./models/GoogleMap/Marker/Marker";
 export { MarkerPreferences } from "./models/GoogleMap/Marker/MarkerPreferences";
+export { MarkerIcon } from "./models/GoogleMap/Marker/MarkerIcon";
+export { MarkerIconSize } from "./models/GoogleMap/Marker/MarkerIconSize";
 export { MapAppearance } from "./models/GoogleMap/Appearance";
 export { MapControls } from "./models/GoogleMap/Controls";
 export { MapGestures } from "./models/GoogleMap/Gestures";
