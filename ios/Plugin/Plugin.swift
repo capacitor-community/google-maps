@@ -172,38 +172,44 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             let position = call.getObject("position", JSObject())
             let preferences = call.getObject("preferences", JSObject())
 
-            let marker = self.addMarker([
+            self.addMarker([
                 "position": position,
                 "preferences": preferences
-            ], customMapView: customMapView)
-
-            call.resolve(CustomMarker.getResultForMarker(marker, mapId: mapId))
+            ], customMapView: customMapView) { marker in
+                call.resolve(CustomMarker.getResultForMarker(marker, mapId: mapId))
+            }
         }
     }
 
     @objc func addMarkers(_ call: CAPPluginCall) {
         let mapId: String = call.getString("mapId", "")
 
-        DispatchQueue.main.async {
-            guard let customMapView = self.customWebView?.customMapViews[mapId] else {
-                call.reject("map not found")
-                return
-            }
-
-            if let markers = call.getArray("markers")?.capacitor.replacingNullValues() as? [JSObject?] {
-                for marker in markers {
-                    let position = marker?["position"] as? JSObject ?? JSObject();
-                    let preferences = marker?["preferences"] as? JSObject ?? JSObject();
-
-                    self.addMarker([
-                        "position": position,
-                        "preferences": preferences
-                    ], customMapView: customMapView)
-                }
-            }
-            
-            call.resolve()
+        guard let customMapView = self.customWebView?.customMapViews[mapId] else {
+            call.reject("map not found")
+            return
         }
+
+        if let markers = call.getArray("markers")?.capacitor.replacingNullValues() as? [JSObject?] {
+            let group = DispatchGroup()
+
+            for marker in markers {
+                group.enter()
+
+                let position = marker?["position"] as? JSObject ?? JSObject();
+                let preferences = marker?["preferences"] as? JSObject ?? JSObject();
+
+                self.addMarker([
+                    "position": position,
+                    "preferences": preferences
+                ], customMapView: customMapView) { marker in
+                    group.leave()
+                }
+
+                group.wait()
+            }
+        }
+
+        call.resolve()
     }
 
     @objc func removeMarker(_ call: CAPPluginCall) {
@@ -310,11 +316,14 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
 }
 
 private extension CapacitorGoogleMaps {
-    func addMarker(_ markerData: JSObject, customMapView: CustomMapView) -> GMSMarker {
+    func addMarker(_ markerData: JSObject, customMapView: CustomMapView, completion: @escaping VoidReturnClosure<GMSMarker>) {
         let marker = CustomMarker()
 
         marker.updateFromJSObject(markerData)
-        marker.map = customMapView.GMapView
+
+        DispatchQueue.main.async {
+            marker.map = customMapView.GMapView
+        }
 
         self.customMarkers[marker.id] = marker
 
@@ -326,12 +335,17 @@ private extension CapacitorGoogleMaps {
                 let resizeWidth = size["width"] as? Int ?? 30
                 let resizeHeight = size["height"] as? Int ?? 30
                 self.imageCache.image(at: url, resizeWidth: resizeWidth, resizeHeight: resizeHeight) { image in
-                    marker.icon = image
+                    DispatchQueue.main.async {
+                        marker.icon = image
+                    }
+
+                    completion(marker)
                 }
+                return
             }
         }
 
-        return marker
+        completion(marker)
     }
 
     func setupWebView() {
