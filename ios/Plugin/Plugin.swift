@@ -14,7 +14,12 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
 
     @objc func initialize(_ call: CAPPluginCall) {
         self.imageCache.clear {
-            // image cache cleared
+            // Image cache cleared.
+            // Because of a weird issue,
+            // every time the plugin is initialized,
+            // the cache should be cleared.
+            // Otherwise it will retrieve the original size from the cache,
+            // instead of the resized ones.
         }
 
         self.GOOGLE_MAPS_KEY = call.getString("key", "")
@@ -193,6 +198,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             let group = DispatchGroup()
 
             for marker in markers {
+                // Start the DispatchGroup.
                 group.enter()
 
                 let position = marker?["position"] as? JSObject ?? JSObject();
@@ -202,9 +208,14 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
                     "position": position,
                     "preferences": preferences
                 ], customMapView: customMapView) { marker in
+                    // Image is loaded, so notify the DispatchGroup that it can continue.
                     group.leave()
                 }
 
+                // Before going on to the next iteration of the loop,
+                // wait on the image to be loaded into the marker.
+                // This is a bit slower, but prevents fatal runtime errors.
+                // This is done by using a DispatchGroup.
                 group.wait()
             }
         }
