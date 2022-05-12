@@ -11,10 +11,20 @@ final class SDWebImageCache: ImageURLLoadable {
     }
 
     func image(at urlString: String, resizeWidth: Int, resizeHeight: Int, completion: @escaping VoidReturnClosure<UIImage?>) {
-        downloadManager.loadImage(with: URL(string: urlString), options: [], progress: nil) { image,_,_,_,_,_ in
-            completion(image?.resize(targetSize: CGSize(width: resizeWidth,
-                                                        height: resizeHeight)))
-        }
+        let key = "\(urlString)\(resizeWidth)\(resizeHeight)"
+
+        SDImageCache.shared.queryCacheOperation(forKey: key, done: { (image, data, type) in
+            if let image = image {
+                completion(image)
+            } else {
+                self.downloadManager.loadImage(with: URL(string: urlString), options: [], context: nil, progress: nil) { image,_,_,_,_,_ in
+                    let resizedImage = image?.resize(targetSize: CGSize(width: resizeWidth, height: resizeHeight))
+                    SDImageCache.shared.store(resizedImage, forKey: key, completion: {
+                        completion(resizedImage)
+                    })
+                }
+            }
+        })
     }
 
     func clear(completion: @escaping NoArgsClosure) {

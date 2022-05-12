@@ -13,6 +13,10 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
     var customWebView: CustomWKWebView?
 
     @objc func initialize(_ call: CAPPluginCall) {
+        self.imageCache.clear {
+            // image cache cleared
+        }
+
         self.GOOGLE_MAPS_KEY = call.getString("key", "")
 
         if self.GOOGLE_MAPS_KEY.isEmpty {
