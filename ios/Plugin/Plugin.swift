@@ -186,9 +186,18 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
                 return
             }
 
-            let markers = List<JSValue>(elements: call.getArray("markers", []))
-            self.addMarker(node: markers.first, customMapView: customMapView)
+            if let markers = call.getArray("markers")?.capacitor.replacingNullValues() as? [JSObject?] {
+                for marker in markers {
+                    let position = marker?["position"] as? JSObject ?? JSObject();
+                    let preferences = marker?["preferences"] as? JSObject ?? JSObject();
 
+                    self.addMarker([
+                        "position": position,
+                        "preferences": preferences
+                    ], customMapView: customMapView)
+                }
+            }
+            
             call.resolve()
         }
     }
@@ -319,16 +328,6 @@ private extension CapacitorGoogleMaps {
         }
 
         return marker
-    }
-
-    func addMarker(node: Node<JSValue>?,
-                   customMapView: CustomMapView) {
-        guard let node = node else { return }
-        let markerData = node.value as? JSObject ?? JSObject()
-
-        self.addMarker(markerData, customMapView: customMapView)
-
-        self.addMarker(node: node.next, customMapView: customMapView)
     }
 
     func setupWebView() {
