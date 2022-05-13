@@ -543,7 +543,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     }
 
     @PluginMethod()
-    public void viewBounds(final PluginCall call) {
+    public void getViewBounds(final PluginCall call) {
         final String mapId = call.getString("mapId");
         getBridge().executeOnMainThread(new Runnable() {
             @Override

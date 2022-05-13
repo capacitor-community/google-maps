@@ -14,6 +14,7 @@ import {
   ElementFromPointResultOptions,
   AddMarkerOptions,
   ViewBoundsOptions,
+  ViewBoundsResult,
   AddMarkerResult,
   AddMarkersOptions,
   AddMarkersResult,
@@ -83,7 +84,7 @@ export class CapacitorGoogleMapsWeb
     throw this.unimplemented("Not implemented on web.");
   }
 
-  async viewBounds(_options: ViewBoundsOptions): Promise<any> {
+  async getViewBounds(_options: ViewBoundsOptions): Promise<ViewBoundsResult> {
     throw new Error('Method not implemented on web.');
   }
 
