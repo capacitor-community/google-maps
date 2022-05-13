@@ -295,7 +295,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_END_MOVING_CAMERA);
     }
 
-    @objc func viewBounds(_ call: CAPPluginCall) {
+    @objc func getViewBounds(_ call: CAPPluginCall) {
         let mapId: String = call.getString("mapId", "")
 
         DispatchQueue.main.async {
