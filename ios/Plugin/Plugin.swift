@@ -13,6 +13,15 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
     var customWebView: CustomWKWebView?
 
     @objc func initialize(_ call: CAPPluginCall) {
+        self.imageCache.clear {
+            // Image cache cleared.
+            // Because of a weird issue,
+            // every time the plugin is initialized,
+            // the cache should be cleared.
+            // Otherwise it will retrieve the original size from the cache,
+            // instead of the resized ones.
+        }
+
         self.GOOGLE_MAPS_KEY = call.getString("key", "")
 
         if self.GOOGLE_MAPS_KEY.isEmpty {
@@ -168,29 +177,50 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             let position = call.getObject("position", JSObject())
             let preferences = call.getObject("preferences", JSObject())
 
-            let marker = self.addMarker([
+            self.addMarker([
                 "position": position,
                 "preferences": preferences
-            ], customMapView: customMapView)
-
-            call.resolve(CustomMarker.getResultForMarker(marker, mapId: mapId))
+            ], customMapView: customMapView) { marker in
+                call.resolve(CustomMarker.getResultForMarker(marker, mapId: mapId))
+            }
         }
     }
 
     @objc func addMarkers(_ call: CAPPluginCall) {
         let mapId: String = call.getString("mapId", "")
 
-        DispatchQueue.main.async {
-            guard let customMapView = self.customWebView?.customMapViews[mapId] else {
-                call.reject("map not found")
-                return
-            }
-
-            let markers = List<JSValue>(elements: call.getArray("markers", []))
-            self.addMarker(node: markers.first, customMapView: customMapView)
-
-            call.resolve()
+        guard let customMapView = self.customWebView?.customMapViews[mapId] else {
+            call.reject("map not found")
+            return
         }
+
+        if let markers = call.getArray("markers")?.capacitor.replacingNullValues() as? [JSObject?] {
+            let group = DispatchGroup()
+
+            for marker in markers {
+                // Start the DispatchGroup.
+                group.enter()
+
+                let position = marker?["position"] as? JSObject ?? JSObject();
+                let preferences = marker?["preferences"] as? JSObject ?? JSObject();
+
+                self.addMarker([
+                    "position": position,
+                    "preferences": preferences
+                ], customMapView: customMapView) { marker in
+                    // Image is loaded, so notify the DispatchGroup that it can continue.
+                    group.leave()
+                }
+
+                // Before going on to the next iteration of the loop,
+                // wait on the image to be loaded into the marker.
+                // This is a bit slower, but prevents fatal runtime errors.
+                // This is done by using a DispatchGroup.
+                group.wait()
+            }
+        }
+
+        call.resolve()
     }
 
     @objc func removeMarker(_ call: CAPPluginCall) {
@@ -297,11 +327,14 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
 }
 
 private extension CapacitorGoogleMaps {
-    func addMarker(_ markerData: JSObject, customMapView: CustomMapView) -> GMSMarker {
+    func addMarker(_ markerData: JSObject, customMapView: CustomMapView, completion: @escaping VoidReturnClosure<GMSMarker>) {
         let marker = CustomMarker()
 
         marker.updateFromJSObject(markerData)
-        marker.map = customMapView.GMapView
+
+        DispatchQueue.main.async {
+            marker.map = customMapView.GMapView
+        }
 
         self.customMarkers[marker.id] = marker
 
@@ -313,22 +346,17 @@ private extension CapacitorGoogleMaps {
                 let resizeWidth = size["width"] as? Int ?? 30
                 let resizeHeight = size["height"] as? Int ?? 30
                 self.imageCache.image(at: url, resizeWidth: resizeWidth, resizeHeight: resizeHeight) { image in
-                    marker.icon = image
+                    DispatchQueue.main.async {
+                        marker.icon = image
+                    }
+
+                    completion(marker)
                 }
+                return
             }
         }
 
-        return marker
-    }
-
-    func addMarker(node: Node<JSValue>?,
-                   customMapView: CustomMapView) {
-        guard let node = node else { return }
-        let markerData = node.value as? JSObject ?? JSObject()
-
-        self.addMarker(markerData, customMapView: customMapView)
-
-        self.addMarker(node: node.next, customMapView: customMapView)
+        completion(marker)
     }
 
     func setupWebView() {
