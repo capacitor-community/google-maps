@@ -194,6 +194,16 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             return
         }
 
+
+        self.imageCache.clear {
+            // Image cache cleared.
+            // Because of a weird issue,
+            // every time the `addMarkers` method is called,
+            // the cache should be cleared.
+            // Otherwise it will sometimes retrieve the original size from the cache,
+            // instead of the resized ones.
+        }
+
         if let markers = call.getArray("markers")?.capacitor.replacingNullValues() as? [JSObject?] {
             let group = DispatchGroup()
 
