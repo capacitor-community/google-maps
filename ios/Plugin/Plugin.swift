@@ -328,35 +328,37 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
 
 private extension CapacitorGoogleMaps {
     func addMarker(_ markerData: JSObject, customMapView: CustomMapView, completion: @escaping VoidReturnClosure<GMSMarker>) {
-        let marker = CustomMarker()
-
-        marker.updateFromJSObject(markerData)
-
         DispatchQueue.main.async {
+            let marker = CustomMarker()
+
+            marker.updateFromJSObject(markerData)
+
             marker.map = customMapView.GMapView
-        }
 
-        self.customMarkers[marker.id] = marker
+            self.customMarkers[marker.id] = marker
 
-        let preferences = markerData["preferences"] as? JSObject ?? JSObject()
+            let preferences = markerData["preferences"] as? JSObject ?? JSObject()
 
-        if let icon = preferences["icon"] as? JSObject {
-            if let url = icon["url"] as? String {
-                let size = icon["size"] as? JSObject ?? JSObject()
-                let resizeWidth = size["width"] as? Int ?? 30
-                let resizeHeight = size["height"] as? Int ?? 30
-                self.imageCache.image(at: url, resizeWidth: resizeWidth, resizeHeight: resizeHeight) { image in
-                    DispatchQueue.main.async {
-                        marker.icon = image
+            if let icon = preferences["icon"] as? JSObject {
+                if let url = icon["url"] as? String {
+                    let size = icon["size"] as? JSObject ?? JSObject()
+                    let resizeWidth = size["width"] as? Int ?? 30
+                    let resizeHeight = size["height"] as? Int ?? 30
+                    DispatchQueue.global(qos: .background).async {
+                        self.imageCache.image(at: url, resizeWidth: resizeWidth, resizeHeight: resizeHeight) { image in
+                            DispatchQueue.main.async {
+                                marker.icon = image
+                            }
+
+                            completion(marker)
+                        }
                     }
-
-                    completion(marker)
+                    return
                 }
-                return
             }
-        }
 
-        completion(marker)
+            completion(marker)
+        }
     }
 
     func setupWebView() {
