@@ -305,6 +305,8 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
                 return
             }
 
+            let centerPoint = customMapView.GMapView.center
+            let centerCoords = customMapView.GMapView.projection.coordinate(for: centerPoint)
             let bounds = customMapView.GMapView.projection.visibleRegion();
 
             call.resolve([
@@ -324,6 +326,10 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
                     "nearRight":[
                         "latitude": bounds.nearRight.latitude as Any,
                         "longitude": bounds.nearRight.longitude as Any
+                    ],
+                    "center":[
+                        "latitude": centerCoords.latitude as Any,
+                        "longitude": centerCoords.longitude as Any
                     ]
                 ]
             ])

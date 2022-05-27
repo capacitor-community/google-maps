@@ -24,6 +24,10 @@ export interface Bounds {
    * @since 2.0.0
    */
   nearRight: LatLng;
+  /**
+   * @since 2.0.0
+   */
+  center: LatLng;
 }
 export interface ViewBoundsResult {
   /**
