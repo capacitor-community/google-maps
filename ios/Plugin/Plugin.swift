@@ -1,7 +1,6 @@
 import Foundation
 import Capacitor
 import GoogleMaps
-import SDWebImage
 
 @objc(CapacitorGoogleMaps)
 public class CapacitorGoogleMaps: CustomMapViewEvents {
@@ -13,15 +12,6 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
     var customWebView: CustomWKWebView?
 
     @objc func initialize(_ call: CAPPluginCall) {
-        self.imageCache.clear {
-            // Image cache cleared.
-            // Because of a weird issue,
-            // every time the plugin is initialized,
-            // the cache should be cleared.
-            // Otherwise it will retrieve the original size from the cache,
-            // instead of the resized ones.
-        }
-
         self.GOOGLE_MAPS_KEY = call.getString("key", "")
 
         if self.GOOGLE_MAPS_KEY.isEmpty {
@@ -194,39 +184,74 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             return
         }
 
-
-        self.imageCache.clear {
-            // Image cache cleared.
-            // Because of a weird issue,
-            // every time the `addMarkers` method is called,
-            // the cache should be cleared.
-            // Otherwise it will sometimes retrieve the original size from the cache,
-            // instead of the resized ones.
-        }
-
         if let markers = call.getArray("markers")?.capacitor.replacingNullValues() as? [JSObject?] {
-            let group = DispatchGroup()
+            // Group markers by icon url and size
+            let markersGroupedByIcon = Dictionary(grouping: markers) { (marker) -> String in
+                let preferences = marker?["preferences"] as? JSObject ?? JSObject()
 
-            for marker in markers {
-                // Start the DispatchGroup.
-                group.enter()
-
-                let position = marker?["position"] as? JSObject ?? JSObject();
-                let preferences = marker?["preferences"] as? JSObject ?? JSObject();
-
-                self.addMarker([
-                    "position": position,
-                    "preferences": preferences
-                ], customMapView: customMapView) { marker in
-                    // Image is loaded, so notify the DispatchGroup that it can continue.
-                    group.leave()
+                if let icon = preferences["icon"] as? JSObject {
+                    if let url = icon["url"] as? String {
+                        let size = icon["size"] as? JSObject ?? JSObject()
+                        let resizeWidth = size["width"] as? Int ?? 30
+                        let resizeHeight = size["height"] as? Int ?? 30
+                        
+                        // Generate custom key based on the size,
+                        // so we can cache the resized variant of the image as well.
+                        let groupByKey = "\(url)\(resizeWidth)\(resizeHeight)"
+                        
+                        return groupByKey
+                    }
                 }
+                
+                return ""
+            }
+            
+            for markersGroup in markersGroupedByIcon {
+                // Get the icon for this group by using the first marker value
+                // (which should be the same as the following ones, since they are grouped by icon).
+                if let firstMarker = markersGroup.value[0] {
+                    let preferences = firstMarker["preferences"] as? JSObject ?? JSObject()
 
-                // Before going on to the next iteration of the loop,
-                // wait on the image to be loaded into the marker.
-                // This is a bit slower, but prevents fatal runtime errors.
-                // This is done by using a DispatchGroup.
-                group.wait()
+                    if let icon = preferences["icon"] as? JSObject {
+                        if let url = icon["url"] as? String {
+                            let size = icon["size"] as? JSObject ?? JSObject()
+                            let resizeWidth = size["width"] as? Int ?? 30
+                            let resizeHeight = size["height"] as? Int ?? 30
+
+                            // Preload this icon into the cache.
+                            self.imageCache.image(at: url, resizeWidth: resizeWidth, resizeHeight: resizeHeight) { image in
+                                // Since the icon is already loaded,
+                                // it is now possible to quickly render all the markers with this icon.
+                                for marker in markersGroup.value {
+                                    let position = marker?["position"] as? JSObject ?? JSObject();
+                                    let preferences = marker?["preferences"] as? JSObject ?? JSObject();
+
+                                    self.addMarker([
+                                        "position": position,
+                                        "preferences": preferences
+                                    ], customMapView: customMapView) { marker in
+                                        // Image is loaded
+                                    }
+                                }
+                            }
+                            
+                            continue
+                        }
+                    }
+                }
+                
+                // Render all markers on the map without a custom icon attached to them.
+                for marker in markersGroup.value {
+                    let position = marker?["position"] as? JSObject ?? JSObject();
+                    let preferences = marker?["preferences"] as? JSObject ?? JSObject();
+
+                    self.addMarker([
+                        "position": position,
+                        "preferences": preferences
+                    ], customMapView: customMapView) { marker in
+                        // Image is loaded
+                    }
+                }
             }
         }
 
@@ -384,6 +409,6 @@ private extension CapacitorGoogleMaps {
 
 extension CapacitorGoogleMaps: ImageCachable {
     var imageCache: ImageURLLoadable {
-        SDWebImageCache.shared
+        NativeImageCache.shared
     }
 }
