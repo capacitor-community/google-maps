@@ -11,6 +11,11 @@ final class SDWebImageCache: ImageURLLoadable {
     }
 
     func image(at urlString: String, resizeWidth: Int, resizeHeight: Int, completion: @escaping VoidReturnClosure<UIImage?>) {
+        guard let url = URL(string: urlString) else {
+            completion(nil)
+            return
+        }
+        
         // Generate custom key based on the size,
         // so we can cache the resized variant of the image as well.
         let key = "\(urlString)\(resizeWidth)\(resizeHeight)"
@@ -22,9 +27,12 @@ final class SDWebImageCache: ImageURLLoadable {
                 completion(image)
             } else {
                 // Otherwise, we should download the original image,
-                self.downloadManager.loadImage(with: URL(string: urlString), options: [], context: nil, progress: nil) { image,_,_,_,_,_ in
+                self.downloadManager.loadImage(with: url, options: [], context: nil, progress: nil) { image, _, _, _, _, _ in
                     // then resize it to the preferred size,
-                    let resizedImage = image?.resize(targetSize: CGSize(width: resizeWidth, height: resizeHeight))
+                    guard let resizedImage = image?.resize(targetSize: CGSize(width: resizeWidth, height: resizeHeight)) else {
+                        completion(nil)
+                        return
+                    }
                     // save it in the cache,
                     SDImageCache.shared.store(resizedImage, forKey: key, completion: {
                         // and return it.
