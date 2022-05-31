@@ -343,8 +343,6 @@ private extension CapacitorGoogleMaps {
 
             marker.updateFromJSObject(markerData)
 
-            marker.map = customMapView.GMapView
-
             self.customMarkers[marker.id] = marker
 
             let preferences = markerData["preferences"] as? JSObject ?? JSObject()
@@ -358,14 +356,16 @@ private extension CapacitorGoogleMaps {
                         self.imageCache.image(at: url, resizeWidth: resizeWidth, resizeHeight: resizeHeight) { image in
                             DispatchQueue.main.async {
                                 marker.icon = image
+                                marker.map = customMapView.GMapView
+                                completion(marker)
                             }
-
-                            completion(marker)
                         }
                     }
                     return
                 }
             }
+
+            marker.map = customMapView.GMapView
 
             completion(marker)
         }
