@@ -1,4 +1,4 @@
-import UIKit
+import SDWebImage
 
 final class NativeImageCache: ImageURLLoadable {
     static let shared: ImageURLLoadable = NativeImageCache()
@@ -14,28 +14,29 @@ final class NativeImageCache: ImageURLLoadable {
             completion(nil)
             return
         }
-        guard let image = cache.object(forKey: url as AnyObject) as? UIImage else {
-            DispatchQueue.global(qos: .userInitiated).async {
-                do {
-                    let imageData = try Data(contentsOf: url)
-                    guard let newImage = UIImage(data: imageData)?.resize(targetSize: CGSize(width: resizeWidth,
-                                                                                          height: resizeHeight)) else {
-                        completion(nil)
-                        return
-                    }
-                    self.cache.setObject(newImage, forKey: url as AnyObject)
-                    DispatchQueue.main.async {
-                        completion(newImage)
-                    }
-                } catch {
-                    DispatchQueue.main.async {
-                        completion(nil)
-                    }
+        
+        // Generate custom key based on the size,
+        // so we can cache the resized variant of the image as well.
+        let key = "\(urlString)\(resizeWidth)\(resizeHeight)"
+        
+        if let image = cache.object(forKey: key as AnyObject) as? UIImage {
+            // If the resized image is found in the cache,
+            // return it.
+            completion(image)
+        } else {
+            // Otherwise, we should download the original image,
+            SDWebImageDownloader.shared.downloadImage(with: url, options: [], context: nil, progress: nil) { image, _, _, _ in
+                // then resize it to the preferred size,
+                guard let resizedImage = image?.resize(targetSize: CGSize(width: resizeWidth, height: resizeHeight)) else {
+                    completion(nil)
+                    return
                 }
+                // save it in the cache,
+                self.cache.setObject(resizedImage, forKey: key as AnyObject)
+                // and return it.
+                completion(resizedImage)
             }
-            return
         }
-        completion(image)
     }
 
     func clear(completion: @escaping NoArgsClosure) {
