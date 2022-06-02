@@ -41,3 +41,6 @@ export { MapPreferences } from "./models/GoogleMap/Preferences";
 export { PointOfInterest } from "./models/GoogleMap/PointOfInterest";
 export { BoundingRect } from "./models/BoundingRect";
 export { LatLng } from "./models/LatLng";
+export { PolygonOptions } from "./models/GoogleMap/Shapes/Polygon";
+export { PolylineOptions } from "./models/GoogleMap/Shapes/Polyline";
+export { CircleOptions } from "./models/GoogleMap/Shapes/Circle";

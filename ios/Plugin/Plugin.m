@@ -26,4 +26,7 @@ CAP_PLUGIN(CapacitorGoogleMaps, "CapacitorGoogleMaps",
            CAP_PLUGIN_METHOD(didBeginMovingCamera, CAPPluginReturnCallback);
            CAP_PLUGIN_METHOD(didMoveCamera, CAPPluginReturnCallback);
            CAP_PLUGIN_METHOD(didEndMovingCamera, CAPPluginReturnCallback);
+           CAP_PLUGIN_METHOD(addPolyline, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(addPolygon, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(addCircle, CAPPluginReturnPromise);
 )

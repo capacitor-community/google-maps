@@ -592,4 +592,75 @@ public class CustomMapView
         // return result
         return result;
     }
+
+    public void addPolyline(final PluginCall call) {
+        final JSArray points = call.getArray("points", new JSArray());
+
+        getBridge().executeOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                PolylineOptions polylineOptions = new PolylineOptions();
+
+                for (int i = 0; i < points.length(); i++) {
+                    try {
+                        JSONObject point = points.getJSONObject(i);
+                        LatLng latLng = new LatLng(point.getDouble("latitude"), point.getDouble("longitude"));
+                        polylineOptions.add(latLng);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                googleMap.addPolyline(polylineOptions);
+
+                call.resolve();
+            }
+        });
+    }
+
+    public void addPolygon(final PluginCall call) {
+        final JSArray points = call.getArray("points", new JSArray());
+
+        getBridge().executeOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                PolygonOptions polygonOptions = new PolygonOptions();
+
+                for (int i = 0; i < points.length(); i++) {
+                    try {
+                        JSONObject point = points.getJSONObject(i);
+                        LatLng latLng = new LatLng(point.getDouble("latitude"), point.getDouble("longitude"));
+                        polygonOptions.add(latLng);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                googleMap.addPolygon(polygonOptions);
+                call.resolve();
+            }
+        });
+    }
+
+    public void addCircle(final PluginCall call) {
+        final int radius = call.getInt("radius", 0);
+        final JSONObject center = call.getObject("center", new JSObject());
+
+        getBridge().executeOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                CircleOptions circleOptions = new CircleOptions();
+                circleOptions.radius(radius);
+                try {
+                    circleOptions.center(new LatLng(center.getDouble("latitude"), center.getDouble("longitude")));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                googleMap.addCircle(circleOptions);
+
+                call.resolve();
+            }
+        });
+    }
 }
