@@ -537,6 +537,48 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
                 } else {
                     call.reject("map not found");
                 }
+
+            }
+        });
+    }
+
+    @PluginMethod()
+    public void getViewBounds(final PluginCall call) {
+        final String mapId = call.getString("mapId");
+        getBridge().executeOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+
+                CustomMapView customMapView = customMapViews.get(mapId);
+
+                if (customMapView != null) {
+                    JSObject result = new JSObject();
+                    JSObject bounds = new JSObject();
+                    JSObject farLeft = new JSObject();
+                    JSObject farRight = new JSObject();
+                    JSObject nearLeft = new JSObject();
+                    JSObject nearRight = new JSObject();
+
+                    farLeft.put("latitude", customMapView.googleMap.getProjection().getVisibleRegion().farLeft.latitude);
+                    farLeft.put("longitude", customMapView.googleMap.getProjection().getVisibleRegion().farLeft.longitude);
+                    farRight.put("latitude", customMapView.googleMap.getProjection().getVisibleRegion().farRight.latitude);
+                    farRight.put("longitude", customMapView.googleMap.getProjection().getVisibleRegion().farRight.longitude);
+                    nearLeft.put("latitude", customMapView.googleMap.getProjection().getVisibleRegion().nearLeft.latitude);
+                    nearLeft.put("longitude", customMapView.googleMap.getProjection().getVisibleRegion().nearLeft.longitude);
+                    nearRight.put("latitude", customMapView.googleMap.getProjection().getVisibleRegion().nearRight.latitude);
+                    nearRight.put("longitude", customMapView.googleMap.getProjection().getVisibleRegion().nearRight.longitude);
+
+                    bounds.put("farLeft",farLeft);
+                    bounds.put("farRight",farRight);
+                    bounds.put("nearLeft",nearLeft);
+                    bounds.put("nearRight",nearRight);
+                    result.put("bounds",bounds);
+
+                    call.resolve(result);
+                } else {
+                    call.reject("map not found");
+                }
+
             }
         });
     }

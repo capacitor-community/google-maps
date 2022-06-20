@@ -347,6 +347,47 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_END_MOVING_CAMERA);
     }
 
+    @objc func getViewBounds(_ call: CAPPluginCall) {
+        let mapId: String = call.getString("mapId", "")
+
+        DispatchQueue.main.async {
+
+            guard let customMapView = self.customWebView?.customMapViews[mapId] else {
+                call.reject("map not found")
+                return
+            }
+
+            let centerPoint = customMapView.GMapView.center
+            let centerCoords = customMapView.GMapView.projection.coordinate(for: centerPoint)
+            let bounds = customMapView.GMapView.projection.visibleRegion();
+
+            call.resolve([
+                "bounds":[
+                    "farLeft": [
+                        "latitude": bounds.farLeft.latitude as Any,
+                        "longitude": bounds.farLeft.longitude as Any
+                    ],
+                    "farRight":[
+                        "latitude": bounds.farRight.latitude as Any,
+                        "longitude": bounds.farRight.longitude as Any
+                    ],
+                    "nearLeft":[
+                        "latitude": bounds.nearLeft.latitude as Any,
+                        "longitude": bounds.nearLeft.longitude as Any
+                    ],
+                    "nearRight":[
+                        "latitude": bounds.nearRight.latitude as Any,
+                        "longitude": bounds.nearRight.longitude as Any
+                    ],
+                    "center":[
+                        "latitude": centerCoords.latitude as Any,
+                        "longitude": centerCoords.longitude as Any
+                    ]
+                ]
+            ])
+        }
+    }
+
     func setCallbackIdForEvent(call: CAPPluginCall, eventName: String) {
         let mapId: String = call.getString("mapId", "")
 

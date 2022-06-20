@@ -13,6 +13,8 @@ import {
   MoveCameraOptions,
   ElementFromPointResultOptions,
   AddMarkerOptions,
+  ViewBoundsOptions,
+  ViewBoundsResult,
   AddMarkerResult,
   AddMarkersOptions,
   AddMarkersResult,
@@ -80,6 +82,10 @@ export class CapacitorGoogleMapsWeb
 
   async removeMarker(_options: RemoveMarkerOptions): Promise<void> {
     throw this.unimplemented("Not implemented on web.");
+  }
+
+  async getViewBounds(_options: ViewBoundsOptions): Promise<ViewBoundsResult> {
+    throw new Error('Method not implemented on web.');
   }
 
   async didTapInfoWindow(
