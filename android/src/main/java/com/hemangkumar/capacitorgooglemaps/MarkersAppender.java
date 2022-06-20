@@ -14,7 +14,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -107,13 +106,7 @@ public class MarkersAppender {
             executorService.execute(() -> {
                 int i = nMarkersAdded.addAndGet(1);
 
-                int iRounded = ((i + 24) / 25) * 25;
-
-                Random rand = new Random();
-
-                int delay = iRounded / 25;
-
-                int delayRandomized = (rand.nextInt(50));
+                int delayRandomized = (int)(Math.random() * 25) * 10;
 
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
                     customMapView.addMarker(customMarker);
