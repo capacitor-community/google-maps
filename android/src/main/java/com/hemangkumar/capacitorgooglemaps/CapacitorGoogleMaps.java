@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +16,10 @@ import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.annotation.Permission;
-import com.google.android.libraries.maps.model.CameraPosition;
-import com.google.android.libraries.maps.model.Marker;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapsSdkInitializedCallback;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Marker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +35,7 @@ import java.util.UUID;
                 ),
         }
 )
-public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
+public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents, OnMapsSdkInitializedCallback {
     private final HashMap<String, CustomMapView> customMapViews = new HashMap<>();
     Float devicePixelRatio;
     private String lastEventChainId;
@@ -59,10 +62,25 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
         call.resolve();
     }
 
+    @Override
+    public void onMapsSdkInitialized(MapsInitializer.Renderer renderer) {
+        switch (renderer) {
+            case LATEST:
+                Log.d("MapsDemo", "The latest version of the renderer is used.");
+                break;
+            case LEGACY:
+                Log.d("MapsDemo", "The legacy version of the renderer is used.");
+                break;
+        }
+    }
+
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void load() {
         super.load();
+
+        MapsInitializer.initialize(getActivity(), MapsInitializer.Renderer.LATEST, this);
 
         this.getBridge().getWebView().setOnTouchListener(new View.OnTouchListener() {
             @Override

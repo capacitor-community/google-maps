@@ -3,7 +3,7 @@ package com.hemangkumar.capacitorgooglemaps;
 import androidx.annotation.Nullable;
 
 import com.getcapacitor.JSObject;
-import com.google.android.libraries.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.MapStyleOptions;
 
 public class MapPreferencesAppearance {
     public Integer type;

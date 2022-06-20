@@ -5,8 +5,8 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.getcapacitor.JSObject;
-import com.google.android.libraries.maps.model.CameraPosition;
-import com.google.android.libraries.maps.model.LatLng;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONException;
 
