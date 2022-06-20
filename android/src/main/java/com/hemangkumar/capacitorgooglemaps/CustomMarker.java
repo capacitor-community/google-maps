@@ -1,9 +1,10 @@
 package com.hemangkumar.capacitorgooglemaps;
 
+import android.app.Activity;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Consumer;
-import androidx.fragment.app.FragmentActivity;
 
 import com.getcapacitor.JSObject;
 import com.google.android.libraries.maps.GoogleMap;
@@ -26,8 +27,8 @@ public class CustomMarker {
     private JSObject iconDescriptor;
 
     public void asyncLoadIcon(
-            @NonNull FragmentActivity activity,
-            @Nullable Consumer<BitmapDescriptor> consumer) {
+            @NonNull Activity activity,
+            @Nullable Consumer<Void> consumer) {
         new AsyncIconLoader(iconDescriptor, activity)
             .load((bitmap) -> {
                 BitmapDescriptor bitmapDescriptor;
@@ -37,8 +38,10 @@ public class CustomMarker {
                     bitmapDescriptor = null;
                 }
 
+                this.markerOptions.icon(bitmapDescriptor);
+
                 if (consumer != null) {
-                    consumer.accept(bitmapDescriptor);
+                    consumer.accept(null);
                 }
             });
     }
@@ -75,18 +78,10 @@ public class CustomMarker {
         iconDescriptor = JSObjectDefaults.getJSObjectSafe(preferences, "icon", new JSObject());
     }
 
-    public void addToMap(FragmentActivity activity, GoogleMap googleMap, @Nullable Consumer<Marker> consumer) {
-        asyncLoadIcon(
-            activity,
-            (BitmapDescriptor bitmapDescriptor) -> {
-                markerOptions.icon(bitmapDescriptor);
-                Marker marker = googleMap.addMarker(markerOptions);
-                marker.setTag(tag);
-
-                if (consumer != null) {
-                    consumer.accept(marker);
-                }
-            });
+    public Marker addToMap(GoogleMap googleMap) {
+        Marker marker = googleMap.addMarker(markerOptions);
+        marker.setTag(tag);
+        return marker;
     }
 
     private void setMetadata(@NonNull JSObject jsObject) {

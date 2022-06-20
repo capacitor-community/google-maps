@@ -1,5 +1,6 @@
 package com.hemangkumar.capacitorgooglemaps;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Picture;
@@ -10,7 +11,6 @@ import android.util.LruCache;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
@@ -38,9 +38,9 @@ class AsyncIconLoader {
     }
 
     private final IconDescriptor iconDescriptor;
-    private final FragmentActivity activity;
+    private final Activity activity;
 
-    public AsyncIconLoader(JSObject jsIconDescriptor, FragmentActivity activity) {
+    public AsyncIconLoader(JSObject jsIconDescriptor, Activity activity) {
         this.iconDescriptor = new IconDescriptor(jsIconDescriptor);
         this.activity = activity;
     }

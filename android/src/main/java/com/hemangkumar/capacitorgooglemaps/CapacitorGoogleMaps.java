@@ -488,13 +488,10 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
                 if (customMapView != null) {
                     CustomMarker customMarker = new CustomMarker();
                     customMarker.updateFromJSObject(call.getData());
-
-                    customMapView.addMarker(
-                        customMarker,
-                        (Marker marker) -> {
-                            call.resolve(CustomMarker.getResultForMarker(marker, mapId));
-                        }
-                    );
+                    customMarker.asyncLoadIcon(getActivity(), (Void) -> {
+                        Marker marker = customMapView.addMarker(customMarker);
+                        call.resolve(CustomMarker.getResultForMarker(marker, mapId));
+                    });
                 } else {
                     call.reject("map not found");
                 }

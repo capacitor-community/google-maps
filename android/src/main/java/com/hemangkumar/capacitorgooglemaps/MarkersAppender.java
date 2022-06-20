@@ -1,19 +1,20 @@
 package com.hemangkumar.capacitorgooglemaps;
 
 import android.app.Activity;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.core.util.Consumer;
 
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
-import com.getcapacitor.PluginCall;
-import com.google.android.libraries.maps.model.Marker;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -27,8 +28,7 @@ public class MarkersAppender {
         }
     }
 
-    private final Object syncRoot = new Object();
-    private final ExecutorService executorService = Executors.newFixedThreadPool(4);
+    private final ExecutorService executorService = Executors.newFixedThreadPool(10);
     private Throwable currentException = null;
     private final AtomicBoolean isException = new AtomicBoolean(false);
 
@@ -36,11 +36,11 @@ public class MarkersAppender {
                            final JSArray jsMarkers,
                            final Activity activity,
                            Consumer<JSObject> resultConsumer) throws AppenderException {
-        final List<CustomMarker> customMarkers = createCustomMarkers(jsMarkers);
-        addCustomMarkers(customMarkers, customMapView, activity, resultConsumer);
+        final List<CustomMarker> customMarkers = createCustomMarkers(activity, jsMarkers);
+        addCustomMarkers(customMarkers, customMapView, resultConsumer);
     }
 
-    private List<CustomMarker> createCustomMarkers(final JSArray jsMarkers) throws AppenderException {
+    private List<CustomMarker> createCustomMarkers(final Activity activity, final JSArray jsMarkers) throws AppenderException {
         final int n = jsMarkers.length();
         final List<CustomMarker> customMarkers = new ArrayList<>(n);
         final Object syncRoot = new Object();
@@ -60,14 +60,16 @@ public class MarkersAppender {
                     JSObject jsObject = JSObject.fromJSONObject(jsonObject);
                     CustomMarker customMarker = new CustomMarker();
                     customMarker.updateFromJSObject(jsObject);
-                    synchronized (customMarkers) {
-                        customMarkers.add(customMarker);
-                    }
-                    if (nMarkersCounter.addAndGet(1) == n) {
-                        synchronized (syncRoot) {
-                            syncRoot.notify();
+                    customMarker.asyncLoadIcon(activity, (Void) -> {
+                        synchronized (customMarkers) {
+                            customMarkers.add(customMarker);
                         }
-                    }
+                        if (nMarkersCounter.addAndGet(1) == n) {
+                            synchronized (syncRoot) {
+                                syncRoot.notify();
+                            }
+                        }
+                    });
                 } catch (JSONException exception) {
                     currentException = exception;
                     isException.set(true);
@@ -97,56 +99,32 @@ public class MarkersAppender {
 
     private void addCustomMarkers(final List<CustomMarker> customMarkers,
                                   final CustomMapView customMapView,
-                                  final Activity activity,
                                   Consumer<JSObject> resultConsumer) {
         final int n = customMarkers.size();
-        final List<JSObject> result = new ArrayList<>(n);
         final AtomicInteger nMarkersAdded = new AtomicInteger(0);
-        final AtomicBoolean isMarkerAdded = new AtomicBoolean(false);
 
-        executorService.execute(() -> {
-            for (CustomMarker customMarker : customMarkers) {
-                activity.runOnUiThread(() -> {
-                    customMapView.addMarker(
-                            customMarker,
-                            (marker) -> {
-                                result.add(
-                                        (JSObject) CustomMarker.getResultForMarker(
-                                                marker,
-                                                customMapView.getId())
-                                                .opt("marker")
-                                );
-                                synchronized (syncRoot) {
-                                    isMarkerAdded.set(true);
-                                    syncRoot.notify();
-                                }
-                                if (nMarkersAdded.addAndGet(1) == n) {
-                                    JSObject jsResult = new JSObject();
-                                    jsResult.put("mapId", customMapView.getId());
-                                    JSArray jsMarkerOutputEntries = JSArray.from(result.toArray());
-                                    jsResult.put("markers", jsMarkerOutputEntries);
-                                    resultConsumer.accept(jsResult);
-                                }
-                            }
-                    );
-                }); // end of runOnUiThread
-                synchronized (syncRoot) {
-                    try {
-                        // wait for Marker is rendered before the next iteration
-                        // here is a background thread -> No UI freeze
-                        while (!isMarkerAdded.get()) {
-                            syncRoot.wait();
-                            if (!isMarkerAdded.get()) {
-                                continue;
-                            }
-                            isMarkerAdded.set(false);
-                            break;
-                        }
-                    } catch (InterruptedException ignored) {
-                        break;
-                    }
+        for (CustomMarker customMarker : customMarkers) {
+            executorService.execute(() -> {
+                int i = nMarkersAdded.addAndGet(1);
+
+                int iRounded = ((i + 24) / 25) * 25;
+
+                Random rand = new Random();
+
+                int delay = iRounded / 25;
+
+                int delayRandomized = (rand.nextInt(50));
+
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    customMapView.addMarker(customMarker);
+                }, delayRandomized);
+
+                if (i == n) {
+                    resultConsumer.accept(null);
                 }
-            } // end for
-        }); // end of execute
+            });
+
+
+        }
     }
 }

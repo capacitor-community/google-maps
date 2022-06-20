@@ -8,10 +8,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.util.Consumer;
 
 import com.getcapacitor.JSObject;
 import com.google.android.libraries.maps.CameraUpdate;
@@ -446,18 +444,8 @@ public class CustomMapView
         markers.clear();
     }
 
-    public void addMarker(CustomMarker customMarker, @Nullable Consumer<Marker> consumer) {
-        customMarker.addToMap(
-            activity,
-            googleMap,
-            (marker) -> {
-                markers.put(customMarker.markerId, marker);
-
-                if (consumer != null) {
-                    consumer.accept(marker);
-                }
-            }
-        );
+    public Marker addMarker(CustomMarker customMarker) {
+        return customMarker.addToMap(googleMap);
     }
 
     public void removeMarker(String markerId) {
