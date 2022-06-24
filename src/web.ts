@@ -1,6 +1,9 @@
 import { WebPlugin } from "@capacitor/core";
 
 import {
+  CircleOptions,
+  PolygonOptions,
+  PolylineOptions,
   CapacitorGoogleMapsPlugin,
   CallbackID,
   InitializeOptions,
@@ -43,12 +46,25 @@ export class CapacitorGoogleMapsWeb
       platforms: ["web"],
     });
   }
+  
 
   async initialize(_options: InitializeOptions): Promise<void> {
     throw this.unimplemented("Not implemented on web.");
   }
 
   async createMap(_options: CreateMapOptions): Promise<CreateMapResult> {
+    throw this.unimplemented("Not implemented on web.");
+  }
+
+  async addPolygon(_options: PolygonOptions): Promise<void> {
+    throw this.unimplemented("Not implemented on web.");
+  }
+
+  async addCircle(_options: CircleOptions): Promise<void> {
+    throw this.unimplemented("Not implemented on web.");
+  }
+
+  async addPolyline(_options: PolylineOptions): Promise<void> {
     throw this.unimplemented("Not implemented on web.");
   }
 
