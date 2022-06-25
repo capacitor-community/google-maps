@@ -4,14 +4,20 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
+import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
+import com.getcapacitor.Plugin;
+import com.getcapacitor.PluginCall;
+import com.getcapacitor.PluginMethod;
 import com.google.android.libraries.maps.CameraUpdate;
 import com.google.android.libraries.maps.CameraUpdateFactory;
 import com.google.android.libraries.maps.GoogleMap;
@@ -20,14 +26,22 @@ import com.google.android.libraries.maps.MapView;
 import com.google.android.libraries.maps.OnMapReadyCallback;
 import com.google.android.libraries.maps.UiSettings;
 import com.google.android.libraries.maps.model.CameraPosition;
+import com.google.android.libraries.maps.model.CircleOptions;
 import com.google.android.libraries.maps.model.LatLng;
 import com.google.android.libraries.maps.model.Marker;
 import com.google.android.libraries.maps.model.PointOfInterest;
+import com.google.android.libraries.maps.model.Polygon;
+import com.google.android.libraries.maps.model.PolygonOptions;
+import com.google.android.libraries.maps.model.PolylineOptions;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.UUID;
 
-public class CustomMapView
+public class CustomMapView extends Plugin
         implements OnMapReadyCallback,
         GoogleMap.OnInfoWindowClickListener,
         GoogleMap.OnInfoWindowCloseListener,
@@ -583,74 +597,64 @@ public class CustomMapView
         return result;
     }
 
-    public void addPolyline(final PluginCall call) {
-        final JSArray points = call.getArray("points", new JSArray());
-
-        getBridge().executeOnMainThread(new Runnable() {
-            @Override
-            public void run() {
-                PolylineOptions polylineOptions = new PolylineOptions();
-
-                for (int i = 0; i < points.length(); i++) {
-                    try {
-                        JSONObject point = points.getJSONObject(i);
-                        LatLng latLng = new LatLng(point.getDouble("latitude"), point.getDouble("longitude"));
-                        polylineOptions.add(latLng);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                googleMap.addPolyline(polylineOptions);
-
-                call.resolve();
+    public void addPolyline(JSArray points, int width, int zIndex, boolean visibility) {
+//      Just only default color
+//      any help for improving custom color or other options would be aprociated :)
+        PolylineOptions polylineOptions = new PolylineOptions()
+                .color(Color.argb(170, 255, 0, 0))
+                .width(width).zIndex(zIndex)
+                .visible(visibility);
+        for (int i = 0; i < points.length(); i++){
+            try {
+                JSONArray point = points.getJSONArray(i);
+                LatLng latLng = new LatLng(point.getDouble(0), point.getDouble(1));
+                polylineOptions.add(latLng);
+            } catch (JSONException e){
+                e.printStackTrace();
             }
-        });
+        }
+        googleMap.addPolyline(polylineOptions);
+        return;
     }
 
-    public void addPolygon(final PluginCall call) {
-        final JSArray points = call.getArray("points", new JSArray());
+    public void addPolygon(JSArray points, int zIndex, int strokeWidth, boolean visibility) {
+//      Just only default color
+//      any help for improving custom color or other options would be aprociated :)
+        PolygonOptions polygonOptions = new PolygonOptions()
+                .fillColor(Color.argb(60, 0, 32, 255))
+                .strokeColor(Color.argb(170, 0, 32, 255))
+                .strokeWidth(strokeWidth)
+                .visible(visibility)
+                .zIndex(zIndex);
 
-        getBridge().executeOnMainThread(new Runnable() {
-            @Override
-            public void run() {
-                PolygonOptions polygonOptions = new PolygonOptions();
-
-                for (int i = 0; i < points.length(); i++) {
-                    try {
-                        JSONObject point = points.getJSONObject(i);
-                        LatLng latLng = new LatLng(point.getDouble("latitude"), point.getDouble("longitude"));
-                        polygonOptions.add(latLng);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                googleMap.addPolygon(polygonOptions);
-                call.resolve();
+        for (int i = 0; i < points.length(); i++){
+            try {
+                JSONArray point = points.getJSONArray(i);
+                LatLng latLng = new LatLng(point.getDouble(0), point.getDouble(1));
+                polygonOptions.add(latLng);
+            } catch (JSONException e){
+                e.printStackTrace();
             }
-        });
+        }
+        googleMap.addPolygon(polygonOptions).setTag("alpha");
+        return;
     }
 
-    public void addCircle(final PluginCall call) {
-        final int radius = call.getInt("radius", 0);
-        final JSONObject center = call.getObject("center", new JSObject());
-
-        getBridge().executeOnMainThread(new Runnable() {
-            @Override
-            public void run() {
-                CircleOptions circleOptions = new CircleOptions();
-                circleOptions.radius(radius);
-                try {
-                    circleOptions.center(new LatLng(center.getDouble("latitude"), center.getDouble("longitude")));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                googleMap.addCircle(circleOptions);
-
-                call.resolve();
-            }
-        });
+    public void addCircle(int radius, JSONObject center,
+                          int zIndex, int strokeWidth,
+                          boolean visibility) {
+        CircleOptions circleOptions = new CircleOptions()
+                .fillColor(Color.argb(60, 0, 79, 255))
+                .strokeColor(Color.argb(170, 0, 79, 255))
+                .radius(radius)
+                .zIndex(zIndex)
+                .strokeWidth(strokeWidth)
+                .visible(visibility);
+        try {
+            circleOptions.center(new LatLng(center.getDouble("latitude"), center.getDouble("longitude")));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        googleMap.addCircle(circleOptions);
     }
 }

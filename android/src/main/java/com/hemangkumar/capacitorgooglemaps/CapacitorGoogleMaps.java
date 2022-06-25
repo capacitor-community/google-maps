@@ -4,10 +4,12 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
@@ -16,6 +18,9 @@ import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.annotation.Permission;
 import com.google.android.libraries.maps.model.CameraPosition;
 import com.google.android.libraries.maps.model.Marker;
+import com.google.android.libraries.maps.model.Polygon;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -232,6 +237,8 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
 
         final MapPreferences mapPreferences = new MapPreferences();
         mapPreferences.updateFromJSObject(call.getObject("preferences"));
+
+
 
         getBridge().getActivity().runOnUiThread(new Runnable() {
             @Override
@@ -473,9 +480,77 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents  
     }
 
     @PluginMethod()
+    public void addCircle(final PluginCall call){
+        final String mapId = call.getString("mapId");
+        final int radius = call.getInt("radius", 0);
+        final JSONObject center = call.getObject("center", new JSObject());
+        final int zIndex = call.getInt("zIndex", 1);
+        final int strokeWidth = call.getInt("strokeWidth", 10);
+        final boolean visibility = call.getBoolean("visibility", true);
+
+        getBridge().getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                CustomMapView customMapView = customMapViews.get(mapId);
+                if (customMapView != null){
+                    customMapView.addCircle(radius, center, zIndex, strokeWidth, visibility);
+                    call.resolve();
+                } else {
+                    call.reject("map not found");
+                }
+
+            }
+        });
+    }
+
+    @PluginMethod()
+    public void addPolygon(final PluginCall call){
+        final String mapId = call.getString("mapId");
+        final JSArray points = call.getArray("points", new JSArray());
+        final int zIndex = call.getInt("zIndex", 1);
+        final int strokeWidth = call.getInt("strokeWidth", 10);
+        final boolean visibility = call.getBoolean("visibility", true);
+
+        getBridge().getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                CustomMapView customMapView = customMapViews.get(mapId);
+                if (customMapView != null){
+                    customMapView.addPolygon(points, zIndex, strokeWidth, visibility);
+                    call.resolve();
+                } else {
+                    call.reject("map not found");
+                }
+
+            }
+        });
+    }
+
+    @PluginMethod()
+    public void addPolyline(final PluginCall call){
+        final JSArray points = call.getArray("points", new JSArray());
+        final String mapId = call.getString("mapId");
+        final int width = call.getInt("width", 10);
+        final int zIndex = call.getInt("zIndex", 1);
+        final boolean visibility = call.getBoolean("visibility", true);
+
+        getBridge().getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                CustomMapView customMapView = customMapViews.get(mapId);
+                if (customMapView != null){
+                    customMapView.addPolyline(points, width, zIndex, visibility);
+                    call.resolve();
+                } else {
+                    call.reject("map not found");
+                }
+            }
+        });
+    }
+
+    @PluginMethod()
     public void addMarker(final PluginCall call) {
         final String mapId = call.getString("mapId");
-
         getBridge().getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
