@@ -3,12 +3,17 @@ package com.hemangkumar.capacitorgooglemaps;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.PluginCall;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public abstract class JSObjectDefaults {
     private final HashMap<String, Object> defaults;
@@ -115,6 +120,44 @@ public abstract class JSObjectDefaults {
         Boolean returnedBoolean = jsObject.getBoolean(name, false);
         if (returnedBoolean != null) {
             return returnedBoolean;
+        }
+        return defaultValue;
+    }
+
+    public static JSObject getJSObjectByIndex(JSArray jsArray, int i) {
+        try {
+            JSONObject jsonObject = (JSONObject) jsArray.get(i);
+            return JSObject.fromJSONObject(jsonObject);
+        } catch (JSONException e) {
+            return new JSObject();
+        }
+    }
+
+    public static JSArray fromJSONArray(JSONArray value, @NonNull JSArray defaultValue) {
+        try {
+            List<Object> items = new ArrayList<>(value.length());
+            for (int i = 0; i < value.length(); i++) {
+                items.add(value.get(i));
+            }
+            return new JSArray(items.toArray());
+        } catch (JSONException ex) {
+            return defaultValue;
+        }
+    }
+    public static JSArray getJSArray(JSObject value, String name, JSArray defaultValue) {
+        Object o = value.opt(name);
+        if (o instanceof JSONArray) {
+            JSONArray jsArray = (JSONArray) o;
+            return JSObjectDefaults.fromJSONArray(jsArray, defaultValue);
+        }
+        return defaultValue;
+    }
+
+    public static JSArray getJSArray(JSArray value, int index, JSArray defaultValue) {
+        Object o = value.opt(index);
+        if (o instanceof JSONArray) {
+            JSONArray jsArray = (JSONArray) o;
+            return JSObjectDefaults.fromJSONArray(jsArray, defaultValue);
         }
         return defaultValue;
     }

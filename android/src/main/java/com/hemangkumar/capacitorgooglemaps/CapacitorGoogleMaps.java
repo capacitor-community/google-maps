@@ -8,6 +8,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.core.util.Consumer;
+
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
@@ -478,27 +480,15 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
 
     @PluginMethod()
     public void addMarker(final PluginCall call) {
-        final String mapId = call.getString("mapId");
-
-        getBridge().getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                CustomMapView customMapView = customMapViews.get(mapId);
-
-                if (customMapView != null) {
-                    CustomMarker customMarker = new CustomMarker();
-                    customMarker.updateFromJSObject(call.getData());
-
-                    customMapView.addMarker(
-                        customMarker,
-                        (Marker marker) -> {
-                            call.resolve(CustomMarker.getResultForMarker(marker, mapId));
-                        }
-                    );
-                } else {
-                    call.reject("map not found");
-                }
-            }
+        callMapViewMethodInUiThread(call, (customMapView) -> {
+            CustomMarker customMarker = new CustomMarker();
+            customMarker.updateFromJSObject(call.getData());
+            customMapView.addMarker(
+                    customMarker,
+                    (Marker marker) -> {
+                        call.resolve(CustomMarker.getResultForMarker(marker, customMapView.getId()));
+                    }
+            );
         });
     }
 
@@ -510,33 +500,45 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
             call.reject("map not found");
             return;
         }
-        try {
-            final JSArray jsMarkers = call.getArray("markers", new JSArray());
-            MarkersAppender appender = new MarkersAppender();
-            appender.addMarkers(customMapView, jsMarkers, getBridge().getActivity(), call::resolve);
-        } catch (MarkersAppender.AppenderException e) {
-            call.reject("exception in addMarkers", e);
-        }
+        final JSArray jsMarkers = call.getArray("markers", new JSArray());
+        MarkersAppender appender = new MarkersAppender();
+        appender.addMarkers(customMapView, jsMarkers, getBridge().getActivity(), call::resolve);
     }
+
+
 
     @PluginMethod(returnType = PluginMethod.RETURN_NONE)
     public void removeMarker(final PluginCall call) {
+        callMapViewMethodInUiThread(call, (customMapView) -> {
+            final String markerId = call.getString("markerId", "");
+            if (customMapView.removeMarker(markerId)) {
+                call.resolve();
+            } else {
+                call.reject("marker is not found when remove");
+            }
+        });
+    }
+
+    @PluginMethod()
+    public void addPolygon(final PluginCall call) {
+        callMapViewMethodInUiThread(call, (customMapView) -> {
+            CustomPolygon customPolygon = new CustomPolygon();
+            customPolygon.updateFromJSObject(call.getData());
+            customMapView.addPolygon(customPolygon, (shapePolygon) -> {
+                call.resolve(customPolygon.getResultFor(shapePolygon, customMapView.getId()));
+            });
+        });
+    }
+
+    private <T> void callMapViewMethodInUiThread(final PluginCall call,
+                                                 final Consumer<CustomMapView> consumer) {
         final String mapId = call.getString("mapId");
-
-        getBridge().getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                CustomMapView customMapView = customMapViews.get(mapId);
-
-                if (customMapView != null) {
-                    final String markerId = call.getString("markerId");
-
-                    customMapView.removeMarker(markerId);
-
-                    call.resolve();
-                } else {
-                    call.reject("map not found");
-                }
+        getBridge().getActivity().runOnUiThread(() -> {
+            CustomMapView customMapView = customMapViews.get(mapId);
+            if (customMapView != null) {
+                consumer.accept(customMapView);
+            } else {
+                call.reject("map not found");
             }
         });
     }

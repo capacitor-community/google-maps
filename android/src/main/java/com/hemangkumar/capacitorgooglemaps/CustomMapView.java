@@ -27,6 +27,7 @@ import com.google.android.libraries.maps.model.Marker;
 import com.google.android.libraries.maps.model.PointOfInterest;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class CustomMapView
@@ -53,6 +54,7 @@ public class CustomMapView
     GoogleMap googleMap;
 
     private HashMap<String, Marker> markers = new HashMap<>();
+    private final Map<String, ShapePolygon> polygons = new HashMap<>();
 
     String savedCallbackIdForCreate;
 
@@ -460,13 +462,38 @@ public class CustomMapView
         );
     }
 
-    public void removeMarker(String markerId) {
+    public boolean removeMarker(String markerId) {
         Marker marker = markers.get(markerId);
 
         if (marker != null) {
             marker.remove();
             markers.remove(markerId);
+            return true;
         }
+
+        return false;
+    }
+
+    public void addPolygon(CustomPolygon customPolygon, @Nullable Consumer<ShapePolygon> consumer) {
+        customPolygon.addToMap(activity, googleMap, (shapePolygon) -> {
+            polygons.put(customPolygon.id, shapePolygon);
+            if (consumer != null) {
+                consumer.accept(shapePolygon);
+            }
+        });
+    }
+
+    public boolean removePolygon(String polygonId) {
+        ShapePolygon polygon = polygons.remove(polygonId);
+        if (polygon != null) {
+            polygon.remove();
+            return true;
+        }
+        return false;
+    }
+
+    public ShapePolygon getPolygon(String polygonId) {
+        return polygons.get(polygonId);
     }
 
     private JSObject getResultForMap() {
