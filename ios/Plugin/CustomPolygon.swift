@@ -39,8 +39,8 @@ class CustomPolygon : GMSPolygon {
             self.fillColor = UIColor.capacitor.color(fromHex: fillColor) ?? nil
         }
         
-        self.title = polygonData["title"] as? String ?? nil
-        self.zIndex = Int32.init(polygonData["zIndex"] as? Int ?? 0);
+        self.title = polygonData["title"] as? String ?? "Overlay"
+        self.zIndex = Int32.init(polygonData["zIndex"] as? Int ?? 5);
         self.geodesic = polygonData["isGeodesic"] as? Bool ?? false
         self.isTappable = polygonData["isClickable"] as? Bool ?? false
         let metadata: JSObject = polygonData["metadata"] as? JSObject ?? JSObject();
@@ -53,6 +53,7 @@ class CustomPolygon : GMSPolygon {
     public static func getResultForPolygon(_ polygon: GMSPolygon, mapId: String) -> PluginCallResultData {
         let tag: JSObject = polygon.userData as! JSObject;
         let holes: [GMSPath] = polygon.holes ?? [GMSPath]()
+        
         return [
             "polygon": [
                 "mapId": mapId,
