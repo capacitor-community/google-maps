@@ -530,6 +530,18 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
         });
     }
 
+    @PluginMethod(returnType = PluginMethod.RETURN_NONE)
+    public void removePolygon(final PluginCall call) {
+        callMapViewMethodInUiThread(call, (customMapView) -> {
+            final String id = call.getString("polygonId");
+            if (customMapView.removePolygon(id)) {
+                call.resolve();
+            } else {
+                call.reject("polygon is not found when remove");
+            }
+        });
+    }
+
     private <T> void callMapViewMethodInUiThread(final PluginCall call,
                                                  final Consumer<CustomMapView> consumer) {
         final String mapId = call.getString("mapId");
