@@ -263,7 +263,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             let points = call.getObject("points", JSObject())
             let preferences = call.getObject("preferences", JSObject())
 
-            self.addPolygon(["points", "preferences"], customMapView: customMapView) { polygon in
+            self.addPolygon(["points": points, "preferences": preferences], customMapView: customMapView) { polygon in
                 call.resolve(CustomPolygon.getResultForPolygon(polygon, mapId: mapId))
             }
         }
@@ -391,14 +391,14 @@ private extension CapacitorGoogleMaps {
         }
     }
     
-    func addPolygon(_ polygonData: JSObject, customMapView: CustomMapView, completion: @escaping VoidReturnClosure<GMSMarker>) {
+    func addPolygon(_ polygonData: JSObject, customMapView: CustomMapView, completion: @escaping VoidReturnClosure<GMSPolygon>) {
         DispatchQueue.main.async {
-            let points = polygonData["points"]
-            let preferences = polygonData["preferences"]
+            let points = polygonData["points"] as? [JSObject] ?? [JSObject]()
+            let preferences = polygonData["preferences"] as? JSObject ?? JSObject()
             let map = customMapView.GMapView
             
-            let polygon = CustomPolygon(path: points)
-            polygon.updateFromJSObject(preferences)
+            let polygon = CustomPolygon(points: points)
+            polygon.updateFromJSObject(polygonData: preferences)
             polygon.map = map
             
             self.customPolygons[polygon.id] = polygon
