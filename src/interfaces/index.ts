@@ -17,7 +17,7 @@ export {
 export { RemoveMarkerOptions } from "./methods/RemoveMarker";
 //polygon
 export { AddPolygonOptions } from "./methods/AddPolygonOptions";
-export { GetPolygonOptions } from "./methods/GetPolygon";
+export { RemovePolygonOptions } from "./methods/RemovePolygon";
 export { PolygonResult } from "./methods/PolygonResult";
 
 // EVENTS

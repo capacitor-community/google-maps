@@ -268,6 +268,20 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             }
         }
     }
+        
+    @objc func removePolygon(_ call: CAPPluginCall) {
+        let polygonId: String = call.getString("polygonId", "");
+        DispatchQueue.main.async {
+
+            if let customPolygon = self.customPolygons[polygonId] {
+                customPolygon.map = nil;
+                self.customPolygons[polygonId] = nil;
+                call.resolve();
+            } else {
+                call.reject("polygon not found");
+            }
+        }
+    }
 
     @objc func didTapInfoWindow(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_TAP_INFO_WINDOW);

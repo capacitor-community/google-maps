@@ -483,6 +483,7 @@ public class CustomMapView
         });
     }
 
+
     public boolean removePolygon(String polygonId) {
         ShapePolygon polygon = polygons.remove(polygonId);
         if (polygon != null) {
@@ -492,9 +493,6 @@ public class CustomMapView
         return false;
     }
 
-    public ShapePolygon getPolygon(String polygonId) {
-        return polygons.get(polygonId);
-    }
 
     private JSObject getResultForMap() {
         if (this.mapView != null && this.googleMap != null) {
