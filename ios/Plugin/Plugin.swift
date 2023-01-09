@@ -9,6 +9,8 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
     var GOOGLE_MAPS_KEY: String = "";
 
     var customMarkers = [String : CustomMarker]();
+    
+    var customPolygons = [String: CustomPolygon]();
 
     var customWebView: CustomWKWebView?
 
@@ -248,6 +250,24 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             }
         }
     }
+    
+    @objc func addPolygon(_ call: CAPPluginCall) {
+        let mapId: String = call.getString("mapId", "");
+        
+        DispatchQueue.main.async {
+            guard let customMapView = self.customWebView?.customMapViews[mapId] else {
+                call.reject("map not found")
+                return
+            }
+
+            let points = call.getObject("points", JSObject())
+            let preferences = call.getObject("preferences", JSObject())
+
+            self.addPolygon(["points", "preferences"], customMapView: customMapView) { polygon in
+                call.resolve(CustomPolygon.getResultForPolygon(polygon, mapId: mapId))
+            }
+        }
+    }
 
     @objc func didTapInfoWindow(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_TAP_INFO_WINDOW);
@@ -370,6 +390,24 @@ private extension CapacitorGoogleMaps {
             completion(marker)
         }
     }
+    
+    func addPolygon(_ polygonData: JSObject, customMapView: CustomMapView, completion: @escaping VoidReturnClosure<GMSMarker>) {
+        DispatchQueue.main.async {
+            let points = polygonData["points"]
+            let preferences = polygonData["preferences"]
+            let map = customMapView.GMapView
+            
+            let polygon = CustomPolygon(path: points)
+            polygon.updateFromJSObject(preferences)
+            polygon.map = map
+            
+            self.customPolygons[polygon.id] = polygon
+            
+            completion(polygon)
+        }
+    }
+    
+    
 
     func setupWebView() {
         DispatchQueue.main.async {
