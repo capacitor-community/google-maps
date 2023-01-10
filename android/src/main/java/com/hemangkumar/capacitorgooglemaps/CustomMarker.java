@@ -23,24 +23,22 @@ public class CustomMarker {
 
     private final MarkerOptions markerOptions = new MarkerOptions();
     private JSObject tag = new JSObject();
-    private JSObject iconDescriptor;
+    private IconDescriptor iconDescriptor;
 
     public void asyncLoadIcon(
             @NonNull FragmentActivity activity,
-            @Nullable Consumer<BitmapDescriptor> consumer) {
+            @Nullable Runnable onLoaded) {
         new AsyncIconLoader(iconDescriptor, activity)
-            .load((bitmap) -> {
-                BitmapDescriptor bitmapDescriptor;
-                if (bitmap != null) {
-                    bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bitmap);
-                } else {
-                    bitmapDescriptor = null;
-                }
-
-                if (consumer != null) {
-                    consumer.accept(bitmapDescriptor);
-                }
-            });
+                .load((bitmap) -> {
+                    if (bitmap != null) {
+                        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
+                    } else {
+                        markerOptions.icon(null);
+                    }
+                    if (onLoaded != null) {
+                        onLoaded.run();
+                    }
+                });
     }
 
     public void updateFromJSObject(JSObject marker) {
@@ -72,21 +70,25 @@ public class CustomMarker {
 
         this.setMetadata(JSObjectDefaults.getJSObjectSafe(preferences, "metadata", new JSObject()));
 
-        iconDescriptor = JSObjectDefaults.getJSObjectSafe(preferences, "icon", new JSObject());
+        JSObject jsIconDescriptor = preferences.getJSObject("icon");
+        if (jsIconDescriptor != null) {
+            iconDescriptor = new IconDescriptor(jsIconDescriptor);
+        } else {
+            iconDescriptor = null;
+        }
     }
 
     public void addToMap(FragmentActivity activity, GoogleMap googleMap, @Nullable Consumer<Marker> consumer) {
         asyncLoadIcon(
-            activity,
-            (BitmapDescriptor bitmapDescriptor) -> {
-                markerOptions.icon(bitmapDescriptor);
-                Marker marker = googleMap.addMarker(markerOptions);
-                marker.setTag(tag);
+                activity,
+                () -> {
+                    Marker marker = googleMap.addMarker(markerOptions);
+                    marker.setTag(tag);
 
-                if (consumer != null) {
-                    consumer.accept(marker);
-                }
-            });
+                    if (consumer != null) {
+                        consumer.accept(marker);
+                    }
+                });
     }
 
     private void setMetadata(@NonNull JSObject jsObject) {

@@ -40,8 +40,8 @@ class AsyncIconLoader {
     private final IconDescriptor iconDescriptor;
     private final FragmentActivity activity;
 
-    public AsyncIconLoader(JSObject jsIconDescriptor, FragmentActivity activity) {
-        this.iconDescriptor = new IconDescriptor(jsIconDescriptor);
+    public AsyncIconLoader(@Nullable IconDescriptor iconDescriptor, FragmentActivity activity) {
+        this.iconDescriptor = iconDescriptor;
         this.activity = activity;
     }
 
