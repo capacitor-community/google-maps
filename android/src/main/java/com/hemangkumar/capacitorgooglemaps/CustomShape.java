@@ -6,6 +6,7 @@ import androidx.core.util.Consumer;
 
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
+import com.getcapacitor.util.WebColor;
 import com.google.android.libraries.maps.model.Dash;
 import com.google.android.libraries.maps.model.Dot;
 import com.google.android.libraries.maps.model.Gap;
@@ -320,11 +321,11 @@ public abstract class CustomShape<T extends Shape> {
             options.strokeWidth(strokeWidth);
         }
         if (traits.hasStrokeColor()) {
-            final int strokeColor = Color.parseColor(jsPreferences.optString("strokeColor", "#000000"));
+            final int strokeColor = WebColor.parseColor(jsPreferences.optString("strokeColor", "#000000"));
             options.strokeColor(strokeColor);
         }
         if (traits.hasFillColor()) {
-            final int fillColor = Color.parseColor(jsPreferences.optString("fillColor", "#300000FF"));
+            final int fillColor = WebColor.parseColor(jsPreferences.optString("fillColor", "#300000FF"));
             options.fillColor(fillColor);
         }
         if (traits.hasGeodesic()) {
