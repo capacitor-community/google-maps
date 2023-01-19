@@ -15,6 +15,7 @@
 		50ADFFA42020D75100D50D53 /* Capacitor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50ADFFA52020D75100D50D53 /* Capacitor.framework */; };
 		50ADFFA82020EE4F00D50D53 /* Plugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 50ADFFA72020EE4F00D50D53 /* Plugin.m */; };
 		50E1A94820377CB70090CE1A /* Plugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E1A94720377CB70090CE1A /* Plugin.swift */; };
+		9BE9B148296718E400B0E793 /* CustomPolygon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BE9B147296718E400B0E793 /* CustomPolygon.swift */; };
 		FE57559126E111230006B72B /* MapPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE57559026E111230006B72B /* MapPreferences.swift */; };
 		FE57559A26E111A40006B72B /* BoundingRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE57559226E111A20006B72B /* BoundingRect.swift */; };
 		FE57559B26E111A40006B72B /* CustomMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE57559326E111A20006B72B /* CustomMarker.swift */; };
@@ -50,6 +51,7 @@
 		5E23F77F099397094342571A /* Pods-Plugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Plugin.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Plugin/Pods-Plugin.debug.xcconfig"; sourceTree = "<group>"; };
 		91781294A431A2A7CC6EB714 /* Pods-Plugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Plugin.release.xcconfig"; path = "Pods/Target Support Files/Pods-Plugin/Pods-Plugin.release.xcconfig"; sourceTree = "<group>"; };
 		96ED1B6440D6672E406C8D19 /* Pods-PluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PluginTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PluginTests/Pods-PluginTests.debug.xcconfig"; sourceTree = "<group>"; };
+		9BE9B147296718E400B0E793 /* CustomPolygon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPolygon.swift; sourceTree = "<group>"; };
 		F65BB2953ECE002E1EF3E424 /* Pods-PluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PluginTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PluginTests/Pods-PluginTests.release.xcconfig"; sourceTree = "<group>"; };
 		F6753A823D3815DB436415E3 /* Pods_PluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE57559026E111230006B72B /* MapPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapPreferences.swift; sourceTree = "<group>"; };
@@ -115,6 +117,7 @@
 				FE57559926E111A40006B72B /* CustomMapView.swift */,
 				FE57559426E111A20006B72B /* CustomMapViewEvents.swift */,
 				FE57559326E111A20006B72B /* CustomMarker.swift */,
+				9BE9B147296718E400B0E793 /* CustomPolygon.swift */,
 				FE57559826E111A30006B72B /* MapCameraPosition.swift */,
 				FE57559526E111A30006B72B /* MapPreferencesAppearance.swift */,
 				FE57559726E111A30006B72B /* MapPreferencesControls.swift */,
@@ -369,6 +372,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FE57559126E111230006B72B /* MapPreferences.swift in Sources */,
+				9BE9B148296718E400B0E793 /* CustomPolygon.swift in Sources */,
 				FE5755A126E111A40006B72B /* CustomMapView.swift in Sources */,
 				FE57559E26E111A40006B72B /* MapPreferencesGestures.swift in Sources */,
 				FE57559D26E111A40006B72B /* MapPreferencesAppearance.swift in Sources */,

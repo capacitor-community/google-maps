@@ -540,4 +540,49 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
             }
         });
     }
+
+    @PluginMethod()
+    public void addPolygon(final PluginCall call) {
+        final String mapId = call.getString("mapId");
+
+        getBridge().getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                CustomMapView customMapView = customMapViews.get(mapId);
+
+                if (customMapView != null) {
+                    CustomPolygon customPolygon = new CustomPolygon();
+                    customPolygon.updateFromJSObject(call.getData());
+
+                    customMapView.addPolygon(customPolygon, (polygon) -> {
+                        call.resolve(customPolygon.getResultForPolygon(polygon, mapId));
+                    });
+                } else {
+                    call.reject("map not found");
+                }
+            }
+        });
+    }
+
+    @PluginMethod(returnType = PluginMethod.RETURN_NONE)
+    public void removePolygon(final PluginCall call) {
+        final String mapId = call.getString("mapId");
+
+        getBridge().getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                CustomMapView customMapView = customMapViews.get(mapId);
+
+                if (customMapView != null) {
+                    final String polygonId = call.getString("polygonId");
+
+                    customMapView.removePolygon(polygonId);
+
+                    call.resolve();
+                } else {
+                    call.reject("map not found");
+                }
+            }
+        });
+    }
 }
