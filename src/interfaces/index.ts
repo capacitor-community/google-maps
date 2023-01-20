@@ -7,8 +7,14 @@ export { ClearMapOptions } from "./methods/ClearMap";
 export { MoveCameraOptions } from "./methods/MoveCamera";
 export { ElementFromPointResultOptions } from "./methods/ElementFromPointResult";
 export { AddMarkerOptions, AddMarkerResult } from "./methods/AddMarker";
-export { AddMarkersOptions, MarkerInputEntry, AddMarkersResult } from "./methods/AddMarkers";
+export {
+  AddMarkersOptions,
+  MarkerInputEntry,
+  AddMarkersResult,
+} from "./methods/AddMarkers";
 export { RemoveMarkerOptions } from "./methods/RemoveMarker";
+export { AddPolygonOptions, AddPolygonResult } from "./methods/AddPolygon";
+export { RemovePolygonOptions } from "./methods/RemovePolygon";
 
 // events
 export * from "./events/DidTapInfoWindow";
@@ -39,5 +45,7 @@ export { MapGestures } from "./models/GoogleMap/Gestures";
 export { GoogleMap } from "./models/GoogleMap/GoogleMap";
 export { MapPreferences } from "./models/GoogleMap/Preferences";
 export { PointOfInterest } from "./models/GoogleMap/PointOfInterest";
+export { Polygon } from "./models/GoogleMap/Polygon/Polygon";
+export { PolygonPreferences } from "./models/GoogleMap/Polygon/PolygonPreferences";
 export { BoundingRect } from "./models/BoundingRect";
 export { LatLng } from "./models/LatLng";

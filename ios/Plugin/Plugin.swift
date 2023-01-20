@@ -8,6 +8,8 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
     var GOOGLE_MAPS_KEY: String = "";
 
     var customMarkers = [String : CustomMarker]();
+    
+    var customPolygons = [String: CustomPolygon]();
 
     var customWebView: CustomWKWebView?
 
@@ -290,6 +292,43 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             }
         }
     }
+    
+    @objc func addPolygon(_ call: CAPPluginCall) {
+        let mapId: String = call.getString("mapId", "");
+
+        DispatchQueue.main.async {
+            guard let customMapView = self.customWebView?.customMapViews[mapId] else {
+                call.reject("map not found")
+                return
+            }
+
+            if let path = call.getArray("path")?.capacitor.replacingNullValues() as? [JSObject?] {
+                let preferences = call.getObject("preferences", JSObject())
+
+                self.addPolygon([
+                    "path": path,
+                    "preferences": preferences
+                ], customMapView: customMapView) { polygon in
+                    call.resolve(CustomPolygon.getResultForPolygon(polygon, mapId: mapId))
+                }
+            }
+        }
+    }
+        
+    @objc func removePolygon(_ call: CAPPluginCall) {
+        let polygonId: String = call.getString("polygonId", "");
+
+        DispatchQueue.main.async {
+            if let customPolygon = self.customPolygons[polygonId] {
+                customPolygon.map = nil;
+                customPolygon.layer.removeFromSuperlayer()
+                self.customPolygons[polygonId] = nil;
+                call.resolve();
+            } else {
+                call.reject("polygon not found");
+            }
+        }
+    }
 
     @objc func didTapInfoWindow(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_TAP_INFO_WINDOW);
@@ -412,6 +451,22 @@ private extension CapacitorGoogleMaps {
             completion(marker)
         }
     }
+    
+    func addPolygon(_ polygonData: JSObject, customMapView: CustomMapView, completion: @escaping VoidReturnClosure<GMSPolygon>) {
+        DispatchQueue.main.async {
+            let polygon = CustomPolygon()
+
+            polygon.updateFromJSObject(polygonData)
+
+            polygon.map = customMapView.GMapView
+
+            self.customPolygons[polygon.id] = polygon
+
+            completion(polygon)
+        }
+    }
+    
+    
 
     func setupWebView() {
         DispatchQueue.main.async {
