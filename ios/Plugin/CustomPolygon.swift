@@ -18,7 +18,7 @@ class CustomPolygon : GMSPolygon {
         }
         self.holes = holes
         
-        self.strokeWidth = preferences["strokeWidth"] as? Double ?? 1.0
+        self.strokeWidth = preferences["strokeWidth"] as? Double ?? 10.0
         
         if let strokeColor = preferences["strokeColor"] as? String {
             self.strokeColor = UIColor.capacitor.color(fromHex: strokeColor) ?? nil
