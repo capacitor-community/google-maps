@@ -15,6 +15,8 @@ export {
 export { RemoveMarkerOptions } from "./methods/RemoveMarker";
 export { AddPolygonOptions, AddPolygonResult } from "./methods/AddPolygon";
 export { RemovePolygonOptions } from "./methods/RemovePolygon";
+export { AddPolylineOptions, AddPolylineResult } from "./methods/AddPolyline";
+export { RemovePolylineOptions } from "./methods/RemovePolyline";
 
 // events
 export * from "./events/DidTapInfoWindow";
@@ -47,5 +49,7 @@ export { MapPreferences } from "./models/GoogleMap/Preferences";
 export { PointOfInterest } from "./models/GoogleMap/PointOfInterest";
 export { Polygon } from "./models/GoogleMap/Polygon/Polygon";
 export { PolygonPreferences } from "./models/GoogleMap/Polygon/PolygonPreferences";
+export { Polyline } from "./models/GoogleMap/Polyline/Polyline";
+export { PolylinePreferences } from "./models/GoogleMap/Polyline/PolylinePreferences";
 export { BoundingRect } from "./models/BoundingRect";
 export { LatLng } from "./models/LatLng";

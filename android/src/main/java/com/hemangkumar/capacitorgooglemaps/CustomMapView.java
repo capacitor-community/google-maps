@@ -26,6 +26,7 @@ import com.google.android.libraries.maps.model.LatLng;
 import com.google.android.libraries.maps.model.Marker;
 import com.google.android.libraries.maps.model.PointOfInterest;
 import com.google.android.libraries.maps.model.Polygon;
+import com.google.android.libraries.maps.model.Polyline;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,6 +57,7 @@ public class CustomMapView
 
     private HashMap<String, Marker> markers = new HashMap<>();
     private HashMap<String, Polygon> polygons = new HashMap<>();
+    private HashMap<String, Polyline> polylines = new HashMap<>();
 
     String savedCallbackIdForCreate;
 
@@ -494,6 +496,29 @@ public class CustomMapView
             polygons.remove(polygonId);
         }
     }
+
+    public void addPolyline(CustomPolyline customPolyline, @Nullable Consumer<Polyline> consumer) {
+        customPolyline.addToMap(
+            googleMap,
+            (polyline) -> {
+                polylines.put(customPolyline.polylineId, polyline);
+    
+                if (consumer != null) {
+                    consumer.accept(polyline);
+                }
+            }
+        );
+    }
+
+    public void removePolyline(String polylineId) {
+        Polyline polyline = polylines.get(polylineId);
+    
+        if (polyline != null) {
+            polyline.remove();
+            polylines.remove(polylineId);
+        }
+    }
+
 
 
     private JSObject getResultForMap() {

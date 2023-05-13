@@ -585,4 +585,49 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
             }
         });
     }
+
+    @PluginMethod()
+    public void addPolyline(final PluginCall call) {
+        final String mapId = call.getString("mapId");
+
+        getBridge().getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                CustomMapView customMapView = customMapViews.get(mapId);
+
+                if (customMapView != null) {
+                    CustomPolyline customPolyline = new CustomPolyline();
+                    customPolyline.updateFromJSObject(call.getData());
+
+                    customMapView.addPolyline(customPolyline, (polyline) -> {
+                        call.resolve(customPolyline.getResultForPolyline(polyline, mapId));
+                    });
+                } else {
+                    call.reject("map not found");
+                }
+            }
+        });
+    }
+
+    @PluginMethod(returnType = PluginMethod.RETURN_NONE)
+    public void removePolyline(final PluginCall call) {
+        final String mapId = call.getString("mapId");
+
+        getBridge().getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                CustomMapView customMapView = customMapViews.get(mapId);
+
+                if (customMapView != null) {
+                    final String polylineId = call.getString("polylineId");
+
+                    customMapView.removePolyline(polylineId);
+
+                    call.resolve();
+                } else {
+                    call.reject("map not found");
+                }
+            }
+        });
+    }
 }
