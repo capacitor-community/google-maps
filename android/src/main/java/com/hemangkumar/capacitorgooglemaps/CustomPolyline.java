@@ -129,7 +129,7 @@ public class CustomPolyline  {
 
         // get preferences
         preferencesResult.put("width", polyline.getWidth());
-        preferencesResult.put("strokeColor", colorToString(polyline.getColor()));
+        preferencesResult.put("color", colorToString(polyline.getColor()));
         preferencesResult.put("zIndex", polyline.getZIndex());
         preferencesResult.put("isVisible", polyline.isVisible());
         preferencesResult.put("isGeodesic", polyline.isGeodesic());
