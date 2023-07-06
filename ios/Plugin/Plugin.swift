@@ -11,6 +11,8 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
     
     var customPolygons = [String: CustomPolygon]();
 
+    var customPolylines = [String: CustomPolyline]();
+
     var customWebView: CustomWKWebView?
 
     @objc func initialize(_ call: CAPPluginCall) {
@@ -502,6 +504,21 @@ private extension CapacitorGoogleMaps {
             completion(polygon)
         }
     }
+
+    func addPolyline(_ polylineData: JSObject, customMapView: CustomMapView, completion: @escaping VoidReturnClosure<GMSPolyline>) {
+        DispatchQueue.main.async {
+            let polyline = CustomPolyline()
+
+            polyline.updateFromJSObject(polylineData)
+
+            polyline.map = customMapView.GMapView
+
+            self.customPolylines[polyline.id] = polyline
+
+            completion(polyline)
+        }
+    }
+    
     
     
 
