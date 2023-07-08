@@ -15,6 +15,8 @@ CAP_PLUGIN(CapacitorGoogleMaps, "CapacitorGoogleMaps",
            CAP_PLUGIN_METHOD(removeMarker, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(addPolygon, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(removePolygon, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(addPolyline, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(removePolyline, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(didTapInfoWindow, CAPPluginReturnCallback);
            CAP_PLUGIN_METHOD(didCloseInfoWindow, CAPPluginReturnCallback);
            CAP_PLUGIN_METHOD(didTapMap, CAPPluginReturnCallback);
