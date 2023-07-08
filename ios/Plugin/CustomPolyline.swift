@@ -12,16 +12,12 @@ class CustomPolyline : GMSPolyline {
 
         let preferences = polylineData["preferences"] as? JSObject ?? JSObject()
         
-        self.width = preferences["width"] as? Double ?? 10.0
+        self.strokeWidth = preferences["width"] as? Double ?? 10.0
         
         if let color = preferences["color"] as? String {
-            self.color = UIColor.capacitor.color(fromHex: color) ?? nil
+            self.strokeColor = UIColor.capacitor.color(fromHex: color) ?? UIColor.black
         }
-        
-        if let fillColor = preferences["fillColor"] as? String {
-            self.fillColor = UIColor.capacitor.color(fromHex: fillColor) ?? nil
-        }
-        
+                
         self.title = preferences["title"] as? String ?? ""
         self.zIndex = Int32.init(preferences["zIndex"] as? Int ?? 1)
         self.geodesic = preferences["isGeodesic"] as? Bool ?? false
@@ -44,8 +40,8 @@ class CustomPolyline : GMSPolyline {
                 "path": CustomPolyline.jsonFromPath(polyline.path),
                 "preferences": [
                     "title": polyline.title ?? "",
-                    "width": polyline.width,
-                    "color": polyline.color ?? "",
+                    "width": polyline.strokeWidth,
+                    "color": polyline.strokeColor ?? "",
                     "zIndex": polyline.zIndex,
                     "isGeodesic": polyline.geodesic,
                     "isClickable": polyline.isTappable,
