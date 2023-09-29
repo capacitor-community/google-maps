@@ -7,7 +7,7 @@ import androidx.core.util.Consumer;
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.PluginCall;
-import com.google.android.libraries.maps.model.Marker;
+import com.google.android.gms.maps.model.Marker;
 
 import org.json.JSONException;
 import org.json.JSONObject;
