@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -238,10 +239,10 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
         final MapPreferences mapPreferences = new MapPreferences();
         mapPreferences.updateFromJSObject(call.getObject("preferences"));
 
-        getBridge().getActivity().runOnUiThread(new Runnable() {
+        getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                CustomMapView customMapView = new CustomMapView(getBridge().getActivity(), ctx);
+                CustomMapView customMapView = new CustomMapView(getActivity(), ctx);
 
                 customMapViews.put(customMapView.getId(), customMapView);
 
