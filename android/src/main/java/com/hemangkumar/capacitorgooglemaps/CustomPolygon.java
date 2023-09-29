@@ -7,10 +7,10 @@ import androidx.core.util.Consumer;
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.util.WebColor;
-import com.google.android.libraries.maps.GoogleMap;
-import com.google.android.libraries.maps.model.LatLng;
-import com.google.android.libraries.maps.model.Polygon;
-import com.google.android.libraries.maps.model.PolygonOptions;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.PolygonOptions;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

@@ -15,8 +15,9 @@ import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.annotation.Permission;
-import com.google.android.libraries.maps.model.CameraPosition;
-import com.google.android.libraries.maps.model.Marker;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Marker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,6 +64,8 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     @Override
     public void load() {
         super.load();
+
+        MapsInitializer.initialize(getContext(), MapsInitializer.Renderer.LATEST, null);
 
         this.getBridge().getWebView().setOnTouchListener(new View.OnTouchListener() {
             @Override
