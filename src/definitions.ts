@@ -161,7 +161,7 @@ export interface CapacitorGoogleMapsPlugin {
   addListener(
     eventName: "didRequestElementFromPoint",
     listenerFunc: (result: DidRequestElementFromPointResult) => void
-  ): PluginListenerHandle;
+  ): Promise<PluginListenerHandle>;
 }
 
 export * from "./interfaces";
