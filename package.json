@@ -16,16 +16,16 @@
   "author": "@capacitor-community",
   "license": "MIT",
   "devDependencies": {
-    "@capacitor/android": "^4.0.0",
-    "@capacitor/core": "^4.0.0",
+    "@capacitor/android": "^5.0.0",
+    "@capacitor/core": "^5.0.0",
     "@capacitor/docgen": "git+https://github.com/DutchConcepts/capacitor-docgen.git",
-    "@capacitor/ios": "^4.0.0",
+    "@capacitor/ios": "^5.0.0",
     "all-contributors-cli": "^6.20.0",
     "rimraf": "^3.0.0",
     "typescript": "~4.1.5"
   },
   "peerDependencies": {
-    "@capacitor/core": "^4.0.0"
+    "@capacitor/core": "^5.0.0"
   },
   "files": [
     "dist/",
