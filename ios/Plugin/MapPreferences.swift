@@ -4,8 +4,8 @@ class MapPreferences {
     public var gestures: MapPreferencesGestures!
     public var controls: MapPreferencesControls!
     public var appearance: MapPreferencesAppearance!
-    public var minZoom: Int!
-    public var maxZoom: Int!
+    public var minZoom: Float!
+    public var maxZoom: Float!
 
     public init() {
         self.gestures = MapPreferencesGestures();
