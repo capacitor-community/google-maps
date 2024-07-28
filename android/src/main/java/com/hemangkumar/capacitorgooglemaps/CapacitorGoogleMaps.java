@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +18,7 @@ import com.getcapacitor.annotation.Permission;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.VisibleRegion;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -370,6 +370,59 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
                     customMapView.moveCamera(duration);
 
                     call.resolve();
+                } else {
+                    call.reject("map not found");
+                }
+            }
+        });
+    }
+
+    @PluginMethod()
+    public void getRegionInfo(final PluginCall call) {
+        final String mapId = call.getString("mapId");
+
+        getBridge().getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                CustomMapView customMapView = customMapViews.get(mapId);
+
+                if (customMapView != null) {
+                    VisibleRegion region = customMapView.googleMap.getProjection().getVisibleRegion();
+
+                    JSObject topLeft = new JSObject();
+                    JSObject topRight = new JSObject();
+                    JSObject bottomLeft = new JSObject();
+                    JSObject bottomRight = new JSObject();
+
+                    topLeft.put("latitude", region.latLngBounds.northeast.latitude);
+                    topLeft.put("longitude", region.latLngBounds.southwest.longitude);
+
+                    topRight.put("latitude", region.latLngBounds.northeast.latitude);
+                    topRight.put("longitude", region.latLngBounds.northeast.longitude);
+
+                    bottomLeft.put("latitude", region.latLngBounds.southwest.latitude);
+                    bottomLeft.put("longitude", region.latLngBounds.southwest.longitude);
+
+                    bottomRight.put("latitude", region.latLngBounds.southwest.latitude);
+                    bottomRight.put("longitude", region.latLngBounds.northeast.longitude);
+
+                    JSObject bounds = new JSObject();
+                    bounds.put("topLeft", topLeft);
+                    bounds.put("topRight", topRight);
+                    bounds.put("bottomLeft", bottomLeft);
+                    bounds.put("bottomRight", bottomRight);
+
+                    JSObject center = new JSObject();
+                    center.put("latitude", region.latLngBounds.getCenter().latitude);
+                    center.put("longitude", region.latLngBounds.getCenter().longitude);
+
+                    CameraPosition camera = customMapView.googleMap.getCameraPosition();
+                    JSObject result = new JSObject();
+                    result.put("bounds", bounds);
+                    result.put("center", center);
+                    result.put("zoom", camera.zoom);
+
+                    call.resolve(result);
                 } else {
                     call.reject("map not found");
                 }

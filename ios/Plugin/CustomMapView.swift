@@ -111,6 +111,9 @@ class CustomMapView: UIViewController, GMSMapViewDelegate {
         self.GMapView.isMyLocationEnabled = self.mapPreferences.appearance.isMyLocationDotShown;
         self.GMapView.isTrafficEnabled = self.mapPreferences.appearance.isTrafficShown;
         
+        // set zoom
+        self.GMapView.setMinZoom(self.mapPreferences.minZoom, maxZoom: self.mapPreferences.maxZoom);
+
         return self.getResultForMap();
     }
     

@@ -359,6 +359,8 @@ public class CustomMapView
 
         GoogleMapOptions googleMapOptions = this.mapPreferences.generateGoogleMapOptions();
         googleMapOptions.camera(this.mapCameraPosition.cameraPosition);
+        googleMapOptions.minZoomPreference(mapPreferences.minZoom);
+        googleMapOptions.maxZoomPreference(mapPreferences.maxZoom);
 
         mapView = new MapView(activity, googleMapOptions);
 
