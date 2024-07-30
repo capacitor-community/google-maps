@@ -130,14 +130,15 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
     
     @objc func clearMap(_ call: CAPPluginCall) {
         let mapId: String = call.getString("mapId", "")
+        let hide: Bool = call.getBool("hide", false)
 
         DispatchQueue.main.async {
             guard let customMapView = self.customWebView?.customMapViews[mapId] else {
                 call.reject("map not found")
                 return
             }
-            
-            let result = customMapView.clearMap()
+
+            let result = customMapView.clearMap(hide: hide)
             
             call.resolve()
         }

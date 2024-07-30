@@ -327,6 +327,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     @PluginMethod(returnType = PluginMethod.RETURN_NONE)
     public void clearMap(final PluginCall call) {
         final String mapId = call.getString("mapId");
+        final boolean hide = Boolean.TRUE.equals(call.getBoolean("hide", false));
 
         getBridge().getActivity().runOnUiThread(new Runnable() {
             @Override
@@ -334,7 +335,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
                 CustomMapView customMapView = customMapViews.get(mapId);
 
                 if (customMapView != null) {
-                    customMapView.clear();
+                    customMapView.clear(hide);
                     call.resolve();
                 } else {
                     call.reject("map not found");

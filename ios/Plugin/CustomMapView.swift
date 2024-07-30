@@ -121,9 +121,10 @@ class CustomMapView: UIViewController, GMSMapViewDelegate {
         return self.getResultForMap();
     }
     
-    func clearMap() {
+    func clearMap(hide: Bool) {
         if (self.GMapView != nil) {
             self.GMapView.clear();
+            self.GMapView.isHidden = hide == true;
         }
     }
     
