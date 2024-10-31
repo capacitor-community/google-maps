@@ -550,7 +550,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
                     customMapView.addMarker(
                         customMarker,
                         (Marker marker) -> {
-                            call.resolve(CustomMarker.getResultForMarker(marker, mapid);
+                            call.resolve(CustomMarker.getResultForMarker(marker, mapid));
                         }
                     );
                 } else {
@@ -613,7 +613,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
                     customPolygon.updateFromJSObject(call.getData());
 
                     customMapView.addPolygon(customPolygon, (polygon) -> {
-                        call.resolve(customPolygon.getResultForPolygon(polygon, mapid);
+                        call.resolve(customPolygon.getResultForPolygon(polygon, mapid));
                     });
                 } else {
                     call.reject("addPolygon: map not found, mapId: " + mapid);
