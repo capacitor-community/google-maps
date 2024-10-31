@@ -318,7 +318,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
                     customMapViews.remove(mapId);
                     call.resolve();
                 } else {
-                    call.reject("removeMap: map not found, mapId: " + mapid));
+                    call.reject("removeMap: map not found, mapId: " + mapid);
                 }
             }
         });
@@ -338,7 +338,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
                     customMapView.clear(hide);
                     call.resolve();
                 } else {
-                    call.reject("clearMap: map not found, mapId: " + mapid));
+                    call.reject("clearMap: map not found, mapId: " + mapid);
                 }
             }
         });
@@ -372,7 +372,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
 
                     call.resolve();
                 } else {
-                    call.reject("moveCamera: map not found, mapId: " + mapid));
+                    call.reject("moveCamera: map not found, mapId: " + mapid);
                 }
             }
         });
@@ -425,7 +425,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
 
                     call.resolve(result);
                 } else {
-                    call.reject("getRegionInfo: map not found, mapId: " + mapid));
+                    call.reject("getRegionInfo: map not found, mapId: " + mapid);
                 }
             }
         });
@@ -550,11 +550,11 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
                     customMapView.addMarker(
                         customMarker,
                         (Marker marker) -> {
-                            call.resolve(CustomMarker.getResultForMarker(marker, mapId));
+                            call.resolve(CustomMarker.getResultForMarker(marker, mapid);
                         }
                     );
                 } else {
-                    call.reject("addMarker: map not found, mapId: " + mapid));
+                    call.reject("addMarker: map not found, mapId: " + mapid);
                 }
             }
         });
@@ -565,7 +565,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
         final String mapId = call.getString("mapId");
         CustomMapView customMapView = customMapViews.get(mapId);
         if (customMapView == null) {
-            call.reject("addMarkers: map not found, mapId: " + mapid));
+            call.reject("addMarkers: map not found, mapId: " + mapid);
             return;
         }
         try {
@@ -593,7 +593,7 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
 
                     call.resolve();
                 } else {
-                    call.reject("removeMarker: map not found, mapId: " + mapid));
+                    call.reject("removeMarker: map not found, mapId: " + mapid);
                 }
             }
         });
@@ -613,10 +613,10 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
                     customPolygon.updateFromJSObject(call.getData());
 
                     customMapView.addPolygon(customPolygon, (polygon) -> {
-                        call.resolve(customPolygon.getResultForPolygon(polygon, mapId));
+                        call.resolve(customPolygon.getResultForPolygon(polygon, mapid);
                     });
                 } else {
-                    call.reject("addPolygon: map not found, mapId: " + mapid));
+                    call.reject("addPolygon: map not found, mapId: " + mapid);
                 }
             }
         });
