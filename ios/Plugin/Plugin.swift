@@ -4,6 +4,35 @@ import GoogleMaps
 
 @objc(CapacitorGoogleMaps)
 public class CapacitorGoogleMaps: CustomMapViewEvents {
+    public let identifier = "CapacitorGoogleMaps"
+    public let jsName = "CapacitorGoogleMaps"
+    public let pluginMethods: [CAPPluginMethod] = [
+        CAPPluginMethod(name: "initialize", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "createMap", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "updateMap", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "clearMap", returnType: CAPPluginReturnNone),
+        CAPPluginMethod(name: "removeMap", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "moveCamera", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "addMarker", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "addMarkers", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "removeMarker", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "addPolygon", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "removePolygon", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "didTapInfoWindow", returnType: , CAPPluginReturnCallback),
+        CAPPluginMethod(name: "didCloseInfoWindow", returnType: , CAPPluginReturnCallback),
+        CAPPluginMethod(name: "didTapMap", returnType: , CAPPluginReturnCallback),
+        CAPPluginMethod(name: "didLongPressMap", returnType: , CAPPluginReturnCallback),
+        CAPPluginMethod(name: "didTapMarker", returnType: , CAPPluginReturnCallback),
+        CAPPluginMethod(name: "didBeginDraggingMarker", returnType: , CAPPluginReturnCallback),
+        CAPPluginMethod(name: "didDragMarker", returnType: , CAPPluginReturnCallback),
+        CAPPluginMethod(name: "didEndDraggingMarker", returnType: , CAPPluginReturnCallback),
+        CAPPluginMethod(name: "didTapMyLocationButton", returnType: , CAPPluginReturnCallback),
+        CAPPluginMethod(name: "didTapMyLocationDot", returnType: , CAPPluginReturnCallback),
+        CAPPluginMethod(name: "didTapPoi", returnType: , CAPPluginReturnCallback),
+        CAPPluginMethod(name: "didBeginMovingCamera", returnType: , CAPPluginReturnCallback),
+        CAPPluginMethod(name: "didMoveCamera", returnType: , CAPPluginReturnCallback),
+        CAPPluginMethod(name: "didEndMovingCamera", returnType: , CAPPluginReturnCallback),
+    ]
 
     var GOOGLE_MAPS_KEY: String = "";
 
