@@ -31,7 +31,8 @@
     "dist/",
     "ios/",
     "android/",
-    "CapacitorCommunityGoogleMaps.podspec"
+    "CapacitorCommunityGoogleMaps.podspec",
+    "Package.swift"
   ],
   "keywords": [
     "capacitor",
