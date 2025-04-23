@@ -1,3 +1,5 @@
+import QuartzCore
+
 extension CALayer {
     func pixelColorAtPoint(point:CGPoint) -> Bool {
         var pixel: [UInt8] = [0, 0, 0, 0]
