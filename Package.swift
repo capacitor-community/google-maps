@@ -21,6 +21,8 @@ let package = Package(
                 .product(name: "Capacitor", package: "capacitor-swift-pm"),
                 .product(name: "Cordova", package: "capacitor-swift-pm"),
                 .product(name: "GoogleMaps", package: "ios-maps-sdk"),
+                .product(name: "GoogleMapsBase", package: "ios-maps-sdk"),
+                .product(name: "GoogleMapsCore", package: "ios-maps-sdk"),
                 .product(name: "SDWebImage", package: "SDWebImage")
             ],
             path: "ios/Plugin")
