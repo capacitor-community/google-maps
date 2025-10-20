@@ -86,10 +86,21 @@ class MapPreferencesAppearance {
             }
         }
         
-        self.isBuildingsShown = object[MapPreferencesAppearance.BUILDINGS_SHOWN_KEY] as? Bool;
-        self.isIndoorShown = object[MapPreferencesAppearance.INDOOR_SHOWN_KEY] as? Bool;
-        self.isMyLocationDotShown = object[MapPreferencesAppearance.MY_LOCATION_DOT_SHOWN_KEY] as? Bool;
-        self.isTrafficShown = object[MapPreferencesAppearance.TRAFFIC_SHOWN_KEY] as? Bool;
+        if let isMyLocationDotShown = object[MapPreferencesAppearance.MY_LOCATION_DOT_SHOWN_KEY] as? Bool {
+            self.isMyLocationDotShown = isMyLocationDotShown
+        }
+
+        if let isBuildingsShown = object[MapPreferencesAppearance.BUILDINGS_SHOWN_KEY] as? Bool {
+            self.isBuildingsShown = isBuildingsShown
+        }
+
+        if let isIndoorShown = object[MapPreferencesAppearance.INDOOR_SHOWN_KEY] as? Bool {
+            self.isIndoorShown = isIndoorShown
+        }
+
+        if let isTrafficShown = object[MapPreferencesAppearance.TRAFFIC_SHOWN_KEY] as? Bool {
+            self.isTrafficShown = isTrafficShown
+        }
     }
     
     func getJSObject(_ mapView: GMSMapView) -> JSObject {
