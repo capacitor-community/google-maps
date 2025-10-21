@@ -85,10 +85,6 @@ class MapPreferencesAppearance {
                 }
             }
         }
-        
-        if let isMyLocationDotShown = object[MapPreferencesAppearance.MY_LOCATION_DOT_SHOWN_KEY] as? Bool {
-            self.isMyLocationDotShown = isMyLocationDotShown
-        }
 
         if let isBuildingsShown = object[MapPreferencesAppearance.BUILDINGS_SHOWN_KEY] as? Bool {
             self.isBuildingsShown = isBuildingsShown
@@ -96,6 +92,10 @@ class MapPreferencesAppearance {
 
         if let isIndoorShown = object[MapPreferencesAppearance.INDOOR_SHOWN_KEY] as? Bool {
             self.isIndoorShown = isIndoorShown
+        }
+
+        if let isMyLocationDotShown = object[MapPreferencesAppearance.MY_LOCATION_DOT_SHOWN_KEY] as? Bool {
+            self.isMyLocationDotShown = isMyLocationDotShown
         }
 
         if let isTrafficShown = object[MapPreferencesAppearance.TRAFFIC_SHOWN_KEY] as? Bool {
