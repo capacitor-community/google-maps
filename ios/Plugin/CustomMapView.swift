@@ -110,7 +110,6 @@ class CustomMapView: UIViewController, GMSMapViewDelegate {
         self.GMapView.isIndoorEnabled = self.mapPreferences.appearance.isIndoorShown;
         self.GMapView.isMyLocationEnabled = self.mapPreferences.appearance.isMyLocationDotShown;
         self.GMapView.isTrafficEnabled = self.mapPreferences.appearance.isTrafficShown;
-        self.GMapView.isMyLocationEnabled = self.mapPreferences.appearance.isMyLocationDotShown;
 
         return self.getResultForMap();
     }
