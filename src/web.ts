@@ -42,13 +42,6 @@ export class CapacitorGoogleMapsWeb
   extends WebPlugin
   implements CapacitorGoogleMapsPlugin
 {
-  constructor() {
-    super({
-      name: "CapacitorGoogleMaps",
-      platforms: ["web"],
-    });
-  }
-
   async initialize(_options: InitializeOptions): Promise<void> {
     throw this.unimplemented("Not implemented on web.");
   }
