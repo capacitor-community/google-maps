@@ -5,10 +5,42 @@ import GoogleMaps
 @objc(CapacitorGoogleMaps)
 public class CapacitorGoogleMaps: CustomMapViewEvents {
 
+    public let identifier = "CapacitorGoogleMaps"
+
+    public let jsName = "CapacitorGoogleMaps"
+
+    public let pluginMethods: [CAPPluginMethod] = [
+         CAPPluginMethod(name: "initialize", returnType: CAPPluginReturnPromise),
+         CAPPluginMethod(name: "createMap", returnType: CAPPluginReturnPromise),
+         CAPPluginMethod(name: "updateMap", returnType: CAPPluginReturnPromise),
+         CAPPluginMethod(name: "clearMap", returnType: CAPPluginReturnNone),
+         CAPPluginMethod(name: "removeMap", returnType: CAPPluginReturnPromise),
+         CAPPluginMethod(name: "moveCamera", returnType: CAPPluginReturnPromise),
+         CAPPluginMethod(name: "addMarker", returnType: CAPPluginReturnPromise),
+         CAPPluginMethod(name: "addMarkers", returnType: CAPPluginReturnPromise),
+         CAPPluginMethod(name: "removeMarker", returnType: CAPPluginReturnPromise),
+         CAPPluginMethod(name: "addPolygon", returnType: CAPPluginReturnPromise),
+         CAPPluginMethod(name: "removePolygon", returnType: CAPPluginReturnPromise),
+         CAPPluginMethod(name: "didTapInfoWindow", returnType: CAPPluginReturnCallback),
+         CAPPluginMethod(name: "didCloseInfoWindow", returnType: CAPPluginReturnCallback),
+         CAPPluginMethod(name: "didTapMap", returnType: CAPPluginReturnCallback),
+         CAPPluginMethod(name: "didLongPressMap", returnType: CAPPluginReturnCallback),
+         CAPPluginMethod(name: "didTapMarker", returnType: CAPPluginReturnCallback),
+         CAPPluginMethod(name: "didBeginDraggingMarker", returnType: CAPPluginReturnCallback),
+         CAPPluginMethod(name: "didDragMarker", returnType: CAPPluginReturnCallback),
+         CAPPluginMethod(name: "didEndDraggingMarker", returnType: CAPPluginReturnCallback),
+         CAPPluginMethod(name: "didTapMyLocationButton", returnType: CAPPluginReturnCallback),
+         CAPPluginMethod(name: "didTapMyLocationDot", returnType: CAPPluginReturnCallback),
+         CAPPluginMethod(name: "didTapPoi", returnType: CAPPluginReturnCallback),
+         CAPPluginMethod(name: "didBeginMovingCamera", returnType: CAPPluginReturnCallback),
+         CAPPluginMethod(name: "didMoveCamera", returnType: CAPPluginReturnCallback),
+         CAPPluginMethod(name: "didEndMovingCamera", returnType: CAPPluginReturnCallback),
+     ]
+
     var GOOGLE_MAPS_KEY: String = "";
 
     var customMarkers = [String : CustomMarker]();
-    
+
     var customPolygons = [String: CustomPolygon]();
 
     var customWebView: CustomWKWebView?
@@ -83,7 +115,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             }
         }
     }
-    
+
     @objc func updateMap(_ call: CAPPluginCall) {
         let mapId: String = call.getString("mapId", "")
 
@@ -92,12 +124,12 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
                 call.reject("map not found")
                 return
             }
-            
+
             let preferences = call.getObject("preferences", JSObject());
             customMapView.mapPreferences.updateFromJSObject(preferences);
-            
+
             let result = customMapView.invalidateMap()
-            
+
             call.resolve(result)
         }
 
@@ -112,14 +144,14 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
                 call.reject("map not found")
                 return
             }
-            
+
             (customMapView).view.removeFromSuperview()
             self.customWebView?.customMapViews.removeValue(forKey: mapId)
 
             call.resolve()
         }
     }
-    
+
     @objc func getMap(_ call: CAPPluginCall) {
         let mapId: String = call.getString("mapId", "")
 
@@ -128,14 +160,14 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
                 call.reject("map not found")
                 return
             }
-            
+
             let result = customMapView.getMap()
-            
+
             call.resolve(result)
         }
 
     }
-    
+
     @objc func clearMap(_ call: CAPPluginCall) {
         let mapId: String = call.getString("mapId", "")
 
@@ -144,9 +176,9 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
                 call.reject("map not found")
                 return
             }
-            
+
             let result = customMapView.clearMap()
-            
+
             call.resolve()
         }
 
@@ -221,18 +253,18 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
                         let size = icon["size"] as? JSObject ?? JSObject()
                         let resizeWidth = size["width"] as? Int ?? 30
                         let resizeHeight = size["height"] as? Int ?? 30
-                        
+
                         // Generate custom key based on the size,
                         // so we can cache the resized variant of the image as well.
                         let groupByKey = "\(url)\(resizeWidth)\(resizeHeight)"
-                        
+
                         return groupByKey
                     }
                 }
-                
+
                 return ""
             }
-            
+
             for markersGroup in markersGroupedByIcon {
                 // Get the icon for this group by using the first marker value
                 // (which should be the same as the following ones, since they are grouped by icon).
@@ -261,12 +293,12 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
                                     }
                                 }
                             }
-                            
+
                             continue
                         }
                     }
                 }
-                
+
                 // Render all markers on the map without a custom icon attached to them.
                 for marker in markersGroup.value {
                     let position = marker?["position"] as? JSObject ?? JSObject();
@@ -300,7 +332,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             }
         }
     }
-    
+
     @objc func addPolygon(_ call: CAPPluginCall) {
         let mapId: String = call.getString("mapId", "");
 
@@ -322,7 +354,7 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
             }
         }
     }
-        
+
     @objc func removePolygon(_ call: CAPPluginCall) {
         let polygonId: String = call.getString("polygonId", "");
 
@@ -353,23 +385,23 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
     @objc func didLongPressMap(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_LONG_PRESS_MAP);
     }
-    
+
     @objc func didTapMarker(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_TAP_MARKER);
     }
-    
+
     @objc func didBeginDraggingMarker(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_BEGIN_DRAGGING_MARKER);
     }
-    
+
     @objc func didDragMarker(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_DRAG_MARKER);
     }
-    
+
     @objc func didEndDraggingMarker(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_END_DRAGGING_MARKER);
     }
-    
+
     @objc func didTapMyLocationButton(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_TAP_MY_LOCATION_BUTTON);
     }
@@ -377,19 +409,19 @@ public class CapacitorGoogleMaps: CustomMapViewEvents {
     @objc func didTapMyLocationDot(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_TAP_MY_LOCATION_DOT);
     }
-    
+
     @objc func didTapPoi(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_TAP_POI);
     }
-    
+
     @objc func didBeginMovingCamera(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_BEGIN_MOVING_CAMERA);
     }
-    
+
     @objc func didMoveCamera(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_MOVE_CAMERA);
     }
-    
+
     @objc func didEndMovingCamera(_ call: CAPPluginCall) {
         setCallbackIdForEvent(call: call, eventName: CustomMapView.EVENT_DID_END_MOVING_CAMERA);
     }
@@ -459,7 +491,7 @@ private extension CapacitorGoogleMaps {
             completion(marker)
         }
     }
-    
+
     func addPolygon(_ polygonData: JSObject, customMapView: CustomMapView, completion: @escaping VoidReturnClosure<GMSPolygon>) {
         DispatchQueue.main.async {
             let polygon = CustomPolygon()
@@ -473,8 +505,8 @@ private extension CapacitorGoogleMaps {
             completion(polygon)
         }
     }
-    
-    
+
+
 
     func setupWebView() {
         DispatchQueue.main.async {
