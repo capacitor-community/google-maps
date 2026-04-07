@@ -3,7 +3,7 @@ import Capacitor
 import GoogleMaps
 
 @objc(CapacitorGoogleMaps)
-public class CapacitorGoogleMaps: CustomMapViewEvents {
+public class CapacitorGoogleMaps: CustomMapViewEvents, CAPBridgedPlugin {
 
     public let identifier = "CapacitorGoogleMaps"
 
