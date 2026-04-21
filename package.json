@@ -28,11 +28,11 @@
     "@capacitor/core": ">=7.0.0"
   },
   "files": [
-      "dist/",
-      "ios/",
-      "android/",
-      "Package.swift",
-      "CapacitorCommunityGoogleMaps.podspec"
+    "dist/",
+    "ios/",
+    "Package.swift",
+    "android/",
+    "CapacitorCommunityGoogleMaps.podspec"
   ],
   "keywords": [
     "capacitor",
