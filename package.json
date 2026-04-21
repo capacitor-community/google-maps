@@ -30,6 +30,7 @@
   "files": [
     "dist/",
     "ios/",
+    "Package.swift",
     "android/",
     "CapacitorCommunityGoogleMaps.podspec"
   ],
