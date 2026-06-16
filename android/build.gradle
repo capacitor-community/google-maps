@@ -51,7 +51,7 @@ dependencies {
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
-    implementation 'com.google.android.gms:play-services-maps:18.1.0'
-    implementation 'com.github.bumptech.glide:glide:4.13.0'
+    implementation 'com.google.android.gms:play-services-maps:20.0.0'
+    implementation 'com.github.bumptech.glide:glide:5.0.7'
     implementation 'com.caverock:androidsvg-aar:1.4'
 }
