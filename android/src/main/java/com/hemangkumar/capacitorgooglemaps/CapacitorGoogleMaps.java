@@ -477,7 +477,9 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
     @Override
     public void resultForCallbackId(String callbackId, JSObject result) {
         PluginCall call = bridge.getSavedCall(callbackId);
-        call.resolve(result);
+        if (call != null) {
+            call.resolve(result);
+        }
     }
 
     @PluginMethod()
