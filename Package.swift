@@ -3,7 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "CapacitorCommunityGoogleMaps",
-    platforms: [.iOS(.v15)],
+    platforms: [.iOS(.v16)],
     products: [
         .library(
             name: "CapacitorCommunityGoogleMaps",
