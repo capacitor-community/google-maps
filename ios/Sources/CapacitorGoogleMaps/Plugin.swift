@@ -128,6 +128,17 @@ public class CapacitorGoogleMaps: CustomMapViewEvents, CAPBridgedPlugin {
             let preferences = call.getObject("preferences", JSObject());
             customMapView.mapPreferences.updateFromJSObject(preferences);
 
+            if let boundingRect = call.getObject("boundingRect") {
+                customMapView.boundingRect.updateFromJSObject(boundingRect)
+
+                customMapView.GMapView.frame = CGRect(
+                    x: customMapView.boundingRect.x,
+                    y: customMapView.boundingRect.y,
+                    width: customMapView.boundingRect.width,
+                    height: customMapView.boundingRect.height
+                )
+            }
+
             let result = customMapView.invalidateMap()
 
             call.resolve(result)

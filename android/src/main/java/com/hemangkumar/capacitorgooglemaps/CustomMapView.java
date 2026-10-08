@@ -373,6 +373,14 @@ public class CustomMapView
         mapView.getMapAsync(this);
     }
 
+    public void updateBoundingRect(BoundingRect boundingRect) {
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(getScaledPixels(boundingRect.width), getScaledPixels(boundingRect.height));
+        lp.topMargin = getScaledPixels(boundingRect.y);
+        lp.leftMargin = getScaledPixels(boundingRect.x);
+
+        mapView.setLayoutParams(lp);
+    }
+
     @SuppressLint("MissingPermission")
     public JSObject invalidateMap() {
         if (this.googleMap == null) {
