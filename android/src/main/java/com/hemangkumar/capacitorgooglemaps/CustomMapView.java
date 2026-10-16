@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
@@ -374,7 +375,10 @@ public class CustomMapView
     }
 
     public void updateBoundingRect(BoundingRect boundingRect) {
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(getScaledPixels(boundingRect.width), getScaledPixels(boundingRect.height));
+        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) mapView.getLayoutParams();
+
+        lp.width = getScaledPixels(boundingRect.width);
+        lp.height = getScaledPixels(boundingRect.height);
         lp.topMargin = getScaledPixels(boundingRect.y);
         lp.leftMargin = getScaledPixels(boundingRect.x);
 
