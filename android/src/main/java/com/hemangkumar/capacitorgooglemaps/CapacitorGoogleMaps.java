@@ -274,6 +274,14 @@ public class CapacitorGoogleMaps extends Plugin implements CustomMapViewEvents {
                     final MapPreferences mapPreferences = customMapView.mapPreferences;
                     mapPreferences.updateFromJSObject(call.getObject("preferences"));
 
+                    JSObject boundingRectObject = call.getObject("boundingRect");
+
+                    if (boundingRectObject != null) {
+                        BoundingRect boundingRect = new BoundingRect();
+                        boundingRect.updateFromJSObject(boundingRectObject);
+                        customMapView.updateBoundingRect(boundingRect);
+                    }
+
                     JSObject result = customMapView.invalidateMap();
 
                     call.resolve(result);
